@@ -754,7 +754,7 @@ body {
     <div class="score-pill" id="topScoreDisplay">⭐ Score: 0</div>
   </div>
 
-<button class="avatar-pill app-button bounce-on-tap" id="topAvatarButton" type="button" onclick="playClickSound(); editProfile();">
+<button class="avatar-pill app-button bounce-on-tap" id="topAvatarButton" type="button" onclick="playClickSound(); openProfileModal();">
   <span id="topAvatarEmoji">⭐</span>
   <span id="topAvatarName">Nini</span>
 </button>
@@ -1351,6 +1351,17 @@ updateTopBarScore(score);
 <script>
 let clickAudioContext = null;
 
+const AVATARS = ["⭐", "🐱", "🐰", "🌈", "❤️"];
+
+const profileModal = document.getElementById("profileModal");
+const closeProfileBtn = document.getElementById("closeProfileBtn");
+const cancelProfileBtn = document.getElementById("cancelProfileBtn");
+const saveProfileBtn = document.getElementById("saveProfileBtn");
+const profileNameInput = document.getElementById("profileNameInput");
+const avatarOptions = document.getElementById("avatarOptions");
+
+let selectedAvatar = localStorage.getItem("niniAvatar") || "⭐";
+
 function playClickSound() {
   try {
     if (!clickAudioContext) {
@@ -1415,40 +1426,90 @@ function updateTopBarScore(scoreValue) {
   scoreEl.classList.add("bounce-pop");
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  updateTopBarProfile();
-  updateTopBarScore(score);
-});
+function buildAvatarOptions() {
+  avatarOptions.innerHTML = "";
+  AVATARS.forEach((avatar) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "avatar-btn";
+    btn.dataset.avatar = avatar;
+    btn.textContent = avatar;
 
-function editProfile() {
-  playClickSound();
-  bounceAvatar();
+    btn.addEventListener("click", () => {
+      selectedAvatar = avatar;
+      updateProfileModalUI();
+    });
 
+    avatarOptions.appendChild(btn);
+  });
+}
+
+function updateProfileModalUI() {
   const currentName = localStorage.getItem("niniPlayerName") || "Nini";
+  const currentAvatar = localStorage.getItem("niniAvatar") || "⭐";
+  const activeAvatar = selectedAvatar || currentAvatar;
 
-  const name = prompt("Enter player name:", currentName);
-  if (name === null) return;
+  profileNameInput.value = currentName;
 
-  const safeName = name.trim() || "Player";
+  Array.from(avatarOptions.querySelectorAll("button")).forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.avatar === activeAvatar);
+  });
+}
 
-  const choice = prompt(
-    "Pick avatar number:\n1 ⭐\n2 🐱\n3 🐰\n4 🌈\n5 ❤️",
-    "1"
-  );
-  if (choice === null) return;
+function openProfileModal() {
+  bounceAvatar();
+  selectedAvatar = localStorage.getItem("niniAvatar") || "⭐";
+  updateProfileModalUI();
+  profileModal.classList.add("active");
+}
 
-  let avatar = "⭐";
-  if (choice === "1") avatar = "⭐";
-  if (choice === "2") avatar = "🐱";
-  if (choice === "3") avatar = "🐰";
-  if (choice === "4") avatar = "🌈";
-  if (choice === "5") avatar = "❤️";
+function closeProfileModal() {
+  profileModal.classList.remove("active");
+}
+
+function saveProfile() {
+  const safeName = (profileNameInput.value || "Nini").trim().slice(0, 16) || "Nini";
+  const safeAvatar = selectedAvatar || "⭐";
 
   localStorage.setItem("niniPlayerName", safeName);
-  localStorage.setItem("niniAvatar", avatar);
+  localStorage.setItem("niniAvatar", safeAvatar);
 
   updateTopBarProfile();
+  closeProfileModal();
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildAvatarOptions();
+  updateTopBarProfile();
+  updateTopBarScore(score);
+
+  closeProfileBtn.addEventListener("click", closeProfileModal);
+  cancelProfileBtn.addEventListener("click", closeProfileModal);
+  saveProfileBtn.addEventListener("click", saveProfile);
+
+  profileModal.addEventListener("click", (e) => {
+    if (e.target === profileModal) closeProfileModal();
+  });
+});
 </script>
+<div class="modal-backdrop" id="profileModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Profile</div>
+      <button class="close-btn" id="closeProfileBtn" type="button">×</button>
+    </div>
+
+    <div class="profile-form">
+      <input id="profileNameInput" maxlength="16" placeholder="Player name" />
+      <div class="label" style="margin-bottom:0;">Choose an avatar</div>
+      <div class="avatar-options" id="avatarOptions"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel-btn" id="cancelProfileBtn" type="button">Cancel</button>
+      <button class="save-btn" id="saveProfileBtn" type="button">Save</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
