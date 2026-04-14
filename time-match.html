@@ -36,7 +36,23 @@
       justify-content: center;
       padding: 18px;
     }
+.home-button {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4f9cff, #6b6cff);
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 18px rgba(79, 156, 255, 0.25);
+  z-index: 999;
+}
 
+.home-button:hover {
+  transform: translateY(-1px);
+}
     .app {
       width: min(1180px, 100%);
       background: var(--card);
@@ -576,6 +592,7 @@
   </style>
 </head>
 <body>
+  <a class="home-button" href="index.html">🏠 Back to Nini</a>
   <div class="app">
     <div class="topbar">
       <div class="profile-card">
