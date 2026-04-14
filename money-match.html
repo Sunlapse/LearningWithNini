@@ -748,7 +748,7 @@ body {
 </head>
 <body>
 <div class="game-topbar">
-  <a class="home-button app-button" href="index.html" onclick="playClickSound()">🏠 Home</a>
+  <a class="home-button app-button" href="#" onclick="goHome(event)">🏠 Home</a>
 
   <div class="topbar-center">
     <div class="score-pill" id="topScoreDisplay">⭐ Score: 0</div>
@@ -1356,7 +1356,13 @@ updateTopBarScore(score);
       if (!clickAudioContext) {
         clickAudioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
-
+function goHome(event) {
+  event.preventDefault();
+  playClickSound();
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 180);
+}
       const ctx = clickAudioContext;
       const oscillator = ctx.createOscillator();
       const gainNode = ctx.createGain();
