@@ -738,7 +738,118 @@ body {
       .button-grid {
         grid-template-columns: 1fr;
       }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 30, 60, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 3000;
+}
 
+.modal-backdrop.active {
+  display: flex;
+}
+
+.modal {
+  width: min(520px, 100%);
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 24px 50px rgba(24,40,79,0.25);
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,0.8);
+  color: #21304a;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #24406f;
+}
+
+.close-btn {
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #eef4ff;
+  color: #24406f;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.profile-form {
+  display: grid;
+  gap: 10px;
+}
+
+.profile-form input {
+  border: 2px solid #dbe7ff;
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.avatar-options {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.avatar-btn {
+  border: 2px solid #dbe7ff;
+  background: #f8fbff;
+  border-radius: 16px;
+  height: 56px;
+  font-size: 24px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.avatar-btn.active {
+  border-color: #5b8cff;
+  background: #eef4ff;
+  box-shadow: 0 8px 16px rgba(91,140,255,0.12);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.modal-actions button {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #22c55e, #67df7f);
+  color: white;
+}
+
+.cancel-btn {
+  background: #eef4ff;
+  color: #24406f;
+}
       .money-grid,
       .bank-grid {
         grid-template-columns: 1fr 1fr;
