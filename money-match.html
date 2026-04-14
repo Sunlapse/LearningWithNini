@@ -167,23 +167,7 @@ body {
     max-width: 260px;
   }
 }
-.home-button {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #4f9cff, #6b6cff);
-  color: white;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 8px 18px rgba(79, 156, 255, 0.25);
-  z-index: 999;
-}
 
-.home-button:hover {
-  transform: translateY(-1px);
-}
 
     .wrap {
       max-width: 1240px;
@@ -770,10 +754,10 @@ body {
     <div class="score-pill" id="topScoreDisplay">⭐ Score: 0</div>
   </div>
 
-  <button class="avatar-pill app-button bounce-on-tap" id="topAvatarButton" type="button" onclick="playClickSound(); bounceAvatar();">
-    <span id="topAvatarEmoji">⭐</span>
-    <span id="topAvatarName">Nini</span>
-  </button>
+<button class="avatar-pill app-button bounce-on-tap" id="topAvatarButton" type="button" onclick="playClickSound(); editProfile();">
+  <span id="topAvatarEmoji">⭐</span>
+  <span id="topAvatarName">Nini</span>
+</button>
 </div>
   <div class="toast-wrap" id="toastWrap"></div>
   <div class="page-celebration" id="pageCelebration"></div>
@@ -1358,6 +1342,7 @@ updateTopBarScore(score);
     }
 
     function init() {
+  updateTopBarScore(score);
       setupNewLevel();
       setMessage('Tap money below to build the amount.');
     }
@@ -1414,6 +1399,7 @@ updateTopBarScore(score);
     if (avatarNameEl) avatarNameEl.textContent = savedName;
   }
 
+
   function updateTopBarScore(scoreValue) {
     const scoreEl = document.getElementById("topScoreDisplay");
     if (!scoreEl) return;
@@ -1426,6 +1412,26 @@ updateTopBarScore(score);
   document.addEventListener("DOMContentLoaded", function () {
     updateTopBarProfile();
   });
+function editProfile() {
+  bounceAvatar();
+
+  const currentName = localStorage.getItem("niniPlayerName") || "Nini";
+  const currentAvatar = localStorage.getItem("niniAvatar") || "⭐";
+
+  const newName = prompt("Player name:", currentName);
+  if (newName === null) return;
+
+  const trimmedName = newName.trim() || "Player";
+  const newAvatar = prompt("Choose an avatar: ⭐ 🐱 🐰 🌈 ❤️", currentAvatar);
+  if (newAvatar === null) return;
+
+  const trimmedAvatar = newAvatar.trim() || "⭐";
+
+  localStorage.setItem("niniPlayerName", trimmedName);
+  localStorage.setItem("niniAvatar", trimmedAvatar);
+
+  updateTopBarProfile();
+}
 </script>
 </body>
 </html>
