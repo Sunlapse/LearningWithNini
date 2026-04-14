@@ -24,35 +24,116 @@
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+  --appbar-height: 78px;
+}
+
+body {
+  padding-top: calc(var(--appbar-height) + 18px);
+}
+
+.appbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3000;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(91,140,255,0.12);
+  box-shadow: 0 8px 20px rgba(54,84,140,0.08);
+}
+
+.appbar-home,
+.appbar-avatar {
+  border: none;
+  border-radius: 16px;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 18px;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.appbar-home {
+  background: linear-gradient(135deg, #5b8cff, #8b5cf6);
+  color: white;
+  box-shadow: 0 8px 18px rgba(91,140,255,0.22);
+}
+
+.appbar-score {
+  display: flex;
+  justify-content: center;
+}
+
+.appbar-score-pill {
+  min-height: 52px;
+  min-width: 150px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff6fae, #8b5cf6);
+  color: white;
+  font-size: 22px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px rgba(139,92,246,0.18);
+}
+
+.appbar-avatar {
+  background: linear-gradient(135deg, #ffd84d, #ffb648);
+  color: #21304a;
+  box-shadow: 0 8px 18px rgba(255,182,72,0.18);
+}
+
+.appbar-avatar-emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.appbar-avatar-name {
+  line-height: 1;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bounce-pop {
+  animation: bouncePop 0.45s ease;
+}
+
+@keyframes bouncePop {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.12) translateY(-2px); }
+  50% { transform: scale(0.97); }
+  75% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at top left, #ffffff 0%, #eef4ff 34%, #fff6e7 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-    }
-.home-button {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #4f9cff, #6b6cff);
-  color: white;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 8px 18px rgba(79, 156, 255, 0.25);
-  z-index: 999;
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top left, #ffffff 0%, #eef4ff 34%, #fff6e7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--appbar-height) + 18px) 18px 18px;
 }
 
-.home-button:hover {
-  transform: translateY(-1px);
-}
     .app {
       width: min(1180px, 100%);
       background: var(--card);
@@ -589,10 +670,40 @@
       .leaderboard-item { grid-template-columns: auto 1fr; }
       .leader-score, .leader-streak { justify-self: start; }
     }
+@media (max-width: 700px) {
+  .appbar {
+    grid-template-columns: 1fr;
+  }
+
+  .appbar-home,
+  .appbar-avatar,
+  .appbar-score {
+    width: 100%;
+  }
+
+  .appbar-score-pill {
+    width: 100%;
+  }
+
+  .appbar-avatar {
+    justify-content: center;
+  }
+}
   </style>
 </head>
 <body>
-  <a class="home-button" href="index.html">🏠 Back to Nini</a>
+<div class="appbar">
+  <a class="appbar-home" href="index.html" id="homeBtn">🏠 Home</a>
+
+  <div class="appbar-score">
+    <div class="appbar-score-pill" id="appbarScore">⭐ Score: 0</div>
+  </div>
+
+  <button class="appbar-avatar" id="appbarAvatarBtn" type="button">
+    <span class="appbar-avatar-emoji" id="appbarAvatarEmoji">⭐</span>
+    <span class="appbar-avatar-name" id="appbarAvatarName">Nini</span>
+  </button>
+</div>
   <div class="app">
     <div class="topbar">
       <div class="profile-card">
@@ -768,7 +879,11 @@
       leaderboard: "timeMatchLeaderboardV2",
       settings: "timeMatchSettingsV2"
     };
-
+const homeBtn = document.getElementById("homeBtn");
+const appbarScore = document.getElementById("appbarScore");
+const appbarAvatarBtn = document.getElementById("appbarAvatarBtn");
+const appbarAvatarEmoji = document.getElementById("appbarAvatarEmoji");
+const appbarAvatarName = document.getElementById("appbarAvatarName");
     const AVATARS = ["⭐", "🐱", "🐰", "🌈", "❤️"];
 
     const scoreDisplay = document.getElementById("scoreDisplay");
@@ -947,22 +1062,44 @@
       if (type) statusBox.classList.add(type);
     }
 
-    function updateScoreboard() {
-      scoreDisplay.textContent = score;
-      streakDisplay.textContent = streak;
-      hourValue.textContent = normalizeHour(playerHour);
-      minuteValue.textContent = String(playerMinute).padStart(2, "0");
-    }
+   function updateScoreboard() {
+  scoreDisplay.textContent = score;
+  streakDisplay.textContent = streak;
+  appbarScore.textContent = `⭐ Score: ${score}`;
+  hourValue.textContent = normalizeHour(playerHour);
+  minuteValue.textContent = String(playerMinute).padStart(2, "0");
+}
+function bounceElement(el) {
+  if (!el) return;
+  el.classList.remove("bounce-pop");
+  void el.offsetWidth;
+  el.classList.add("bounce-pop");
+}
 
-    function updateProfileUI() {
-      profileAvatarTop.textContent = profile.avatar;
-      profileNameTop.textContent = profile.name || "Nini";
-      profileNameInput.value = profile.name || "Nini";
-      selectedAvatar = profile.avatar || "⭐";
-      Array.from(avatarOptions.querySelectorAll("button")).forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.avatar === selectedAvatar);
-      });
-    }
+function bounceScore() {
+  bounceElement(appbarScore);
+}
+
+function bounceAvatar() {
+  bounceElement(appbarAvatarBtn);
+}
+ function updateProfileUI() {
+  const safeName = profile.name || "Nini";
+  const safeAvatar = profile.avatar || "⭐";
+
+  profileAvatarTop.textContent = safeAvatar;
+  profileNameTop.textContent = safeName;
+
+  appbarAvatarEmoji.textContent = safeAvatar;
+  appbarAvatarName.textContent = safeName;
+
+  profileNameInput.value = safeName;
+  selectedAvatar = safeAvatar;
+
+  Array.from(avatarOptions.querySelectorAll("button")).forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.avatar === selectedAvatar);
+  });
+}
 
     function updateTeacherUI() {
       teacherToggleBtn.textContent = teacherMode ? "On" : "Off";
@@ -1094,17 +1231,18 @@
       return inputHour === targetHour && inputMinute === targetMinute;
     }
 
-    function rewardSuccess() {
-      score += 1;
-      streak += 1;
-      levelSolved = true;
-      updateScoreboard();
-      setStatus(randomChoice(successMessages), "success");
-      mainActionBtn.textContent = "Next Time";
-      mainActionBtn.className = "big-btn next-btn";
-      burstSparkles();
-      if (soundOn) successSound();
-    }
+   function rewardSuccess() {
+  score += 1;
+  streak += 1;
+  levelSolved = true;
+  updateScoreboard();
+  bounceScore();
+  setStatus(randomChoice(successMessages), "success");
+  mainActionBtn.textContent = "Next Time";
+  mainActionBtn.className = "big-btn next-btn";
+  burstSparkles();
+  if (soundOn) successSound();
+}
 
     function handleWrongAnswer() {
       if (score > 0) score -= 1;
@@ -1411,9 +1549,20 @@
       saveJson(STORAGE_KEYS.settings, { soundOn, voiceOn, teacherMode });
     }
 
-    mainActionBtn.addEventListener("click", mainAction);
-    showAnswerBtn.addEventListener("click", showAnswer);
-    resetBtn.addEventListener("click", resetRoundPosition);
+    mainActionBtn.addEventListener("click", () => {
+  if (soundOn) clickSound(520, 0.03, 0.04);
+  mainAction();
+});
+
+showAnswerBtn.addEventListener("click", () => {
+  if (soundOn) clickSound(520, 0.03, 0.04);
+  showAnswer();
+});
+
+resetBtn.addEventListener("click", () => {
+  if (soundOn) clickSound(520, 0.03, 0.04);
+  resetRoundPosition();
+});
     difficultySelect.addEventListener("change", generateNewRound);
     modeSelect.addEventListener("change", generateNewRound);
     hourUp.addEventListener("click", () => incrementHour(1));
@@ -1443,8 +1592,23 @@
       setStatus(teacherMode ? "Teacher Mode is on." : "Teacher Mode is off.");
     });
 
-    profileBtn.addEventListener("click", openProfileModal);
-    saveScoreBtn.addEventListener("click", saveScoreEntry);
+  profileBtn.addEventListener("click", () => {
+  if (soundOn) clickSound(520, 0.03, 0.04);
+  openProfileModal();
+});
+homeBtn.addEventListener("click", () => {
+  if (soundOn) clickSound(520, 0.03, 0.04);
+});
+
+saveScoreBtn.addEventListener("click", () => {
+  if (soundOn) clickSound(520, 0.03, 0.04);
+  saveScoreEntry();
+});
+appbarAvatarBtn.addEventListener("click", () => {
+  if (soundOn) clickSound(520, 0.03, 0.04);
+  bounceAvatar();
+  openProfileModal();
+});
     closeProfileBtn.addEventListener("click", closeProfileModal);
     cancelProfileBtn.addEventListener("click", closeProfileModal);
     saveProfileBtn.addEventListener("click", saveProfile);
