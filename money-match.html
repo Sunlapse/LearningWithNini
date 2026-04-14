@@ -1358,34 +1358,7 @@ function playClickSound() {
     }
 
     const ctx = clickAudioContext;
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(720, ctx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(520, ctx.currentTime + 0.06);
-
-    gainNode.gain.setValueAtTime(0.001, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.09);
-  } catch (err) {
-    console.log("Click sound blocked or unavailable.", err);
-  }
-}
-
-function goHome(event) {
-  event.preventDefault();
-  playClickSound();
-  setTimeout(() => {
-    window.location.href = "index.html";
-  }, 180);
-}
+  
 
 function bounceAvatar() {
   const avatar = document.getElementById("topAvatarButton");
@@ -1421,29 +1394,31 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function editProfile() {
-  bounceAvatar();
   playClickSound();
+  bounceAvatar();
 
   const currentName = localStorage.getItem("niniPlayerName") || "Nini";
-  const currentAvatar = localStorage.getItem("niniAvatar") || "⭐";
 
-  const newName = prompt("Type player name", currentName);
-  if (newName === null) return;
+  const name = prompt("Enter player name:", currentName);
+  if (name === null) return;
 
-  const trimmedName = newName.trim() || "Player";
+  const safeName = name.trim() || "Player";
 
-  const avatarGuide = "Type one emoji only: ⭐ or 🐱 or 🐰 or 🌈 or ❤️";
-  const newAvatar = prompt(avatarGuide, currentAvatar);
-  if (newAvatar === null) return;
+  const choice = prompt(
+    "Pick avatar number:\n1 ⭐\n2 🐱\n3 🐰\n4 🌈\n5 ❤️",
+    "1"
+  );
+  if (choice === null) return;
 
-  let trimmedAvatar = newAvatar.trim() || "⭐";
+  let avatar = "⭐";
+  if (choice === "1") avatar = "⭐";
+  if (choice === "2") avatar = "🐱";
+  if (choice === "3") avatar = "🐰";
+  if (choice === "4") avatar = "🌈";
+  if (choice === "5") avatar = "❤️";
 
-  if (!["⭐", "🐱", "🐰", "🌈", "❤️"].includes(trimmedAvatar)) {
-    trimmedAvatar = "⭐";
-  }
-
-  localStorage.setItem("niniPlayerName", trimmedName);
-  localStorage.setItem("niniAvatar", trimmedAvatar);
+  localStorage.setItem("niniPlayerName", safeName);
+  localStorage.setItem("niniAvatar", avatar);
 
   updateTopBarProfile();
 }
