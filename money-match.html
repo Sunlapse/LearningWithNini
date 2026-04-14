@@ -1349,13 +1349,36 @@ updateTopBarScore(score);
     init();
   </script>
 <script>
-  let clickAudioContext = null;
+let clickAudioContext = null;
 
-  function playClickSound() {
-    try {
-      if (!clickAudioContext) {
-        clickAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-      }
+function playClickSound() {
+  try {
+    if (!clickAudioContext) {
+      clickAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    const ctx = clickAudioContext;
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(720, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(520, ctx.currentTime + 0.06);
+
+    gainNode.gain.setValueAtTime(0.001, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + 0.09);
+  } catch (err) {
+    console.log("Click sound blocked or unavailable.", err);
+  }
+}
+
 function goHome(event) {
   event.preventDefault();
   playClickSound();
@@ -1363,7 +1386,6 @@ function goHome(event) {
     window.location.href = "index.html";
   }, 180);
 }
-      const ctx = clickAudioContext;
       const oscillator = ctx.createOscillator();
       const gainNode = ctx.createGain();
 
