@@ -1386,74 +1386,61 @@ function goHome(event) {
     window.location.href = "index.html";
   }, 180);
 }
-      const oscillator = ctx.createOscillator();
-      const gainNode = ctx.createGain();
 
-      oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(720, ctx.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(520, ctx.currentTime + 0.06);
+function bounceAvatar() {
+  const avatar = document.getElementById("topAvatarButton");
+  if (!avatar) return;
+  avatar.classList.remove("bounce-pop");
+  void avatar.offsetWidth;
+  avatar.classList.add("bounce-pop");
+}
 
-      gainNode.gain.setValueAtTime(0.001, ctx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+function updateTopBarProfile() {
+  const avatarEmojiEl = document.getElementById("topAvatarEmoji");
+  const avatarNameEl = document.getElementById("topAvatarName");
 
-      oscillator.connect(gainNode);
-      gainNode.connect(ctx.destination);
+  const savedName = localStorage.getItem("niniPlayerName") || "Nini";
+  const savedAvatar = localStorage.getItem("niniAvatar") || "⭐";
 
-      oscillator.start(ctx.currentTime);
-      oscillator.stop(ctx.currentTime + 0.09);
-    } catch (err) {
-      console.log("Click sound blocked or unavailable.", err);
-    }
-  }
+  if (avatarEmojiEl) avatarEmojiEl.textContent = savedAvatar;
+  if (avatarNameEl) avatarNameEl.textContent = savedName;
+}
 
-  function bounceAvatar() {
-    const avatar = document.getElementById("topAvatarButton");
-    if (!avatar) return;
-    avatar.classList.remove("bounce-pop");
-    void avatar.offsetWidth;
-    avatar.classList.add("bounce-pop");
-  }
+function updateTopBarScore(scoreValue) {
+  const scoreEl = document.getElementById("topScoreDisplay");
+  if (!scoreEl) return;
+  scoreEl.textContent = `⭐ Score: ${scoreValue}`;
+  scoreEl.classList.remove("bounce-pop");
+  void scoreEl.offsetWidth;
+  scoreEl.classList.add("bounce-pop");
+}
 
-  function updateTopBarProfile() {
-    const avatarEmojiEl = document.getElementById("topAvatarEmoji");
-    const avatarNameEl = document.getElementById("topAvatarName");
+document.addEventListener("DOMContentLoaded", function () {
+  updateTopBarProfile();
+  updateTopBarScore(score);
+});
 
-    const savedName = localStorage.getItem("niniPlayerName") || "Nini";
-    const savedAvatar = localStorage.getItem("niniAvatar") || "⭐";
-
-    if (avatarEmojiEl) avatarEmojiEl.textContent = savedAvatar;
-    if (avatarNameEl) avatarNameEl.textContent = savedName;
-  }
-
-
-  function updateTopBarScore(scoreValue) {
-    const scoreEl = document.getElementById("topScoreDisplay");
-    if (!scoreEl) return;
-    scoreEl.textContent = `⭐ Score: ${scoreValue}`;
-    scoreEl.classList.remove("bounce-pop");
-    void scoreEl.offsetWidth;
-    scoreEl.classList.add("bounce-pop");
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    updateTopBarProfile();
-updateTopBarScore(score);
-  });
 function editProfile() {
   bounceAvatar();
+  playClickSound();
 
   const currentName = localStorage.getItem("niniPlayerName") || "Nini";
   const currentAvatar = localStorage.getItem("niniAvatar") || "⭐";
 
-  const newName = prompt("Player name:", currentName);
+  const newName = prompt("Type player name", currentName);
   if (newName === null) return;
 
   const trimmedName = newName.trim() || "Player";
-  const newAvatar = prompt("Choose an avatar: ⭐ 🐱 🐰 🌈 ❤️", currentAvatar);
+
+  const avatarGuide = "Type one emoji only: ⭐ or 🐱 or 🐰 or 🌈 or ❤️";
+  const newAvatar = prompt(avatarGuide, currentAvatar);
   if (newAvatar === null) return;
 
-  const trimmedAvatar = newAvatar.trim() || "⭐";
+  let trimmedAvatar = newAvatar.trim() || "⭐";
+
+  if (!["⭐", "🐱", "🐰", "🌈", "❤️"].includes(trimmedAvatar)) {
+    trimmedAvatar = "⭐";
+  }
 
   localStorage.setItem("niniPlayerName", trimmedName);
   localStorage.setItem("niniAvatar", trimmedAvatar);
