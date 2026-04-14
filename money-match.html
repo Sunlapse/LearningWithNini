@@ -31,6 +31,142 @@
       color: #ffffff;
       overflow-x: hidden;
     }
+:root {
+  --topbar-height: 72px;
+}
+
+body {
+  padding-top: calc(var(--topbar-height) + env(safe-area-inset-top, 0px));
+}
+
+.game-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 2000;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--topbar-height);
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
+  background: rgba(20, 24, 40, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.topbar-center {
+  display: flex;
+  justify-content: center;
+}
+
+.app-button,
+.home-button,
+.avatar-pill {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.app-button:active,
+.home-button:active,
+.avatar-pill:active {
+  transform: scale(0.96);
+}
+
+.home-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(135deg, #4f9cff, #6b6cff);
+  box-shadow: 0 8px 18px rgba(79, 156, 255, 0.25);
+  white-space: nowrap;
+}
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(135deg, #ff8ecb, #8b5cf6);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.22);
+  text-align: center;
+}
+
+.avatar-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(135deg, #ffd84d, #ff9f43);
+  box-shadow: 0 8px 18px rgba(255, 180, 50, 0.24);
+  white-space: nowrap;
+}
+
+#topAvatarEmoji {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+#topAvatarName {
+  line-height: 1;
+}
+
+.bounce-pop {
+  animation: topbarBounce 0.45s ease;
+}
+
+@keyframes topbarBounce {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.14) translateY(-2px); }
+  50% { transform: scale(0.96) translateY(0); }
+  75% { transform: scale(1.06) translateY(-1px); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 700px) {
+  .game-topbar {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "home avatar"
+      "score score";
+    gap: 10px;
+  }
+
+  .home-button {
+    grid-area: home;
+    justify-self: start;
+  }
+
+  .topbar-center {
+    grid-area: score;
+    justify-content: center;
+  }
+
+  .avatar-pill {
+    grid-area: avatar;
+    justify-self: end;
+  }
+
+  .score-pill {
+    width: 100%;
+    max-width: 260px;
+  }
+}
 .home-button {
   position: fixed;
   top: 16px;
@@ -627,7 +763,18 @@
   </style>
 </head>
 <body>
-<a class="home-button" href="index.html">🏠 Back to Nini</a>
+<div class="game-topbar">
+  <a class="home-button app-button" href="index.html" onclick="playClickSound()">🏠 Home</a>
+
+  <div class="topbar-center">
+    <div class="score-pill" id="topScoreDisplay">⭐ Score: 0</div>
+  </div>
+
+  <button class="avatar-pill app-button bounce-on-tap" id="topAvatarButton" type="button" onclick="playClickSound(); bounceAvatar();">
+    <span id="topAvatarEmoji">⭐</span>
+    <span id="topAvatarName">Nini</span>
+  </button>
+</div>
   <div class="toast-wrap" id="toastWrap"></div>
   <div class="page-celebration" id="pageCelebration"></div>
 
@@ -1053,6 +1200,7 @@
     }
 
     function addMoney(id) {
+ playClickSound();
       if (animatingBetterWay || levelSolved) return;
       const item = DENOMS.find((d) => d.id === id);
       bank.push({ ...item });
@@ -1072,6 +1220,7 @@
     }
 
     function clearBank() {
+playClickSound();
       if (animatingBetterWay || levelSolved) return;
       bank = [];
       lockLevelAgain();
@@ -1081,6 +1230,7 @@
     }
 
     function checkAnswer() {
+playClickSound();
       if (animatingBetterWay) return;
 
       if (levelScored) {
@@ -1133,6 +1283,7 @@
       if (wrongChecks > 0) feedback += ' Wrong check used, -1 point.';
 
       score += pointsEarned;
+updateTopBarScore(score); 
       levelSolved = true;
       levelScored = true;
       totalVisible = false;
@@ -1213,5 +1364,68 @@
 
     init();
   </script>
+<script>
+  let clickAudioContext = null;
+
+  function playClickSound() {
+    try {
+      if (!clickAudioContext) {
+        clickAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      const ctx = clickAudioContext;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(720, ctx.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(520, ctx.currentTime + 0.06);
+
+      gainNode.gain.setValueAtTime(0.001, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.09);
+    } catch (err) {
+      console.log("Click sound blocked or unavailable.", err);
+    }
+  }
+
+  function bounceAvatar() {
+    const avatar = document.getElementById("topAvatarButton");
+    if (!avatar) return;
+    avatar.classList.remove("bounce-pop");
+    void avatar.offsetWidth;
+    avatar.classList.add("bounce-pop");
+  }
+
+  function updateTopBarProfile() {
+    const avatarEmojiEl = document.getElementById("topAvatarEmoji");
+    const avatarNameEl = document.getElementById("topAvatarName");
+
+    const savedName = localStorage.getItem("niniPlayerName") || "Nini";
+    const savedAvatar = localStorage.getItem("niniAvatar") || "⭐";
+
+    if (avatarEmojiEl) avatarEmojiEl.textContent = savedAvatar;
+    if (avatarNameEl) avatarNameEl.textContent = savedName;
+  }
+
+  function updateTopBarScore(scoreValue) {
+    const scoreEl = document.getElementById("topScoreDisplay");
+    if (!scoreEl) return;
+    scoreEl.textContent = `⭐ Score: ${scoreValue}`;
+    scoreEl.classList.remove("bounce-pop");
+    void scoreEl.offsetWidth;
+    scoreEl.classList.add("bounce-pop");
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    updateTopBarProfile();
+  });
+</script>
 </body>
 </html>
