@@ -866,7 +866,25 @@ body {
       </div>
     </div>
   </div>
+<div class="modal-backdrop" id="profileModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Profile</div>
+      <button class="close-btn" id="closeProfileBtn" type="button">×</button>
+    </div>
 
+    <div class="profile-form">
+      <input id="profileNameInput" maxlength="16" placeholder="Player name" />
+      <div class="label" style="margin-bottom:0;">Choose an avatar</div>
+      <div class="avatar-options" id="avatarOptions"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel-btn" id="cancelProfileBtn" type="button">Cancel</button>
+      <button class="save-btn" id="saveProfileBtn" type="button">Save</button>
+    </div>
+  </div>
+</div>
   <script>
     const DENOMS = [
       { id: 'penny', label: '1¢', value: 1, img: 'penny.png' },
@@ -1492,24 +1510,5 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 </script>
-<div class="modal-backdrop" id="profileModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Edit Profile</div>
-      <button class="close-btn" id="closeProfileBtn" type="button">×</button>
-    </div>
-
-    <div class="profile-form">
-      <input id="profileNameInput" maxlength="16" placeholder="Player name" />
-      <div class="label" style="margin-bottom:0;">Choose an avatar</div>
-      <div class="avatar-options" id="avatarOptions"></div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="cancel-btn" id="cancelProfileBtn" type="button">Cancel</button>
-      <button class="save-btn" id="saveProfileBtn" type="button">Save</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
