@@ -858,7 +858,7 @@ body {
   <div class="modal-backdrop" id="profileModal">
     <div class="modal">
       <div class="modal-header">
-        <div class="modal-title">Nini Mode</div>
+        <div class="modal-title">Edit Profile</div>
         <button class="close-btn" id="closeProfileBtn">×</button>
       </div>
       <div class="profile-form">
@@ -1085,19 +1085,19 @@ function bounceAvatar() {
 }
  function updateProfileUI() {
   const safeName = profile.name || "Nini";
-  const safeAvatar = profile.avatar || "⭐";
+  const savedAvatar = profile.avatar || "⭐";
+  const activeAvatar = selectedAvatar || savedAvatar;
 
-  profileAvatarTop.textContent = safeAvatar;
+  profileAvatarTop.textContent = savedAvatar;
   profileNameTop.textContent = safeName;
 
-  appbarAvatarEmoji.textContent = safeAvatar;
+  appbarAvatarEmoji.textContent = savedAvatar;
   appbarAvatarName.textContent = safeName;
 
   profileNameInput.value = safeName;
-  selectedAvatar = safeAvatar;
 
   Array.from(avatarOptions.querySelectorAll("button")).forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.avatar === selectedAvatar);
+    btn.classList.toggle("active", btn.dataset.avatar === activeAvatar);
   });
 }
 
@@ -1465,9 +1465,10 @@ function bounceAvatar() {
     window.addEventListener("pointercancel", stopDrag);
 
     function openProfileModal() {
-      profileModal.classList.add("active");
-      updateProfileUI();
-    }
+  selectedAvatar = profile.avatar || "⭐";
+  profileModal.classList.add("active");
+  updateProfileUI();
+}
 
     function closeProfileModal() {
       profileModal.classList.remove("active");
