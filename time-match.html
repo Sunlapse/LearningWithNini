@@ -693,7 +693,7 @@ body {
 </head>
 <body>
 <div class="appbar">
-  <a class="appbar-home" href="index.html" id="homeBtn">🏠 Home</a>
+ <a class="appbar-home" href="#" id="homeBtn" onclick="goHome(event)">🏠 Home</a>
 
   <div class="appbar-score">
     <div class="appbar-score-pill" id="appbarScore">⭐ Score: 0</div>
@@ -977,7 +977,13 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
       if (h === 0) h = 12;
       return h;
     }
-
+function goHome(event) {
+  event.preventDefault();
+  if (soundOn) clickSound(520, 0.03, 0.04);
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 180);
+}
     function randomChoice(arr) {
       return arr[Math.floor(Math.random() * arr.length)];
     }
@@ -1596,9 +1602,6 @@ resetBtn.addEventListener("click", () => {
   profileBtn.addEventListener("click", () => {
   if (soundOn) clickSound(520, 0.03, 0.04);
   openProfileModal();
-});
-homeBtn.addEventListener("click", () => {
-  if (soundOn) clickSound(520, 0.03, 0.04);
 });
 
 saveScoreBtn.addEventListener("click", () => {
