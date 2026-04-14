@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Match</title>
+  <style>
+    :root {
+      --bg1: #f4f7ff;
+      --bg2: #fff8ef;
+      --card: rgba(255, 255, 255, 0.94);
+      --text: #21304a;
+      --muted: #64748b;
+      --blue: #5b8cff;
+      --blue-dark: #3f6de0;
+      --green: #34c759;
+      --green-dark: #1faa43;
+      --orange: #ffb648;
+      --pink: #ff6fae;
+      --purple: #8b5cf6;
+      --red: #ef4444;
+      --shadow: 0 14px 40px rgba(54, 84, 140, 0.18);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #ffffff 0%, #eef4ff 34%, #fff6e7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .app {
+      width: min(1180px, 100%);
+      background: var(--card);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr 0.9fr 1fr 1fr;
+      gap: 12px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(91,140,255,0.11), rgba(255,182,72,0.12));
+      border-bottom: 1px solid rgba(91,140,255,0.12);
+    }
+
+    .stat, .difficulty-box, .profile-card {
+      background: white;
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: 0 6px 20px rgba(91, 140, 255, 0.08);
+      min-height: 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .profile-card {
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #eef4ff, #fff7eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border: 2px solid #dbe7ff;
+      flex-shrink: 0;
+    }
+
+    .profile-text { min-width: 0; }
+    .profile-name { font-size: 20px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .profile-sub { color: var(--muted); font-size: 12px; font-weight: 800; text-transform: uppercase; }
+
+    .label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .value { font-size: 28px; font-weight: 800; }
+
+    .difficulty-box select, .input-mode select {
+      width: 100%;
+      border: 2px solid #dbe7ff;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1.2fr 0.95fr;
+      gap: 0;
+    }
+
+    .left, .right { padding: 20px; }
+
+    .left {
+      border-right: 1px solid rgba(91,140,255,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .right { background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(240,247,255,0.55)); }
+
+    .title {
+      text-align: center;
+      font-size: clamp(30px, 4vw, 42px);
+      font-weight: 900;
+      margin: 4px 0 8px;
+      color: #28406f;
+    }
+
+    .subtitle { text-align: center; color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+
+    .top-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .pill-btn, .teacher-indicator {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 900;
+      background: #eef4ff;
+      color: #2c4c82;
+      box-shadow: 0 8px 16px rgba(91,140,255,0.12);
+      cursor: pointer;
+    }
+
+    .teacher-indicator {
+      background: #fff4e5;
+      color: #a04d00;
+      cursor: default;
+      display: none;
+    }
+
+    .teacher-indicator.active { display: inline-flex; }
+
+    .target-card {
+      margin: 0 auto 16px;
+      max-width: 540px;
+      background: linear-gradient(135deg, #eff5ff, #fff7eb);
+      border: 2px solid #dce8ff;
+      border-radius: 20px;
+      padding: 14px 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+      text-align: center;
+    }
+
+    .target-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .target-time {
+      font-size: clamp(30px, 4.5vw, 50px);
+      font-weight: 900;
+      color: var(--blue-dark);
+      line-height: 1.08;
+    }
+
+    .clock-wrap {
+      position: relative;
+      width: min(560px, 100%);
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+      user-select: none;
+      touch-action: none;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+      filter: drop-shadow(0 12px 22px rgba(63, 109, 224, 0.16));
+    }
+
+    .clock-face { fill: #ffffff; stroke: #dbe7ff; stroke-width: 8; }
+    .tick.big { stroke: #385a98; stroke-width: 4; stroke-linecap: round; }
+    .tick.small { stroke: #a9bbdf; stroke-width: 2.5; stroke-linecap: round; }
+    .clock-number {
+      font-size: 24px;
+      font-weight: 800;
+      fill: #37548d;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+
+    .hand {
+      transform-origin: 250px 250px;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .hand.dragging { cursor: grabbing; }
+
+    .hand .hit-area {
+      stroke: rgba(0,0,0,0);
+      stroke-width: 44;
+      stroke-linecap: round;
+      pointer-events: stroke;
+    }
+
+    .hand .visible-hand { pointer-events: none; }
+
+    .minute-hand .visible-hand {
+      stroke: var(--pink);
+      stroke-width: 9;
+      stroke-linecap: round;
+    }
+
+    .hour-hand .visible-hand {
+      stroke: var(--blue-dark);
+      stroke-width: 13;
+      stroke-linecap: round;
+    }
+
+    .center-pin { fill: #ffffff; stroke: #243b63; stroke-width: 5; }
+    .center-dot { fill: var(--orange); }
+
+    .help-text {
+      text-align: center;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(55,84,141,0.08);
+      margin-bottom: 14px;
+    }
+
+    .panel h3 { margin: 0 0 12px; font-size: 19px; color: #24406f; }
+
+    .status {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 14px;
+      border-radius: 18px;
+      font-weight: 800;
+      font-size: 20px;
+      background: linear-gradient(135deg, #f8fbff, #fff9f1);
+      border: 2px solid #e4eeff;
+    }
+
+    .status.success { color: #14833a; background: linear-gradient(135deg, #eafff0, #f9fff6); border-color: #c9f2d4; }
+    .status.error { color: #b45309; background: linear-gradient(135deg, #fff7e8, #fffaf3); border-color: #ffe2b6; }
+    .status.reveal { color: #6d28d9; background: linear-gradient(135deg, #f6eeff, #fcf8ff); border-color: #eadcff; }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .control-box {
+      background: #f8fbff;
+      border: 2px solid #e1ebff;
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .control-box h4 { margin: 0 0 10px; font-size: 16px; color: #2c4c82; }
+
+    .adjust-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .adjust-row .mini {
+      min-width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: none;
+      background: #e8f0ff;
+      color: #29497c;
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(63,109,224,0.1);
+    }
+
+    .adjust-row .mini:active { transform: translateY(1px); }
+    .adjust-value { min-width: 72px; text-align: center; font-size: 28px; font-weight: 900; color: #1f3356; }
+
+    .typed-mode { display: none; }
+    .typed-mode.active { display: block; }
+
+    .typed-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .typed-row input, .typed-row select {
+      flex: 1;
+      border: 2px solid #dbe7ff;
+      border-radius: 14px;
+      padding: 12px 12px;
+      font-size: 18px;
+      font-weight: 800;
+      outline: none;
+    }
+
+    .button-stack { display: grid; gap: 12px; }
+
+    button.big-btn, button.secondary-btn, button.ghost-btn {
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
+    }
+
+    button.big-btn:hover, button.secondary-btn:hover, button.ghost-btn:hover { transform: translateY(-1px); }
+    button.big-btn:active, button.secondary-btn:active, button.ghost-btn:active { transform: translateY(1px); }
+
+    .check-btn { background: linear-gradient(135deg, var(--blue), #7aa3ff); color: white; box-shadow: 0 10px 18px rgba(91,140,255,0.25); }
+    .next-btn { background: linear-gradient(135deg, var(--green), #67df7f); color: white; box-shadow: 0 10px 18px rgba(52,199,89,0.24); }
+    .secondary-btn { background: linear-gradient(135deg, var(--purple), #a78bfa); color: white; box-shadow: 0 10px 18px rgba(139,92,246,0.23); }
+    .ghost-btn { background: #eef4ff; color: #2c4c82; box-shadow: 0 8px 16px rgba(91,140,255,0.12); }
+
+    .small-note { color: var(--muted); font-size: 13px; text-align: center; margin-top: 8px; font-weight: 700; }
+
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #f8fbff;
+      border: 2px solid #e1ebff;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .toggle-row:last-child { margin-bottom: 0; }
+
+    .toggle-btn {
+      min-width: 96px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 999px;
+      font-weight: 900;
+      cursor: pointer;
+      background: #e8f0ff;
+      color: #28406f;
+    }
+
+    .leaderboard-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .leaderboard-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #f8fbff;
+      border: 2px solid #e1ebff;
+      font-weight: 800;
+    }
+
+    .leaderboard-empty {
+      color: var(--muted);
+      font-weight: 700;
+      padding: 12px;
+      text-align: center;
+      background: #f8fbff;
+      border: 2px dashed #dbe7ff;
+      border-radius: 14px;
+    }
+
+    .leader-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: #eef4ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #29497c;
+      font-size: 13px;
+    }
+
+    .leader-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .leader-meta { color: #35568f; font-size: 13px; }
+
+    .avatar-options {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .avatar-btn {
+      border: 2px solid #dbe7ff;
+      background: #f8fbff;
+      border-radius: 16px;
+      height: 56px;
+      font-size: 24px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .avatar-btn.active {
+      border-color: var(--blue);
+      background: #eef4ff;
+      box-shadow: 0 8px 16px rgba(91,140,255,0.12);
+    }
+
+    .profile-form { display: grid; gap: 10px; }
+    .profile-form input {
+      border: 2px solid #dbe7ff;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .sparkles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      opacity: 0;
+      animation: sparkle-pop 900ms ease-out forwards;
+      font-size: 18px;
+    }
+
+    @keyframes sparkle-pop {
+      0% { transform: translateY(12px) scale(0.3) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translateY(-70px) scale(1.1) rotate(240deg); opacity: 0; }
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 30, 60, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.active { display: flex; }
+
+    .modal {
+      width: min(520px, 100%);
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 24px 50px rgba(24,40,79,0.25);
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .modal-title { font-size: 24px; font-weight: 900; color: #24406f; }
+    .close-btn {
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      cursor: pointer;
+      background: #eef4ff;
+      color: #24406f;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+
+    .modal-actions button {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .save-btn { background: linear-gradient(135deg, var(--green), #67df7f); color: white; }
+    .cancel-btn { background: #eef4ff; color: #24406f; }
+
+    @media (max-width: 1000px) {
+      .topbar { grid-template-columns: 1fr 1fr; }
+      .main { grid-template-columns: 1fr; }
+      .left { border-right: none; border-bottom: 1px solid rgba(91,140,255,0.12); }
+    }
+
+    @media (max-width: 560px) {
+      .topbar { grid-template-columns: 1fr; }
+      .controls-grid { grid-template-columns: 1fr; }
+      .left, .right { padding: 14px; }
+      .value { font-size: 24px; }
+      .status { font-size: 18px; }
+      .leaderboard-item { grid-template-columns: auto 1fr; }
+      .leader-score, .leader-streak { justify-self: start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="profile-card">
+        <div class="profile-avatar" id="profileAvatarTop">⭐</div>
+        <div class="profile-text">
+          <div class="profile-name" id="profileNameTop">Nini</div>
+          <div class="profile-sub">Nini Mode</div>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="label">Score</div>
+        <div class="value" id="scoreDisplay">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="label">Streak</div>
+        <div class="value" id="streakDisplay">0</div>
+      </div>
+
+      <div class="difficulty-box">
+        <div class="label">Difficulty</div>
+        <select id="difficultySelect" aria-label="Choose difficulty">
+          <option value="easy">Easy, hour focus</option>
+          <option value="medium">Medium, quarter and half</option>
+          <option value="hard">Hard, full time</option>
+        </select>
+      </div>
+
+      <div class="difficulty-box input-mode">
+        <div class="label">Mode</div>
+        <select id="modeSelect" aria-label="Choose game mode">
+          <option value="set-clock">Set the clock</option>
+          <option value="read-clock">Read the clock</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="main">
+      <section class="left">
+        <div class="title">Time Match</div>
+        <div class="subtitle">Learn to read and set an analog clock</div>
+
+        <div class="top-actions">
+          <button class="pill-btn" id="profileBtn">Profile</button>
+          <button class="pill-btn" id="saveScoreBtn">Save Score</button>
+          <div class="teacher-indicator" id="teacherIndicator">Teacher Mode ON</div>
+        </div>
+
+        <div class="target-card" id="targetCard">
+          <div class="target-label" id="targetLabel">Match this time</div>
+          <div class="target-time" id="targetTime">3 o’clock</div>
+        </div>
+
+        <div class="clock-wrap" id="clockWrap">
+          <svg viewBox="0 0 500 500" aria-label="Analog clock">
+            <circle cx="250" cy="250" r="220" class="clock-face"></circle>
+            <g id="ticksGroup"></g>
+            <g id="numbersGroup"></g>
+
+            <g class="hand hour-hand" id="hourHand" data-hand="hour">
+              <line class="hit-area" x1="250" y1="250" x2="250" y2="145"></line>
+              <line class="visible-hand" x1="250" y1="250" x2="250" y2="145"></line>
+            </g>
+
+            <g class="hand minute-hand" id="minuteHand" data-hand="minute">
+              <line class="hit-area" x1="250" y1="250" x2="250" y2="92"></line>
+              <line class="visible-hand" x1="250" y1="250" x2="250" y2="92"></line>
+            </g>
+
+            <circle cx="250" cy="250" r="15" class="center-pin"></circle>
+            <circle cx="250" cy="250" r="7" class="center-dot"></circle>
+          </svg>
+        </div>
+
+        <div class="help-text" id="helpText">Drag the hands, or use the buttons on the right.</div>
+        <div class="sparkles" id="sparkles"></div>
+      </section>
+
+      <section class="right">
+        <div class="panel">
+          <h3>Message</h3>
+          <div class="status" id="statusBox">Set the clock to match the time above.</div>
+        </div>
+
+        <div class="panel" id="setClockPanel">
+          <h3>Set the clock</h3>
+          <div class="controls-grid">
+            <div class="control-box">
+              <h4>Hour</h4>
+              <div class="adjust-row">
+                <button class="mini" id="hourDown" aria-label="Decrease hour">−</button>
+                <div class="adjust-value" id="hourValue">12</div>
+                <button class="mini" id="hourUp" aria-label="Increase hour">+</button>
+              </div>
+            </div>
+
+            <div class="control-box">
+              <h4>Minutes</h4>
+              <div class="adjust-row">
+                <button class="mini" id="minuteDown" aria-label="Decrease minutes">−</button>
+                <div class="adjust-value" id="minuteValue">00</div>
+                <button class="mini" id="minuteUp" aria-label="Increase minutes">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="small-note" id="minuteHelpText">Easy and Medium buttons move by 5 minutes. Hard moves by 1 minute.</div>
+        </div>
+
+        <div class="panel typed-mode" id="readClockPanel">
+          <h3>Read the clock</h3>
+          <div class="small-note" style="text-align:left; margin-bottom:8px;">Look at the clock and type the time you see.</div>
+          <div class="typed-row">
+            <input type="number" id="typedHour" min="1" max="12" placeholder="Hour" />
+            <select id="typedMinute"></select>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Actions</h3>
+          <div class="button-stack">
+            <button class="big-btn check-btn" id="mainActionBtn">Check Answer</button>
+            <button class="secondary-btn" id="showAnswerBtn">Show Answer, Costs 1 Point</button>
+            <button class="ghost-btn" id="resetBtn">Reset Hands</button>
+          </div>
+          <div class="small-note">After a correct answer, the main button turns into Next Time.</div>
+        </div>
+
+        <div class="panel">
+          <div class="toggle-row">
+            <span>Sound</span>
+            <button class="toggle-btn" id="soundToggleBtn">On</button>
+          </div>
+          <div class="toggle-row">
+            <span>Voice Reading</span>
+            <button class="toggle-btn" id="voiceToggleBtn">On</button>
+          </div>
+          <div class="toggle-row">
+            <span>Teacher Mode</span>
+            <button class="toggle-btn" id="teacherToggleBtn">Off</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Leaderboard</h3>
+          <div id="leaderboardList" class="leaderboard-list"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Nini Mode</div>
+        <button class="close-btn" id="closeProfileBtn">×</button>
+      </div>
+      <div class="profile-form">
+        <input id="profileNameInput" maxlength="16" placeholder="Player name" />
+        <div class="label" style="margin-bottom:0;">Choose an avatar</div>
+        <div class="avatar-options" id="avatarOptions"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="cancel-btn" id="cancelProfileBtn">Cancel</button>
+        <button class="save-btn" id="saveProfileBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEYS = {
+      profile: "timeMatchProfileV2",
+      leaderboard: "timeMatchLeaderboardV2",
+      settings: "timeMatchSettingsV2"
+    };
+
+    const AVATARS = ["⭐", "🐱", "🐰", "🌈", "❤️"];
+
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const streakDisplay = document.getElementById("streakDisplay");
+    const difficultySelect = document.getElementById("difficultySelect");
+    const modeSelect = document.getElementById("modeSelect");
+    const targetTimeEl = document.getElementById("targetTime");
+    const targetLabel = document.getElementById("targetLabel");
+    const statusBox = document.getElementById("statusBox");
+    const helpText = document.getElementById("helpText");
+    const minuteHelpText = document.getElementById("minuteHelpText");
+    const mainActionBtn = document.getElementById("mainActionBtn");
+    const showAnswerBtn = document.getElementById("showAnswerBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const soundToggleBtn = document.getElementById("soundToggleBtn");
+    const voiceToggleBtn = document.getElementById("voiceToggleBtn");
+    const teacherToggleBtn = document.getElementById("teacherToggleBtn");
+    const profileBtn = document.getElementById("profileBtn");
+    const saveScoreBtn = document.getElementById("saveScoreBtn");
+    const teacherIndicator = document.getElementById("teacherIndicator");
+    const sparkles = document.getElementById("sparkles");
+    const ticksGroup = document.getElementById("ticksGroup");
+    const numbersGroup = document.getElementById("numbersGroup");
+    const hourHand = document.getElementById("hourHand");
+    const minuteHand = document.getElementById("minuteHand");
+    const clockWrap = document.getElementById("clockWrap");
+    const leaderboardList = document.getElementById("leaderboardList");
+
+    const hourValue = document.getElementById("hourValue");
+    const minuteValue = document.getElementById("minuteValue");
+    const hourUp = document.getElementById("hourUp");
+    const hourDown = document.getElementById("hourDown");
+    const minuteUp = document.getElementById("minuteUp");
+    const minuteDown = document.getElementById("minuteDown");
+
+    const setClockPanel = document.getElementById("setClockPanel");
+    const readClockPanel = document.getElementById("readClockPanel");
+    const typedHour = document.getElementById("typedHour");
+    const typedMinute = document.getElementById("typedMinute");
+
+    const profileModal = document.getElementById("profileModal");
+    const closeProfileBtn = document.getElementById("closeProfileBtn");
+    const cancelProfileBtn = document.getElementById("cancelProfileBtn");
+    const saveProfileBtn = document.getElementById("saveProfileBtn");
+    const profileNameInput = document.getElementById("profileNameInput");
+    const avatarOptions = document.getElementById("avatarOptions");
+    const profileAvatarTop = document.getElementById("profileAvatarTop");
+    const profileNameTop = document.getElementById("profileNameTop");
+
+    const CENTER = { x: 250, y: 250 };
+
+    let score = 0;
+    let streak = 0;
+    let soundOn = true;
+    let voiceOn = true;
+    let teacherMode = false;
+    let levelSolved = false;
+    let draggingHand = null;
+    let activePointerId = null;
+
+    let playerHour = 12;
+    let playerMinute = 0;
+    let targetHour = 3;
+    let targetMinute = 0;
+    let targetPhrase = "3 o’clock";
+    let readModeClockHour = 5;
+    let readModeClockMinute = 0;
+
+    let profile = { name: "Nini", avatar: "⭐" };
+    let selectedAvatar = "⭐";
+    let leaderboard = [];
+
+    const successMessages = ["Great job!", "You got it!", "Nice work!", "Awesome!", "Perfect!", "That is right!"];
+    const tryAgainMessages = ["Try again", "Almost there", "Not quite yet", "Give it another try"];
+
+    function safeParse(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function saveJson(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+    }
+
+    function normalizeHour(hour) {
+      let h = hour % 12;
+      if (h === 0) h = 12;
+      return h;
+    }
+
+    function randomChoice(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function formatTime(hour, minute) {
+      return `${normalizeHour(hour)}:${String(minute).padStart(2, "0")}`;
+    }
+
+    function formatEasyPhrase(hour) {
+      return `${normalizeHour(hour)} o’clock`;
+    }
+
+    function formatMediumPhrase(hour, minute) {
+      const h = normalizeHour(hour);
+      const nextHour = normalizeHour(hour + 1);
+      if (minute === 15) return `Quarter past ${h}`;
+      if (minute === 30) return `Half past ${h}`;
+      if (minute === 45) return `Quarter to ${nextHour}`;
+      return formatTime(h, minute);
+    }
+
+    function speechPhrase(hour, minute, difficulty) {
+      if (difficulty === "easy") return `${normalizeHour(hour)} o’clock`;
+      if (difficulty === "medium") return formatMediumPhrase(hour, minute);
+      return `${normalizeHour(hour)} ${String(minute).padStart(2, "0")}`;
+    }
+
+    function getCurrentMode() {
+      return modeSelect.value;
+    }
+
+    function getCurrentDifficulty() {
+      return difficultySelect.value;
+    }
+
+    function buildClockFace() {
+      for (let i = 0; i < 60; i++) {
+        const angle = (i * 6 - 90) * Math.PI / 180;
+        const isBig = i % 5 === 0;
+        const r1 = isBig ? 188 : 198;
+        const r2 = 212;
+        const x1 = CENTER.x + Math.cos(angle) * r1;
+        const y1 = CENTER.y + Math.sin(angle) * r1;
+        const x2 = CENTER.x + Math.cos(angle) * r2;
+        const y2 = CENTER.y + Math.sin(angle) * r2;
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+        line.setAttribute("class", isBig ? "tick big" : "tick small");
+        ticksGroup.appendChild(line);
+      }
+
+      for (let n = 1; n <= 12; n++) {
+        const angle = (n * 30 - 90) * Math.PI / 180;
+        const r = 160;
+        const x = CENTER.x + Math.cos(angle) * r;
+        const y = CENTER.y + Math.sin(angle) * r + 2;
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x);
+        text.setAttribute("y", y);
+        text.setAttribute("class", "clock-number");
+        text.textContent = n;
+        numbersGroup.appendChild(text);
+      }
+    }
+
+    function populateTypedMinuteOptions() {
+      typedMinute.innerHTML = "";
+      for (let i = 0; i < 60; i++) {
+        const option = document.createElement("option");
+        option.value = String(i).padStart(2, "0");
+        option.textContent = String(i).padStart(2, "0");
+        typedMinute.appendChild(option);
+      }
+    }
+
+    function setStatus(message, type = "") {
+      statusBox.textContent = message;
+      statusBox.className = "status";
+      if (type) statusBox.classList.add(type);
+    }
+
+    function updateScoreboard() {
+      scoreDisplay.textContent = score;
+      streakDisplay.textContent = streak;
+      hourValue.textContent = normalizeHour(playerHour);
+      minuteValue.textContent = String(playerMinute).padStart(2, "0");
+    }
+
+    function updateProfileUI() {
+      profileAvatarTop.textContent = profile.avatar;
+      profileNameTop.textContent = profile.name || "Nini";
+      profileNameInput.value = profile.name || "Nini";
+      selectedAvatar = profile.avatar || "⭐";
+      Array.from(avatarOptions.querySelectorAll("button")).forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.avatar === selectedAvatar);
+      });
+    }
+
+    function updateTeacherUI() {
+      teacherToggleBtn.textContent = teacherMode ? "On" : "Off";
+      teacherIndicator.classList.toggle("active", teacherMode);
+      difficultySelect.disabled = teacherMode;
+    }
+
+    function updateToggles() {
+      soundToggleBtn.textContent = soundOn ? "On" : "Off";
+      voiceToggleBtn.textContent = voiceOn ? "On" : "Off";
+      updateTeacherUI();
+    }
+
+    function updateClockHands(hour, minute) {
+      const minuteAngle = minute * 6;
+      const hourAngle = ((normalizeHour(hour) % 12) * 30) + (minute * 0.5);
+      hourHand.style.transform = `rotate(${hourAngle}deg)`;
+      minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
+    }
+
+    function applyCurrentDisplayTime() {
+      if (getCurrentMode() === "set-clock") updateClockHands(playerHour, playerMinute);
+      else updateClockHands(readModeClockHour, readModeClockMinute);
+    }
+
+    function getTargetMinutePool() {
+      const diff = getCurrentDifficulty();
+      if (diff === "easy") return [0];
+      if (diff === "medium") return [15, 30, 45];
+      return Array.from({ length: 60 }, (_, i) => i);
+    }
+
+    function generateTargetTime() {
+      const hour = Math.floor(Math.random() * 12) + 1;
+      const minute = randomChoice(getTargetMinutePool());
+      return { hour, minute };
+    }
+
+    function setTargetDisplay() {
+      const difficulty = getCurrentDifficulty();
+      const mode = getCurrentMode();
+      targetLabel.textContent = mode === "set-clock" ? "Match this time" : "Read this clock";
+
+      if (difficulty === "easy") {
+        targetPhrase = formatEasyPhrase(targetHour);
+      } else if (difficulty === "medium") {
+        targetPhrase = formatMediumPhrase(targetHour, targetMinute);
+      } else {
+        targetPhrase = formatTime(targetHour, targetMinute);
+      }
+
+      targetTimeEl.textContent = mode === "set-clock" ? targetPhrase : (difficulty === "hard" ? "What time is it?" : "Read the clock");
+    }
+
+    function speakTarget() {
+      if (!voiceOn || typeof speechSynthesis === "undefined") return;
+      try {
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(speechPhrase(targetHour, targetMinute, getCurrentDifficulty()));
+        utterance.rate = 0.9;
+        utterance.pitch = 1.08;
+        speechSynthesis.speak(utterance);
+      } catch {}
+    }
+
+    function updateMinuteHelp() {
+      const diff = getCurrentDifficulty();
+      minuteHelpText.textContent = diff === "hard"
+        ? "Hard mode buttons move by 1 minute. Dragging also moves by single minutes."
+        : "Easy and Medium buttons move by 5 minutes. Dragging snaps to 5-minute increments.";
+    }
+
+    function updateModePanels() {
+      const mode = getCurrentMode();
+      if (mode === "set-clock") {
+        setClockPanel.style.display = "block";
+        readClockPanel.classList.remove("active");
+        helpText.textContent = "Drag the hands, or use the buttons on the right.";
+      } else {
+        setClockPanel.style.display = "none";
+        readClockPanel.classList.add("active");
+        helpText.textContent = "Look at the clock, then type the time on the right.";
+      }
+    }
+
+    function setPlayerTime(hour, minute) {
+      playerHour = normalizeHour(hour);
+      playerMinute = ((minute % 60) + 60) % 60;
+      updateClockHands(playerHour, playerMinute);
+      updateScoreboard();
+    }
+
+    function getMinuteStep() {
+      return getCurrentDifficulty() === "hard" ? 1 : 5;
+    }
+
+    function incrementHour(delta) {
+      if (levelSolved || getCurrentMode() !== "set-clock") return;
+      let newHour = playerHour + delta;
+      if (newHour < 1) newHour = 12;
+      if (newHour > 12) newHour = 1;
+      setPlayerTime(newHour, playerMinute);
+      if (soundOn) clickSound(400, 0.03, 0.03);
+    }
+
+    function incrementMinute(delta) {
+      if (levelSolved || getCurrentMode() !== "set-clock") return;
+      const step = getMinuteStep();
+      let total = playerMinute + delta * step;
+      while (total < 0) total += 60;
+      while (total >= 60) total -= 60;
+      setPlayerTime(playerHour, total);
+      if (soundOn) clickSound(500, 0.03, 0.03);
+    }
+
+    function isCorrectAnswer() {
+      const diff = getCurrentDifficulty();
+      const mode = getCurrentMode();
+
+      if (mode === "set-clock") {
+        if (diff === "easy") return playerHour === targetHour && playerMinute === 0;
+        return playerHour === targetHour && playerMinute === targetMinute;
+      }
+
+      const inputHour = normalizeHour(Number(typedHour.value));
+      const inputMinute = Number(typedMinute.value);
+      if (!typedHour.value) return false;
+      if (diff === "easy") return inputHour === targetHour && inputMinute === 0;
+      return inputHour === targetHour && inputMinute === targetMinute;
+    }
+
+    function rewardSuccess() {
+      score += 1;
+      streak += 1;
+      levelSolved = true;
+      updateScoreboard();
+      setStatus(randomChoice(successMessages), "success");
+      mainActionBtn.textContent = "Next Time";
+      mainActionBtn.className = "big-btn next-btn";
+      burstSparkles();
+      if (soundOn) successSound();
+    }
+
+    function handleWrongAnswer() {
+      if (score > 0) score -= 1;
+      streak = 0;
+      updateScoreboard();
+      setStatus(randomChoice(tryAgainMessages), "error");
+      if (soundOn) errorSound();
+    }
+
+    function showAnswer() {
+      if (levelSolved) return;
+      if (score > 0) score -= 1;
+      streak = 0;
+      updateScoreboard();
+
+      if (getCurrentMode() === "set-clock") {
+        const answerMinute = getCurrentDifficulty() === "easy" ? 0 : targetMinute;
+        setPlayerTime(targetHour, answerMinute);
+      } else {
+        typedHour.value = targetHour;
+        typedMinute.value = String(getCurrentDifficulty() === "easy" ? 0 : targetMinute).padStart(2, "0");
+      }
+
+      setStatus(`Answer shown: ${targetPhrase}`, "reveal");
+      if (soundOn) clickSound(640, 0.04, 0.05);
+    }
+
+    function resetRoundPosition() {
+      if (getCurrentMode() === "set-clock") {
+        setPlayerTime(12, 0);
+        setStatus("Hands reset. Try again.");
+      } else {
+        typedHour.value = "";
+        typedMinute.value = "00";
+        setStatus("Input reset. Read the clock and try again.");
+      }
+    }
+
+    function saveScoreEntry() {
+      const entry = {
+        name: profile.name || "Nini",
+        avatar: profile.avatar || "⭐",
+        score,
+        streak,
+        ts: Date.now()
+      };
+      leaderboard.push(entry);
+      leaderboard.sort((a, b) => b.score - a.score || b.streak - a.streak || a.ts - b.ts);
+      leaderboard = leaderboard.slice(0, 10);
+      saveJson(STORAGE_KEYS.leaderboard, leaderboard);
+      renderLeaderboard();
+      setStatus("Score saved to leaderboard.");
+    }
+
+    function renderLeaderboard() {
+      leaderboardList.innerHTML = "";
+      if (!leaderboard.length) {
+        const empty = document.createElement("div");
+        empty.className = "leaderboard-empty";
+        empty.textContent = "No scores saved yet.";
+        leaderboardList.appendChild(empty);
+        return;
+      }
+
+      leaderboard.forEach((entry, index) => {
+        const item = document.createElement("div");
+        item.className = "leaderboard-item";
+        item.innerHTML = `
+          <div class="leader-rank">${index + 1}</div>
+          <div class="leader-name">${entry.avatar} ${entry.name}</div>
+          <div class="leader-score leader-meta">Score ${entry.score}</div>
+          <div class="leader-streak leader-meta">Streak ${entry.streak}</div>
+        `;
+        leaderboardList.appendChild(item);
+      });
+    }
+
+    function burstSparkles() {
+      const symbols = ["⭐", "✨", "🌟", "💫"];
+      const rect = clockWrap.getBoundingClientRect();
+      for (let i = 0; i < 16; i++) {
+        const s = document.createElement("div");
+        s.className = "sparkle";
+        s.textContent = randomChoice(symbols);
+        s.style.left = Math.random() * rect.width + "px";
+        s.style.top = (rect.height * 0.45) + Math.random() * (rect.height * 0.2) + "px";
+        s.style.animationDelay = (Math.random() * 0.18) + "s";
+        sparkles.appendChild(s);
+        setTimeout(() => s.remove(), 1100);
+      }
+    }
+
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx;
+    }
+
+    function clickSound(freq = 440, volume = 0.03, duration = 0.04) {
+      const ctx = getAudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.value = volume;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+      osc.stop(ctx.currentTime + duration);
+    }
+
+    function successSound() {
+      const ctx = getAudioCtx();
+      [523, 659, 784].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.value = freq;
+        gain.gain.value = 0.0001;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const start = ctx.currentTime + i * 0.08;
+        osc.start(start);
+        gain.gain.exponentialRampToValueAtTime(0.05, start + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.18);
+        osc.stop(start + 0.2);
+      });
+    }
+
+    function errorSound() {
+      const ctx = getAudioCtx();
+      [280, 220].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.value = freq;
+        gain.gain.value = 0.0001;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const start = ctx.currentTime + i * 0.09;
+        osc.start(start);
+        gain.gain.exponentialRampToValueAtTime(0.03, start + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.16);
+        osc.stop(start + 0.18);
+      });
+    }
+
+    function getPointFromEvent(e) {
+      if (e.touches && e.touches.length) return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+      if (e.changedTouches && e.changedTouches.length) return { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY };
+      return { clientX: e.clientX, clientY: e.clientY };
+    }
+
+    function getAngleFromPointer(clientX, clientY) {
+      const rect = clockWrap.getBoundingClientRect();
+      const x = ((clientX - rect.left) / rect.width) * 500;
+      const y = ((clientY - rect.top) / rect.height) * 500;
+      const dx = x - CENTER.x;
+      const dy = y - CENTER.y;
+      let angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+      if (angle < 0) angle += 360;
+      return angle;
+    }
+
+    function angleToMinute(angle) {
+      const rawMinute = Math.round(angle / 6) % 60;
+      if (getCurrentDifficulty() === "hard") return rawMinute;
+      return Math.round(rawMinute / 5) * 5 % 60;
+    }
+
+    function angleToHour(angle) {
+      let rawHour = Math.round(angle / 30);
+      if (rawHour === 0) rawHour = 12;
+      return rawHour;
+    }
+
+    function startDrag(handType, e) {
+      if (levelSolved || getCurrentMode() !== "set-clock") return;
+      e.preventDefault();
+      draggingHand = handType;
+      activePointerId = e.pointerId ?? null;
+      if (handType === "hour") hourHand.classList.add("dragging");
+      if (handType === "minute") minuteHand.classList.add("dragging");
+      const point = getPointFromEvent(e);
+      handleDragMove(point.clientX, point.clientY);
+    }
+
+    function stopDrag() {
+      draggingHand = null;
+      activePointerId = null;
+      hourHand.classList.remove("dragging");
+      minuteHand.classList.remove("dragging");
+    }
+
+    function handleDragMove(clientX, clientY) {
+      if (!draggingHand || getCurrentMode() !== "set-clock" || levelSolved) return;
+      const angle = getAngleFromPointer(clientX, clientY);
+      if (draggingHand === "minute") {
+        const newMinute = angleToMinute(angle);
+        setPlayerTime(playerHour, newMinute);
+      } else {
+        const newHour = angleToHour(angle);
+        setPlayerTime(newHour, playerMinute);
+      }
+    }
+
+    function onMove(e) {
+      if (!draggingHand) return;
+      if (e.pointerId !== undefined && activePointerId !== null && e.pointerId !== activePointerId) return;
+      e.preventDefault();
+      const point = getPointFromEvent(e);
+      handleDragMove(point.clientX, point.clientY);
+    }
+
+    hourHand.addEventListener("pointerdown", (e) => startDrag("hour", e));
+    minuteHand.addEventListener("pointerdown", (e) => startDrag("minute", e));
+    window.addEventListener("pointermove", onMove, { passive: false });
+    window.addEventListener("pointerup", stopDrag);
+    window.addEventListener("pointercancel", stopDrag);
+
+    function openProfileModal() {
+      profileModal.classList.add("active");
+      updateProfileUI();
+    }
+
+    function closeProfileModal() {
+      profileModal.classList.remove("active");
+    }
+
+    function buildAvatarOptions() {
+      avatarOptions.innerHTML = "";
+      AVATARS.forEach((avatar) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "avatar-btn";
+        btn.dataset.avatar = avatar;
+        btn.textContent = avatar;
+        btn.addEventListener("click", () => {
+          selectedAvatar = avatar;
+          updateProfileUI();
+        });
+        avatarOptions.appendChild(btn);
+      });
+    }
+
+    function saveProfile() {
+      const name = (profileNameInput.value || "Nini").trim().slice(0, 16) || "Nini";
+      profile = { name, avatar: selectedAvatar || "⭐" };
+      saveJson(STORAGE_KEYS.profile, profile);
+      updateProfileUI();
+      closeProfileModal();
+      setStatus(`Profile saved for ${profile.name}.`);
+    }
+
+    function mainAction() {
+      if (levelSolved) {
+        generateNewRound();
+        return;
+      }
+      if (isCorrectAnswer()) rewardSuccess();
+      else handleWrongAnswer();
+    }
+
+    function generateNewRound() {
+      levelSolved = false;
+      const newTime = generateTargetTime();
+      targetHour = newTime.hour;
+      targetMinute = newTime.minute;
+      setTargetDisplay();
+
+      if (getCurrentMode() === "set-clock") {
+        playerHour = 12;
+        playerMinute = 0;
+        applyCurrentDisplayTime();
+        setStatus("Set the clock to match the target.");
+      } else {
+        readModeClockHour = targetHour;
+        readModeClockMinute = targetMinute;
+        typedHour.value = "";
+        typedMinute.value = "00";
+        applyCurrentDisplayTime();
+        setStatus("Read the analog clock and enter the time you see.");
+      }
+
+      mainActionBtn.textContent = "Check Answer";
+      mainActionBtn.className = "big-btn check-btn";
+      updateModePanels();
+      updateMinuteHelp();
+      updateScoreboard();
+      speakTarget();
+    }
+
+    function loadInitialState() {
+      profile = safeParse(STORAGE_KEYS.profile, { name: "Nini", avatar: "⭐" });
+      leaderboard = safeParse(STORAGE_KEYS.leaderboard, []);
+      const settings = safeParse(STORAGE_KEYS.settings, { soundOn: true, voiceOn: true, teacherMode: false });
+      soundOn = settings.soundOn ?? true;
+      voiceOn = settings.voiceOn ?? true;
+      teacherMode = settings.teacherMode ?? false;
+    }
+
+    function saveSettings() {
+      saveJson(STORAGE_KEYS.settings, { soundOn, voiceOn, teacherMode });
+    }
+
+    mainActionBtn.addEventListener("click", mainAction);
+    showAnswerBtn.addEventListener("click", showAnswer);
+    resetBtn.addEventListener("click", resetRoundPosition);
+    difficultySelect.addEventListener("change", generateNewRound);
+    modeSelect.addEventListener("change", generateNewRound);
+    hourUp.addEventListener("click", () => incrementHour(1));
+    hourDown.addEventListener("click", () => incrementHour(-1));
+    minuteUp.addEventListener("click", () => incrementMinute(1));
+    minuteDown.addEventListener("click", () => incrementMinute(-1));
+    typedHour.addEventListener("keydown", (e) => { if (e.key === "Enter") mainAction(); });
+
+    soundToggleBtn.addEventListener("click", () => {
+      soundOn = !soundOn;
+      updateToggles();
+      saveSettings();
+      setStatus(soundOn ? "Sound is on." : "Sound is off.");
+    });
+
+    voiceToggleBtn.addEventListener("click", () => {
+      voiceOn = !voiceOn;
+      updateToggles();
+      saveSettings();
+      setStatus(voiceOn ? "Voice reading is on." : "Voice reading is off.");
+    });
+
+    teacherToggleBtn.addEventListener("click", () => {
+      teacherMode = !teacherMode;
+      updateToggles();
+      saveSettings();
+      setStatus(teacherMode ? "Teacher Mode is on." : "Teacher Mode is off.");
+    });
+
+    profileBtn.addEventListener("click", openProfileModal);
+    saveScoreBtn.addEventListener("click", saveScoreEntry);
+    closeProfileBtn.addEventListener("click", closeProfileModal);
+    cancelProfileBtn.addEventListener("click", closeProfileModal);
+    saveProfileBtn.addEventListener("click", saveProfile);
+    profileModal.addEventListener("click", (e) => { if (e.target === profileModal) closeProfileModal(); });
+
+    buildClockFace();
+    populateTypedMinuteOptions();
+    buildAvatarOptions();
+    loadInitialState();
+    updateProfileUI();
+    updateToggles();
+    renderLeaderboard();
+    updateScoreboard();
+    generateNewRound();
+  </script>
+</body>
+</html>
