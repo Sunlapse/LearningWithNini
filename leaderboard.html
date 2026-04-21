@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard | Learning With Nini</title>
+  <meta name="description" content="See the top scores for Learning With Nini." />
+  <style>
+    :root {
+      --bg1: #fff7fb;
+      --bg2: #eef6ff;
+      --card: rgba(255,255,255,0.88);
+      --text: #24324a;
+      --muted: #5d6b82;
+      --pink: #ff6fb5;
+      --purple: #8b5cf6;
+      --blue: #4f9cff;
+      --yellow: #ffd84d;
+      --shadow: 0 18px 50px rgba(69, 94, 143, 0.18);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #ffe1f0 0, transparent 35%),
+        radial-gradient(circle at top right, #dff1ff 0, transparent 35%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+
+    .brand-badge {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .navlinks {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.8);
+      color: var(--text);
+      font-weight: 700;
+      box-shadow: 0 8px 22px rgba(69, 94, 143, 0.1);
+      border: 1px solid rgba(255,255,255,0.7);
+      text-decoration: none;
+    }
+
+    .hero-card,
+    .leaderboard-panel {
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 30px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.05;
+      margin: 0 0 12px;
+    }
+
+    .hero-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.65;
+      max-width: 60ch;
+    }
+
+    .leaderboard-panel {
+      padding: 26px;
+      margin-bottom: 24px;
+    }
+
+    .leaderboard-panel h2 {
+      margin: 0 0 16px;
+      font-size: 1.5rem;
+    }
+
+    .leaderboard-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .leaderboard-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(36,50,74,0.08);
+      box-shadow: 0 8px 18px rgba(69, 94, 143, 0.08);
+    }
+
+    .leaderboard-rank {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffd84d, #ffb648);
+      color: #24324a;
+    }
+
+    .leaderboard-name {
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .leaderboard-meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+
+    .leaderboard-total {
+      text-align: right;
+      font-weight: 900;
+      color: var(--purple);
+      font-size: 1.05rem;
+      white-space: nowrap;
+    }
+
+    .leaderboard-empty {
+      padding: 16px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255,255,255,0.75);
+      border: 1px dashed rgba(36,50,74,0.14);
+      border-radius: 18px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 26px;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 820px) {
+      .hero-card,
+      .leaderboard-panel {
+        border-radius: 24px;
+      }
+
+      .hero-card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge">🏆</div>
+        <div>Learning With Nini</div>
+      </div>
+
+      <nav class="navlinks">
+        <a class="pill" href="index.html">Home</a>
+        <a class="pill" href="money-match.html">Math Game</a>
+        <a class="pill" href="time-match.html">Telling Time Game</a>
+        <a class="pill" href="leaderboard.html">Leaderboard</a>
+      </nav>
+    </header>
+
+    <section class="hero-card">
+      <h1>Leaderboard</h1>
+      <p>See the top scores across Learning With Nini. This page shows the best Money Match scores, the best Time Match scores, and the combined overall stars.</p>
+    </section>
+
+    <section class="leaderboard-panel">
+      <h2>Overall Stars</h2>
+      <div class="leaderboard-list" id="overallLeaderboardList"></div>
+    </section>
+
+    <section class="leaderboard-panel">
+      <h2>Money Match</h2>
+      <div class="leaderboard-list" id="moneyLeaderboardList"></div>
+    </section>
+
+    <section class="leaderboard-panel">
+      <h2>Time Match</h2>
+      <div class="leaderboard-list" id="timeLeaderboardList"></div>
+    </section>
+
+    <footer>
+      Learning With Nini, learn, play, and grow 🌈
+    </footer>
+  </div>
+
+  <script>
+    const SITE_KEYS = {
+      profile: "learningWithNiniProfileV1",
+      moneyLeaderboard: "moneyMatchLeaderboardV1",
+      timeLeaderboard: "timeMatchLeaderboardV1",
+      overallLeaderboard: "learningWithNiniOverallLeaderboardV1"
+    };
+
+    function safeParseJson(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function buildOverallFromBoards() {
+      const moneyBoard = safeParseJson(SITE_KEYS.moneyLeaderboard, []);
+      const timeBoard = safeParseJson(SITE_KEYS.timeLeaderboard, []);
+      const map = new Map();
+
+      function ensurePlayer(name, avatar) {
+        const safeName = (name || "Nini").trim() || "Nini";
+        const id = safeName.toLowerCase();
+
+        if (!map.has(id)) {
+          map.set(id, {
+            name: safeName,
+            avatar: avatar || "⭐",
+            moneyBest: 0,
+            timeBest: 0,
+            total: 0,
+            updatedAt: 0
+          });
+        }
+
+        return map.get(id);
+      }
+
+      moneyBoard.forEach((entry) => {
+        const player = ensurePlayer(entry.name, entry.avatar);
+        player.avatar = entry.avatar || player.avatar || "⭐";
+        player.moneyBest = Math.max(player.moneyBest, Number(entry.score) || 0);
+        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
+      });
+
+      timeBoard.forEach((entry) => {
+        const player = ensurePlayer(entry.name, entry.avatar);
+        player.avatar = entry.avatar || player.avatar || "⭐";
+        player.timeBest = Math.max(player.timeBest, Number(entry.score) || 0);
+        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
+      });
+
+      const overall = Array.from(map.values()).map((player) => ({
+        ...player,
+        total: player.moneyBest + player.timeBest
+      }));
+
+      overall.sort((a, b) =>
+        b.total - a.total ||
+        b.moneyBest - a.moneyBest ||
+        b.timeBest - a.timeBest ||
+        a.updatedAt - b.updatedAt
+      );
+
+      localStorage.setItem(SITE_KEYS.overallLeaderboard, JSON.stringify(overall));
+      return overall;
+    }
+
+    function renderOverallLeaderboard() {
+      const list = document.getElementById("overallLeaderboardList");
+      const overall = buildOverallFromBoards();
+
+      list.innerHTML = "";
+
+      if (!overall.length) {
+        list.innerHTML = `<div class="leaderboard-empty">No saved scores yet.</div>`;
+        return;
+      }
+
+      overall.slice(0, 10).forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className = "leaderboard-item";
+        row.innerHTML = `
+          <div class="leaderboard-rank">${index + 1}</div>
+          <div>
+            <div class="leaderboard-name">${entry.avatar} ${entry.name}</div>
+            <div class="leaderboard-meta">Money ${entry.moneyBest} • Time ${entry.timeBest}</div>
+          </div>
+          <div class="leaderboard-total">⭐ ${entry.total}</div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function renderGameLeaderboard(listId, storageKey) {
+      const list = document.getElementById(listId);
+      const board = safeParseJson(storageKey, []);
+
+      list.innerHTML = "";
+
+      if (!board.length) {
+        list.innerHTML = `<div class="leaderboard-empty">No saved scores yet.</div>`;
+        return;
+      }
+
+      board.slice(0, 10).forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className = "leaderboard-item";
+        row.innerHTML = `
+          <div class="leaderboard-rank">${index + 1}</div>
+          <div>
+            <div class="leaderboard-name">${entry.avatar} ${entry.name}</div>
+            <div class="leaderboard-meta">Saved score</div>
+          </div>
+          <div class="leaderboard-total">⭐ ${entry.score}</div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    renderOverallLeaderboard();
+    renderGameLeaderboard("moneyLeaderboardList", SITE_KEYS.moneyLeaderboard);
+    renderGameLeaderboard("timeLeaderboardList", SITE_KEYS.timeLeaderboard);
+  </script>
+</body>
+</html>
