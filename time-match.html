@@ -874,10 +874,12 @@ body {
   </div>
 
   <script>
-    const STORAGE_KEYS = {
-      profile: "timeMatchProfileV2",
-      leaderboard: "timeMatchLeaderboardV2",
-      settings: "timeMatchSettingsV2"
+        const STORAGE_KEYS = {
+      profile: "learningWithNiniProfileV1",
+      leaderboard: "timeMatchLeaderboardV1",
+      settings: "timeMatchSettingsV2",
+      moneyLeaderboard: "moneyMatchLeaderboardV1",
+      overallLeaderboard: "learningWithNiniOverallLeaderboardV1"
     };
 const homeBtn = document.getElementById("homeBtn");
 const appbarScore = document.getElementById("appbarScore");
@@ -971,7 +973,58 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
     function saveJson(key, value) {
       try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
     }
+    function buildOverallFromBoards() {
+      const moneyBoard = safeParse(STORAGE_KEYS.moneyLeaderboard, []);
+      const timeBoard = safeParse(STORAGE_KEYS.leaderboard, []);
+      const map = new Map();
 
+      function ensurePlayer(name, avatar) {
+        const safeName = (name || "Nini").trim() || "Nini";
+        const id = safeName.toLowerCase();
+
+        if (!map.has(id)) {
+          map.set(id, {
+            name: safeName,
+            avatar: avatar || "⭐",
+            moneyBest: 0,
+            timeBest: 0,
+            total: 0,
+            updatedAt: 0
+          });
+        }
+
+        return map.get(id);
+      }
+
+      moneyBoard.forEach((entry) => {
+        const player = ensurePlayer(entry.name, entry.avatar);
+        player.avatar = entry.avatar || player.avatar || "⭐";
+        player.moneyBest = Math.max(player.moneyBest, Number(entry.score) || 0);
+        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
+      });
+
+      timeBoard.forEach((entry) => {
+        const player = ensurePlayer(entry.name, entry.avatar);
+        player.avatar = entry.avatar || player.avatar || "⭐";
+        player.timeBest = Math.max(player.timeBest, Number(entry.score) || 0);
+        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
+      });
+
+      const overall = Array.from(map.values()).map((player) => ({
+        ...player,
+        total: player.moneyBest + player.timeBest
+      }));
+
+      overall.sort((a, b) =>
+        b.total - a.total ||
+        b.moneyBest - a.moneyBest ||
+        b.timeBest - a.timeBest ||
+        a.updatedAt - b.updatedAt
+      );
+
+      saveJson(STORAGE_KEYS.overallLeaderboard, overall);
+      return overall;
+    }
     function normalizeHour(hour) {
       let h = hour % 12;
       if (h === 0) h = 12;
@@ -1287,7 +1340,7 @@ function bounceAvatar() {
       }
     }
 
-    function saveScoreEntry() {
+        function saveScoreEntry() {
       const entry = {
         name: profile.name || "Nini",
         avatar: profile.avatar || "⭐",
@@ -1295,10 +1348,17 @@ function bounceAvatar() {
         streak,
         ts: Date.now()
       };
+
       leaderboard.push(entry);
-      leaderboard.sort((a, b) => b.score - a.score || b.streak - a.streak || a.ts - b.ts);
+      leaderboard.sort((a, b) =>
+        b.score - a.score ||
+        b.streak - a.streak ||
+        a.ts - b.ts
+      );
       leaderboard = leaderboard.slice(0, 10);
+
       saveJson(STORAGE_KEYS.leaderboard, leaderboard);
+      buildOverallFromBoards();
       renderLeaderboard();
       setStatus("Score saved to leaderboard.");
     }
@@ -1496,10 +1556,14 @@ function bounceAvatar() {
       });
     }
 
-    function saveProfile() {
+        function saveProfile() {
       const name = (profileNameInput.value || "Nini").trim().slice(0, 16) || "Nini";
       profile = { name, avatar: selectedAvatar || "⭐" };
       saveJson(STORAGE_KEYS.profile, profile);
+
+      localStorage.setItem("niniPlayerName", profile.name);
+      localStorage.setItem("niniAvatar", profile.avatar);
+
       updateProfileUI();
       closeProfileModal();
       setStatus(`Profile saved for ${profile.name}.`);
