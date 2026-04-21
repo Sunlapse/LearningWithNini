@@ -855,6 +855,57 @@ body {
         grid-template-columns: 1fr 1fr;
       }
     }
+    .mini-leaderboard {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mini-leaderboard-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #0b1220;
+  border: 1px solid #334155;
+}
+
+.mini-leaderboard-rank {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 900;
+  background: #1e293b;
+  color: #facc15;
+}
+
+.mini-leaderboard-name {
+  font-weight: 800;
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-leaderboard-score {
+  font-weight: 900;
+  color: #86efac;
+}
+
+.mini-leaderboard-empty {
+  padding: 12px;
+  border-radius: 14px;
+  background: #0b1220;
+  border: 1px dashed #334155;
+  color: #94a3b8;
+  text-align: center;
+  font-size: 14px;
+}
   </style>
 </head>
 <body>
@@ -955,6 +1006,14 @@ body {
             <div class="action-label">Help</div>
             <button class="btn-orange hidden" id="betterWayButton" onclick="showBetterWay()">Show Better Way</button>
           </div>
+          <div class="action-group">
+            <div class="action-label">Leaderboard</div>
+            <div class="button-grid">
+              <button class="btn-blue" onclick="saveMoneyScore()">Save Score</button>
+              <button class="btn-gray" onclick="clearMoneyLeaderboard()">Clear Board</button>
+            </div>
+            <div id="moneyLeaderboardList" class="mini-leaderboard"></div>
+          </div>
         </div>
       </div>
 
@@ -997,6 +1056,102 @@ body {
   </div>
 </div>
   <script>
+        const SITE_KEYS = {
+      profile: "learningWithNiniProfileV1",
+      moneyLeaderboard: "moneyMatchLeaderboardV1",
+      timeLeaderboard: "timeMatchLeaderboardV1",
+      overallLeaderboard: "learningWithNiniOverallLeaderboardV1"
+    };
+
+    function safeParseJson(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function getSharedProfile() {
+      const shared = safeParseJson(SITE_KEYS.profile, null);
+      if (shared && typeof shared === "object") {
+        return {
+          name: (shared.name || "Nini").trim() || "Nini",
+          avatar: shared.avatar || "⭐"
+        };
+      }
+
+      const legacyName = localStorage.getItem("niniPlayerName") || "Nini";
+      const legacyAvatar = localStorage.getItem("niniAvatar") || "⭐";
+
+      return {
+        name: legacyName.trim() || "Nini",
+        avatar: legacyAvatar || "⭐"
+      };
+    }
+
+    function saveSharedProfile(profile) {
+      const safeProfile = {
+        name: (profile.name || "Nini").trim().slice(0, 16) || "Nini",
+        avatar: profile.avatar || "⭐"
+      };
+
+      localStorage.setItem(SITE_KEYS.profile, JSON.stringify(safeProfile));
+
+      localStorage.setItem("niniPlayerName", safeProfile.name);
+      localStorage.setItem("niniAvatar", safeProfile.avatar);
+    }
+
+    function buildOverallFromBoards() {
+      const moneyBoard = safeParseJson(SITE_KEYS.moneyLeaderboard, []);
+      const timeBoard = safeParseJson(SITE_KEYS.timeLeaderboard, []);
+      const map = new Map();
+
+      function ensurePlayer(name, avatar) {
+        const safeName = (name || "Nini").trim() || "Nini";
+        const id = safeName.toLowerCase();
+        if (!map.has(id)) {
+          map.set(id, {
+            name: safeName,
+            avatar: avatar || "⭐",
+            moneyBest: 0,
+            timeBest: 0,
+            total: 0,
+            updatedAt: 0
+          });
+        }
+        return map.get(id);
+      }
+
+      moneyBoard.forEach((entry) => {
+        const player = ensurePlayer(entry.name, entry.avatar);
+        player.avatar = entry.avatar || player.avatar || "⭐";
+        player.moneyBest = Math.max(player.moneyBest, Number(entry.score) || 0);
+        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
+      });
+
+      timeBoard.forEach((entry) => {
+        const player = ensurePlayer(entry.name, entry.avatar);
+        player.avatar = entry.avatar || player.avatar || "⭐";
+        player.timeBest = Math.max(player.timeBest, Number(entry.score) || 0);
+        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
+      });
+
+      const overall = Array.from(map.values()).map((player) => ({
+        ...player,
+        total: player.moneyBest + player.timeBest
+      }));
+
+      overall.sort((a, b) =>
+        b.total - a.total ||
+        b.moneyBest - a.moneyBest ||
+        b.timeBest - a.timeBest ||
+        a.updatedAt - b.updatedAt
+      );
+
+      localStorage.setItem(SITE_KEYS.overallLeaderboard, JSON.stringify(overall));
+      return overall;
+    }
     const DENOMS = [
       { id: 'penny', label: '1¢', value: 1, img: 'penny.png' },
       { id: 'nickel', label: '5¢', value: 5, img: 'nickel.png' },
@@ -1028,7 +1183,72 @@ body {
     let animatingBetterWay = false;
     let lastLevel1Type = 'mixed';
     let solvedButtonText = SUCCESS_NEXT_TEXTS[0];
+    let moneyLeaderboard = safeParseJson(SITE_KEYS.moneyLeaderboard, []);
 
+    function renderMoneyLeaderboard() {
+      const list = document.getElementById("moneyLeaderboardList");
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      if (!moneyLeaderboard.length) {
+        list.innerHTML = `<div class="mini-leaderboard-empty">No saved scores yet.</div>`;
+        return;
+      }
+
+      moneyLeaderboard.forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className = "mini-leaderboard-item";
+        row.innerHTML = `
+          <div class="mini-leaderboard-rank">${index + 1}</div>
+          <div class="mini-leaderboard-name">${entry.avatar} ${entry.name}</div>
+          <div class="mini-leaderboard-score">${entry.score}</div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function saveMoneyScore() {
+      playClickSound();
+
+      const profile = getSharedProfile();
+
+      const entry = {
+        name: profile.name,
+        avatar: profile.avatar,
+        score: score,
+        ts: Date.now()
+      };
+
+      moneyLeaderboard.push(entry);
+      moneyLeaderboard.sort((a, b) =>
+        b.score - a.score ||
+        a.ts - b.ts
+      );
+      moneyLeaderboard = moneyLeaderboard.slice(0, 10);
+
+      localStorage.setItem(SITE_KEYS.moneyLeaderboard, JSON.stringify(moneyLeaderboard));
+      buildOverallFromBoards();
+      renderMoneyLeaderboard();
+
+      setMessage(`Score saved for ${profile.name}.`, "success");
+      showToast("success", "Score saved!");
+    }
+
+    function clearMoneyLeaderboard() {
+      playClickSound();
+
+      const confirmed = window.confirm("Clear the Money Match leaderboard on this browser?");
+      if (!confirmed) return;
+
+      moneyLeaderboard = [];
+      localStorage.setItem(SITE_KEYS.moneyLeaderboard, JSON.stringify(moneyLeaderboard));
+      buildOverallFromBoards();
+      renderMoneyLeaderboard();
+
+      setMessage("Money Match leaderboard cleared.");
+      showToast("info", "Board cleared");
+    }
     function formatCents(cents) {
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -1539,11 +1759,10 @@ function updateTopBarProfile() {
   const avatarEmojiEl = document.getElementById("topAvatarEmoji");
   const avatarNameEl = document.getElementById("topAvatarName");
 
-  const savedName = localStorage.getItem("niniPlayerName") || "Nini";
-  const savedAvatar = localStorage.getItem("niniAvatar") || "⭐";
+  const sharedProfile = getSharedProfile();
 
-  if (avatarEmojiEl) avatarEmojiEl.textContent = savedAvatar;
-  if (avatarNameEl) avatarNameEl.textContent = savedName;
+  if (avatarEmojiEl) avatarEmojiEl.textContent = sharedProfile.avatar;
+  if (avatarNameEl) avatarNameEl.textContent = sharedProfile.name;
 }
 
 function updateTopBarScore(scoreValue) {
@@ -1574,8 +1793,9 @@ function buildAvatarOptions() {
 }
 
 function updateProfileModalUI() {
-  const currentName = localStorage.getItem("niniPlayerName") || "Nini";
-  const currentAvatar = localStorage.getItem("niniAvatar") || "⭐";
+  const sharedProfile = getSharedProfile();
+  const currentName = sharedProfile.name;
+  const currentAvatar = sharedProfile.avatar;
   const activeAvatar = selectedAvatar || currentAvatar;
 
   profileNameInput.value = currentName;
@@ -1587,7 +1807,7 @@ function updateProfileModalUI() {
 
 function openProfileModal() {
   bounceAvatar();
-  selectedAvatar = localStorage.getItem("niniAvatar") || "⭐";
+  selectedAvatar = getSharedProfile().avatar || "⭐";
   updateProfileModalUI();
   profileModal.classList.add("active");
 }
@@ -1600,8 +1820,10 @@ function saveProfile() {
   const safeName = (profileNameInput.value || "Nini").trim().slice(0, 16) || "Nini";
   const safeAvatar = selectedAvatar || "⭐";
 
-  localStorage.setItem("niniPlayerName", safeName);
-  localStorage.setItem("niniAvatar", safeAvatar);
+  saveSharedProfile({
+    name: safeName,
+    avatar: safeAvatar
+  });
 
   updateTopBarProfile();
   closeProfileModal();
@@ -1611,6 +1833,7 @@ document.addEventListener("DOMContentLoaded", function () {
   buildAvatarOptions();
   updateTopBarProfile();
   updateTopBarScore(score);
+  renderMoneyLeaderboard();
 
   closeProfileBtn.addEventListener("click", closeProfileModal);
   cancelProfileBtn.addEventListener("click", closeProfileModal);
