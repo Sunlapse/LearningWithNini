@@ -906,6 +906,7 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
     const teacherToggleBtn = document.getElementById("teacherToggleBtn");
     const profileBtn = document.getElementById("profileBtn");
     const saveScoreBtn = document.getElementById("saveScoreBtn");
+    const clearScoreBtn = document.getElementById("clearScoreBtn");
     const teacherIndicator = document.getElementById("teacherIndicator");
     const sparkles = document.getElementById("sparkles");
     const ticksGroup = document.getElementById("ticksGroup");
@@ -1672,6 +1673,20 @@ resetBtn.addEventListener("click", () => {
 saveScoreBtn.addEventListener("click", () => {
   if (soundOn) clickSound(520, 0.03, 0.04);
   saveScoreEntry();
+});
+    clearScoreBtn.addEventListener("click", () => {
+  if (soundOn) clickSound(520, 0.03, 0.04);
+
+  const confirmed = window.confirm("Clear your saved scores on this device?");
+  if (!confirmed) return;
+
+  leaderboard = [];
+  localStorage.setItem(STORAGE_KEYS.leaderboard, JSON.stringify(leaderboard));
+
+  renderLeaderboard();
+  buildOverallFromBoards();
+
+  setStatus("Scores cleared.");
 });
 appbarAvatarBtn.addEventListener("click", () => {
   if (soundOn) clickSound(520, 0.03, 0.04);
