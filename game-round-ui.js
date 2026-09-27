@@ -395,21 +395,28 @@
     const control = event.target.closest("button,a");
     if (readRound() === TOTAL && isRoundFinishControl(control)) {
       setTimeout(showFinale, 80);
+      return;
     }
+    // Re-check shortly after any game control changes state.
+    setTimeout(() => {
+      updateHud();
+      maybeShowFinale();
+    }, 140);
   }, true);
 
   const counter = currentCounterEl();
   if (counter) {
     new MutationObserver(() => {
       updateHud();
-      maybeShowFinale();
     }).observe(counter, {childList:true, characterData:true, subtree:true});
   }
 
-  new MutationObserver(() => {
+  // Lightweight fallback for game state changes. Avoid observing the whole DOM,
+  // which can create a mutation loop on mobile browsers.
+  setInterval(() => {
     updateHud();
     maybeShowFinale();
-  }).observe(document.body, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:["class"]});
+  }, 500);
 
   updateHud();
   maybeShowFinale();
