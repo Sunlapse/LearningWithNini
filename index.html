@@ -301,13 +301,10 @@
       left: 4%;
       top: 5%;
       font-size: clamp(1.45rem, 2.7vw, 2.25rem);
-      color: #7138e8;
+      color: #6d37e6;
       transform: rotate(-5deg);
-      text-shadow:
-        -3px -3px 0 #fff, 3px -3px 0 #fff,
-        -3px 3px 0 #fff, 3px 3px 0 #fff,
-        0 4px 12px rgba(75,45,140,.14);
       letter-spacing: -.03em;
+      text-shadow: 0 3px 10px rgba(60,35,120,.18);
     }
     .hero-equation .pink { color: #ef4d9a; }
 
@@ -413,15 +410,17 @@
       right: 3%;
       top: 39%;
       width: 34%;
-      color: #7b3cec;
+      color: #6f39e8;
       font-size: clamp(1.65rem, 3.3vw, 2.7rem);
       line-height: .95;
       text-align: center;
       transform: rotate(-3deg);
-      text-shadow:
-        -3px -3px 0 #fff, 3px -3px 0 #fff,
-        -3px 3px 0 #fff, 3px 3px 0 #fff,
-        0 5px 12px rgba(70,40,125,.12);
+      background: rgba(255,255,255,.35);
+      backdrop-filter: blur(4px);
+      padding: 12px 10px;
+      border-radius: 24px;
+      box-shadow: 0 8px 18px rgba(70,40,125,.12);
+      text-shadow: 0 2px 8px rgba(60,35,120,.12);
     }
     .hero-encourage span { color: #ef4d9a; }
 
@@ -795,9 +794,8 @@
             <i class="hero-triangle"></i>
             <i class="hero-circle"></i>
           </div>
-          <div class="hero-sticker hero-encourage">You<br><span>can do it!</span> ♡</div>
+          <div class="hero-sticker hero-encourage">You<br><span>can do it!</span></div>
           <div class="hero-sticker hero-star" aria-hidden="true">⭐</div>
-          <div class="hero-sticker hero-heart" aria-hidden="true">♡</div>
         </div>
       </div>
     </section>
