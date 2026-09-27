@@ -79,7 +79,7 @@ button,select,input{font:inherit}
 .mode-card.active{border-color:#7040df;background:#f1ebff;color:#5a31bf}
 .play-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:14px}
 .clock-card{padding:14px;position:relative;overflow:hidden}
-.clock-wrap{position:relative;width:min(610px,100%);aspect-ratio:1/1;margin:0 auto;user-select:none;touch-action:none}
+.clock-wrap{position:relative;width:min(610px,100%);aspect-ratio:1/1;margin:0 auto;user-select:none;touch-action:pan-y}
 svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 12px 22px rgba(80,55,150,.13))}
 .clock-face{fill:#fff;stroke:#e4dcf8;stroke-width:8}
 .tick.big{stroke:#5d4a91;stroke-width:4;stroke-linecap:round}
@@ -143,7 +143,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
 .profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}.avatar-options{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar-btn{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar-btn.active{border-color:#7040df;background:#f0e9ff}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save-btn{background:#25b97b;color:white}.cancel-btn{background:#eee9ff;color:#56488b}
 .bounce-pop{animation:bouncePop .45s ease}@keyframes bouncePop{0%{transform:scale(1)}30%{transform:scale(1.08)}100%{transform:scale(1)}}
-@media(max-width:1100px){.game-shell{grid-template-columns:200px minmax(0,1fr)}.nini-card,.nini-card img{min-height:560px;height:560px}.play-grid{grid-template-columns:1fr}.controls-card{display:grid;grid-template-columns:1fr 1fr}.status{grid-column:1/-1}}
+@media(max-width:1300px){.game-shell{grid-template-columns:190px minmax(0,1fr)}.nini-card,.nini-card img{min-height:540px;height:540px}.controls-grid{grid-template-columns:1fr}.control-box{min-width:0}.adjust-row{gap:5px}.adjust-value{min-width:52px}}\n@media(max-width:1100px){.game-shell{grid-template-columns:180px minmax(0,1fr)}.nini-card,.nini-card img{min-height:520px;height:520px}.play-grid{grid-template-columns:1fr}.clock-wrap{width:min(540px,100%)}.controls-card{display:grid;grid-template-columns:1fr 1fr}.status{grid-column:1/-1}.panel,.button-stack,.settings-row{min-width:0}}
 @media(max-width:780px){.game-shell{grid-template-columns:1fr}.nini-card{position:relative;top:0;height:240px;min-height:240px}.nini-card img{height:240px;min-height:240px;object-position:center 26%}.nini-tip{max-width:190px;right:auto}.progress-card{grid-template-columns:1fr auto}.progress-track{grid-column:1/-1;grid-row:2}.challenge-card{grid-template-columns:1fr}.mode-mini{grid-template-columns:1fr 1fr}.controls-card{display:flex}.level-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.appbar{grid-template-columns:auto 1fr auto;padding:8px}.appbar-home{font-size:0}.appbar-home:after{content:"🏠";font-size:1.15rem}.appbar-avatar-name{display:none}.progress-card{padding:11px}.star-meter{font-size:1.4rem}.challenge-card{padding:15px}.challenge-time{font-size:3.1rem}.clock-card{padding:8px}.controls-card{padding:10px}.controls-grid{grid-template-columns:1fr 1fr}.level-grid{grid-template-columns:1fr}.leaderboard-item{grid-template-columns:auto 1fr}.leader-score,.leader-streak{justify-self:start}}
 
