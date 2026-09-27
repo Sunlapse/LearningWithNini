@@ -1,7 +1,7 @@
 window.LWNLeaderboard = (() => {
   const URL = "https://wvcdihtphcjuegdkadsb.supabase.co";
   const KEY = "sb_publishable_Uso8SKT30uVsIDPxTzroIQ_kMCWOoaN";
-  const GAMES = ["money","time","multiplication","fraction","detective"];
+  const GAMES = ["money","time","multiplication","division","fraction","detective"];
 
   function getDeviceId(){
     let id=localStorage.getItem("lwnGlobalDeviceId");
@@ -60,7 +60,7 @@ window.LWNLeaderboard = (() => {
     const map=new Map();
     for(const r of rows){
       const key=(String(r.player_name||"Nini").trim().toLowerCase())+"|"+String(r.avatar||"⭐");
-      if(!map.has(key)) map.set(key,{name:r.player_name||"Nini",avatar:r.avatar||"⭐",money:0,time:0,multiplication:0,fraction:0,detective:0,total:0});
+      if(!map.has(key)) map.set(key,{name:r.player_name||"Nini",avatar:r.avatar||"⭐",money:0,time:0,multiplication:0,division:0,fraction:0,detective:0,total:0});
       const p=map.get(key);
       if(GAMES.includes(r.game)) p[r.game]=Math.max(p[r.game]||0,Number(r.score)||0);
     }
