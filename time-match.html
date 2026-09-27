@@ -424,6 +424,7 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
       difficultyCards.forEach(card => card.classList.toggle("active", card.dataset.difficulty === value));
       questionNumber = 1;
       questionStars = 3;
+      levelSolved = false;
       generateNewRound();
     }
 
@@ -432,6 +433,7 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
       modeCards.forEach(card => card.classList.toggle("active", card.dataset.mode === value));
       questionNumber = 1;
       questionStars = 3;
+      levelSolved = false;
       generateNewRound();
     }
 
@@ -1166,12 +1168,14 @@ resetBtn.addEventListener("click", () => {
     difficultySelect.addEventListener("change", () => {
       questionNumber = 1;
       questionStars = 3;
+      levelSolved = false;
       syncChoiceCards();
       generateNewRound();
     });
     modeSelect.addEventListener("change", () => {
       questionNumber = 1;
       questionStars = 3;
+      levelSolved = false;
       syncChoiceCards();
       generateNewRound();
     });
