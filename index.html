@@ -3,577 +3,634 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Learning With Nini</title>
-  <meta name="description" content="Fun learning games for kids. Play Money Match and Time Match on Learning With Nini." />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="description" content="Learn With Nini — fun math videos, games, and challenges for kids." />
+  <title>Learn With Nini | Math Made Fun</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg1: #fff7fb;
-      --bg2: #eef6ff;
-      --card: rgba(255,255,255,0.88);
-      --text: #24324a;
-      --muted: #5d6b82;
-      --pink: #ff6fb5;
-      --purple: #8b5cf6;
-      --blue: #4f9cff;
-      --yellow: #ffd84d;
-      --shadow: 0 18px 50px rgba(69, 94, 143, 0.18);
-      --radius: 28px;
+      --ink: #1f2456;
+      --muted: #5f6688;
+      --purple: #6f35df;
+      --purple-dark: #5722c7;
+      --pink: #ef4d9a;
+      --pink-soft: #fff0f8;
+      --mint: #dff8ef;
+      --teal: #14b8a6;
+      --blue-soft: #e9f5ff;
+      --blue: #2f9df5;
+      --yellow-soft: #fff6cf;
+      --yellow: #f7b817;
+      --lavender: #f3edff;
+      --panel: #ffffff;
+      --line: rgba(55, 43, 111, 0.10);
+      --shadow: 0 18px 50px rgba(80, 55, 150, 0.12);
+      --radius-xl: 34px;
+      --radius-lg: 26px;
+      --radius-md: 20px;
     }
 
     * { box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, #ffe1f0 0, transparent 35%),
-        radial-gradient(circle at top right, #dff1ff 0, transparent 35%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      min-height: 100vh;
+      color: var(--ink);
+      background: #fff;
+      font-family: "Nunito", Arial, sans-serif;
+      overflow-x: hidden;
     }
 
-    .wrap {
-      width: min(1100px, calc(100% - 32px));
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .shell {
+      width: min(1240px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 24px 0 48px;
     }
 
-    .topbar {
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(72,48,130,.07);
+    }
+
+    .nav {
+      min-height: 78px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 24px;
     }
 
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-weight: 800;
-      font-size: 1.15rem;
-    }
-
-    .brand-badge {
-      width: 52px;
-      height: 52px;
-      display: grid;
-      place-items: center;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: white;
-      font-size: 1.5rem;
-      box-shadow: var(--shadow);
-    }
-
-    .navlinks {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .navlinks a,
-    .button,
-    .game-card a {
-      text-decoration: none;
-    }
-
-    .pill {
-      padding: 12px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.8);
-      color: var(--text);
+      font-family: "Fredoka", sans-serif;
+      font-size: clamp(1.5rem, 2vw, 2rem);
       font-weight: 700;
-      box-shadow: 0 8px 22px rgba(69, 94, 143, 0.1);
-      border: 1px solid rgba(255,255,255,0.7);
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 24px;
-      align-items: center;
-      margin-bottom: 28px;
-    }
-
-    .hero-card,
-    .panel,
-    .game-card,
-    .steps {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.8);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-card {
-      padding: 34px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: #ffffff;
-      font-weight: 700;
-      color: var(--purple);
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 5vw, 4rem);
-      line-height: 1.05;
-      margin: 0 0 14px;
-    }
-
-    .hero p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1.08rem;
-      line-height: 1.65;
-      max-width: 58ch;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 14px;
-      margin-top: 24px;
-      flex-wrap: wrap;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 20px;
-      border-radius: 16px;
-      font-weight: 800;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .button:hover,
-    .game-card a:hover {
-      transform: translateY(-2px);
-    }
-
-    .button-primary {
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: white;
-      box-shadow: 0 14px 30px rgba(139, 92, 246, 0.28);
-    }
-
-    .button-secondary {
-      background: white;
-      color: var(--text);
-      border: 1px solid rgba(36,50,74,0.1);
-    }
-.button-time {
-  background: linear-gradient(135deg, #4f9cff, #6b6cff);
-  color: white;
-  box-shadow: 0 14px 30px rgba(79, 156, 255, 0.28);
-  border: none;
-}
-    .panel {
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-      min-height: 100%;
-    }
-
-    .panel::before,
-    .panel::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.6;
-    }
-
-    .panel::before {
-      width: 150px;
-      height: 150px;
-      right: -30px;
-      top: -24px;
-      background: #ffd6e9;
-    }
-
-    .panel::after {
-      width: 120px;
-      height: 120px;
-      left: -28px;
-      bottom: -24px;
-      background: #d7ecff;
-    }
-
-    .mascot {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      font-size: clamp(4rem, 8vw, 6rem);
-      margin-top: 20px;
-    }
-
-    .panel h2 {
-      position: relative;
-      z-index: 1;
-      margin: 0 0 10px;
-      font-size: 1.4rem;
-    }
-
-    .panel p {
-      position: relative;
-      z-index: 1;
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .games {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-      margin: 30px 0;
-    }
-
-    .game-card {
-      padding: 24px;
-    }
-
-    .game-icon {
-      width: 72px;
-      height: 72px;
-      display: grid;
-      place-items: center;
-      border-radius: 22px;
-      font-size: 2rem;
-      margin-bottom: 18px;
-    }
-
-    .money .game-icon {
-      background: linear-gradient(135deg, #fff0a8, #ffd84d);
-    }
-
-    .time .game-icon {
-      background: linear-gradient(135deg, #cfe6ff, #7ab9ff);
-    }
-
-    .game-card h3 {
-      margin: 0 0 8px;
-      font-size: 1.45rem;
-    }
-
-    .game-card p {
-      margin: 0 0 18px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .game-card a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 13px 18px;
-      border-radius: 14px;
-      font-weight: 800;
-      color: white;
-      box-shadow: 0 12px 24px rgba(69, 94, 143, 0.18);
-    }
-
-    .money a {
-      background: linear-gradient(135deg, #ffb800, #ff7a18);
-    }
-
-    .time a {
-      background: linear-gradient(135deg, #4f9cff, #6b6cff);
-    }
-
-    .steps {
-      padding: 26px;
-    }
-
-    .steps h2 {
-      margin: 0 0 16px;
-      font-size: 1.5rem;
-    }
-
-    .steps ol {
-      margin: 0;
-      padding-left: 20px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    footer {
-      text-align: center;
-      color: var(--muted);
-      margin-top: 26px;
-      font-size: 0.95rem;
-    }
-    .leaderboard-panel {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.8);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 26px;
-      margin-top: 28px;
-    }
-
-    .leaderboard-panel h2 {
-      margin: 0 0 16px;
-      font-size: 1.5rem;
-    }
-
-    .leaderboard-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .leaderboard-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.78);
-      border: 1px solid rgba(36,50,74,0.08);
-      box-shadow: 0 8px 18px rgba(69, 94, 143, 0.08);
-    }
-
-    .leaderboard-rank {
-      width: 38px;
-      height: 38px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      background: linear-gradient(135deg, #ffd84d, #ffb648);
-      color: #24324a;
-    }
-
-    .leaderboard-name {
-      font-weight: 800;
-      font-size: 1.05rem;
-    }
-
-    .leaderboard-meta {
-      color: var(--muted);
-      font-size: 0.95rem;
-      margin-top: 4px;
-    }
-
-    .leaderboard-total {
-      text-align: right;
-      font-weight: 900;
-      color: var(--purple);
-      font-size: 1.05rem;
+      letter-spacing: -.03em;
       white-space: nowrap;
     }
 
-    .leaderboard-empty {
-      padding: 16px;
-      text-align: center;
-      color: var(--muted);
-      background: rgba(255,255,255,0.75);
-      border: 1px dashed rgba(36,50,74,0.14);
-      border-radius: 18px;
+    .brand .learn { color: #6b36df; }
+    .brand .nini { color: #ef4d9a; }
+    .brand .dotcom { color: #9a8ce9; }
+    .brand .heart { color: #ef4d9a; margin-left: 3px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-weight: 800;
+      font-size: .98rem;
     }
-    @media (max-width: 820px) {
-      .hero,
-      .games {
-        grid-template-columns: 1fr;
-      }
 
-      .hero-card,
-      .panel,
-      .game-card,
-      .steps {
-        border-radius: 24px;
-      }
+    .nav-links a {
+      padding: 10px 4px;
+      position: relative;
+    }
 
-      .hero-card {
-        padding: 24px;
+    .nav-links a.active::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      bottom: 2px;
+      height: 3px;
+      border-radius: 4px;
+      background: var(--purple);
+    }
+
+    .youtube-btn,
+    .primary-btn,
+    .card-btn,
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border-radius: 999px;
+      font-weight: 800;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .youtube-btn:hover,
+    .primary-btn:hover,
+    .card-btn:hover,
+    .cta-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .youtube-btn {
+      background: linear-gradient(135deg, #7435e9, #9346ea);
+      color: #fff;
+      padding: 13px 20px;
+      box-shadow: 0 10px 24px rgba(112,54,224,.22);
+      white-space: nowrap;
+    }
+
+    .play-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--purple);
+      display: grid;
+      place-items: center;
+      font-size: .78rem;
+      padding-left: 2px;
+    }
+
+    .hero-wrap {
+      background:
+        radial-gradient(circle at 8% 18%, rgba(214,240,255,.95) 0 70px, transparent 71px),
+        radial-gradient(circle at 90% 8%, rgba(255,233,248,.95) 0 85px, transparent 86px),
+        linear-gradient(90deg, #fffafc 0%, #ffffff 45%, #f8f4ff 100%);
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero {
+      min-height: 520px;
+      display: grid;
+      grid-template-columns: .96fr 1.04fr;
+      align-items: stretch;
+      position: relative;
+    }
+
+    .hero-copy {
+      padding: 72px 42px 70px 8px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hello {
+      display: inline-block;
+      align-self: flex-start;
+      font-family: "Fredoka", sans-serif;
+      color: #e74291;
+      font-size: 1.45rem;
+      font-weight: 700;
+      padding: 4px 14px 5px;
+      background: #ffd7eb;
+      border-radius: 12px 20px 12px 18px;
+      transform: rotate(-1deg);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: "Fredoka", sans-serif;
+      font-size: clamp(3rem, 5.7vw, 5.8rem);
+      line-height: .95;
+      letter-spacing: -.045em;
+      margin: 0;
+      color: #6931ce;
+      max-width: 650px;
+    }
+
+    h1 .pink { color: #e7438f; }
+
+    .hero-copy p {
+      max-width: 620px;
+      margin: 24px 0 0;
+      font-size: clamp(1.08rem, 1.6vw, 1.34rem);
+      line-height: 1.48;
+      color: #515a7c;
+      font-weight: 700;
+    }
+
+    .primary-btn {
+      margin-top: 24px;
+      align-self: flex-start;
+      color: white;
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.3rem;
+      padding: 15px 28px;
+      min-width: 260px;
+      background: linear-gradient(135deg, #7b3cec, #6a2dd4);
+      box-shadow: 0 14px 28px rgba(108,45,214,.24);
+    }
+
+    .hero-art {
+      position: relative;
+      min-height: 520px;
+      overflow: hidden;
+    }
+
+    .hero-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 28%;
+      filter: saturate(.98) contrast(1.01);
+    }
+
+    .hero-art::before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 28%;
+      background: linear-gradient(90deg, rgba(255,255,255,1), rgba(255,255,255,.78), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .math-doodle {
+      position: absolute;
+      z-index: 2;
+      font-family: "Fredoka", sans-serif;
+      font-weight: 700;
+      pointer-events: none;
+      text-shadow: 0 2px 0 rgba(255,255,255,.55);
+    }
+
+    .doodle-one { left: 9%; top: 13%; color: #7b3cec; font-size: 2.3rem; transform: rotate(-8deg); }
+    .doodle-two { right: 7%; top: 23%; color: white; font-size: 2.4rem; transform: rotate(-8deg); text-align: center; }
+    .doodle-three { right: 4%; bottom: 12%; color: #f3b51e; font-size: 2rem; }
+
+    .content {
+      padding: 18px 0 0;
+      background:
+        radial-gradient(circle at 0% 30%, rgba(238,231,255,.55), transparent 26%),
+        radial-gradient(circle at 100% 78%, rgba(226,246,255,.6), transparent 26%),
+        white;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      padding: 0 0 16px;
+    }
+
+    .feature-card {
+      border-radius: var(--radius-lg);
+      padding: 22px 18px 18px;
+      min-height: 258px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: 1px solid rgba(59,46,115,.06);
+      box-shadow: 0 9px 24px rgba(73,53,130,.07);
+    }
+
+    .feature-card.video { background: linear-gradient(180deg, #fff1f8, #f8eefe); }
+    .feature-card.money { background: linear-gradient(180deg, #e3fbf3, #d9f8ee); }
+    .feature-card.time { background: linear-gradient(180deg, #eef8ff, #e4f2ff); }
+    .feature-card.leader { background: linear-gradient(180deg, #fff8dc, #fff2c9); }
+
+    .card-icon {
+      width: 88px;
+      height: 72px;
+      display: grid;
+      place-items: center;
+      font-size: 3.3rem;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+
+    .feature-card h3 {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.65rem;
+      margin: 6px 0 4px;
+    }
+
+    .feature-card p {
+      color: #515a7c;
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.35;
+      font-weight: 700;
+      min-height: 54px;
+    }
+
+    .card-btn {
+      margin-top: auto;
+      width: 100%;
+      padding: 11px 16px;
+      color: #fff;
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.06rem;
+    }
+
+    .video .card-btn { background: linear-gradient(135deg, #8b45ea, #7330db); }
+    .money .card-btn { background: linear-gradient(135deg, #16b9a7, #0aa991); }
+    .time .card-btn { background: linear-gradient(135deg, #ef5aa3, #e64391); }
+    .leader .card-btn { background: linear-gradient(135deg, #ffbd24, #f3a400); }
+
+    .why {
+      padding: 4px 0 18px;
+    }
+
+    .section-title {
+      font-family: "Fredoka", sans-serif;
+      text-align: center;
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      color: #6c32d9;
+      margin: 10px 0 16px;
+      letter-spacing: -.025em;
+    }
+
+    .benefits {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .benefit {
+      display: grid;
+      grid-template-columns: 62px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .benefit-icon {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(74,56,130,.09);
+    }
+
+    .benefit h4 {
+      margin: 0 0 3px;
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.18rem;
+      color: #5b2dc8;
+    }
+
+    .benefit p {
+      margin: 0;
+      color: #5b6486;
+      line-height: 1.3;
+      font-weight: 700;
+      font-size: .94rem;
+    }
+
+    .adventure {
+      margin: 8px 0 26px;
+      border-radius: 30px;
+      min-height: 110px;
+      padding: 22px 26px;
+      background:
+        radial-gradient(circle at 14% 24%, rgba(255,255,255,.12), transparent 18%),
+        linear-gradient(90deg, #c4a7ff, #a97ff0 50%, #be9cff);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 16px 34px rgba(115,78,200,.15);
+    }
+
+    .adventure::after {
+      content: "☆   ✦   ☆";
+      position: absolute;
+      inset: auto auto 8px 24px;
+      color: rgba(255,255,255,.65);
+      font-size: 1.8rem;
+      letter-spacing: 14px;
+    }
+
+    .adventure-copy {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .mini-nini {
+      width: 120px;
+      height: 120px;
+      border-radius: 28px;
+      object-fit: cover;
+      object-position: center 18%;
+      border: 5px solid rgba(255,255,255,.75);
+      box-shadow: 0 10px 24px rgba(74,49,135,.18);
+    }
+
+    .adventure h2 {
+      font-family: "Fredoka", sans-serif;
+      color: #fff;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      margin: 0;
+      line-height: 1.05;
+      text-shadow: 0 2px 0 rgba(97,55,170,.14);
+    }
+
+    .cta-btn {
+      background: white;
+      color: #6c35d8;
+      padding: 14px 22px;
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.02rem;
+      white-space: nowrap;
+      box-shadow: 0 10px 22px rgba(80,46,148,.14);
+    }
+
+    .footer {
+      padding: 0 0 34px;
+      color: #6c7190;
+      font-weight: 700;
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 980px) {
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-copy { padding: 56px 22px 34px; }
+      .hero-art { min-height: 470px; }
+      .hero-art::before {
+        width: 100%;
+        height: 22%;
+        bottom: auto;
+        background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,0));
       }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .benefits { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 650px) {
+      .shell { width: min(100% - 20px, 1240px); }
+      .nav { min-height: 66px; }
+      .brand { font-size: 1.28rem; }
+      .brand .dotcom { display: none; }
+      .youtube-btn { padding: 10px 14px; font-size: .88rem; }
+      .youtube-btn .label-extra { display: none; }
+      .hero-copy { padding: 42px 12px 26px; }
+      h1 { font-size: clamp(3rem, 15vw, 4.6rem); }
+      .hero-copy p { font-size: 1.05rem; }
+      .primary-btn { width: 100%; min-width: 0; }
+      .hero-art { min-height: 430px; }
+      .doodle-two { font-size: 1.7rem; }
+      .cards { grid-template-columns: 1fr; }
+      .feature-card { min-height: 230px; }
+      .benefits { grid-template-columns: 1fr; gap: 14px; }
+      .adventure { grid-template-columns: 1fr; text-align: center; }
+      .adventure-copy { flex-direction: column; }
+      .cta-btn { width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-badge">🌈</div>
-        <div>Learning With Nini</div>
-      </div>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="index.html" aria-label="Learn With Nini home">
+        <span class="learn">LearnWith</span><span class="nini">Nini</span><span class="dotcom">.com</span><span class="heart">♡</span>
+      </a>
 
-      <nav class="navlinks">
-        <a class="pill" href="index.html">Home</a>
-        <a class="pill" href="money-match.html">Math Game</a>
-        <a class="pill" href="time-match.html">Telling Time Game</a>
-        <a class="pill" href="leaderboard.html">Leaderboard</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="#videos">Math Videos</a>
+        <a href="#games">Games</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="#about">About</a>
       </nav>
-    </header>
 
-    <section class="hero">
-      <div class="hero-card">
-        <div class="eyebrow">⭐ Fun learning games for kids</div>
-        <h1>Welcome to Learning With Nini</h1>
-        <p>
-          A colorful place for playful learning. Practice counting money, telling time,
-          and build confidence one game at a time.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="money-match.html">💵 Play Math Game</a>
-          <a class="button button-time" href="time-match.html">
-  🕒 Play Telling Time Game
-</a>
+      <a class="youtube-btn" href="#videos">
+        <span class="play-dot">▶</span>
+        <span>Watch <span class="label-extra">on YouTube</span></span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-wrap">
+      <div class="shell hero">
+        <div class="hero-copy">
+          <div class="hello">Hi, I’m Nini! ♡</div>
+          <h1>Learn Math<br><span class="pink">in a Fun Way!</span></h1>
+          <p>Easy-to-follow math videos, fun games, and real practice to help kids build confidence and enjoy learning math.</p>
+          <a class="primary-btn" href="#games">Start Learning! <span>→</span></a>
+        </div>
+
+        <div class="hero-art" aria-label="Nini">
+          <img class="hero-photo" src="nini-hero.webp" alt="Nini smiling" />
+          <div class="math-doodle doodle-one">2 + 3 = 5</div>
+          <div class="math-doodle doodle-two">You<br>can do it! ♡</div>
+          <div class="math-doodle doodle-three">☆</div>
         </div>
       </div>
-
-      <aside class="panel">
-        <h2>Made for Nini</h2>
-        <p>
-          Bright colors, simple choices, and easy links so kids can jump right into learning.
-        </p>
-        <div class="mascot">🐰✨</div>
-      </aside>
     </section>
 
-    <section class="games">
-      <article class="game-card money">
-        <div class="game-icon">💵</div>
-        <h3>Money Match</h3>
-        <p>
-          Practice coins, bills, and matching the correct amount in a fun game format.
-        </p>
-        <a href="money-match.html">Open Money Match</a>
-      </article>
+    <section class="content" id="games">
+      <div class="shell">
+        <div class="cards">
+          <article class="feature-card video" id="videos">
+            <div class="card-icon">▶️</div>
+            <h3>Math Videos</h3>
+            <p>Clear, easy-to-follow math lessons for kids.</p>
+            <a class="card-btn" href="#videos">Watch Videos <span>→</span></a>
+          </article>
 
-      <article class="game-card time">
-        <div class="game-icon">🕒</div>
-        <h3>Time Match</h3>
-        <p>
-          Learn clocks, hour hands, minute hands, and matching the right time.
-        </p>
-        <a href="time-match.html">Open Time Match</a>
-      </article>
-    </section>
+          <article class="feature-card money">
+            <div class="card-icon">🪙</div>
+            <h3>Money Match</h3>
+            <p>Fun games to practice counting money!</p>
+            <a class="card-btn" href="money-match.html">Play Game <span>→</span></a>
+          </article>
 
-    <section class="steps">
-      <h2>More games coming soon</h2>
-      <ol>
-        <li>Thank you for visiting <3</li>
-        <li>Thanks for playing!</li>
-        <li>Thanks for being smart!</li>
-      </ol>
-    </section>
-    <section class="leaderboard-panel">
-      <h2>Overall Stars Leaderboard</h2>
-      <div class="leaderboard-list" id="overallLeaderboardList"></div>
-    </section>
-    <footer>
-      Learning With Nini, learn, play, and grow 🌈
-    </footer>
-  </div>
-  <script>
-    const SITE_KEYS = {
-      profile: "learningWithNiniProfileV1",
-      moneyLeaderboard: "moneyMatchLeaderboardV1",
-      timeLeaderboard: "timeMatchLeaderboardV1",
-      overallLeaderboard: "learningWithNiniOverallLeaderboardV1"
-    };
+          <article class="feature-card time">
+            <div class="card-icon">⏰</div>
+            <h3>Time Match</h3>
+            <p>Learn to tell time with fun challenges!</p>
+            <a class="card-btn" href="time-match.html">Play Game <span>→</span></a>
+          </article>
 
-    function safeParseJson(key, fallback) {
-      try {
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : fallback;
-      } catch {
-        return fallback;
-      }
-    }
+          <article class="feature-card leader">
+            <div class="card-icon">🏆</div>
+            <h3>Leaderboard</h3>
+            <p>Complete challenges and see your progress!</p>
+            <a class="card-btn" href="leaderboard.html">View Leaderboard <span>→</span></a>
+          </article>
+        </div>
 
-    function buildOverallFromBoards() {
-      const moneyBoard = safeParseJson(SITE_KEYS.moneyLeaderboard, []);
-      const timeBoard = safeParseJson(SITE_KEYS.timeLeaderboard, []);
-      const map = new Map();
+        <section class="why" id="about">
+          <h2 class="section-title">Why Learn With Nini? ♡</h2>
+          <div class="benefits">
+            <div class="benefit">
+              <div class="benefit-icon">💗</div>
+              <div>
+                <h4>Builds Confidence</h4>
+                <p>See progress and feel proud of what you can do!</p>
+              </div>
+            </div>
 
-      function ensurePlayer(name, avatar) {
-        const safeName = (name || "Nini").trim() || "Nini";
-        const id = safeName.toLowerCase();
-        if (!map.has(id)) {
-          map.set(id, {
-            name: safeName,
-            avatar: avatar || "⭐",
-            moneyBest: 0,
-            timeBest: 0,
-            total: 0,
-            updatedAt: 0
-          });
-        }
-        return map.get(id);
-      }
+            <div class="benefit">
+              <div class="benefit-icon">⭐</div>
+              <div>
+                <h4>Makes Math Fun</h4>
+                <p>Games, challenges, and real-life examples.</p>
+              </div>
+            </div>
 
-      moneyBoard.forEach((entry) => {
-        const player = ensurePlayer(entry.name, entry.avatar);
-        player.avatar = entry.avatar || player.avatar || "⭐";
-        player.moneyBest = Math.max(player.moneyBest, Number(entry.score) || 0);
-        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
-      });
+            <div class="benefit">
+              <div class="benefit-icon">📈</div>
+              <div>
+                <h4>Improves Skills</h4>
+                <p>Practice at your own pace and get better every day.</p>
+              </div>
+            </div>
 
-      timeBoard.forEach((entry) => {
-        const player = ensurePlayer(entry.name, entry.avatar);
-        player.avatar = entry.avatar || player.avatar || "⭐";
-        player.timeBest = Math.max(player.timeBest, Number(entry.score) || 0);
-        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
-      });
-
-      const overall = Array.from(map.values()).map((player) => ({
-        ...player,
-        total: player.moneyBest + player.timeBest
-      }));
-
-      overall.sort((a, b) =>
-        b.total - a.total ||
-        b.moneyBest - a.moneyBest ||
-        b.timeBest - a.timeBest ||
-        a.updatedAt - b.updatedAt
-      );
-
-      localStorage.setItem(SITE_KEYS.overallLeaderboard, JSON.stringify(overall));
-      return overall;
-    }
-
-    function renderOverallLeaderboard() {
-      const list = document.getElementById("overallLeaderboardList");
-      const overall = buildOverallFromBoards();
-
-      list.innerHTML = "";
-
-      if (!overall.length) {
-        list.innerHTML = `<div class="leaderboard-empty">No saved scores yet. Play a game and save a score.</div>`;
-        return;
-      }
-
-      overall.slice(0, 10).forEach((entry, index) => {
-        const row = document.createElement("div");
-        row.className = "leaderboard-item";
-        row.innerHTML = `
-          <div class="leaderboard-rank">${index + 1}</div>
-          <div>
-            <div class="leaderboard-name">${entry.avatar} ${entry.name}</div>
-            <div class="leaderboard-meta">Money ${entry.moneyBest} • Time ${entry.timeBest}</div>
+            <div class="benefit">
+              <div class="benefit-icon">🧠</div>
+              <div>
+                <h4>Growth Mindset</h4>
+                <p>Mistakes are part of learning and growing.</p>
+              </div>
+            </div>
           </div>
-          <div class="leaderboard-total">⭐ ${entry.total}</div>
-        `;
-        list.appendChild(row);
-      });
-    }
+        </section>
 
-    renderOverallLeaderboard();
-  </script>
-</body
+        <section class="adventure">
+          <div class="adventure-copy">
+            <img class="mini-nini" src="nini-hero.webp" alt="Nini" />
+            <h2>Let’s make math an adventure!</h2>
+          </div>
+          <a class="cta-btn" href="#videos"><span class="play-dot">▶</span> Watch the Latest Video →</a>
+        </section>
+
+        <footer class="footer">
+          <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="#videos">Math Videos</a>
+            <a href="money-match.html">Money Match</a>
+            <a href="time-match.html">Time Match</a>
+            <a href="leaderboard.html">Leaderboard</a>
+          </div>
+          <div>LearnWithNini.com ♡ Learn, play, and grow.</div>
+        </footer>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
