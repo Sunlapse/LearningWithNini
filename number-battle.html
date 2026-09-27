@@ -32,6 +32,13 @@ button,input{font:inherit}
 @media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.side-grid{grid-template-columns:1fr 310px}}
 @media(max-width:780px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.side-grid{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.battle-card{padding:13px}.vs-grid{grid-template-columns:1fr auto 1fr;gap:7px}.fighter{padding:8px;min-height:130px}.fighter-number{font-size:2.3rem}.vs{width:48px;height:48px;font-size:1.2rem}.digit{width:62px;height:70px}.slot{width:62px;height:74px}.stats{grid-template-columns:1fr 1fr 1fr}}
+
+.level-jump{display:none;width:100%;margin:12px 0 0;border:1px solid rgba(112,64,223,.13);border-radius:18px;padding:11px 15px;background:linear-gradient(135deg,#f6f1ff,#eee8ff);color:#5c3bb0;font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(80,55,150,.08);align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}
+.level-jump strong{font-family:"Fredoka",sans-serif;color:#6a35cf}
+.challenge-options-anchor{scroll-margin-top:90px}
+@media(max-width:1080px){.level-jump{display:flex}}
+@media(max-width:520px){.level-jump{font-size:.92rem;padding:10px 12px;margin-top:10px}}
+
 </style>
 </head>
 <body>
@@ -52,7 +59,8 @@ button,input{font:inherit}
 <div class="actions"><button class="check" id="checkBtn">Check Battle →</button><button class="hint" id="hintBtn">Battle Hint − 1 Star</button><div class="stats"><div class="stat"><small>Score</small><strong id="score">0</strong></div><div class="stat"><small>Streak</small><strong id="streak">0</strong></div><div class="stat"><small>Round</small><strong id="roundStat">1/10</strong></div></div></div>
 </div>
 </section>
-<section class="levels"><h2>⚔️ Number Battle — Choose a Mode</h2><div class="level-grid">
+<button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Mode ↓</strong></button>
+<section id="challenge-options" class="levels challenge-options-anchor"><h2>⚔️ Number Battle — Choose a Mode</h2><div class="level-grid">
 <button class="level-card active" data-level="compare"><div class="level-num">1</div><h3>Greater Number Battle</h3><p>Compare two numbers up to 9,999 and choose the greater value.</p></button>
 <button class="level-card" data-level="build"><div class="level-num">2</div><h3>Build to Win</h3><p>Arrange four digits to make the greatest or smallest possible 4-digit number.</p></button>
 <button class="level-card" data-level="target"><div class="level-num">3</div><h3>Target Clash</h3><p>Choose which number is closer to the target and sharpen number-line reasoning.</p></button>
