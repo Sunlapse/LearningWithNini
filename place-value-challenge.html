@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#fbf9ff">
+<title>Place Value Challenge | Learn With Nini</title>
+<meta name="description" content="Practice place value, expanded form, and rounding with Nini in fun 10-question challenges.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#282061;--muted:#746e94;--purple:#7040df;--pink:#f64b9a;--blue:#4b8ff7;--green:#23b978;--yellow:#ffbf27;--orange:#f08b45;--line:rgba(83,59,160,.12);--shadow:0 18px 46px rgba(74,50,137,.13)}
+html,body{margin:0;min-height:100%}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 3% 8%,rgba(255,224,241,.9),transparent 22%),radial-gradient(circle at 97% 4%,rgba(226,214,255,.9),transparent 24%),linear-gradient(180deg,#fbf9ff,#fff 48%,#fffafb)}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;min-height:72px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:10px max(16px,calc((100vw - 1440px)/2));background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.home,.profile-btn,.score-pill{min-height:44px;border:0;border-radius:999px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900}.home{background:#f0ebff;color:#5f36c7;text-decoration:none}.score-wrap{display:flex;justify-content:center}.score-pill{background:linear-gradient(135deg,#fff0f8,#eee6ff);color:#4b307d}.profile-btn{background:linear-gradient(135deg,#fff3c6,#ffe09b);color:#654b12;cursor:pointer}
+.wrap{width:min(1440px,calc(100% - 28px));margin:0 auto;padding:20px 0 40px}.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.nini{position:sticky;top:94px;min-height:660px;border-radius:34px;overflow:hidden;background:#e8dcff;box-shadow:var(--shadow)}.nini img{width:100%;height:660px;object-fit:cover;object-position:center 28%}.nini:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(64,34,125,.2));pointer-events:none}.bubble{position:absolute;z-index:2;left:16px;right:16px;top:18px;background:#fff;border-radius:26px 26px 26px 8px;padding:15px 17px;font-family:"Fredoka",sans-serif;font-size:1.3rem;color:#4d2ab6;line-height:1.08;box-shadow:0 12px 28px rgba(66,38,130,.15);transform:rotate(-1.5deg)}.bubble small{display:block;margin-top:8px;color:#ee4a94;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
+.main{min-width:0}.progress,.question-card,.play-card,.levels,.extras,.leader{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.95);box-shadow:var(--shadow)}
+.progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}.qtext{font-weight:1000;white-space:nowrap}.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}.fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#52b8f2,#7144e0);transition:.25s}.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
+.question-card{padding:19px 20px;margin-bottom:14px;background:linear-gradient(135deg,#eef8ff,#f1eaff)}.question-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.level-pill{display:inline-flex;padding:7px 12px;border-radius:999px;background:#fff;color:#7040d3;font-weight:900}.prompt{font-family:"Fredoka",sans-serif;font-size:clamp(1.7rem,3.7vw,2.7rem);line-height:1.18;color:#4b3489;text-align:center;margin:15px auto 6px}.big-number{font-family:"Fredoka",sans-serif;font-size:clamp(3.7rem,9vw,6rem);color:#5934c4;text-align:center;letter-spacing:.03em}.big-number .hot{color:#f04c9a;background:#fff1f8;border-radius:14px;padding:0 .06em;box-shadow:0 0 0 4px rgba(240,76,154,.08)}
+.play-card{padding:17px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px}
+.visual{border-radius:23px;background:#fbf9ff;border:1px solid #eee9f8;padding:16px;min-height:370px}.place-chart{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.place-cell{border-radius:18px;padding:12px 8px;text-align:center;background:#fff;border:2px solid #e7e0f7}.place-cell.target{border-color:#f05b9e;background:#fff0f7;box-shadow:0 0 0 4px rgba(240,91,158,.08)}.place-name{font-weight:1000;color:#72668f;font-size:.85rem}.place-digit{font-family:"Fredoka",sans-serif;font-size:2.6rem;color:#5537ae;margin:4px 0}.place-value{font-size:.82rem;color:#8b83a2;font-weight:900}
+.expanded{margin:14px 0 4px;padding:13px;border-radius:18px;background:#fff8dc;border:1px solid #f2dfa1;text-align:center;font-family:"Fredoka",sans-serif;font-size:1.25rem;color:#6d5514}
+.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}.choice{border:2px solid #e4dcf5;border-radius:18px;background:#fff;min-height:66px;color:#5439a5;font-family:"Fredoka",sans-serif;font-size:1.35rem;cursor:pointer}.choice.selected{border-color:#7040df;background:#eee8ff;box-shadow:0 0 0 4px rgba(112,64,223,.08)}.choice.correct{border-color:#25b778;background:#e8f9ef;color:#178258}
+.answer-display{min-height:105px;border-radius:22px;background:#fff;border:2px solid #eee8f8;display:flex;align-items:center;justify-content:center;font-family:"Fredoka",sans-serif;font-size:3.5rem;color:#452b90;margin-top:16px}.answer-display.placeholder{font-family:"Nunito",sans-serif;font-size:1rem;color:#aaa2bd;font-weight:900}.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.key{border:0;border-radius:16px;min-height:58px;background:#f0ebff;color:#5332ae;font-size:1.35rem;font-weight:1000;cursor:pointer}.key.clear{background:#fff0f6;color:#c53979}.key.back{background:#fff5dc;color:#9a6a00}
+.side{display:grid;gap:10px}.status{min-height:126px;border-radius:22px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}.check,.hint,.next{border:0;border-radius:20px;min-height:66px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#5aaaf6,#6746dc);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.25rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.hint{background:linear-gradient(135deg,#ff75b5,#ef4897);color:#fff}
+.notebook{border-radius:20px;background:#fff8dc;border:1px solid #f4df94;padding:13px;color:#725b18;font-weight:900;line-height:1.35}.notebook strong{color:#57420e}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:17px;padding:11px;text-align:center}.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.3rem}
+.levels{margin-top:16px;padding:16px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.level-card{border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;color:var(--ink);min-height:160px}.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}.level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}.level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
+.extras{margin-top:14px;padding:13px 15px}.pill{border:0;border-radius:999px;padding:10px 13px;background:#eee9ff;color:#5941a4;font-weight:900;cursor:pointer;text-decoration:none}.leader{margin-top:14px;padding:13px 15px}details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}.board{display:grid;gap:7px;margin-top:10px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eee8ff;color:#6341c4}.empty{padding:10px;color:#8d86a3}
+.modal-bg{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}.modal-bg.show{display:flex}.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;box-shadow:0 25px 60px rgba(50,30,100,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}.close{border:0;width:40px;height:40px;border-radius:50%;background:#f0ebff;font-size:1.25rem;cursor:pointer}.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}.avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#7040df;background:#f0e9ff}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#eee9ff;color:#56488b}
+@media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.workspace{grid-template-columns:1fr 310px}}
+@media(max-width:780px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.workspace{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.question-card{padding:15px}.big-number{font-size:4rem}.play-card{padding:11px}.place-chart{gap:5px}.place-cell{padding:9px 3px}.place-digit{font-size:2rem}.place-name{font-size:.67rem}.choice-grid{grid-template-columns:1fr 1fr}.key{min-height:54px}.stats{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="topbar">
+<a class="home" href="index.html">🏠 Back to Home</a>
+<div class="score-wrap"><div class="score-pill" id="topScore">⭐ Score: 0</div></div>
+<button class="profile-btn" id="profileButton"><span id="avatarTop">⭐</span><span class="profile-name" id="nameTop">Nini</span></button>
+</header>
+<div class="wrap"><div class="shell">
+<aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Place Value Challenge! 🔢<small>Know what every digit is really worth ♡</small></div></aside>
+<main class="main">
+<section class="progress"><div class="qtext" id="questionText">Question 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span></div></section>
+<section class="question-card">
+<div class="question-head"><div class="level-pill" id="levelName">Digit Detective</div></div>
+<div class="prompt" id="prompt">What is the value of the highlighted digit?</div>
+<div class="big-number" id="bigNumber">4,372</div>
+</section>
+<section class="play-card"><div class="workspace">
+<div class="visual">
+<div class="place-chart" id="placeChart"></div>
+<div class="expanded" id="expanded">4,000 + 300 + 70 + 2</div>
+<div id="answerArea"></div>
+</div>
+<div class="side">
+<div class="status" id="status">Look at the highlighted digit and choose its value.</div>
+<button class="check" id="checkBtn">Check Answer →</button>
+<button class="hint" id="hintBtn">Show a Hint − 1 Star</button>
+<div class="notebook" id="notebook"><strong>Place Value Tip:</strong><br>A digit's value depends on its position in the number.</div>
+<div class="stats"><div class="stat"><small>Score</small><strong id="score">0</strong></div><div class="stat"><small>Streak</small><strong id="streak">0</strong></div><div class="stat"><small>Round</small><strong id="roundStat">1/10</strong></div></div>
+</div>
+</div></section>
+<section class="levels"><h2>🔢 Place Value Challenge — Choose a Level</h2><div class="level-grid">
+<button class="level-card active" data-level="digit"><div class="level-num">1</div><h3>Digit Detective</h3><p>Find the value of a highlighted digit in the thousands, hundreds, tens, or ones place.</p></button>
+<button class="level-card" data-level="build"><div class="level-num">2</div><h3>Build the Number</h3><p>Turn expanded form into a standard number using the place-value chart.</p></button>
+<button class="level-card" data-level="round"><div class="level-num">3</div><h3>Rounding Challenge</h3><p>Round numbers to the nearest 10, 100, or 1,000 using place-value reasoning.</p></button>
+</div></section>
+<section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
+<section class="leader"><details><summary>🏆 Place Value Challenge global leaderboard</summary><div id="board" class="board"></div></details></section>
+</main>
+</div></div>
+<div class="modal-bg" id="profileModal"><div class="modal"><div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close" id="closeProfile">×</button></div><div class="profile-form"><input id="profileName" maxlength="16" placeholder="Player nickname"><div style="font-weight:900;color:#756b91">Choose an avatar</div><div class="avatars" id="avatars"></div></div><div class="modal-actions"><button class="cancel" id="cancelProfile">Cancel</button><button class="save" id="saveProfile">Save</button></div></div></div>
+<script src="leaderboard-api.js"></script>
+<script>
+const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
+let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
+let level="digit",q=1,score=0,streak=0,stars=3,solved=false,number=4372,targetPlace=2,correct=70,answer="",selectedChoice=null,roundUnit=10;
+const places=["Thousands","Hundreds","Tens","Ones"],placeValues=[1000,100,10,1];
+function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function fmt(n){return Number(n).toLocaleString("en-US")}
+function digitsOf(n){return String(n).padStart(4,"0").split("").map(Number)}
+function expandedOf(n){const d=digitsOf(n);return d.map((x,i)=>x*placeValues[i]).filter(x=>x>0).map(fmt).join(" + ")||"0"}
+function chartHTML(n,hot=-1){const d=digitsOf(n);return d.map((x,i)=>'<div class="place-cell '+(i===hot?'target':'')+'"><div class="place-name">'+places[i]+'</div><div class="place-digit">'+x+'</div><div class="place-value">'+fmt(x*placeValues[i])+'</div></div>').join("")}
+function keypadHTML(){return '<div class="answer-display placeholder" id="answerDisplay">Enter answer</div><div class="keypad"><button class="key" data-n="1">1</button><button class="key" data-n="2">2</button><button class="key" data-n="3">3</button><button class="key" data-n="4">4</button><button class="key" data-n="5">5</button><button class="key" data-n="6">6</button><button class="key" data-n="7">7</button><button class="key" data-n="8">8</button><button class="key" data-n="9">9</button><button class="key clear" id="clearKey">Clear</button><button class="key" data-n="0">0</button><button class="key back" id="backKey">←</button></div>'}
+function newQuestion(){
+  stars=3;solved=false;answer="";selectedChoice=null;
+  number=rnd(1000,9999);
+  if(level==="digit")makeDigit();else if(level==="build")makeBuild();else makeRound();
+  el("checkBtn").textContent="Check Answer →";el("checkBtn").className="check";el("hintBtn").disabled=false;updateUI()
+}
+function renderBigNumber(hot=-1){
+  const s=String(number),parts=s.split("");
+  el("bigNumber").innerHTML=parts.map((x,i)=>'<span class="'+(i===hot?'hot':'')+'">'+x+'</span>').join("");
+  if(number>=1000)el("bigNumber").innerHTML=el("bigNumber").innerHTML.slice(0,-3)+","+el("bigNumber").innerHTML.slice(-3);
+}
+function makeDigit(){
+  targetPlace=rnd(0,3);const d=digitsOf(number);correct=d[targetPlace]*placeValues[targetPlace];
+  if(d[targetPlace]===0){number+=placeValues[targetPlace];return makeDigit()}
+  el("levelName").textContent="Digit Detective";el("prompt").textContent="What is the value of the highlighted digit?";renderBigNumber(targetPlace);
+  el("placeChart").innerHTML=chartHTML(number,targetPlace);el("expanded").textContent=expandedOf(number);
+  const opts=new Set([correct]);
+  [d[targetPlace],placeValues[targetPlace],d[targetPlace]*100,d[targetPlace]*10,d[targetPlace]*1000].forEach(x=>{if(x>=0&&x!==correct)opts.add(x)});
+  while(opts.size<4)opts.add(rnd(1,9)*placeValues[rnd(0,3)]);
+  const choices=[...opts].slice(0,4).sort(()=>Math.random()-.5);
+  el("answerArea").innerHTML='<div class="choice-grid">'+choices.map(v=>'<button class="choice" data-choice="'+v+'">'+fmt(v)+'</button>').join("")+'</div>';
+  el("answerArea").querySelectorAll("[data-choice]").forEach(b=>b.onclick=()=>{if(solved)return;selectedChoice=Number(b.dataset.choice);el("answerArea").querySelectorAll("[data-choice]").forEach(x=>x.classList.toggle("selected",x===b))});
+  el("status").textContent="Look at the highlighted digit and choose its value.";el("status").className="status";el("notebook").innerHTML="<strong>Place Value Tip:</strong><br>The digit "+d[targetPlace]+" is in the "+places[targetPlace].toLowerCase()+" place.";
+}
+function makeBuild(){
+  correct=number;el("levelName").textContent="Build the Number";el("prompt").textContent="What number does this expanded form make?";renderBigNumber(-1);
+  el("bigNumber").textContent="?";el("placeChart").innerHTML=chartHTML(number,-1);el("expanded").textContent=expandedOf(number);
+  el("answerArea").innerHTML=keypadHTML();wireKeypad();el("status").textContent="Combine the thousands, hundreds, tens, and ones.";el("status").className="status";el("notebook").innerHTML="<strong>Build It:</strong><br>Each part belongs in its place. Then write the standard number.";
+}
+function makeRound(){
+  roundUnit=[10,100,1000][rnd(0,2)];correct=Math.round(number/roundUnit)*roundUnit;
+  el("levelName").textContent="Rounding Challenge";el("prompt").textContent="Round this number to the nearest "+fmt(roundUnit)+".";renderBigNumber(-1);
+  const hot=roundUnit===10?2:roundUnit===100?1:0;el("placeChart").innerHTML=chartHTML(number,hot);el("expanded").textContent="Round "+fmt(number)+" to the nearest "+fmt(roundUnit);
+  el("answerArea").innerHTML=keypadHTML();wireKeypad();el("status").textContent="Look one place to the right to decide whether to round up or down.";el("status").className="status";el("notebook").innerHTML="<strong>Rounding Rule:</strong><br>0–4 stays the same. 5–9 rounds the target digit up.";
+}
+function wireKeypad(){el("answerArea").querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>typeDigit(b.dataset.n));el("clearKey").onclick=clearAnswer;el("backKey").onclick=backspace;renderAnswer()}
+function renderAnswer(){const a=el("answerDisplay");if(!a)return;a.textContent=answer?fmt(answer):"Enter answer";a.classList.toggle("placeholder",!answer)}
+function typeDigit(n){if(solved||answer.length>=5)return;answer=(answer==="0"?"":answer)+n;answer=String(Number(answer));renderAnswer()}
+function clearAnswer(){if(solved)return;answer="";renderAnswer()}
+function backspace(){if(solved)return;answer=answer.slice(0,-1);renderAnswer()}
+function updateUI(){el("questionText").textContent="Question "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("roundStat").textContent=q+"/10"}
+function check(){
+  if(solved){next();return}
+  const response=level==="digit"?selectedChoice:Number(answer);
+  if(response===null||response===undefined||(level!=="digit"&&!answer)){el("status").textContent=level==="digit"?"Choose an answer first.":"Enter an answer first.";el("status").className="status info";return}
+  if(Number(response)===correct){
+    solved=true;score+=stars;streak++;
+    if(level==="digit")el("answerArea").querySelectorAll("[data-choice]").forEach(x=>{if(Number(x.dataset.choice)===correct)x.classList.add("correct")});
+    const msg=level==="digit"?"Correct! The digit is worth "+fmt(correct)+".":level==="build"?"Correct! "+expandedOf(number)+" = "+fmt(number)+".":"Correct! "+fmt(number)+" rounds to "+fmt(correct)+".";
+    el("status").textContent=msg+" You earned "+stars+" star"+(stars===1?"":"s")+"!";el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Question →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();
+    LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"place_value",score,level,best_streak:streak}).then(renderBoard).catch(()=>{});
+  }else{
+    stars=Math.max(1,stars-1);streak=0;el("status").textContent=level==="digit"?"Not quite. Match the digit to its place.":level==="build"?"Not quite. Check each place in the chart.":"Not quite. Check the digit immediately to the right of the rounding place.";el("status").className="status bad";updateUI()
+  }
+}
+function hint(){
+  if(solved)return;stars=Math.max(1,stars-1);
+  const d=digitsOf(number);
+  if(level==="digit")el("notebook").innerHTML="<strong>Hint:</strong><br>"+d[targetPlace]+" × "+fmt(placeValues[targetPlace])+" = ?";
+  else if(level==="build")el("notebook").innerHTML="<strong>Hint:</strong><br>Read the chart left to right: "+d.join(" · ")+".";
+  else{const hot=roundUnit===10?2:roundUnit===100?1:0,look=d[hot+1];el("notebook").innerHTML="<strong>Hint:</strong><br>The deciding digit is "+look+". "+(look>=5?"Round up.":"Keep the target digit the same.");}
+  el("status").textContent="A place-value hint was added.";el("status").className="status info";updateUI()
+}
+function next(){if(!solved)return;if(q===10){q=1;score=0;streak=0}else q++;newQuestion()}
+function chooseLevel(v){level=v;q=1;score=0;streak=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newQuestion()}
+async function saveScore(){try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"place_value",score,level,best_streak:streak});await renderBoard();el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"}catch{el("status").textContent="Could not save the global score yet.";el("status").className="status bad"}}
+async function renderBoard(){const box=el("board");box.innerHTML="";try{const rows=await LWNLeaderboard.top("place_value",10);if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})}catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function updateProfile(){el("avatarTop").textContent=profile.avatar||"⭐";el("nameTop").textContent=profile.name||"Nini"}
+function openProfile(){picked=profile.avatar||"⭐";el("profileName").value=profile.name||"Nini";buildAvatars();el("profileModal").classList.add("show")}
+function closeProfile(){el("profileModal").classList.remove("show")}
+function buildAvatars(){const b=el("avatars");b.innerHTML="";AV.forEach(v=>{const x=document.createElement("button");x.className="avatar"+(v===picked?" active":"");x.textContent=v;x.onclick=()=>{picked=v;buildAvatars()};b.appendChild(x)})}
+function saveProfile(){profile={name:(el("profileName").value||"Nini").trim().slice(0,16)||"Nini",avatar:picked||"⭐"};store(PROFILE,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile()}
+document.querySelectorAll(".level-card").forEach(b=>b.onclick=()=>chooseLevel(b.dataset.level));el("checkBtn").onclick=check;el("hintBtn").onclick=hint;el("saveScore").onclick=saveScore;el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;el("profileModal").onclick=e=>{if(e.target===el("profileModal"))closeProfile()};
+window.addEventListener("keydown",e=>{if(e.key>="0"&&e.key<="9"&&level!=="digit")typeDigit(e.key);else if(e.key==="Backspace"&&level!=="digit")backspace();else if(e.key==="Enter")check()});
+updateProfile();renderBoard();newQuestion();
+</script>
+</body></html>

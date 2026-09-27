@@ -212,6 +212,7 @@
         <a class="pill" href="time-match.html">Time Match</a>
         <a class="pill" href="multiplication-sprint.html">Multiplication Sprint</a>
         <a class="pill" href="division-dash.html">Division Dash</a>
+        <a class="pill" href="place-value-challenge.html">Place Value Challenge</a>
         <a class="pill" href="fraction-builder.html">Fraction Builder</a>
         <a class="pill" href="math-detective.html">Math Detective</a>
         <a class="pill" href="leaderboard.html">Leaderboard</a>
@@ -246,6 +247,11 @@
     <section class="leaderboard-panel">
       <h2>Division Dash</h2>
       <div class="leaderboard-list" id="divisionLeaderboardList"></div>
+    </section>
+
+    <section class="leaderboard-panel">
+      <h2>Place Value Challenge</h2>
+      <div class="leaderboard-list" id="placeValueLeaderboardList"></div>
     </section>
 
     <section class="leaderboard-panel">
@@ -426,7 +432,7 @@
 <script>
 async function renderGlobalLeaderboard(){
   const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-  const gameMap={money:"moneyLeaderboardList",time:"timeLeaderboardList",multiplication:"multiplicationLeaderboardList",division:"divisionLeaderboardList",fraction:"fractionLeaderboardList",detective:"detectiveLeaderboardList"};
+  const gameMap={money:"moneyLeaderboardList",time:"timeLeaderboardList",multiplication:"multiplicationLeaderboardList",division:"divisionLeaderboardList",place_value:"placeValueLeaderboardList",fraction:"fractionLeaderboardList",detective:"detectiveLeaderboardList"};
   for(const [game,id] of Object.entries(gameMap)){
     const list=document.getElementById(id); if(!list) continue;
     try{
@@ -446,7 +452,7 @@ async function renderGlobalLeaderboard(){
       if(!rows.length){overallList.innerHTML='<div class="leaderboard-empty">No global scores yet.</div>';return}
       rows.forEach((x,i)=>{
         const row=document.createElement("div"); row.className="leaderboard-item";
-        row.innerHTML='<div class="leaderboard-rank">'+(i+1)+'</div><div><div class="leaderboard-name">'+x.avatar+' '+esc(x.name)+'</div><div class="leaderboard-meta">Money '+x.money+' • Time '+x.time+' • Multiply '+x.multiplication+' • Division '+x.division+' • Fractions '+x.fraction+' • Detective '+x.detective+'</div></div><div class="leaderboard-total">⭐ '+x.total+'</div>';
+        row.innerHTML='<div class="leaderboard-rank">'+(i+1)+'</div><div><div class="leaderboard-name">'+x.avatar+' '+esc(x.name)+'</div><div class="leaderboard-meta">Money '+x.money+' • Time '+x.time+' • Multiply '+x.multiplication+' • Division '+x.division+' • Place Value '+x.place_value+' • Fractions '+x.fraction+' • Detective '+x.detective+'</div></div><div class="leaderboard-total">⭐ '+x.total+'</div>';
         overallList.appendChild(row);
       });
     }catch{overallList.innerHTML='<div class="leaderboard-empty">Could not load global scores.</div>'}
