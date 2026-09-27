@@ -227,6 +227,13 @@
     .money-card,.answer-card{padding:11px}.money-grid{grid-template-columns:repeat(2,1fr)}.bank-grid{grid-template-columns:repeat(2,1fr)}
     .money-item{min-height:112px}.money-img{height:48px}.section-title{align-items:flex-start;flex-direction:column;gap:3px}
   }
+
+.level-jump{display:none;width:100%;margin:12px 0 0;border:1px solid rgba(112,64,223,.13);border-radius:18px;padding:11px 15px;background:linear-gradient(135deg,#f6f1ff,#eee8ff);color:#5c3bb0;font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(80,55,150,.08);align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}
+.level-jump strong{font-family:"Fredoka",sans-serif;color:#6a35cf}
+.challenge-options-anchor{scroll-margin-top:90px}
+@media(max-width:1080px){.level-jump{display:flex}}
+@media(max-width:520px){.level-jump{font-size:.92rem;padding:10px 12px;margin-top:10px}}
+
 </style>
 </head>
 <body>
@@ -311,7 +318,8 @@
         </div>
       </section>
 
-      <section class="mode-section">
+      <button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Level ↓</strong></button>
+<section id="challenge-options" class="mode-section challenge-options-anchor">
         <h2 class="mode-title">💰 Money Match — Choose a Level</h2>
         <div class="mode-grid">
           <button class="mode-card active" data-mode="warm" onclick="setGameMode('warm')">
