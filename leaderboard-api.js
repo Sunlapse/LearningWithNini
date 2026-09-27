@@ -12,22 +12,6 @@ window.LWNLeaderboard = (() => {
     return id;
   }
 
-  async function syncProfile({name,avatar="⭐"}){
-    const res=await fetch(URL+"/functions/v1/submit-score",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","apikey":KEY},
-      body:JSON.stringify({
-        action:"profile",
-        player_name:String(name||"Nini").slice(0,24),
-        avatar:String(avatar||"⭐").slice(0,8),
-        device_id:getDeviceId()
-      })
-    });
-    const data=await res.json().catch(()=>({}));
-    if(!res.ok) throw new Error(data.error||"Could not sync profile");
-    return data;
-  }
-
   async function saveScore({name,avatar="⭐",game,score,level=null,best_streak=0}){
     const res=await fetch(URL+"/functions/v1/submit-score",{
       method:"POST",
@@ -75,9 +59,10 @@ window.LWNLeaderboard = (() => {
     const rows=await all();
     const map=new Map();
     for(const r of rows){
-      const key=(String(r.player_name||"Nini").trim().toLowerCase())+"|"+String(r.avatar||"⭐");
-      if(!map.has(key)) map.set(key,{name:r.player_name||"Nini",avatar:r.avatar||"⭐",money:0,time:0,multiplication:0,division:0,place_value:0,number_battle:0,geometry:0,math_maze:0,daily_challenge:0,fraction:0,detective:0,total:0});
+      const key=String(r.player_name||"Nini").trim().toLowerCase();
+      if(!map.has(key)) map.set(key,{name:r.player_name||"Nini",avatar:r.avatar||"⭐",latest:"",money:0,time:0,multiplication:0,division:0,place_value:0,number_battle:0,geometry:0,math_maze:0,daily_challenge:0,fraction:0,detective:0,total:0});
       const p=map.get(key);
+      if(!p.latest || String(r.updated_at||"")>p.latest){p.avatar=r.avatar||"⭐";p.name=r.player_name||"Nini";p.latest=String(r.updated_at||"")}
       if(GAMES.includes(r.game)) p[r.game]=Math.max(p[r.game]||0,Number(r.score)||0);
     }
     const out=[...map.values()];
@@ -86,28 +71,7 @@ window.LWNLeaderboard = (() => {
     return out.slice(0,limit);
   }
 
-  // Keep profile changes in sync with every saved game score on this browser.
-  const nativeSetItem=Storage.prototype.setItem;
-  if(!window.__lwnProfileStorageHook){
-    window.__lwnProfileStorageHook=true;
-    Storage.prototype.setItem=function(key,value){
-      nativeSetItem.call(this,key,value);
-      if(this===localStorage && key==="learningWithNiniProfileV1"){
-        try{
-          const p=JSON.parse(value);
-          if(p&&p.name) setTimeout(()=>syncProfile({name:p.name,avatar:p.avatar||"⭐"}).catch(()=>{}),0);
-        }catch{}
-      }
-    };
-  }
-
-  // On page load, reconcile an already-changed local profile with older global scores.
-  try{
-    const saved=JSON.parse(localStorage.getItem("learningWithNiniProfileV1")||"null");
-    if(saved&&saved.name) setTimeout(()=>syncProfile({name:saved.name,avatar:saved.avatar||"⭐"}).catch(()=>{}),0);
-  }catch{}
-
-  return {saveScore,syncProfile,top,overall};
+  return {saveScore,top,overall};
 })();
 
 /* Playful browser-tab title when Learn With Nini is in the background. */
