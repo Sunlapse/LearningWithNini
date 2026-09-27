@@ -124,6 +124,7 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
 <script>
 const GAMES=[
   {id:"overall",label:"Overall",icon:"🏆",note:"Combined best scores across all games"},
+  {id:"daily_challenge",label:"Daily Challenge",icon:"📝",note:"Daily 20-Minute Challenge high scores"},
   {id:"money",label:"Money Match",icon:"💵",note:"Money Match high scores"},
   {id:"time",label:"Time Match",icon:"🕒",note:"Time Match high scores"},
   {id:"multiplication",label:"Multiplication Sprint",icon:"✖️",note:"Multiplication Sprint high scores"},
@@ -159,7 +160,7 @@ function selectGame(id){
 function scoreMetaOverall(x){
   const parts=[
     ["💵",x.money],["🕒",x.time],["✖️",x.multiplication],["➗",x.division],["🔢",x.place_value],
-    ["⚔️",x.number_battle],["📐",x.geometry],["🧩",x.math_maze],["🍕",x.fraction],["🔎",x.detective]
+    ["⚔️",x.number_battle],["📐",x.geometry],["🧩",x.math_maze],["📝",x.daily_challenge],["🍕",x.fraction],["🔎",x.detective]
   ].filter(x=>Number(x[1])>0);
   return parts.length?parts.map(x=>x[0]+" "+x[1]).join("  •  "):"No game scores yet";
 }

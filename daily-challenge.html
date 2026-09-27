@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Daily 20-Minute Challenge | Learn With Nini</title>
+<meta name="description" content="Nini's daily 20-minute math challenge for grades 3 and 4. Work it out on the scratch pad, just like in the videos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF9FF;--panel:#FFFFFF;--ink:#1F2456;--muted:#5F6688;--line:#DED7F0;
+  --paper:#FFFFFF;--grid:#EAE5F5;--sun:#EF4D9A;--sun-ink:#FFFFFF;--teal:#14B8A6;
+  --blue:#2F9DF5;--red:#E5484D;--green:#1E9E58;--good-bg:#E5F8EE;--bad-bg:#FDE6E6;--key:#F0EBFF;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10161F;--panel:#18202C;--ink:#EEF3FA;--muted:#9AA8BF;--line:#2A3646;
+  --paper:#141B25;--grid:#1F2A38;--sun:#FFCB52;--sun-ink:#16213E;--teal:#3CC7C7;
+  --blue:#78A2FF;--red:#FF7074;--green:#43D486;--good-bg:#153223;--bad-bg:#3A1C1E;--key:#233042;
+}}
+:root[data-theme="dark"]{
+  --bg:#10161F;--panel:#18202C;--ink:#EEF3FA;--muted:#9AA8BF;--line:#2A3646;
+  --paper:#141B25;--grid:#1F2A38;--sun:#FFCB52;--sun-ink:#16213E;--teal:#3CC7C7;
+  --blue:#78A2FF;--red:#FF7074;--green:#43D486;--good-bg:#153223;--bad-bg:#3A1C1E;--key:#233042;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:
+  radial-gradient(circle at 5% 4%,rgba(255,224,241,.72),transparent 23%),
+  radial-gradient(circle at 96% 4%,rgba(226,216,255,.82),transparent 25%),
+  linear-gradient(180deg,#FBF9FF,#FFFFFF 48%,#FFFAFC);
+  color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;overflow:hidden}
+button,input{font:inherit;color:inherit}
+button{touch-action:manipulation;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+button:disabled{opacity:.28;cursor:default}
+.d{font-family:"Fredoka","Nunito",system-ui,sans-serif}
+.app{height:100%;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+.screen{display:none;height:100%}
+.screen.on{display:flex;flex-direction:column}
+
+/* start */
+#start{overflow-y:auto;align-items:center;padding:28px 0}
+.start{width:100%;max-width:610px;display:flex;flex-direction:column;gap:20px;background:rgba(255,255,255,.94);border:1px solid rgba(55,43,111,.10);border-radius:30px;padding:26px;box-shadow:0 18px 50px rgba(80,55,150,.12)}
+.topnav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700;font-size:16px}
+.topnav a{color:#5B36B7;text-decoration:none;padding:8px 0}
+.topnav a:hover{text-decoration:underline}
+.hello h1{font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:clamp(44px,8vw,68px);line-height:.95;margin:0;color:#6034C8;letter-spacing:-.035em}
+.hello p{margin:10px 0 0;color:var(--muted);font-size:18px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field>span{font-weight:700;font-size:16px}
+.field input{border:2px solid var(--line);background:var(--panel);border-radius:14px;padding:14px 16px;font-size:20px;-webkit-user-select:text;user-select:text}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:90px;padding:14px 10px;border-radius:14px;border:2px solid var(--line);background:var(--panel);font-weight:700;font-size:18px}
+.seg button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.go{background:linear-gradient(135deg,#F05A9F,#7546DE);color:var(--sun-ink);font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:28px;padding:18px;border-radius:18px;box-shadow:0 4px 0 #5B2FC4}
+.go:active{transform:translateY(3px);box-shadow:0 1px 0 #5B2FC4}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--muted);font-size:15px}
+.link{text-decoration:underline;color:var(--muted);padding:6px 0}
+.hist{border-top:2px solid var(--line);padding-top:16px}
+.hist h2{font-size:18px;margin:0 0 10px}
+.hist ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.hist li{display:flex;justify-content:space-between;font-size:16px}
+.hist .empty{color:var(--muted)}
+.tip{background:#F5F0FF;border:2px solid #E5DCF8;border-radius:16px;padding:12px 14px;font-size:15px;color:#625586;line-height:1.45;font-weight:700}
+.challenge-badge{display:inline-flex;width:max-content;max-width:100%;padding:7px 11px;border-radius:999px;background:#FFF0F7;color:#C63D80;font-weight:900;font-size:13px;letter-spacing:.02em}
+.global-save{border-radius:14px;padding:11px 13px;background:#F1ECFF;color:#5B3EAE;font-weight:800;text-align:center}
+
+/* game */
+#game{gap:10px;padding:10px 0}
+.bar{display:flex;align-items:center;gap:14px}
+.who{font-family:"Fredoka",system-ui,sans-serif;font-weight:600;font-size:20px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who small{font-family:"Nunito",system-ui,sans-serif;font-weight:400;color:var(--muted);font-size:15px;margin-left:8px}
+.score{font-weight:700;font-size:20px;display:flex;gap:6px;align-items:center}
+.score b{color:var(--green)}
+.timer{font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:34px;font-variant-numeric:tabular-nums;min-width:96px;text-align:right}
+.timer.low{color:var(--red)}
+.icon{width:48px;height:48px;border-radius:14px;background:var(--key);font-size:20px;font-weight:700}
+.body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;position:relative}
+.left{display:flex;flex-direction:column;gap:10px;min-height:0}
+.qcard{background:var(--panel);border:2px solid var(--line);border-radius:20px;padding:14px 20px;display:flex;align-items:center;gap:16px;min-height:96px}
+.qnum{font-family:"Fredoka",system-ui,sans-serif;font-weight:600;color:var(--muted);font-size:18px;align-self:flex-start;padding-top:6px}
+.q{font-family:"Fredoka",system-ui,sans-serif;font-weight:600;font-size:clamp(30px,4.4vw,52px);line-height:1.2;flex:1}
+.q.long{font-family:"Nunito",system-ui,sans-serif;font-weight:700;font-size:clamp(20px,2.4vw,28px);line-height:1.35}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 .12em;font-size:.8em}
+.fr span:first-child{border-bottom:.08em solid currentColor;padding:0 .15em .06em}
+.fr span:last-child{padding:.06em .15em 0}
+.blank{display:inline-block;min-width:1.3em;text-align:center;border:.07em dashed var(--muted);border-radius:.2em;color:var(--muted);margin:0 .2em;padding:0 .1em}
+.padwrap{flex:1;min-height:0;position:relative;border-radius:20px;border:2px solid var(--line);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1.5px,transparent 1.5px),linear-gradient(90deg,var(--grid) 1.5px,transparent 1.5px);background-size:32px 32px;overflow:hidden}
+#pad{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+.tools{position:absolute;left:10px;bottom:10px;display:flex;gap:6px;flex-wrap:wrap;z-index:2}
+.tool{height:44px;min-width:44px;padding:0 12px;border-radius:12px;background:var(--panel);border:2px solid var(--line);font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.tool[aria-pressed="true"]{border-color:var(--ink)}
+.dot{width:18px;height:18px;border-radius:50%;display:inline-block}
+.right{display:flex;flex-direction:column;gap:10px;min-height:0}
+.ans{background:var(--panel);border:3px solid var(--ink);border-radius:18px;min-height:78px;display:flex;align-items:center;justify-content:center;
+  font-family:"Fredoka",system-ui,sans-serif;font-weight:600;font-size:42px;font-variant-numeric:tabular-nums;padding:0 12px;transition:background .2s}
+.ans.empty{color:var(--muted);border-style:dashed}
+.ans.good{background:var(--good-bg);border-color:var(--green)}
+.ans.bad{background:var(--bad-bg);border-color:var(--red);animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+@media (prefers-reduced-motion:reduce){.ans.bad{animation:none}}
+.fb{min-height:24px;text-align:center;font-weight:700;font-size:18px}
+.fb.good{color:var(--green)}.fb.bad{color:var(--red)}
+.hint{color:var(--muted);font-size:14px;text-align:center;min-height:18px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:8px;flex:1;min-height:0}
+.key{background:var(--key);border-radius:14px;font-family:"Fredoka",system-ui,sans-serif;font-weight:600;font-size:30px;min-height:46px}
+.key:active{filter:brightness(.9)}
+.cmp{display:none;grid-template-columns:repeat(3,1fr);gap:10px;flex:1}
+.cmp button{background:var(--key);border-radius:18px;font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:56px;min-height:90px}
+.right.is-cmp .keys{display:none}.right.is-cmp .cmp{display:grid}.right.is-cmp .ans{display:none}
+.acts{display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
+.check{background:linear-gradient(135deg,#F05A9F,#7546DE);color:var(--sun-ink);border-radius:16px;font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:26px;padding:14px;box-shadow:0 4px 0 #5B2FC4}
+.check:active{transform:translateY(3px);box-shadow:0 1px 0 #5B2FC4}
+.skip{background:var(--key);border-radius:16px;font-weight:700;font-size:18px}
+.pause{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:5;border-radius:20px}
+.pause.on{display:flex}
+.pause h2{font-family:"Fredoka",system-ui,sans-serif;font-size:48px;margin:0}
+.pause .go{min-width:260px}
+.ghost{padding:12px 20px;border-radius:14px;border:2px solid var(--line);font-weight:700;font-size:18px}
+.flash{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;z-index:4}
+.flash span{font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:120px;color:var(--green);opacity:0;transform:scale(.6);transition:opacity .2s,transform .25s}
+.flash.on span{opacity:1;transform:scale(1)}
+
+/* done */
+#done{overflow-y:auto;align-items:center;padding:28px 0}
+.done{width:100%;max-width:620px;display:flex;flex-direction:column;gap:20px}
+.big{font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:clamp(64px,12vw,110px);line-height:.9}
+.big small{font-size:.35em;color:var(--muted);font-weight:600}
+.stats{display:flex;gap:26px;flex-wrap:wrap;font-size:18px;color:var(--muted)}
+.stats b{display:block;font-family:"Fredoka",system-ui,sans-serif;font-size:32px;color:var(--ink)}
+.list{list-style:none;margin:0;padding:0;border-top:2px solid var(--line)}
+.list li{display:grid;grid-template-columns:34px 1fr auto;gap:10px;padding:10px 0;border-bottom:2px solid var(--line);font-size:17px;align-items:baseline}
+.list .ok{color:var(--green);font-weight:700}.list .no{color:var(--red);font-weight:700}.list .sk{color:var(--muted);font-weight:700}
+.list .given{color:var(--muted);text-align:right;white-space:nowrap}
+
+@media (orientation:portrait){
+  .body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+  .right{display:grid;grid-template-columns:1fr 1.3fr;grid-template-areas:"ans keys" "fb keys" "hint keys" "acts keys";gap:8px;align-content:start}
+  .ans{grid-area:ans;min-height:64px;font-size:36px}.fb{grid-area:fb}.hint{grid-area:hint}.acts{grid-area:acts}
+  .keys,.cmp{grid-area:keys}
+  .keys{grid-template-columns:repeat(5,1fr);grid-auto-rows:54px}
+  .key{font-size:26px}
+  .right.is-cmp{grid-template-areas:"fb keys" "hint keys" "acts keys"}
+  .cmp button{min-height:80px}
+}
+@media (max-width:640px) and (orientation:portrait){
+  .right{grid-template-columns:1fr;grid-template-areas:"ans" "fb" "keys" "acts"}
+  .hint{display:none}
+  .keys{grid-auto-rows:46px}
+  .who small{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<section id="start" class="screen on" aria-label="Start">
+  <div class="start">
+    <nav class="topnav"><a href="index.html">← All games</a><a href="leaderboard.html">🏆 Leaderboard</a><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener">▶ Watch Nini do it</a></nav>
+    <div class="hello">
+      <div class="challenge-badge">📝 NINI'S DAILY CHALLENGE</div>
+      <h1 id="dayTitle">Day 1</h1>
+      <p style="margin:6px 0 0;font-weight:800;color:#3f3477">Daily 20-Minute Challenge ♡</p>
+      <p style="margin:8px 0 0">Do the same dated problem set Nini uses in her videos. Work it out on the scratch pad and race the clock if you want.</p>
+      <p id="streakLine">Let's warm up that brain.</p>
+    </div>
+    <label class="field"><span>Player nickname</span>
+      <input id="name" maxlength="24" placeholder="Nickname for the leaderboard (optional)" autocomplete="off"></label>
+    <div class="field"><span>Level</span>
+      <div class="seg" id="gradeSeg">
+        <button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="mix">Mixed</button>
+      </div></div>
+    <div class="field"><span>Minutes</span>
+      <div class="seg" id="minSeg">
+        <button data-v="10">10</button><button data-v="15">15</button><button data-v="20">20</button>
+      </div></div>
+    <button class="go" id="goBtn">Start</button>
+    <div class="row"><span id="setLabel">Today's shared problem set</span><a class="link" href="leaderboard.html">Global leaderboard →</a></div>
+    <div class="tip">Everyone playing the same level on the same Hawaiʻi date gets the same challenge. Your best score can appear on the global leaderboard. If you leave the nickname blank, we'll give you an anonymous Math Star name.</div>
+    <div class="hist"><h2>Recent days</h2><ul id="histList"></ul></div>
+  </div>
+</section>
+
+<section id="game" class="screen" aria-label="Practice">
+  <div class="bar">
+    <div class="who" id="who"></div>
+    <div class="score" aria-label="Correct answers">✓ <b id="score">0</b></div>
+    <div class="timer" id="timer">20:00</div>
+    <button class="icon" id="pauseBtn" aria-label="Pause">❚❚</button>
+  </div>
+  <div class="body">
+    <div class="left">
+      <div class="qcard"><div class="qnum" id="qnum">#1</div><div class="q" id="q"></div></div>
+      <div class="padwrap">
+        <canvas id="pad" aria-label="Scratch paper for working out the problem"></canvas>
+        <div class="tools">
+          <button class="tool" data-tool="ink" aria-pressed="true"><span class="dot" style="background:var(--ink)"></span></button>
+          <button class="tool" data-tool="blue" aria-pressed="false"><span class="dot" style="background:var(--blue)"></span></button>
+          <button class="tool" data-tool="red" aria-pressed="false"><span class="dot" style="background:var(--red)"></span></button>
+          <button class="tool" data-tool="eraser" aria-pressed="false">Eraser</button>
+          <button class="tool" id="undoBtn">Undo</button>
+          <button class="tool" id="clearBtn">Clear</button>
+          <button class="tool" id="fingerBtn" aria-pressed="true">Finger: on</button>
+        </div>
+      </div>
+    </div>
+    <div class="right" id="right">
+      <div class="ans empty" id="ans">?</div>
+      <div class="fb" id="fb" aria-live="polite"></div>
+      <div class="hint" id="hint"></div>
+      <div class="keys" id="keys"></div>
+      <div class="cmp" id="cmp"><button data-c="<">&lt;</button><button data-c="=">=</button><button data-c=">">&gt;</button></div>
+      <div class="acts"><button class="skip" id="skipBtn">Skip</button><button class="check" id="checkBtn">Check</button></div>
+    </div>
+    <div class="flash" id="flash"><span>✓</span></div>
+    <div class="pause" id="pause"><h2>Paused</h2><button class="go" id="resumeBtn">Keep going</button><button class="ghost" id="endBtn">Finish for today</button></div>
+  </div>
+</section>
+
+<section id="done" class="screen" aria-label="Results">
+  <div class="done">
+    <div class="big" id="bigScore"></div>
+    <div class="stats" id="stats"></div>
+    <div class="global-save" id="globalSaveStatus">Your best score will save to the global leaderboard.</div>
+    <ul class="list" id="review"></ul>
+    <button class="go" id="homeBtn">Done</button>
+  </div>
+</section>
+
+</div>
+<script src="leaderboard-api.js"></script>
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const pad2=n=>String(n).padStart(2,'0');
+const fmtD=d=>d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
+const today=()=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Pacific/Honolulu',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const p={};parts.forEach(x=>{if(x.type!=='literal')p[x.type]=x.value});return p.year+'-'+p.month+'-'+p.day};
+const dayDate=()=>new Date(today()+'T12:00:00Z');
+const fmtUTC=d=>d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTCDate());
+
+const sharedProfile=LS.get('learningWithNiniProfileV1',{name:'',avatar:'⭐'});
+let settings=Object.assign({name:sharedProfile.name||'',grade:'3',mins:20},LS.get('dm-settings',{}));
+if(!settings.name&&sharedProfile.name)settings.name=sharedProfile.name;
+let log=LS.get('dm-log',[]);if(!Array.isArray(log))log=[];
+let salt=0;
+function globalName(){
+  if(settings.name&&settings.name.trim())return settings.name.trim().slice(0,24);
+  let n=localStorage.getItem('dm-anon-name');
+  if(!n){n='Math Star '+(100+Math.floor(Math.random()*900));localStorage.setItem('dm-anon-name',n)}
+  return n;
+}
+
+/* ---------- random ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+let R=Math.random;
+const ri=(a,b)=>a+Math.floor(R()*(b-a+1));
+const pick=a=>a[Math.floor(R()*a.length)];
+const fmt=n=>n.toLocaleString('en-US');
+const NAMES=['Maya','Leo','Kai','Ava','Noah','Lani','Sam','Mia','Eli','Zoe','Koa','Ruby'];
+
+/* ---------- problem generators ---------- */
+const GEN={
+  mult(){const a=ri(2,10),b=ri(2,10);return{q:`${a} × ${b} = <span class="blank">?</span>`,a:a*b,k:'num'}},
+  div(){const b=ri(2,10),c=ri(2,10);return{q:`${b*c} ÷ ${b} = <span class="blank">?</span>`,a:c,k:'num'}},
+  missing(){const a=ri(2,9),b=ri(3,10);return{q:`<span class="blank">?</span> × ${a} = ${a*b}`,a:b,k:'num'}},
+  add(){const a=ri(146,589),b=ri(157,398);return{q:`${a} + ${b} = <span class="blank">?</span>`,a:a+b,k:'num'}},
+  sub(){const a=ri(402,951),b=ri(128,a-60);return{q:`${a} − ${b} = <span class="blank">?</span>`,a:a-b,k:'num'}},
+  round(){const n=ri(101,989),to=pick([10,100]);return{q:`Round ${n} to the nearest ${to}.`,a:Math.round(n/to)*to,k:'num'}},
+  fraccmp(){let L,Rt,ans;if(R()<.5){let a=ri(2,8),b=ri(2,8);while(b===a)b=ri(2,8);L=`{1/${a}}`;Rt=`{1/${b}}`;ans=a<b?'>':'<'}
+    else{const d=ri(3,10);let x=ri(1,d-1),y=ri(1,d-1);while(y===x)y=ri(1,d-1);L=`{${x}/${d}}`;Rt=`{${y}/${d}}`;ans=x>y?'>':'<'}
+    return{q:`${L} <span class="blank">?</span> ${Rt}`,a:ans,k:'cmp'}},
+  area(){const l=ri(3,10),w=ri(2,9);return{q:`A rectangle is ${l} cm long and ${w} cm wide. What is its area in square cm?`,a:l*w,k:'num'}},
+  perim(){const l=ri(4,15),w=ri(2,9);return{q:`A garden is ${l} m long and ${w} m wide. What is its perimeter in meters?`,a:2*(l+w),k:'num'}},
+  wordMult(){const a=ri(3,9),b=ri(4,9),n=pick(NAMES);return{q:`${n} has ${a} bags with ${b} marbles in each bag. How many marbles in all?`,a:a*b,k:'num'}},
+  wordDiv(){const b=ri(3,8),c=ri(3,9);return{q:`${b*c} stickers are shared equally among ${b} friends. How many stickers does each friend get?`,a:c,k:'num'}},
+  time(){const h=ri(1,11),m=ri(0,11)*5,dur=ri(3,11)*5,t=h*60+m+dur;let eh=Math.floor(t/60);const em=t%60;if(eh>12)eh-=12;
+    return{q:`A show starts at ${h}:${pad2(m)}. It lasts ${dur} minutes. What time does it end?`,a:`${eh}:${pad2(em)}`,k:'time'}},
+  mult2x2(){const a=ri(12,49),b=ri(11,29);return{q:`${a} × ${b} = <span class="blank">?</span>`,a:a*b,k:'num'}},
+  mult4x1(){const a=ri(1023,4987),b=ri(3,9);return{q:`${fmt(a)} × ${b} = <span class="blank">?</span>`,a:a*b,k:'num'}},
+  longdiv(){const d=ri(3,9),q=ri(24,199),r=R()<.3?0:ri(1,d-1),n=d*q+r;return{q:`${n} ÷ ${d} = <span class="blank">?</span>`,a:r?`${q}R${r}`:`${q}`,k:'rem'}},
+  equivfrac(){const d=ri(2,6),n=ri(1,d-1),m=ri(2,5);return{q:`{${n}/${d}} = {?/${d*m}}`,a:n*m,k:'num'}},
+  addfrac(){const d=pick([4,5,6,8,10,12]),x=ri(1,d-2),y=ri(1,d-1-x);return{q:`{${x}/${d}} + {${y}/${d}} = <span class="blank">?</span>`,a:[x+y,d],k:'frac'}},
+  subfrac(){const d=pick([5,6,8,10,12]),x=ri(3,d-1),y=ri(1,x-1);return{q:`{${x}/${d}} − {${y}/${d}} = <span class="blank">?</span>`,a:[x-y,d],k:'frac'}},
+  deccmp(){const A=ri(1,9)*10;let B=ri(1,99);if(B===A)B=A<90?A+3:A-3;
+    return{q:`${(A/100).toFixed(1)} <span class="blank">?</span> ${(B/100).toFixed(2)}`,a:A>B?'>':'<',k:'cmp'}},
+  roundBig(){const n=ri(10234,98765),to=pick([100,1000,10000]);return{q:`Round ${fmt(n)} to the nearest ${fmt(to)}.`,a:Math.round(n/to)*to,k:'num'}},
+  angle(){const x=ri(12,78);return{q:`Two angles together make a right angle (90°). One angle is ${x}°. How many degrees is the other?`,a:90-x,k:'num'}},
+  place(){const n=ri(10000,99999),p=pick([['ten thousands',10000],['thousands',1000],['hundreds',100],['tens',10]]);
+    return{q:`What digit is in the ${p[0]} place of ${fmt(n)}?`,a:Math.floor(n/p[1])%10,k:'num'}},
+  wordMulti(){const a=ri(3,8),b=ri(6,12),c=ri(5,a*b-4),n=pick(NAMES);return{q:`${n} buys ${a} packs of ${b} cards, then gives away ${c} cards. How many cards are left?`,a:a*b-c,k:'num'}},
+  areaBig(){const l=ri(12,35),w=ri(3,9);return{q:`A rug is ${l} ft long and ${w} ft wide. What is its area in square feet?`,a:l*w,k:'num'}}
+};
+const POOL={
+  '3':['mult','mult','mult','div','div','missing','add','sub','round','fraccmp','area','perim','wordMult','wordDiv','time'],
+  '4':['mult','mult2x2','mult4x1','longdiv','longdiv','equivfrac','addfrac','subfrac','deccmp','roundBig','angle','place','wordMulti','areaBig']
+};
+POOL.mix=POOL['3'].concat(POOL['4']);
+const HINT={num:'',frac:'Use / for a fraction, like 3/4',rem:'Remainder? Use R, like 12R3',time:'Use : for time, like 3:45',cmp:'Tap <, = or >'};
+const KEYSET={num:'0123456789.',frac:'0123456789/',rem:'0123456789R',time:'0123456789:'};
+const FR=/\{(\d+|\?)\/(\d+)\}/g;
+const toHTML=q=>q.replace(FR,(m,n,d)=>`<span class="fr"><span>${n==='?'?'<span class="blank">?</span>':n}</span><span>${d}</span></span>`);
+const toText=q=>q.replace(FR,'$1/$2').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+const showAns=p=>p.k==='frac'?`${p.a[0]}/${p.a[1]}`:p.k==='num'?String(p.a):p.a;
+let lastType='';
+function genProblem(){const pool=POOL[settings.grade];let t=pick(pool),g=0;while(t===lastType&&g++<10)t=pick(pool);lastType=t;const p=GEN[t]();p.type=t;p.html=toHTML(p.q);p.text=toText(p.q);return p}
+
+function fracVal(s){let m=s.match(/^(\d+)\/(\d+)$/);if(m)return +m[2]===0?null:+m[1]/+m[2];m=s.match(/^\d+$/);return m?+s:null}
+function isRight(p,input){
+  const s=String(input).replace(/[\s,]/g,'').toUpperCase();if(!s)return false;
+  switch(p.k){
+    case 'num':return /^\d*\.?\d+$/.test(s)&&Math.abs(parseFloat(s)-p.a)<1e-9;
+    case 'cmp':return s===p.a;
+    case 'rem':return s===p.a||(!p.a.includes('R')&&s===p.a+'R0');
+    case 'frac':{const v=fracVal(s);return v!==null&&Math.abs(v-p.a[0]/p.a[1])<1e-9}
+    case 'time':{const m=s.match(/^(\d{1,2}):(\d{2})$/);return !!m&&(+m[1])+':'+m[2]===p.a}
+  }return false}
+
+/* ---------- start screen ---------- */
+function dayNumber(){const ds=[...new Set(log.map(x=>x.date))].sort(),i=ds.indexOf(today());return i>=0?i+1:ds.length+1}
+function streak(){const ds=new Set(log.map(x=>x.date));const d=dayDate();if(!ds.has(fmtUTC(d)))d.setUTCDate(d.getUTCDate()-1);let n=0;while(ds.has(fmtUTC(d))){n++;d.setUTCDate(d.getUTCDate()-1)}return n}
+const gradeLabel=g=>g==='mix'?'Grades 3–4':'Grade '+g;
+function renderStart(){
+  $('#dayTitle').textContent='Day '+dayNumber();
+  const s=streak();$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow for day 2.':"Let's warm up that brain.";
+  $('#name').value=settings.name;
+  $$('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
+  $$('#minSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+settings.mins));
+  $('#setLabel').textContent="Today's shared problem set · Hawaiʻi date";
+  const ul=$('#histList');ul.innerHTML='';
+  const recent=log.slice(-7).reverse();
+  if(!recent.length){ul.innerHTML='<li class="empty">No sessions yet. Your first one shows up here.</li>'}
+  recent.forEach(x=>{const li=document.createElement('li');
+    li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)}</span><span><b>${x.correct}</b> / ${x.attempted} correct</span>`;ul.appendChild(li)});
+}
+$('#gradeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.grade=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
+$('#minSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.mins=+b.dataset.v;LS.set('dm-settings',settings);renderStart()});
+$('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();LS.set('dm-settings',settings)});
+
+/* ---------- session ---------- */
+let S=null,tick=null;
+function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+function startSession(){
+  R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+salt));lastType='';
+  S={items:[],correct:0,idx:0,cur:null,input:'',tries:0,revealed:false,locked:false,msLeft:settings.mins*60000,end:0,paused:false,started:Date.now()};
+  $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)}</small>`;
+  $('#score').textContent='0';
+  show('game');requestAnimationFrame(()=>{sizeCanvas();nextProblem();resume()});
+}
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function resume(){S.paused=false;S.end=Date.now()+S.msLeft;$('#pause').classList.remove('on');clearInterval(tick);tick=setInterval(updTimer,250);updTimer()}
+function pauseS(){if(!S||S.paused)return;S.msLeft=Math.max(0,S.end-Date.now());S.paused=true;clearInterval(tick);$('#pause').classList.add('on')}
+function updTimer(){const ms=Math.max(0,S.end-Date.now());S.msLeft=ms;const s=Math.ceil(ms/1000);
+  $('#timer').textContent=Math.floor(s/60)+':'+pad2(s%60);$('#timer').classList.toggle('low',s<=60);if(ms<=0)finish()}
+function nextProblem(){
+  S.cur=genProblem();S.idx++;S.input='';S.tries=0;S.revealed=false;S.locked=false;
+  const q=$('#q');q.innerHTML=S.cur.html;q.classList.toggle('long',S.cur.text.length>34);
+  $('#qnum').textContent='#'+S.idx;
+  $('#right').classList.toggle('is-cmp',S.cur.k==='cmp');
+  $('#hint').textContent=HINT[S.cur.k];setFb('','');$('#checkBtn').textContent='Check';
+  buildKeys();updAns();strokes=[];redraw();
+}
+function buildKeys(){
+  const allowed=KEYSET[S.cur.k]||'';const order=['7','8','9','4','5','6','1','2','3','0','.','⌫','/',':','R'];
+  const k=$('#keys');k.innerHTML='';
+  order.forEach(c=>{if(c!=='⌫'&&!'0123456789'.includes(c)&&!allowed.includes(c))return;
+    const b=document.createElement('button');b.className='key';b.textContent=c;b.dataset.k=c;if(c==='⌫')b.setAttribute('aria-label','Delete');k.appendChild(b)});
+}
+function updAns(){const a=$('#ans');a.textContent=S.input||'?';a.classList.toggle('empty',!S.input);a.classList.remove('good','bad')}
+function setFb(t,c){const f=$('#fb');f.textContent=t;f.className='fb '+c}
+function press(c){if(!S||S.locked||S.paused)return;if(S.revealed)return;
+  if(c==='⌫')S.input=S.input.slice(0,-1);else if(S.input.length<9)S.input+=c;updAns();if(S.tries)setFb('','')}
+function submit(val){
+  if(!S||S.locked||S.paused)return;
+  if(S.revealed){nextProblem();return}
+  const given=val!==undefined?val:S.input;if(!given)return;
+  if(isRight(S.cur,given)){
+    S.correct++;$('#score').textContent=S.correct;S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:S.tries?'ok2':'ok'});
+    $('#ans').classList.add('good');setFb(S.tries?'Got it!':pick(['Correct!','Nice!','Yes!','Great job!']),'good');
+    S.locked=true;const fl=$('#flash');fl.classList.add('on');setTimeout(()=>{fl.classList.remove('on');nextProblem()},750);
+  }else{
+    S.tries++;const a=$('#ans');a.classList.remove('bad');void a.offsetWidth;a.classList.add('bad');
+    if(S.tries<2){setFb('Not quite. Try once more.','bad');setTimeout(()=>{S.input='';updAns()},500)}
+    else{S.revealed=true;S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:'no'});
+      setFb('Answer: '+showAns(S.cur),'bad');$('#checkBtn').textContent='Next';}
+  }
+}
+function skip(){if(!S||S.locked||S.paused)return;if(!S.revealed)S.items.push({t:S.cur.text,given:'',ans:showAns(S.cur),r:'skip'});nextProblem()}
+function finish(){
+  if(!S)return;clearInterval(tick);const done=S;S=null;
+  const attempted=done.items.filter(x=>x.r!=='skip').length;
+  const secs=Math.round(settings.mins*60-done.msLeft/1000);
+  if(attempted>0){log.push({date:today(),grade:settings.grade,correct:done.correct,attempted,secs});LS.set('dm-log',log)}
+  const globalStatus=$('#globalSaveStatus');
+  if(attempted>0&&window.LWNLeaderboard){
+    globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
+    LWNLeaderboard.saveScore({name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:done.correct,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()})
+      .then(()=>{globalStatus.textContent='🏆 Global best score saved for '+globalName()+'.'})
+      .catch(()=>{globalStatus.textContent='Your local result is saved. The global leaderboard could not update right now.'});
+  }else{globalStatus.textContent='Your result is saved on this device.'}
+  $('#bigScore').innerHTML=`${done.correct}<small> correct</small>`;
+  const pct=attempted?Math.round(done.correct/attempted*100):0;
+  $('#stats').innerHTML=`<div><b>${attempted}</b>answered</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
+  const ul=$('#review');ul.innerHTML='';
+  done.items.forEach((x,i)=>{const li=document.createElement('li');
+    const mark=x.r==='skip'?'<span class="sk">–</span>':x.r==='no'?'<span class="no">✗</span>':'<span class="ok">✓</span>';
+    const g=x.r==='skip'?'skipped · '+x.ans:x.r==='no'?`${escapeHTML(x.given)} → ${x.ans}`:x.ans;
+    li.innerHTML=`${mark}<span>${escapeHTML(x.t)}</span><span class="given">${g}</span>`;ul.appendChild(li)});
+  if(!done.items.length)ul.innerHTML='<li><span></span><span>No problems answered this time.</span><span></span></li>';
+  show('done');
+}
+$('#goBtn').addEventListener('click',startSession);
+$('#keys').addEventListener('click',e=>{const b=e.target.closest('.key');if(b)press(b.dataset.k)});
+$('#cmp').addEventListener('click',e=>{const b=e.target.closest('button');if(b)submit(b.dataset.c)});
+$('#checkBtn').addEventListener('click',()=>submit());
+$('#skipBtn').addEventListener('click',skip);
+$('#pauseBtn').addEventListener('click',pauseS);
+$('#resumeBtn').addEventListener('click',resume);
+$('#endBtn').addEventListener('click',finish);
+$('#homeBtn').textContent='Back to start';$('#homeBtn').addEventListener('click',()=>{renderStart();show('start')});
+document.addEventListener('keydown',e=>{if(!S||document.activeElement===$('#name'))return;
+  if(e.key==='Enter'){e.preventDefault();submit()}else if(e.key==='Backspace')press('⌫');
+  else if(S.cur&&S.cur.k==='cmp'&&'<=>'.includes(e.key))submit(e.key);
+  else if('0123456789'.includes(e.key)||(KEYSET[S.cur&&S.cur.k]||'').includes(e.key.toUpperCase()))press(e.key.toUpperCase())});
+
+/* ---------- scratch pad ---------- */
+const cv=$('#pad'),cx=cv.getContext('2d');
+let strokes=[],cur=null,tool='ink',allowFinger=true,pal={};
+function readPal(){const cs=getComputedStyle(document.documentElement);['ink','blue','red'].forEach(c=>pal[c]=cs.getPropertyValue('--'+c).trim())}
+function sizeCanvas(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;if(!r.width)return;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);cx.setTransform(d,0,0,d,0,0);readPal();redraw()}
+function seg(s,a,b){cx.globalCompositeOperation=s.erase?'destination-out':'source-over';cx.strokeStyle=s.erase?'#000':pal[s.color];
+  cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=s.erase?30:s.w*(0.55+b.p);cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()}
+function redraw(){cx.save();cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,cv.width,cv.height);cx.restore();
+  strokes.forEach(s=>{const p=s.pts;seg(s,p[0],{x:p[0].x+.01,y:p[0].y,p:p[0].p});for(let i=1;i<p.length;i++)seg(s,p[i-1],p[i])});cx.globalCompositeOperation='source-over'}
+function pt(e){const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==='pen'?(e.pressure||.5):.5}}
+cv.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='pen'&&allowFinger){allowFinger=false;updFinger()}
+  if(e.pointerType==='touch'&&!allowFinger)return;
+  if(S&&S.paused)return;e.preventDefault();cv.setPointerCapture(e.pointerId);
+  const p=pt(e);cur={id:e.pointerId,erase:tool==='eraser',color:tool==='eraser'?'ink':tool,w:e.pointerType==='pen'?3.4:4,pts:[p]};strokes.push(cur);
+  seg(cur,p,{x:p.x+.01,y:p.y,p:p.p});
+});
+cv.addEventListener('pointermove',e=>{if(!cur||e.pointerId!==cur.id)return;e.preventDefault();
+  const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];(evs.length?evs:[e]).forEach(ev=>{const p=pt(ev);seg(cur,cur.pts[cur.pts.length-1],p);cur.pts.push(p)})});
+const endStroke=e=>{if(cur&&e.pointerId===cur.id){cur=null;cx.globalCompositeOperation='source-over'}};
+cv.addEventListener('pointerup',endStroke);cv.addEventListener('pointercancel',endStroke);
+$$('.tool[data-tool]').forEach(b=>b.addEventListener('click',()=>{tool=b.dataset.tool;$$('.tool[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x===b))}));
+$('#undoBtn').addEventListener('click',()=>{strokes.pop();redraw()});
+$('#clearBtn').addEventListener('click',()=>{strokes=[];redraw()});
+function updFinger(){const b=$('#fingerBtn');b.textContent='Finger: '+(allowFinger?'on':'off');b.setAttribute('aria-pressed',allowFinger)}
+$('#fingerBtn').addEventListener('click',()=>{allowFinger=!allowFinger;updFinger()});
+let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(sizeCanvas,120)});
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{readPal();redraw()})}catch(e){}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseS()});
+
+renderStart();
+})();
+</script>
+</body>
+</html>
