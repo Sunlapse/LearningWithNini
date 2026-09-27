@@ -55,41 +55,34 @@ window.LWNLeaderboard = (() => {
     return await res.json();
   }
 
-  function parseDailyLevel(level){
-    const parts=String(level||"").split("|");
-    const grade=parts[0]||"";
-    const minutes=(parts[1]||"").replace("min","");
-    const date=parts[2]||"";
-    return {grade,minutes:Number(minutes)||0,date};
-  }
-
   async function dailyChallenge({date=null,minutes=20,limit=10}={}){
-    const rows=await all();
-    const filtered=rows.filter(r=>{
-      if(r.game!=="daily_challenge") return false;
-      const meta=parseDailyLevel(r.level);
-      if(minutes && meta.minutes!==Number(minutes)) return false;
-      if(date && meta.date!==date) return false;
-      return true;
+    const u=new URLSearchParams({
+      select:"player_name,avatar,score,grade,minutes,challenge_date,best_streak,updated_at",
+      minutes:"eq."+String(minutes||20),
+      order:"score.desc,updated_at.asc",
+      limit:"200"
     });
+    if(date)u.set("challenge_date","eq."+date);
+
+    const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
+    if(!res.ok) throw new Error("Could not load Daily Challenge leaderboard");
+    const rows=await res.json();
 
     const map=new Map();
-    for(const r of filtered){
+    for(const r of rows){
       const key=String(r.player_name||"Player").trim().toLowerCase();
-      const meta=parseDailyLevel(r.level);
       const item={
         name:r.player_name||"Player",
         avatar:r.avatar||"⭐",
         score:Number(r.score)||0,
-        level:r.level||"",
-        grade:meta.grade,
-        minutes:meta.minutes,
-        date:meta.date,
+        grade:String(r.grade||""),
+        minutes:Number(r.minutes)||0,
+        date:String(r.challenge_date||""),
         best_streak:Number(r.best_streak)||0,
         updated_at:r.updated_at||""
       };
       const prev=map.get(key);
-      if(!prev || item.score>prev.score || (item.score===prev.score && item.updated_at<prev.updated_at)){
+      if(!prev || item.score>prev.score || (item.score===prev.score && String(item.updated_at)<String(prev.updated_at))){
         map.set(key,item);
       }
     }
