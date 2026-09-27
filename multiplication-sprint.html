@@ -264,6 +264,7 @@ let selectedAvatar=profile.avatar||"⭐";
 let level="build";
 let question=1,score=0,streak=0,bestStreak=0,stars=3;
 let a=4,b=6,answer="",solved=false;
+let questionPool=[];
 let timerOn=true,startTime=Date.now(),timerHandle=null;
 let board=safe(KEYS.board,[]);
 
@@ -275,10 +276,47 @@ function currentRange(){
   if(level==="power")return {min:6,max:9,name:"Power Facts"};
   return {min:2,max:12,name:"Mixed Master"};
 }
+function shuffleFacts(items){
+  const a=[...items];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function resetQuestionPool(){
+  const facts=[];
+  const seen=new Set();
+
+  if(level==="master"){
+    for(let x=2;x<=12;x++){
+      for(let y=x;y<=12;y++){
+        const key=x+"x"+y;
+        if(!seen.has(key)){seen.add(key);facts.push([x,y])}
+      }
+    }
+  }else{
+    const r=currentRange();
+    for(let focus=r.min;focus<=r.max;focus++){
+      for(let other=2;other<=12;other++){
+        const lo=Math.min(focus,other),hi=Math.max(focus,other),key=lo+"x"+hi;
+        if(!seen.has(key)){seen.add(key);facts.push([lo,hi])}
+      }
+    }
+  }
+  questionPool=shuffleFacts(facts);
+}
 function makeQuestion(){
   const r=currentRange();
-  if(level==="master"){a=rnd(2,12);b=rnd(2,12)}
-  else{a=rnd(r.min,r.max);b=rnd(2,12);if(Math.random()<.5){const t=a;a=b;b=t}}
+  if(!questionPool.length)resetQuestionPool();
+
+  const pair=questionPool.pop();
+  a=pair[0];b=pair[1];
+
+  // Randomize the visual order, but treat 3×8 and 8×3 as the same fact
+  // so a fact never repeats within a 10-question round.
+  if(Math.random()<.5){const t=a;a=b;b=t}
+
   answer="";stars=3;solved=false;
   el("factorA").textContent=a;el("factorB").textContent=b;
   el("levelName").textContent=r.name;
@@ -339,6 +377,7 @@ function next(){
     el("status").textContent="Round complete! "+roundScore+" stars in "+formatTime(seconds)+". Starting a new round.";
     el("status").className="status good";
     question=1;score=0;streak=0;bestStreak=0;startTime=Date.now();
+    resetQuestionPool();
     setTimeout(makeQuestion,700);
   }else{question++;makeQuestion()}
 }
@@ -355,6 +394,7 @@ function showHint(){
 }
 function chooseLevel(v){
   level=v;question=1;score=0;streak=0;bestStreak=0;startTime=Date.now();
+  resetQuestionPool();
   document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));
   makeQuestion();
 }
@@ -398,7 +438,7 @@ el("clearBtn").onclick=clearAnswer;el("backBtn").onclick=backspace;el("checkBtn"
 el("timerToggle").onclick=toggleTimer;el("saveScore").onclick=saveScore;el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;
 window.addEventListener("keydown",e=>{if(e.key>="0"&&e.key<="9")typeDigit(e.key);else if(e.key==="Backspace")backspace();else if(e.key==="Enter")check()});
 el("profileModal").addEventListener("click",e=>{if(e.target===el("profileModal"))closeProfile()});
-updateProfile();renderBoard();makeQuestion();timerHandle=setInterval(tick,500);
+updateProfile();renderBoard();resetQuestionPool();makeQuestion();timerHandle=setInterval(tick,500);
 </script>
 </body>
 </html>
