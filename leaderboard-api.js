@@ -72,3 +72,44 @@ window.LWNLeaderboard = (() => {
 
   return {saveScore,top,overall};
 })();
+
+/* Playful browser-tab title when Learn With Nini is in the background. */
+(() => {
+  const originalTitle = document.title;
+  const hiddenTitles = [
+    "Math misses you! 💜",
+    "Nini saved your spot ✏️",
+    "Your math adventure is waiting ⭐",
+    "One more problem? 🧠",
+    "Your streak is waiting 🔥",
+    "Come back for some math! 🌈"
+  ];
+  let timer = null;
+  let messageIndex = Math.floor(Math.random() * hiddenTitles.length);
+
+  function nextHiddenTitle() {
+    document.title = hiddenTitles[messageIndex % hiddenTitles.length];
+    messageIndex += 1;
+  }
+
+  function restoreTitle() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+    document.title = originalTitle;
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      nextHiddenTitle();
+      if (!timer) timer = setInterval(nextHiddenTitle, 5000);
+    } else {
+      restoreTitle();
+    }
+  });
+
+  window.addEventListener("pageshow", () => {
+    if (!document.hidden) restoreTitle();
+  });
+})();
