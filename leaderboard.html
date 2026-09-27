@@ -212,6 +212,7 @@
         <a class="pill" href="time-match.html">Time Match</a>
         <a class="pill" href="multiplication-sprint.html">Multiplication Sprint</a>
         <a class="pill" href="fraction-builder.html">Fraction Builder</a>
+        <a class="pill" href="math-detective.html">Math Detective</a>
         <a class="pill" href="leaderboard.html">Leaderboard</a>
       </nav>
     </header>
@@ -246,6 +247,11 @@
       <div class="leaderboard-list" id="fractionLeaderboardList"></div>
     </section>
 
+    <section class="leaderboard-panel">
+      <h2>Math Detective</h2>
+      <div class="leaderboard-list" id="detectiveLeaderboardList"></div>
+    </section>
+
     <footer>
       Learning With Nini, learn, play, and grow 🌈
     </footer>
@@ -258,6 +264,7 @@
       timeLeaderboard: "timeMatchLeaderboardV1",
       multiplicationLeaderboard: "multiplicationSprintLeaderboardV1",
       fractionLeaderboard: "fractionBuilderLeaderboardV1",
+      detectiveLeaderboard: "mathDetectiveLeaderboardV1",
       overallLeaderboard: "learningWithNiniOverallLeaderboardV1"
     };
 
@@ -275,6 +282,7 @@
       const timeBoard = safeParseJson(SITE_KEYS.timeLeaderboard, []);
       const multiplicationBoard = safeParseJson(SITE_KEYS.multiplicationLeaderboard, []);
       const fractionBoard = safeParseJson(SITE_KEYS.fractionLeaderboard, []);
+      const detectiveBoard = safeParseJson(SITE_KEYS.detectiveLeaderboard, []);
       const map = new Map();
 
       function ensurePlayer(name, avatar) {
@@ -289,6 +297,7 @@
             timeBest: 0,
             multiplicationBest: 0,
             fractionBest: 0,
+            detectiveBest: 0,
             total: 0,
             updatedAt: 0
           });
@@ -325,9 +334,16 @@
         player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
       });
 
+      detectiveBoard.forEach((entry) => {
+        const player = ensurePlayer(entry.name, entry.avatar);
+        player.avatar = entry.avatar || player.avatar || "⭐";
+        player.detectiveBest = Math.max(player.detectiveBest, Number(entry.score) || 0);
+        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
+      });
+
       const overall = Array.from(map.values()).map((player) => ({
         ...player,
-        total: player.moneyBest + player.timeBest + player.multiplicationBest + player.fractionBest
+        total: player.moneyBest + player.timeBest + player.multiplicationBest + player.fractionBest + player.detectiveBest
       }));
 
       overall.sort((a, b) =>
@@ -359,7 +375,7 @@
           <div class="leaderboard-rank">${index + 1}</div>
           <div>
             <div class="leaderboard-name">${entry.avatar} ${entry.name}</div>
-            <div class="leaderboard-meta">Money ${entry.moneyBest} • Time ${entry.timeBest} • Multiply ${entry.multiplicationBest} • Fractions ${entry.fractionBest}</div>
+            <div class="leaderboard-meta">Money ${entry.moneyBest} • Time ${entry.timeBest} • Multiply ${entry.multiplicationBest} • Fractions ${entry.fractionBest} • Detective ${entry.detectiveBest}</div>
           </div>
           <div class="leaderboard-total">⭐ ${entry.total}</div>
         `;
@@ -398,6 +414,7 @@
     renderGameLeaderboard("timeLeaderboardList", SITE_KEYS.timeLeaderboard);
     renderGameLeaderboard("multiplicationLeaderboardList", SITE_KEYS.multiplicationLeaderboard);
     renderGameLeaderboard("fractionLeaderboardList", SITE_KEYS.fractionLeaderboard);
+    renderGameLeaderboard("detectiveLeaderboardList", SITE_KEYS.detectiveLeaderboard);
   </script>
 </body>
 </html>
