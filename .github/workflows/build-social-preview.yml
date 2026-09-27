@@ -38,6 +38,6 @@ jobs:
             echo "Preview is already up to date."
             exit 0
           fi
-          git pull --rebase origin main
           git commit -m "Generate social link preview"
+          git pull --rebase origin main
           git push origin HEAD:main
