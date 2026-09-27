@@ -344,8 +344,8 @@ const GEN={
   },
   wordMulti(){const a=ri(3,8),b=ri(6,12),give=ri(5,a*b-4),n=pick(NAMES);return{q:`${n} buys ${a} packs of ${b} cards, then gives away ${give} cards. How many cards are left?`,a:a*b-give,k:'num'}},
   multiStep4(){
-    const boxes=ri(4,9),each=ri(12,28),classes=pick([2,4,5,8]);
-    let total=boxes*each;
+    const boxes=ri(4,9),classes=pick([2,4,5,8]);
+    let each=ri(12,28),total=boxes*each;
     while(total%classes!==0){each=ri(12,28);total=boxes*each}
     return{q:`A school has ${boxes} boxes with ${each} pencils in each box. The pencils are shared equally among ${classes} classes. How many pencils does each class get?`,a:total/classes,k:'num'}
   },
