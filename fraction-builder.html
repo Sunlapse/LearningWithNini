@@ -86,4 +86,5 @@ function closeProfile(){el("modal").classList.remove("show")}
 function saveProfile(){profile={name:(el("pname").value||"Nini").trim().slice(0,16)||"Nini",avatar:picked||"⭐"};store(PROFILE,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile()}
 document.querySelectorAll(".level").forEach(b=>b.onclick=()=>choose(b.dataset.level));el("check").onclick=check;el("hint").onclick=hint;el("saveScore").onclick=saveScore;el("profileBtn").onclick=openProfile;el("close").onclick=closeProfile;el("cancel").onclick=closeProfile;el("saveProfile").onclick=saveProfile;el("modal").onclick=e=>{if(e.target===el("modal"))closeProfile()};updateProfile();renderBoard();fresh();
 </script>
+<script src="game-round-ui.js"></script>
 </body></html>
