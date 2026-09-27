@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#fbf9ff">
+<title>Math Maze | Learn With Nini</title>
+<meta name="description" content="Solve math gates to guide Nini through an interactive maze.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#282061;--muted:#746e94;--purple:#7040df;--pink:#f64b9a;--blue:#4b8ff7;--green:#23b978;--yellow:#ffbf27;--line:rgba(83,59,160,.12);--shadow:0 18px 46px rgba(74,50,137,.13)}
+html,body{margin:0;min-height:100%}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 4% 7%,rgba(226,243,255,.9),transparent 23%),radial-gradient(circle at 97% 5%,rgba(237,220,255,.9),transparent 24%),linear-gradient(180deg,#fbf9ff,#fff 48%,#fffafb)}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;min-height:72px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:10px max(16px,calc((100vw - 1440px)/2));background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.home,.profile-btn,.score-pill{min-height:44px;border:0;border-radius:999px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900}.home{background:#f0ebff;color:#5f36c7;text-decoration:none}.score-wrap{display:flex;justify-content:center}.score-pill{background:linear-gradient(135deg,#eef7ff,#eee6ff);color:#4b307d}.profile-btn{background:linear-gradient(135deg,#fff3c6,#ffe09b);color:#654b12;cursor:pointer}
+.wrap{width:min(1440px,calc(100% - 28px));margin:0 auto;padding:20px 0 40px}.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.nini{position:sticky;top:94px;min-height:660px;border-radius:34px;overflow:hidden;background:#e8dcff;box-shadow:var(--shadow)}.nini img{width:100%;height:660px;object-fit:cover;object-position:center 28%}.nini:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(64,34,125,.2));pointer-events:none}.bubble{position:absolute;z-index:2;left:16px;right:16px;top:18px;background:#fff;border-radius:26px 26px 26px 8px;padding:15px 17px;font-family:"Fredoka",sans-serif;font-size:1.3rem;color:#4d2ab6;line-height:1.08;box-shadow:0 12px 28px rgba(66,38,130,.15);transform:rotate(-1.5deg)}.bubble small{display:block;margin-top:8px;color:#ee4a94;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
+.main{min-width:0}.progress,.maze-card,.question-card,.levels,.extras,.leader{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.95);box-shadow:var(--shadow)}
+.progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}.qtext{font-weight:1000;white-space:nowrap}.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}.fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#51b8ef,#7348e0);transition:.25s}.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
+.game-grid{display:grid;grid-template-columns:minmax(340px,.9fr) minmax(0,1.1fr);gap:14px}.maze-card{padding:16px;background:linear-gradient(135deg,#eff9ff,#f3edff)}.maze-title{text-align:center;font-family:"Fredoka",sans-serif;color:#5134aa;font-size:1.35rem;margin-bottom:10px}.maze{width:min(460px,100%);aspect-ratio:1;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);gap:6px;padding:10px;background:#382a66;border-radius:25px;box-shadow:inset 0 0 0 3px rgba(255,255,255,.1),0 14px 28px rgba(62,42,112,.16)}.maze-cell{position:relative;border-radius:10px;background:#241a4a;display:grid;place-items:center;color:#fff;font-weight:1000;overflow:hidden}.maze-cell.route{background:#efeaff}.maze-cell.route:after{content:"";position:absolute;inset:27%;border-radius:6px;background:#ddd1ff;opacity:.8}.maze-cell.cleared{background:#dff7e9}.maze-cell.cleared:after{background:#7ed7aa}.maze-cell.current{background:#fff1a9;box-shadow:0 0 0 3px #ffc734 inset}.maze-cell.current:after{display:none}.maze-cell.exit{background:#fce6f3}.maze-cell.exit:after{display:none}.maze-icon{position:relative;z-index:2;font-size:1.55rem}.maze-label{position:relative;z-index:2;font-size:.7rem}.question-card{padding:18px}.level-pill{display:inline-flex;padding:7px 12px;border-radius:999px;background:#f0ebff;color:#7040d3;font-weight:900}.gate-title{margin-top:10px;font-weight:900;color:#8176a0}.equation{font-family:"Fredoka",sans-serif;font-size:clamp(3.5rem,8vw,6rem);text-align:center;color:#4d33ad;margin:20px 0 14px;line-height:1}.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.door{border:3px solid #e3dcf4;border-radius:22px;background:#fff;min-height:92px;color:#5436aa;font-family:"Fredoka",sans-serif;font-size:clamp(1.7rem,4vw,2.6rem);cursor:pointer;box-shadow:0 8px 18px rgba(72,49,131,.08)}.door:before{content:"🚪";display:block;font-size:1.15rem;margin-bottom:2px}.door.selected{border-color:#7040df;background:#eee8ff;box-shadow:0 0 0 4px rgba(112,64,223,.08)}.door.correct{border-color:#27b879;background:#e9faef;color:#168354}.door.wrong{border-color:#e79057;background:#fff1e7}.status{min-height:96px;border-radius:20px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:14px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.35;margin-top:12px}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.check,.hint,.next{border:0;border-radius:19px;min-height:62px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#4fa9ee,#7046dd);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.15rem}.hint{background:linear-gradient(135deg,#ff75b5,#ef4897);color:#fff}.notebook{border-radius:18px;background:#fff8dc;border:1px solid #f4df94;padding:12px;color:#725b18;font-weight:900;line-height:1.35;margin-top:10px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:17px;padding:10px;text-align:center}.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.25rem}
+.levels{margin-top:16px;padding:16px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.level-card{border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;color:var(--ink);min-height:158px}.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}.level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}.level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
+.extras{margin-top:14px;padding:13px 15px}.pill{border:0;border-radius:999px;padding:10px 13px;background:#eee9ff;color:#5941a4;font-weight:900;cursor:pointer;text-decoration:none}.leader{margin-top:14px;padding:13px 15px}details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}.board{display:grid;gap:7px;margin-top:10px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eee8ff;color:#6341c4}.empty{padding:10px;color:#8d86a3}
+.modal-bg{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}.modal-bg.show{display:flex}.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;box-shadow:0 25px 60px rgba(50,30,100,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}.close{border:0;width:40px;height:40px;border-radius:50%;background:#f0ebff;font-size:1.25rem;cursor:pointer}.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}.avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#7040df;background:#f0e9ff}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#eee9ff;color:#56488b}
+@media(max-width:1050px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.game-grid{grid-template-columns:1fr}}
+@media(max-width:780px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.level-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.maze-card,.question-card{padding:12px}.doors{gap:6px}.door{min-height:78px}.actions{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="topbar">
+<a class="home" href="index.html">🏠 Back to Home</a>
+<div class="score-wrap"><div class="score-pill" id="topScore">⭐ Score: 0</div></div>
+<button class="profile-btn" id="profileButton"><span id="avatarTop">⭐</span><span class="profile-name" id="nameTop">Nini</span></button>
+</header>
+<div class="wrap"><div class="shell">
+<aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Math Maze! 🧩<small>Solve each gate to find the way out ♡</small></div></aside>
+<main class="main">
+<section class="progress"><div class="qtext" id="questionText">Gate 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span></div></section>
+<div class="game-grid">
+<section class="maze-card"><div class="maze-title">Find the exit 🚩</div><div class="maze" id="maze"></div></section>
+<section class="question-card">
+<div class="level-pill" id="levelName">Addition Alley</div>
+<div class="gate-title" id="gateTitle">Gate 1</div>
+<div class="equation" id="equation">36 + 27 = ?</div>
+<div class="doors" id="doors"></div>
+<div class="status" id="status">Solve the equation and choose the correct door.</div>
+<div class="actions"><button class="check" id="checkBtn">Open Door →</button><button class="hint" id="hintBtn">Maze Hint − 1 Star</button></div>
+<div class="notebook" id="notebook"><strong>Maze Tip:</strong><br>Only the correct answer opens the next path.</div>
+<div class="stats"><div class="stat"><small>Score</small><strong id="score">0</strong></div><div class="stat"><small>Streak</small><strong id="streak">0</strong></div><div class="stat"><small>Exit</small><strong id="exitStat">0/10</strong></div></div>
+</section>
+</div>
+<section class="levels"><h2>🧩 Math Maze — Choose a Maze</h2><div class="level-grid">
+<button class="level-card active" data-level="addsub"><div class="level-num">1</div><h3>Addition Alley</h3><p>Escape by solving 2- and 3-digit addition and subtraction gates.</p></button>
+<button class="level-card" data-level="facts"><div class="level-num">2</div><h3>Fact Forest</h3><p>Use multiplication and division facts through 12 to unlock each maze gate.</p></button>
+<button class="level-card" data-level="mixed"><div class="level-num">3</div><h3>Mixed Maze</h3><p>Navigate a surprise mix of addition, subtraction, multiplication, and division.</p></button>
+</div></section>
+<section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
+<section class="leader"><details><summary>🏆 Math Maze global leaderboard</summary><div id="board" class="board"></div></details></section>
+</main>
+</div></div>
+<div class="modal-bg" id="profileModal"><div class="modal"><div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close" id="closeProfile">×</button></div><div class="profile-form"><input id="profileName" maxlength="16" placeholder="Player nickname"><div style="font-weight:900;color:#756b91">Choose an avatar</div><div class="avatars" id="avatars"></div></div><div class="modal-actions"><button class="cancel" id="cancelProfile">Cancel</button><button class="save" id="saveProfile">Save</button></div></div></div>
+<script src="leaderboard-api.js"></script>
+<script>
+const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
+const ROUTE=[20,15,10,11,12,7,2,3,8,9,4];
+let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
+let level="addsub",q=1,score=0,streak=0,bestStreak=0,stars=3,gateSolved=false,selected=null,current={text:"",answer:0,hint:""};
+function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function makeEquation(mode){
+  if(mode==="addsub"){
+    if(Math.random()<.5){const a=rnd(24,499),b=rnd(12,299);return{text:a+" + "+b+" = ?",answer:a+b,hint:"Add hundreds, tens, and ones carefully. You can estimate first."}}
+    const a=rnd(120,999),b=rnd(15,a-1);return{text:a+" − "+b+" = ?",answer:a-b,hint:"Subtract by place value. Check your answer by adding it back to "+b+"."}
+  }
+  if(mode==="facts"){
+    if(Math.random()<.5){const a=rnd(2,12),b=rnd(2,12);return{text:a+" × "+b+" = ?",answer:a*b,hint:"Think of "+a+" equal groups of "+b+"."}}
+    const d=rnd(2,12),ans=rnd(2,12),n=d*ans;return{text:n+" ÷ "+d+" = ?",answer:ans,hint:"Use multiplication backwards: "+d+" × ? = "+n+"."}
+  }
+  const op=["+","−","×","÷"][rnd(0,3)];
+  if(op==="+"){const a=rnd(35,650),b=rnd(18,350);return{text:a+" + "+b+" = ?",answer:a+b,hint:"Line up place values and combine."}}
+  if(op==="−"){const a=rnd(150,999),b=rnd(20,a-1);return{text:a+" − "+b+" = ?",answer:a-b,hint:"Subtract by place value, then use addition to check."}}
+  if(op==="×"){const a=rnd(2,12),b=rnd(2,12);return{text:a+" × "+b+" = ?",answer:a*b,hint:"Use a fact you know or repeated addition."}}
+  const d=rnd(2,12),ans=rnd(2,12),n=d*ans;return{text:n+" ÷ "+d+" = ?",answer:ans,hint:"Ask what number times "+d+" equals "+n+"."}
+}
+function makeChoices(ans){
+  const s=new Set([ans]);const deltas=[1,-1,2,-2,5,-5,10,-10];
+  while(s.size<3){const d=deltas[rnd(0,deltas.length-1)];const v=ans+d;if(v>=0)s.add(v)}
+  return shuffle([...s]);
+}
+function renderMaze(position=q-1){
+  const box=el("maze");box.innerHTML="";
+  for(let i=0;i<25;i++){
+    const c=document.createElement("div");c.className="maze-cell";
+    const routeIndex=ROUTE.indexOf(i);
+    if(routeIndex>=0)c.classList.add("route");
+    if(routeIndex>=0&&routeIndex<position)c.classList.add("cleared");
+    if(i===ROUTE[position]){c.classList.add("current");c.innerHTML='<span class="maze-icon">🧒</span>'}
+    else if(i===ROUTE[ROUTE.length-1]){c.classList.add("exit");c.innerHTML='<span class="maze-icon">🚩</span><span class="maze-label">EXIT</span>'}
+    box.appendChild(c);
+  }
+}
+function newGate(){
+  stars=3;gateSolved=false;selected=null;current=makeEquation(level);
+  el("levelName").textContent=level==="addsub"?"Addition Alley":level==="facts"?"Fact Forest":"Mixed Maze";
+  el("gateTitle").textContent="Gate "+q;el("equation").textContent=current.text;
+  const choices=makeChoices(current.answer);el("doors").innerHTML=choices.map(v=>'<button class="door" data-answer="'+v+'">'+v.toLocaleString("en-US")+'</button>').join("");
+  el("doors").querySelectorAll(".door").forEach(b=>b.onclick=()=>{if(gateSolved)return;selected=Number(b.dataset.answer);el("doors").querySelectorAll(".door").forEach(x=>x.classList.toggle("selected",x===b))});
+  el("status").textContent="Solve the equation and choose the correct door.";el("status").className="status";
+  el("notebook").innerHTML="<strong>Maze Tip:</strong><br>Only the correct answer opens the next path.";
+  el("checkBtn").textContent="Open Door →";el("checkBtn").className="check";el("hintBtn").disabled=false;renderMaze(q-1);updateUI()
+}
+function updateUI(){el("questionText").textContent="Gate "+q+" of 10";el("progressFill").style.width=((q-1)*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("exitStat").textContent=(q-1)+"/10"}
+function check(){
+  if(gateSolved){advance();return}
+  if(selected===null){el("status").textContent="Choose a door first.";el("status").className="status info";return}
+  if(selected===current.answer){
+    gateSolved=true;score+=stars;streak++;bestStreak=Math.max(bestStreak,streak);
+    el("doors").querySelectorAll(".door").forEach(b=>{if(Number(b.dataset.answer)===current.answer)b.classList.add("correct")});
+    renderMaze(q);el("progressFill").style.width=(q*10)+"%";el("exitStat").textContent=q+"/10";
+    el("status").textContent=q===10?"You found the exit! Maze complete!":"Correct door! The path ahead is open.";el("status").className="status good";
+    el("checkBtn").textContent=q===10?"Start New Maze →":"Next Gate →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateScoreOnly();
+    LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"math_maze",score,level,best_streak:bestStreak}).then(renderBoard).catch(()=>{});
+  }else{
+    stars=Math.max(1,stars-1);streak=0;
+    el("doors").querySelectorAll(".door").forEach(b=>b.classList.toggle("wrong",Number(b.dataset.answer)===selected));
+    el("status").textContent="That door is blocked. Recheck the math and try another path.";el("status").className="status bad";updateScoreOnly()
+  }
+}
+function updateScoreOnly(){el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak}
+function advance(){if(!gateSolved)return;if(q===10){q=1;score=0;streak=0;bestStreak=0;newGate()}else{q++;newGate()}}
+function hint(){if(gateSolved)return;stars=Math.max(1,stars-1);el("notebook").innerHTML="<strong>Hint:</strong><br>"+current.hint;el("status").textContent="A clue appeared on the maze wall.";el("status").className="status info";updateScoreOnly()}
+function chooseLevel(v){level=v;q=1;score=0;streak=0;bestStreak=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newGate()}
+async function saveScore(){try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"math_maze",score,level,best_streak:bestStreak});await renderBoard();el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"}catch{el("status").textContent="Could not save the global score yet.";el("status").className="status bad"}}
+async function renderBoard(){const box=el("board");box.innerHTML="";try{const rows=await LWNLeaderboard.top("math_maze",10);if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})}catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function updateProfile(){el("avatarTop").textContent=profile.avatar||"⭐";el("nameTop").textContent=profile.name||"Nini"}
+function openProfile(){picked=profile.avatar||"⭐";el("profileName").value=profile.name||"Nini";buildAvatars();el("profileModal").classList.add("show")}
+function closeProfile(){el("profileModal").classList.remove("show")}
+function buildAvatars(){const b=el("avatars");b.innerHTML="";AV.forEach(v=>{const x=document.createElement("button");x.className="avatar"+(v===picked?" active":"");x.textContent=v;x.onclick=()=>{picked=v;buildAvatars()};b.appendChild(x)})}
+function saveProfile(){profile={name:(el("profileName").value||"Nini").trim().slice(0,16)||"Nini",avatar:picked||"⭐"};store(PROFILE,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile()}
+document.querySelectorAll(".level-card").forEach(b=>b.onclick=()=>chooseLevel(b.dataset.level));el("checkBtn").onclick=check;el("hintBtn").onclick=hint;el("saveScore").onclick=saveScore;el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;el("profileModal").onclick=e=>{if(e.target===el("profileModal"))closeProfile()};
+window.addEventListener("keydown",e=>{if(e.key==="Enter")check()});
+updateProfile();renderBoard();newGate();
+</script>
+</body></html>
