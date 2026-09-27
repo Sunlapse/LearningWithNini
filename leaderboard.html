@@ -209,14 +209,14 @@
       <nav class="navlinks">
         <a class="pill" href="index.html">Home</a>
         <a class="pill" href="money-match.html">Math Game</a>
-        <a class="pill" href="time-match.html">Telling Time Game</a>
+        <a class="pill" href="time-match.html">Time Match</a>\n        <a class="pill" href="multiplication-sprint.html">Multiplication Sprint</a>
         <a class="pill" href="leaderboard.html">Leaderboard</a>
       </nav>
     </header>
 
     <section class="hero-card">
       <h1>Leaderboard</h1>
-      <p>See the top scores across Learning With Nini. This page shows the best Money Match scores, the best Time Match scores, and the combined overall stars.</p>
+      <p>See the top scores across Learning With Nini. This page shows the best Money Match, Time Match, and Multiplication Sprint scores, plus combined overall stars.</p>
     </section>
 
     <section class="leaderboard-panel">
@@ -234,6 +234,11 @@
       <div class="leaderboard-list" id="timeLeaderboardList"></div>
     </section>
 
+    <section class="leaderboard-panel">
+      <h2>Multiplication Sprint</h2>
+      <div class="leaderboard-list" id="multiplicationLeaderboardList"></div>
+    </section>
+
     <footer>
       Learning With Nini, learn, play, and grow 🌈
     </footer>
@@ -243,7 +248,7 @@
     const SITE_KEYS = {
       profile: "learningWithNiniProfileV1",
       moneyLeaderboard: "moneyMatchLeaderboardV1",
-      timeLeaderboard: "timeMatchLeaderboardV1",
+      timeLeaderboard: "timeMatchLeaderboardV1",\n      multiplicationLeaderboard: "multiplicationSprintLeaderboardV1",
       overallLeaderboard: "learningWithNiniOverallLeaderboardV1"
     };
 
@@ -259,6 +264,7 @@
     function buildOverallFromBoards() {
       const moneyBoard = safeParseJson(SITE_KEYS.moneyLeaderboard, []);
       const timeBoard = safeParseJson(SITE_KEYS.timeLeaderboard, []);
+      const multiplicationBoard = safeParseJson(SITE_KEYS.multiplicationLeaderboard, []);
       const map = new Map();
 
       function ensurePlayer(name, avatar) {
@@ -271,6 +277,7 @@
             avatar: avatar || "⭐",
             moneyBest: 0,
             timeBest: 0,
+            multiplicationBest: 0,
             total: 0,
             updatedAt: 0
           });
@@ -293,9 +300,16 @@
         player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
       });
 
+      multiplicationBoard.forEach((entry) => {
+        const player = ensurePlayer(entry.name, entry.avatar);
+        player.avatar = entry.avatar || player.avatar || "⭐";
+        player.multiplicationBest = Math.max(player.multiplicationBest, Number(entry.score) || 0);
+        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
+      });
+
       const overall = Array.from(map.values()).map((player) => ({
         ...player,
-        total: player.moneyBest + player.timeBest
+        total: player.moneyBest + player.timeBest + player.multiplicationBest
       }));
 
       overall.sort((a, b) =>
@@ -327,7 +341,7 @@
           <div class="leaderboard-rank">${index + 1}</div>
           <div>
             <div class="leaderboard-name">${entry.avatar} ${entry.name}</div>
-            <div class="leaderboard-meta">Money ${entry.moneyBest} • Time ${entry.timeBest}</div>
+            <div class="leaderboard-meta">Money ${entry.moneyBest} • Time ${entry.timeBest} • Multiply ${entry.multiplicationBest}</div>
           </div>
           <div class="leaderboard-total">⭐ ${entry.total}</div>
         `;
@@ -364,6 +378,7 @@
     renderOverallLeaderboard();
     renderGameLeaderboard("moneyLeaderboardList", SITE_KEYS.moneyLeaderboard);
     renderGameLeaderboard("timeLeaderboardList", SITE_KEYS.timeLeaderboard);
+    renderGameLeaderboard("multiplicationLeaderboardList", SITE_KEYS.multiplicationLeaderboard);
   </script>
 </body>
 </html>

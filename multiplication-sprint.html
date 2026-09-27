@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="theme-color" content="#fbf9ff" />
+<title>Multiplication Sprint | Learn With Nini</title>
+<meta name="description" content="Practice multiplication facts with Nini in fun 10-question sprints." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --ink:#282062;--muted:#746e94;--purple:#7040df;--pink:#f64b9a;--blue:#4b8ff7;
+  --green:#23b978;--yellow:#ffbf27;--lav:#f3edff;--line:rgba(83,59,160,.12);
+  --shadow:0 18px 46px rgba(74,50,137,.13)
+}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:"Nunito",Arial,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(circle at 3% 8%,rgba(255,224,241,.9),transparent 22%),
+    radial-gradient(circle at 97% 4%,rgba(226,214,255,.9),transparent 24%),
+    linear-gradient(180deg,#fbf9ff,#fff 48%,#fffafb);
+}
+button,input{font:inherit}
+.topbar{
+  position:sticky;top:0;z-index:1000;min-height:72px;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;
+  padding:10px max(16px,calc((100vw - 1440px)/2));
+  background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)
+}
+.home,.profile-btn,.score-pill{
+  min-height:44px;border:0;border-radius:999px;padding:10px 16px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900
+}
+.home{background:#f0ebff;color:#5f36c7;text-decoration:none}
+.score-wrap{display:flex;justify-content:center}
+.score-pill{background:linear-gradient(135deg,#fff0f8,#eee6ff);color:#4b307d}
+.profile-btn{background:linear-gradient(135deg,#fff3c6,#ffe09b);color:#654b12;cursor:pointer}
+.wrap{width:min(1440px,calc(100% - 28px));margin:0 auto;padding:20px 0 40px}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.nini{
+  position:sticky;top:94px;min-height:660px;border-radius:34px;overflow:hidden;
+  background:#e8dcff;box-shadow:var(--shadow)
+}
+.nini img{width:100%;height:660px;object-fit:cover;object-position:center 28%}
+.nini:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(64,34,125,.2));pointer-events:none}
+.bubble{
+  position:absolute;z-index:2;left:16px;right:16px;top:18px;background:#fff;
+  border-radius:26px 26px 26px 8px;padding:15px 17px;font-family:"Fredoka",sans-serif;
+  font-size:1.35rem;color:#4d2ab6;line-height:1.08;box-shadow:0 12px 28px rgba(66,38,130,.15);
+  transform:rotate(-1.5deg)
+}
+.bubble small{display:block;margin-top:8px;color:#ee4a94;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
+.main{min-width:0}
+.progress,.question-card,.answer-card,.levels,.stats,.leader{
+  border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.95);box-shadow:var(--shadow)
+}
+.progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}
+.qtext{font-weight:1000;white-space:nowrap}
+.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}
+.fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#a86ef2,#6f40df);transition:.25s}
+.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}
+.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
+.question-card{
+  padding:22px;margin-bottom:14px;text-align:center;
+  background:linear-gradient(135deg,#f5efff,#eee5ff)
+}
+.level-pill{display:inline-flex;padding:7px 12px;border-radius:999px;background:#fff;color:#7040d3;font-weight:900}
+.equation{
+  margin:14px 0 2px;font-family:"Fredoka",sans-serif;font-size:clamp(4rem,10vw,7rem);
+  line-height:.95;color:#6337cf;letter-spacing:-.04em
+}
+.equation .times{color:#ee4d9a}
+.streak{margin-top:12px;color:#695f88;font-weight:900}
+.answer-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px}
+.answer-card{padding:18px}
+.display{
+  min-height:115px;border-radius:24px;background:#faf8ff;border:2px solid #eee8fb;
+  display:flex;align-items:center;justify-content:center;padding:14px;
+  font-family:"Fredoka",sans-serif;font-size:clamp(2.6rem,7vw,4.8rem);color:#3f2a84
+}
+.display.placeholder{color:#b5aec8}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.key{
+  border:0;border-radius:18px;min-height:64px;background:#f0ebff;color:#5332ae;
+  font-size:1.45rem;font-weight:1000;cursor:pointer;box-shadow:0 7px 16px rgba(82,54,151,.08)
+}
+.key:hover{transform:translateY(-1px)}
+.key.clear{background:#fff0f6;color:#c53979}.key.back{background:#fff5dc;color:#9a6a00}
+.actions{display:grid;gap:10px}
+.check,.hint,.next{
+  border:0;border-radius:22px;min-height:70px;font-weight:1000;cursor:pointer
+}
+.check{background:linear-gradient(135deg,#ff70b3,#f44495);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.45rem;box-shadow:0 10px 22px rgba(244,68,149,.2)}
+.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:white;font-family:"Fredoka",sans-serif;font-size:1.35rem}
+.hint{background:#7546da;color:#fff}
+.status{min-height:118px;border-radius:22px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:16px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}
+.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}
+.array-box{
+  display:none;border-radius:22px;background:#fff;border:1px solid #eee8fb;padding:12px;
+  text-align:center
+}
+.array-box.show{display:block}
+.array-label{font-weight:900;color:#685d88;margin-bottom:8px}
+.array{
+  display:grid;gap:4px;justify-content:center;margin:auto;max-width:300px
+}
+.dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#8c59e8,#ef5aa3)}
+.round-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:9px
+}
+.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:18px;padding:12px;text-align:center}
+.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.4rem}
+.levels{margin-top:16px;padding:16px}
+.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}
+.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.level-card{
+  border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;
+  color:var(--ink);min-height:155px
+}
+.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}
+.level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}
+.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}
+.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}
+.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}
+.level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
+.stats{margin-top:14px;padding:14px}
+.options{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{border:0;border-radius:999px;padding:10px 13px;background:#eee9ff;color:#5941a4;font-weight:900;cursor:pointer}
+.leader{margin-top:14px;padding:13px 15px}
+details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
+.board{display:grid;gap:7px;margin-top:10px}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}
+.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eee8ff;color:#6341c4}
+.empty{padding:10px;color:#8d86a3}
+.modal-bg{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}
+.modal-bg.show{display:flex}
+.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;box-shadow:0 25px 60px rgba(50,30,100,.25)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}
+.close{border:0;width:40px;height:40px;border-radius:50%;background:#f0ebff;font-size:1.25rem;cursor:pointer}
+.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}
+.avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#7040df;background:#f0e9ff}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#eee9ff;color:#56488b}
+@media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.answer-grid{grid-template-columns:1fr 310px}}
+@media(max-width:780px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.answer-grid{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px;grid-template-columns:auto 1fr auto}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.question-card{padding:17px}.equation{font-size:4.2rem}.answer-card{padding:12px}.round-stats{grid-template-columns:1fr 1fr 1fr}.level-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="home" href="index.html">🏠 Back to Home</a>
+  <div class="score-wrap"><div class="score-pill" id="topScore">⭐ Score: 0</div></div>
+  <button class="profile-btn" id="profileButton"><span id="avatarTop">⭐</span><span class="profile-name" id="nameTop">Nini</span></button>
+</header>
+
+<div class="wrap">
+  <div class="shell">
+    <aside class="nini">
+      <img src="nini-hero.webp" alt="Nini" />
+      <div class="bubble">Multiplication Sprint! ✖️<small>Think fast — but accuracy comes first ♡</small></div>
+    </aside>
+
+    <main class="main">
+      <section class="progress">
+        <div class="qtext" id="questionText">Question 1 of 10</div>
+        <div class="track"><div class="fill" id="progressFill"></div></div>
+        <div class="stars" id="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span></div>
+      </section>
+
+      <section class="question-card">
+        <div class="level-pill" id="levelName">Build Up</div>
+        <div class="equation"><span id="factorA">4</span> <span class="times">×</span> <span id="factorB">6</span> = ?</div>
+        <div class="streak" id="streakText">🔥 Streak: 0</div>
+      </section>
+
+      <div class="answer-grid">
+        <section class="answer-card">
+          <div class="display placeholder" id="answerDisplay">Type your answer</div>
+          <div class="keypad">
+            <button class="key" data-n="1">1</button><button class="key" data-n="2">2</button><button class="key" data-n="3">3</button>
+            <button class="key" data-n="4">4</button><button class="key" data-n="5">5</button><button class="key" data-n="6">6</button>
+            <button class="key" data-n="7">7</button><button class="key" data-n="8">8</button><button class="key" data-n="9">9</button>
+            <button class="key clear" id="clearBtn">Clear</button><button class="key" data-n="0">0</button><button class="key back" id="backBtn">⌫</button>
+          </div>
+        </section>
+
+        <section class="actions">
+          <div class="status" id="status">Enter the product, then check your answer.</div>
+          <button class="check" id="checkBtn">Check Answer →</button>
+          <button class="hint" id="hintBtn">Show Array Hint − 1 Star</button>
+          <div class="array-box" id="arrayBox">
+            <div class="array-label" id="arrayLabel"></div>
+            <div class="array" id="array"></div>
+          </div>
+          <div class="round-stats">
+            <div class="stat"><small>Score</small><strong id="score">0</strong></div>
+            <div class="stat"><small>Best Streak</small><strong id="bestStreak">0</strong></div>
+            <div class="stat"><small>Time</small><strong id="timer">0:00</strong></div>
+          </div>
+        </section>
+      </div>
+
+      <section class="levels">
+        <h2>✖️ Multiplication Sprint — Choose a Level</h2>
+        <div class="level-grid">
+          <button class="level-card active" data-level="build">
+            <div class="level-num">1</div><h3>Build Up</h3>
+            <p>Practice ×2 through ×5 and build strong multiplication foundations.</p>
+          </button>
+          <button class="level-card" data-level="power">
+            <div class="level-num">2</div><h3>Power Facts</h3>
+            <p>Practice ×6 through ×9 — the facts that usually need the most repetition.</p>
+          </button>
+          <button class="level-card" data-level="master">
+            <div class="level-num">3</div><h3>Mixed Master</h3>
+            <p>Mix multiplication facts from ×2 through ×12 for a full challenge.</p>
+          </button>
+        </div>
+      </section>
+
+      <section class="stats">
+        <div class="options">
+          <button class="pill" id="timerToggle">⏱ Timer: On</button>
+          <button class="pill" id="saveScore">🏆 Save Score</button>
+          <a class="pill" href="leaderboard.html" style="text-decoration:none">View Leaderboard</a>
+        </div>
+      </section>
+
+      <section class="leader">
+        <details>
+          <summary>🏆 Multiplication Sprint leaderboard</summary>
+          <div id="board" class="board"></div>
+        </details>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="modal-bg" id="profileModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close" id="closeProfile">×</button></div>
+    <div class="profile-form">
+      <input id="profileName" maxlength="16" placeholder="Player name" />
+      <div style="font-weight:900;color:#756b91">Choose an avatar</div>
+      <div class="avatars" id="avatars"></div>
+    </div>
+    <div class="modal-actions"><button class="cancel" id="cancelProfile">Cancel</button><button class="save" id="saveProfile">Save</button></div>
+  </div>
+</div>
+
+<script>
+const KEYS={
+  profile:"learningWithNiniProfileV1",
+  board:"multiplicationSprintLeaderboardV1"
+};
+const AVATARS=["⭐","🐱","🐰","🌈","❤️"];
+const el=id=>document.getElementById(id);
+let profile=safe(KEYS.profile,{name:"Nini",avatar:"⭐"});
+let selectedAvatar=profile.avatar||"⭐";
+let level="build";
+let question=1,score=0,streak=0,bestStreak=0,stars=3;
+let a=4,b=6,answer="",solved=false;
+let timerOn=true,startTime=Date.now(),timerHandle=null;
+let board=safe(KEYS.board,[]);
+
+function safe(key,fallback){try{const v=localStorage.getItem(key);return v?JSON.parse(v):fallback}catch{return fallback}}
+function store(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch{}}
+function rnd(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function currentRange(){
+  if(level==="build")return {min:2,max:5,name:"Build Up"};
+  if(level==="power")return {min:6,max:9,name:"Power Facts"};
+  return {min:2,max:12,name:"Mixed Master"};
+}
+function makeQuestion(){
+  const r=currentRange();
+  if(level==="master"){a=rnd(2,12);b=rnd(2,12)}
+  else{a=rnd(r.min,r.max);b=rnd(2,12);if(Math.random()<.5){const t=a;a=b;b=t}}
+  answer="";stars=3;solved=false;
+  el("factorA").textContent=a;el("factorB").textContent=b;
+  el("levelName").textContent=r.name;
+  el("answerDisplay").textContent="Type your answer";
+  el("answerDisplay").classList.add("placeholder");
+  el("status").textContent="Enter the product, then check your answer.";
+  el("status").className="status";
+  el("checkBtn").textContent="Check Answer →";
+  el("checkBtn").className="check";
+  el("hintBtn").disabled=false;
+  el("arrayBox").classList.remove("show");
+  updateUI();
+}
+function updateUI(){
+  el("questionText").textContent="Question "+question+" of 10";
+  el("progressFill").style.width=(question*10)+"%";
+  el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");
+  el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;
+  el("streakText").textContent="🔥 Streak: "+streak;
+  el("bestStreak").textContent=bestStreak;
+}
+function typeDigit(n){
+  if(solved)return;
+  if(answer.length>=3)return;
+  answer+=n;
+  answer=String(Number(answer));
+  el("answerDisplay").textContent=answer;
+  el("answerDisplay").classList.remove("placeholder");
+}
+function clearAnswer(){if(solved)return;answer="";el("answerDisplay").textContent="Type your answer";el("answerDisplay").classList.add("placeholder")}
+function backspace(){if(solved)return;answer=answer.slice(0,-1);if(answer){el("answerDisplay").textContent=answer}else clearAnswer()}
+function check(){
+  if(solved){next();return}
+  if(answer===""){el("status").textContent="Type an answer first.";el("status").className="status info";return}
+  if(Number(answer)===a*b){
+    solved=true;score+=stars;streak++;bestStreak=Math.max(bestStreak,streak);
+    el("status").textContent="Great job! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
+    el("status").className="status good";
+    el("checkBtn").textContent=question===10?"Finish Round →":"Next Question →";
+    el("checkBtn").className="next";
+    el("hintBtn").disabled=true;
+    updateUI();
+  }else{
+    stars=Math.max(1,stars-1);streak=0;
+    const diff=(a*b)-Number(answer);
+    el("status").textContent=diff>0?"Not quite — your answer is too small. Try again.":"Not quite — your answer is too large. Try again.";
+    el("status").className="status bad";
+    answer="";el("answerDisplay").textContent="Try again";el("answerDisplay").classList.add("placeholder");
+    updateUI();
+  }
+}
+function next(){
+  if(!solved)return;
+  if(question===10){
+    const roundScore=score;
+    const seconds=Math.max(1,Math.floor((Date.now()-startTime)/1000));
+    el("status").textContent="Round complete! "+roundScore+" stars in "+formatTime(seconds)+". Starting a new round.";
+    el("status").className="status good";
+    question=1;score=0;streak=0;bestStreak=0;startTime=Date.now();
+    setTimeout(makeQuestion,700);
+  }else{question++;makeQuestion()}
+}
+function showHint(){
+  if(solved)return;
+  stars=Math.max(1,stars-1);
+  const arr=el("array");arr.innerHTML="";arr.style.gridTemplateColumns="repeat("+b+",12px)";
+  for(let i=0;i<a*b;i++){const d=document.createElement("span");d.className="dot";arr.appendChild(d)}
+  el("arrayLabel").textContent=a+" rows of "+b+" = "+a+" × "+b;
+  el("arrayBox").classList.add("show");
+  el("status").textContent="Array hint: count "+a+" groups of "+b+".";
+  el("status").className="status info";
+  updateUI();
+}
+function chooseLevel(v){
+  level=v;question=1;score=0;streak=0;bestStreak=0;startTime=Date.now();
+  document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));
+  makeQuestion();
+}
+function formatTime(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+function tick(){if(timerOn)el("timer").textContent=formatTime(Math.floor((Date.now()-startTime)/1000));else el("timer").textContent="Off"}
+function toggleTimer(){timerOn=!timerOn;el("timerToggle").textContent="⏱ Timer: "+(timerOn?"On":"Off");if(timerOn)startTime=Date.now()}
+function saveScore(){
+  const entry={name:profile.name||"Nini",avatar:profile.avatar||"⭐",score,bestStreak,level,ts:Date.now()};
+  board.push(entry);board.sort((x,y)=>y.score-x.score||y.bestStreak-x.bestStreak||x.ts-y.ts);board=board.slice(0,10);store(KEYS.board,board);renderBoard();
+  el("status").textContent="Score saved for "+entry.name+".";el("status").className="status good";
+}
+function renderBoard(){
+  const box=el("board");box.innerHTML="";
+  if(!board.length){box.innerHTML='<div class="empty">No saved scores yet.</div>';return}
+  board.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+escapeHtml(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function updateProfile(){
+  el("avatarTop").textContent=profile.avatar||"⭐";el("nameTop").textContent=profile.name||"Nini";
+}
+function openProfile(){
+  selectedAvatar=profile.avatar||"⭐";el("profileName").value=profile.name||"Nini";buildAvatars();el("profileModal").classList.add("show");
+}
+function closeProfile(){el("profileModal").classList.remove("show")}
+function buildAvatars(){
+  const box=el("avatars");box.innerHTML="";
+  AVATARS.forEach(v=>{const b=document.createElement("button");b.className="avatar"+(v===selectedAvatar?" active":"");b.textContent=v;b.onclick=()=>{selectedAvatar=v;buildAvatars()};box.appendChild(b)})
+}
+function saveProfile(){
+  profile={name:(el("profileName").value||"Nini").trim().slice(0,16)||"Nini",avatar:selectedAvatar||"⭐"};
+  store(KEYS.profile,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile();
+}
+document.querySelectorAll("[data-n]").forEach(b=>b.addEventListener("click",()=>typeDigit(b.dataset.n)));
+document.querySelectorAll(".level-card").forEach(b=>b.addEventListener("click",()=>chooseLevel(b.dataset.level)));
+el("clearBtn").onclick=clearAnswer;el("backBtn").onclick=backspace;el("checkBtn").onclick=check;el("hintBtn").onclick=showHint;
+el("timerToggle").onclick=toggleTimer;el("saveScore").onclick=saveScore;el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;
+window.addEventListener("keydown",e=>{if(e.key>="0"&&e.key<="9")typeDigit(e.key);else if(e.key==="Backspace")backspace();else if(e.key==="Enter")check()});
+el("profileModal").addEventListener("click",e=>{if(e.target===el("profileModal"))closeProfile()});
+updateProfile();renderBoard();makeQuestion();timerHandle=setInterval(tick,500);
+</script>
+</body>
+</html>
