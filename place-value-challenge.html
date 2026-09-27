@@ -68,7 +68,7 @@ button,input{font:inherit}
 </div></section>
 <section class="levels"><h2>🔢 Place Value Challenge — Choose a Level</h2><div class="level-grid">
 <button class="level-card active" data-level="digit"><div class="level-num">1</div><h3>Digit Detective</h3><p>Find the value of a highlighted digit in the thousands, hundreds, tens, or ones place.</p></button>
-<button class="level-card" data-level="build"><div class="level-num">2</div><h3>Build the Number</h3><p>Turn expanded form into a standard number using the place-value chart.</p></button>
+<button class="level-card" data-level="build"><div class="level-num">2</div><h3>Build the Number</h3><p>Rebuild a standard number from shuffled expanded pieces. The place-value chart stays blank until you solve it.</p></button>
 <button class="level-card" data-level="round"><div class="level-num">3</div><h3>Rounding Challenge</h3><p>Round numbers to the nearest 10, 100, or 1,000 using place-value reasoning.</p></button>
 </div></section>
 <section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
@@ -89,6 +89,8 @@ function fmt(n){return Number(n).toLocaleString("en-US")}
 function digitsOf(n){return String(n).padStart(4,"0").split("").map(Number)}
 function expandedOf(n){const d=digitsOf(n);return d.map((x,i)=>x*placeValues[i]).filter(x=>x>0).map(fmt).join(" + ")||"0"}
 function chartHTML(n,hot=-1){const d=digitsOf(n);return d.map((x,i)=>'<div class="place-cell '+(i===hot?'target':'')+'"><div class="place-name">'+places[i]+'</div><div class="place-digit">'+x+'</div><div class="place-value">'+fmt(x*placeValues[i])+'</div></div>').join("")}
+function blankChartHTML(){return places.map(p=>'<div class="place-cell"><div class="place-name">'+p+'</div><div class="place-digit">?</div><div class="place-value">Find this digit</div></div>').join("")}
+function shuffledExpandedOf(n){const d=digitsOf(n);const terms=d.map((x,i)=>x*placeValues[i]).filter(x=>x>0).map(fmt);return terms.sort(()=>Math.random()-.5).join(" + ")||"0"}
 function keypadHTML(){return '<div class="answer-display placeholder" id="answerDisplay">Enter answer</div><div class="keypad"><button class="key" data-n="1">1</button><button class="key" data-n="2">2</button><button class="key" data-n="3">3</button><button class="key" data-n="4">4</button><button class="key" data-n="5">5</button><button class="key" data-n="6">6</button><button class="key" data-n="7">7</button><button class="key" data-n="8">8</button><button class="key" data-n="9">9</button><button class="key clear" id="clearKey">Clear</button><button class="key" data-n="0">0</button><button class="key back" id="backKey">←</button></div>'}
 function newQuestion(){
   stars=3;solved=false;answer="";selectedChoice=null;
@@ -114,9 +116,16 @@ function makeDigit(){
   el("status").textContent="Look at the highlighted digit and choose its value.";el("status").className="status";el("notebook").innerHTML="<strong>Place Value Tip:</strong><br>The digit "+d[targetPlace]+" is in the "+places[targetPlace].toLowerCase()+" place.";
 }
 function makeBuild(){
-  correct=number;el("levelName").textContent="Build the Number";el("prompt").textContent="What number does this expanded form make?";renderBigNumber(-1);
-  el("bigNumber").textContent="?";el("placeChart").innerHTML=chartHTML(number,-1);el("expanded").textContent=expandedOf(number);
-  el("answerArea").innerHTML=keypadHTML();wireKeypad();el("status").textContent="Combine the thousands, hundreds, tens, and ones.";el("status").className="status";el("notebook").innerHTML="<strong>Build It:</strong><br>Each part belongs in its place. Then write the standard number.";
+  correct=number;
+  el("levelName").textContent="Build the Number";
+  el("prompt").textContent="Build the standard number from these expanded pieces.";
+  el("bigNumber").textContent="?";
+  el("placeChart").innerHTML=blankChartHTML();
+  el("expanded").textContent=shuffledExpandedOf(number);
+  el("answerArea").innerHTML=keypadHTML();wireKeypad();
+  el("status").textContent="Figure out which digit belongs in each place. The chart stays hidden until you solve it.";
+  el("status").className="status";
+  el("notebook").innerHTML="<strong>Build It:</strong><br>The expanded pieces may be out of order. Match each piece to thousands, hundreds, tens, or ones.";
 }
 function makeRound(){
   roundUnit=[10,100,1000][rnd(0,2)];correct=Math.round(number/roundUnit)*roundUnit;
@@ -137,18 +146,19 @@ function check(){
   if(Number(response)===correct){
     solved=true;score+=stars;streak++;
     if(level==="digit")el("answerArea").querySelectorAll("[data-choice]").forEach(x=>{if(Number(x.dataset.choice)===correct)x.classList.add("correct")});
+    if(level==="build")el("placeChart").innerHTML=chartHTML(number,-1);
     const msg=level==="digit"?"Correct! The digit is worth "+fmt(correct)+".":level==="build"?"Correct! "+expandedOf(number)+" = "+fmt(number)+".":"Correct! "+fmt(number)+" rounds to "+fmt(correct)+".";
     el("status").textContent=msg+" You earned "+stars+" star"+(stars===1?"":"s")+"!";el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Question →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();
     LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"place_value",score,level,best_streak:streak}).then(renderBoard).catch(()=>{});
   }else{
-    stars=Math.max(1,stars-1);streak=0;el("status").textContent=level==="digit"?"Not quite. Match the digit to its place.":level==="build"?"Not quite. Check each place in the chart.":"Not quite. Check the digit immediately to the right of the rounding place.";el("status").className="status bad";updateUI()
+    stars=Math.max(1,stars-1);streak=0;el("status").textContent=level==="digit"?"Not quite. Match the digit to its place.":level==="build"?"Not quite. Match each expanded piece to its place value, then try again.":"Not quite. Check the digit immediately to the right of the rounding place.";el("status").className="status bad";updateUI()
   }
 }
 function hint(){
   if(solved)return;stars=Math.max(1,stars-1);
   const d=digitsOf(number);
   if(level==="digit")el("notebook").innerHTML="<strong>Hint:</strong><br>"+d[targetPlace]+" × "+fmt(placeValues[targetPlace])+" = ?";
-  else if(level==="build")el("notebook").innerHTML="<strong>Hint:</strong><br>Read the chart left to right: "+d.join(" · ")+".";
+  else if(level==="build"){const idx=rnd(0,3);el("notebook").innerHTML="<strong>Hint:</strong><br>The "+places[idx].toLowerCase()+" digit is "+d[idx]+". The other places are still yours to solve.";}
   else{const hot=roundUnit===10?2:roundUnit===100?1:0,look=d[hot+1];el("notebook").innerHTML="<strong>Hint:</strong><br>The deciding digit is "+look+". "+(look>=5?"Round up.":"Keep the target digit the same.");}
   el("status").textContent="A place-value hint was added.";el("status").className="status info";updateUI()
 }
