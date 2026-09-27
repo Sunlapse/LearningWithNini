@@ -184,4 +184,5 @@ document.querySelectorAll(".level-card").forEach(b=>b.onclick=()=>chooseLevel(b.
 window.addEventListener("keydown",e=>{if(e.key>="0"&&e.key<="9"&&level!=="digit")typeDigit(e.key);else if(e.key==="Backspace"&&level!=="digit")backspace();else if(e.key==="Enter")check()});
 updateProfile();renderBoard();newQuestion();
 </script>
+<script src="game-round-ui.js"></script>
 </body></html>
