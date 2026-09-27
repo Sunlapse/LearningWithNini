@@ -97,9 +97,8 @@ function newQuestion(){
   el("checkBtn").textContent="Check Answer →";el("checkBtn").className="check";el("hintBtn").disabled=false;updateUI()
 }
 function renderBigNumber(hot=-1){
-  const s=String(number),parts=s.split("");
-  el("bigNumber").innerHTML=parts.map((x,i)=>'<span class="'+(i===hot?'hot':'')+'">'+x+'</span>').join("");
-  if(number>=1000)el("bigNumber").innerHTML=el("bigNumber").innerHTML.slice(0,-3)+","+el("bigNumber").innerHTML.slice(-3);
+  const parts=String(number).padStart(4,"0").split("");
+  el("bigNumber").innerHTML=parts.map((x,i)=>(i===1?",":"")+'<span class="'+(i===hot?'hot':'')+'">'+x+'</span>').join("");
 }
 function makeDigit(){
   targetPlace=rnd(0,3);const d=digitsOf(number);correct=d[targetPlace]*placeValues[targetPlace];
