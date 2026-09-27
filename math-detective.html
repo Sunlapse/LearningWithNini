@@ -35,6 +35,13 @@ button,input{font:inherit}
 @media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.workspace{grid-template-columns:1fr 310px}}
 @media(max-width:780px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.workspace{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.case-card{padding:15px}.story{font-size:1.7rem}.answer-card{padding:11px}.operation-grid{grid-template-columns:repeat(4,1fr)}.key{min-height:54px}.stats{grid-template-columns:1fr 1fr 1fr}}
+
+.level-jump{display:none;width:100%;margin:12px 0 0;border:1px solid rgba(112,64,223,.13);border-radius:18px;padding:11px 15px;background:linear-gradient(135deg,#f6f1ff,#eee8ff);color:#5c3bb0;font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(80,55,150,.08);align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}
+.level-jump strong{font-family:"Fredoka",sans-serif;color:#6a35cf}
+.challenge-options-anchor{scroll-margin-top:90px}
+@media(max-width:1080px){.level-jump{display:flex}}
+@media(max-width:520px){.level-jump{font-size:.92rem;padding:10px 12px;margin-top:10px}}
+
 </style>
 </head>
 <body>
@@ -121,7 +128,8 @@ button,input{font:inherit}
       </section>
     </div>
 
-    <section class="levels">
+    <button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Case File ↓</strong></button>
+<section id="challenge-options" class="levels challenge-options-anchor">
       <h2>🔎 Math Detective — Choose a Case File</h2>
       <div class="level-grid">
         <button class="level-card active" data-level="one">
