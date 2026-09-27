@@ -24,7 +24,7 @@ button,input{font:inherit}
 .main{min-width:0}.progress,.case-card,.answer-card,.levels,.extras,.leader{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.95);box-shadow:var(--shadow)}
 .progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}.qtext{font-weight:1000;white-space:nowrap}.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}.fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#a86ef2,#6f40df);transition:.25s}.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
 .case-card{padding:20px;margin-bottom:14px;background:linear-gradient(135deg,#f6f0ff,#efe7ff)}.case-top{display:flex;justify-content:space-between;gap:14px;align-items:center}.case-label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:#fff;color:#7040d3;font-weight:900}.case-num{font-weight:1000;color:#8c7aaf}.story{font-family:"Fredoka",sans-serif;font-size:clamp(1.65rem,3vw,2.45rem);line-height:1.2;color:#493080;margin:18px 0 8px}.question{font-size:1.08rem;color:#655b83;font-weight:900}
-.workspace{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px}.answer-card{padding:17px}.clue-board{border-radius:22px;background:#fbf9ff;border:1px solid #eee8f8;padding:15px;margin-bottom:12px}.clue-title{font-family:"Fredoka",sans-serif;color:#5634b3;font-size:1.15rem;margin-bottom:9px}.operation-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.op-btn{border:2px solid #e5ddf5;border-radius:16px;background:#fff;color:#5b3bb2;min-height:54px;font-size:1.35rem;font-weight:1000;cursor:pointer}.op-btn.selected{border-color:#7040df;background:#eee6ff;box-shadow:0 0 0 4px rgba(112,64,223,.08)}.op-btn.correct{background:#e8f9ef;border-color:#25b778;color:#178258}.op-btn.wrong{background:#fff0e6;border-color:#ed9660}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px}.answer-card{padding:17px}.clue-board{border-radius:22px;background:#fbf9ff;border:1px solid #eee8f8;padding:15px;margin-bottom:12px}.clue-title{font-family:"Fredoka",sans-serif;color:#5634b3;font-size:1.15rem;margin-bottom:9px}.stage-hidden{display:none!important}.two-step-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.step-input{width:100%;border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-size:1.25rem;font-weight:1000;color:#493184;text-align:center}.equation-reveal{margin-top:10px;padding:11px;border-radius:15px;background:#eee8ff;color:#5a39b7;font-family:"Fredoka",sans-serif;font-size:1.2rem;text-align:center}.operation-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.op-btn{border:2px solid #e5ddf5;border-radius:16px;background:#fff;color:#5b3bb2;min-height:54px;font-size:1.35rem;font-weight:1000;cursor:pointer}.op-btn.selected{border-color:#7040df;background:#eee6ff;box-shadow:0 0 0 4px rgba(112,64,223,.08)}.op-btn.correct{background:#e8f9ef;border-color:#25b778;color:#178258}.op-btn.wrong{background:#fff0e6;border-color:#ed9660}
 .answer-display{min-height:98px;border-radius:22px;background:#fff;border:2px solid #eee8f8;display:flex;align-items:center;justify-content:center;font-family:"Fredoka",sans-serif;font-size:3.4rem;color:#452b90}.answer-display.placeholder{font-family:"Nunito",sans-serif;font-size:1.05rem;color:#aaa2bd;font-weight:900}.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.key{border:0;border-radius:16px;min-height:58px;background:#f0ebff;color:#5332ae;font-size:1.35rem;font-weight:1000;cursor:pointer}.key.clear{background:#fff0f6;color:#c53979}.key.back{background:#fff5dc;color:#9a6a00}
 .side{display:grid;gap:10px}.status{min-height:126px;border-radius:22px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}
 .check,.hint,.next{border:0;border-radius:20px;min-height:66px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#ff70b3,#f44495);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.25rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.hint{background:#7546da;color:#fff}
@@ -65,7 +65,7 @@ button,input{font:inherit}
 
     <div class="workspace">
       <section class="answer-card">
-        <div class="clue-board">
+        <div class="clue-board" id="operationBoard">
           <div class="clue-title">1. Which operation solves the mystery?</div>
           <div class="operation-grid">
             <button class="op-btn" data-op="+">+</button>
@@ -73,10 +73,31 @@ button,input{font:inherit}
             <button class="op-btn" data-op="×">×</button>
             <button class="op-btn" data-op="÷">÷</button>
           </div>
+          <div class="equation-reveal stage-hidden" id="equationReveal"></div>
         </div>
 
-        <div class="clue-board">
-          <div class="clue-title">2. What is the answer?</div>
+        <div class="clue-board stage-hidden" id="twoStepBoard">
+          <div class="clue-title">Work through both steps in order</div>
+          <div class="two-step-grid">
+            <div>
+              <div style="font-weight:900;margin-bottom:7px">1. First operation</div>
+              <div class="operation-grid">
+                <button class="op-btn" data-op1="+">+</button><button class="op-btn" data-op1="-">−</button><button class="op-btn" data-op1="×">×</button><button class="op-btn" data-op1="÷">÷</button>
+              </div>
+              <div style="font-weight:900;margin:10px 0 6px">Intermediate result</div>
+              <input class="step-input" id="intermediateAnswer" type="number" inputmode="numeric" placeholder="?" />
+            </div>
+            <div>
+              <div style="font-weight:900;margin-bottom:7px">2. Second operation</div>
+              <div class="operation-grid">
+                <button class="op-btn" data-op2="+">+</button><button class="op-btn" data-op2="-">−</button><button class="op-btn" data-op2="×">×</button><button class="op-btn" data-op2="÷">÷</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="clue-board" id="answerBoard">
+          <div class="clue-title" id="answerTitle">2. What is the answer?</div>
           <div class="answer-display placeholder" id="answerDisplay">Enter your answer</div>
           <div class="keypad">
             <button class="key" data-n="1">1</button><button class="key" data-n="2">2</button><button class="key" data-n="3">3</button>
@@ -104,13 +125,13 @@ button,input{font:inherit}
       <h2>🔎 Math Detective — Choose a Case File</h2>
       <div class="level-grid">
         <button class="level-card active" data-level="one">
-          <div class="level-num">1</div><h3>One-Step Clues</h3><p>Solve one-step addition, subtraction, multiplication, and division word problems.</p>
+          <div class="level-num">1</div><h3>Solve the Clue</h3><p>Read a one-step word problem and solve it yourself — no operation buttons shown.</p>
         </button>
         <button class="level-card" data-level="operation">
-          <div class="level-num">2</div><h3>Operation Detective</h3><p>Focus on deciding which operation fits the story before solving the answer.</p>
+          <div class="level-num">2</div><h3>Operation Detective</h3><p>Identify the operation first. The equation and answer step unlock after you get it right.</p>
         </button>
         <button class="level-card" data-level="two">
-          <div class="level-num">3</div><h3>Two-Step Mysteries</h3><p>Combine two operations to solve longer 3rd–4th grade math mysteries.</p>
+          <div class="level-num">3</div><h3>Two-Step Mysteries</h3><p>Choose two operations in order, solve the intermediate result, then find the final answer.</p>
         </button>
       </div>
     </section>
@@ -130,7 +151,7 @@ button,input{font:inherit}
 const KEY_PROFILE="learningWithNiniProfileV1",KEY_BOARD="mathDetectiveLeaderboardV1";
 const AVATARS=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(KEY_PROFILE,{name:"Nini",avatar:"⭐"}),selectedAvatar=profile.avatar||"⭐";
-let level="one",caseIndex=1,score=0,streak=0,casesSolved=0,stars=3,solved=false,answer="",selectedOp=null,current=null;
+let level="one",caseIndex=1,score=0,streak=0,casesSolved=0,stars=3,solved=false,answer="",selectedOp=null,selectedOp2=null,operationConfirmed=false,current=null;
 let board=safe(KEY_BOARD,[]);
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
@@ -167,59 +188,92 @@ function twoStep(){
   const type=rnd(0,3),name=pick(["Nini","Maya","Kai","Leo"]);
   if(type===0){
     const boxes=rnd(3,7),each=rnd(4,9),extra=rnd(5,18),ans=boxes*each+extra;
-    return {op:"×",secondOp:"+",answer:ans,story:name+" has "+boxes+" boxes with "+each+" pencils in each box and "+extra+" loose pencils.",question:"How many pencils are there altogether?",equation:boxes+" × "+each+" + "+extra+" = "+ans,hint:"First find the pencils in all the equal boxes. Then add the loose pencils."};
+    return {op:"×",secondOp:"+",intermediate:boxes*each,answer:ans,story:name+" has "+boxes+" boxes with "+each+" pencils in each box and "+extra+" loose pencils.",question:"How many pencils are there altogether?",equation:boxes+" × "+each+" + "+extra+" = "+ans,hint:"First find the pencils in all the equal boxes. Then add the loose pencils."};
   }
   if(type===1){
     const groups=rnd(4,8),each=rnd(5,10),used=rnd(6,15),total=groups*each,ans=total-used;
-    return {op:"×",secondOp:"-",answer:ans,story:name+" made "+groups+" trays with "+each+" cookies on each tray. Then "+used+" cookies were eaten.",question:"How many cookies are left?",equation:groups+" × "+each+" − "+used+" = "+ans,hint:"First find the total cookies in all trays. Then subtract the cookies that were eaten."};
+    return {op:"×",secondOp:"-",intermediate:total,answer:ans,story:name+" made "+groups+" trays with "+each+" cookies on each tray. Then "+used+" cookies were eaten.",question:"How many cookies are left?",equation:groups+" × "+each+" − "+used+" = "+ans,hint:"First find the total cookies in all trays. Then subtract the cookies that were eaten."};
   }
   if(type===2){
     const a=rnd(24,55),b=rnd(18,45),teams=rnd(3,7),sum=a+b,usable=sum-(sum%teams),adj=usable-a;
-    if(adj>0){const ans=usable/teams;return {op:"+",secondOp:"÷",answer:ans,story:name+" collected "+a+" blue beads and "+adj+" green beads, then shared all the beads equally among "+teams+" teams.",question:"How many beads does each team get?",equation:"("+a+" + "+adj+") ÷ "+teams+" = "+ans,hint:"First add the two colors. Then divide the total equally among the teams."};}
+    if(adj>0){const ans=usable/teams;return {op:"+",secondOp:"÷",intermediate:usable,answer:ans,story:name+" collected "+a+" blue beads and "+adj+" green beads, then shared all the beads equally among "+teams+" teams.",question:"How many beads does each team get?",equation:"("+a+" + "+adj+") ÷ "+teams+" = "+ans,hint:"First add the two colors. Then divide the total equally among the teams."};}
   }
   const start=rnd(60,95),spent=rnd(10,25),more=rnd(8,20),ans=start-spent+more;
-  return {op:"-",secondOp:"+",answer:ans,story:name+" had "+start+" points, spent "+spent+" points on a prize, then earned "+more+" more points.",question:"How many points does "+name+" have now?",equation:start+" − "+spent+" + "+more+" = "+ans,hint:"First subtract what was spent. Then add the new points earned."};
+  return {op:"-",secondOp:"+",intermediate:start-spent,answer:ans,story:name+" had "+start+" points, spent "+spent+" points on a prize, then earned "+more+" more points.",question:"How many points does "+name+" have now?",equation:start+" − "+spent+" + "+more+" = "+ans,hint:"First subtract what was spent. Then add the new points earned."};
 }
 function generate(){return level==="two"?twoStep():level==="operation"?operationCase():oneStep()}
 function newCase(){
-  stars=3;solved=false;answer="";selectedOp=null;current=generate();
-  el("caseType").textContent=level==="one"?"One-Step Clue":level==="operation"?"Operation Detective":"Two-Step Mystery";
+  stars=3;solved=false;answer="";selectedOp=null;selectedOp2=null;operationConfirmed=false;current=generate();
+  el("caseType").textContent=level==="one"?"Solve the Clue":level==="operation"?"Operation Detective":"Two-Step Mystery";
   el("caseNumber").textContent="Case #"+String(caseIndex).padStart(3,"0");
   el("story").textContent=current.story;el("questionPrompt").textContent=current.question;
   el("answerDisplay").textContent="Enter your answer";el("answerDisplay").classList.add("placeholder");
-  el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>Look for what happens to the quantities before choosing an operation.";
-  el("checkBtn").textContent="Solve the Case →";el("checkBtn").className="check";el("hintBtn").disabled=false;
+  el("intermediateAnswer").value="";el("equationReveal").textContent="";el("equationReveal").classList.add("stage-hidden");
+  el("operationBoard").classList.toggle("stage-hidden",level!=="operation");
+  el("twoStepBoard").classList.toggle("stage-hidden",level!=="two");
+  el("answerBoard").classList.toggle("stage-hidden",level==="operation");
+  el("answerTitle").textContent=level==="two"?"3. Final answer":level==="one"?"Solve the clue":"2. What is the answer?";
+  el("checkBtn").textContent=level==="operation"?"Check Operation →":level==="two"?"Solve Both Steps →":"Check Answer →";
+  el("checkBtn").className="check";el("hintBtn").disabled=false;
   document.querySelectorAll(".op-btn").forEach(b=>b.classList.remove("selected","correct","wrong"));
-  setStatus("Read the case, choose an operation, and solve it.");updateUI();
+  if(level==="one"){setStatus("Read the story and enter the answer.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>No operation choices are shown. Decide what math the story needs.";}
+  else if(level==="operation"){setStatus("Choose the operation that matches the story.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>Get the operation right first. Then the equation unlocks.";}
+  else{setStatus("Choose two operations, solve step 1, then finish step 2.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>Use the intermediate result from step 1 in step 2.";}
+  updateUI();
 }
 function updateUI(){
   el("questionText").textContent="Case "+caseIndex+" of 10";el("progressFill").style.width=(caseIndex*10)+"%";
   el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");
   el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("casesSolved").textContent=casesSolved;
 }
-function selectOperation(btn){if(solved)return;selectedOp=btn.dataset.op;document.querySelectorAll(".op-btn").forEach(x=>x.classList.toggle("selected",x===btn))}
+function selectOperation(btn){if(solved||operationConfirmed)return;selectedOp=btn.dataset.op;document.querySelectorAll("[data-op]").forEach(x=>x.classList.toggle("selected",x===btn))}
+function selectFirstOperation(btn){if(solved)return;selectedOp=btn.dataset.op1;document.querySelectorAll("[data-op1]").forEach(x=>x.classList.toggle("selected",x===btn))}
+function selectSecondOperation(btn){if(solved)return;selectedOp2=btn.dataset.op2;document.querySelectorAll("[data-op2]").forEach(x=>x.classList.toggle("selected",x===btn))}
 function typeDigit(n){if(solved||answer.length>=4)return;answer=(answer==="0"?"":answer)+n;el("answerDisplay").textContent=answer;el("answerDisplay").classList.remove("placeholder")}
 function clearAnswer(){if(solved)return;answer="";el("answerDisplay").textContent="Enter your answer";el("answerDisplay").classList.add("placeholder")}
 function backspace(){if(solved)return;answer=answer.slice(0,-1);if(answer){el("answerDisplay").textContent=answer}else clearAnswer()}
 function check(){
   if(solved){nextCase();return}
-  if(!selectedOp){setStatus("Choose the operation first.","info");return}
-  if(answer===""){setStatus("Enter your numerical answer too.","info");return}
-  const opOkay=selectedOp===current.op;
-  const ansOkay=Number(answer)===current.answer;
-  if(opOkay&&ansOkay){
-    solved=true;score+=stars;streak++;casesSolved++;
-    document.querySelectorAll(".op-btn").forEach(b=>{if(b.dataset.op===current.op)b.classList.add("correct")});
-    setStatus("Case solved! "+current.equation+". You earned "+stars+" star"+(stars===1?"":"s")+".","good");
-    el("notebook").innerHTML="<strong>Case Notes:</strong><br>"+current.equation+". "+explainOperation(current);
-    el("checkBtn").textContent=caseIndex===10?"Finish Case File →":"Next Case →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();return;
+
+  if(level==="one"){
+    if(answer===""){setStatus("Enter your answer first.","info");return}
+    if(Number(answer)===current.answer){finishCase();return}
+    stars=Math.max(1,stars-1);streak=0;setStatus("Not quite. Re-read the story and try again.","bad");clearAnswer();updateUI();return;
+  }
+
+  if(level==="operation"){
+    if(!operationConfirmed){
+      if(!selectedOp){setStatus("Choose an operation first.","info");return}
+      if(selectedOp!==current.op){stars=Math.max(1,stars-1);streak=0;setStatus("That operation does not match the story. Try another.","bad");updateUI();return}
+      operationConfirmed=true;
+      document.querySelectorAll("[data-op]").forEach(b=>{if(b.dataset.op===current.op)b.classList.add("correct")});
+      el("equationReveal").textContent=current.equation.replace(/ = [^=]+$/," = ?");
+      el("equationReveal").classList.remove("stage-hidden");el("answerBoard").classList.remove("stage-hidden");
+      el("checkBtn").textContent="Check Answer →";setStatus("Correct operation! Now solve the equation.","good");return;
+    }
+    if(answer===""){setStatus("Enter the answer to the equation.","info");return}
+    if(Number(answer)===current.answer){finishCase();return}
+    stars=Math.max(1,stars-1);streak=0;setStatus("The operation is right. Recheck the arithmetic.","bad");clearAnswer();updateUI();return;
+  }
+
+  if(!selectedOp||!selectedOp2){setStatus("Choose both operations in order.","info");return}
+  if(el("intermediateAnswer").value===""){setStatus("Enter the intermediate result from step 1.","info");return}
+  if(answer===""){setStatus("Enter the final answer too.","info");return}
+  if(selectedOp===current.op && Number(el("intermediateAnswer").value)===current.intermediate && selectedOp2===current.secondOp && Number(answer)===current.answer){
+    finishCase();return;
   }
   stars=Math.max(1,stars-1);streak=0;
-  document.querySelectorAll(".op-btn").forEach(b=>{b.classList.remove("wrong");if(b===document.querySelector(".op-btn.selected")&&!opOkay)b.classList.add("wrong")});
-  if(!opOkay&&!ansOkay)setStatus("Two clues need another look: the operation and the answer.","bad");
-  else if(!opOkay)setStatus("Your number works with different math, but the operation does not match the story. Try again.","bad");
-  else setStatus("You found the right operation. Recheck the arithmetic.","bad");
+  if(selectedOp!==current.op)setStatus("The first operation needs another look.","bad");
+  else if(Number(el("intermediateAnswer").value)!==current.intermediate)setStatus("The first operation is right, but the intermediate result is not.","bad");
+  else if(selectedOp2!==current.secondOp)setStatus("Step 1 is correct. Reconsider the second operation.","bad");
+  else setStatus("Both operations are right. Recheck the final arithmetic.","bad");
   updateUI();
+}
+function finishCase(){
+  solved=true;score+=stars;streak++;casesSolved++;
+  setStatus("Case solved! "+current.equation+". You earned "+stars+" star"+(stars===1?"":"s")+".","good");
+  el("notebook").innerHTML="<strong>Case Notes:</strong><br>"+current.equation+". "+explainOperation(current);
+  el("checkBtn").textContent=caseIndex===10?"Finish Case File →":"Next Case →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();
 }
 function explainOperation(q){
   if(q.secondOp)return "This is a two-step problem, so the order of the clues matters.";
@@ -244,7 +298,9 @@ function openProfile(){selectedAvatar=profile.avatar||"⭐";el("profileName").va
 function closeProfile(){el("profileModal").classList.remove("show")}
 function buildAvatars(){const box=el("avatars");box.innerHTML="";AVATARS.forEach(v=>{const b=document.createElement("button");b.className="avatar"+(v===selectedAvatar?" active":"");b.textContent=v;b.onclick=()=>{selectedAvatar=v;buildAvatars()};box.appendChild(b)})}
 function saveProfile(){profile={name:(el("profileName").value||"Nini").trim().slice(0,16)||"Nini",avatar:selectedAvatar||"⭐"};store(KEY_PROFILE,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile()}
-document.querySelectorAll(".op-btn").forEach(b=>b.onclick=()=>selectOperation(b));
+document.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>selectOperation(b));
+document.querySelectorAll("[data-op1]").forEach(b=>b.onclick=()=>selectFirstOperation(b));
+document.querySelectorAll("[data-op2]").forEach(b=>b.onclick=()=>selectSecondOperation(b));
 document.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>typeDigit(b.dataset.n));
 document.querySelectorAll(".level-card").forEach(b=>b.onclick=()=>chooseLevel(b.dataset.level));
 el("clearBtn").onclick=clearAnswer;el("backBtn").onclick=backspace;el("checkBtn").onclick=check;el("hintBtn").onclick=hint;el("saveScore").onclick=saveScore;el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;
