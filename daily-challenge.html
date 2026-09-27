@@ -421,8 +421,6 @@ const FR=/\{(\d+|\?)\/(\d+)\}/g;
 const toHTML=q=>q.replace(FR,(m,n,d)=>`<span class="fr"><span>${n==='?'?'<span class="blank">?</span>':n}</span><span>${d}</span></span>`);
 const toText=q=>q.replace(FR,'$1/$2').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 const showAns=p=>p.k==='frac'?`${p.a[0]}/${p.a[1]}`:p.k==='num'?String(p.a):p.a;
-let lastType='';
-function genProblem(){const pool=POOL[settings.grade];let t=pick(pool),g=0;while(t===lastType&&g++<10)t=pick(pool);lastType=t;const p=GEN[t]();p.type=t;p.html=toHTML(p.q);p.text=toText(p.q);return p}
 
 function fracVal(s){let m=s.match(/^(\d+)\/(\d+)$/);if(m)return +m[2]===0?null:+m[1]/+m[2];m=s.match(/^\d+$/);return m?+s:null}
 function isRight(p,input){
