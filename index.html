@@ -108,6 +108,31 @@
       background: var(--purple);
     }
 
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex:0 0 auto;
+    }
+
+    .leaderboard-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:12px 16px;
+      border-radius:999px;
+      background:#fff7d7;
+      color:#664b0a;
+      border:1px solid #f2dfa5;
+      font-weight:900;
+      white-space:nowrap;
+      box-shadow:0 8px 20px rgba(120,88,20,.10);
+      transition:transform .18s ease,box-shadow .18s ease;
+    }
+
+    .leaderboard-btn:hover{transform:translateY(-2px)}
+
     .youtube-btn,
     .primary-btn,
     .card-btn,
@@ -513,7 +538,10 @@
       .nav { min-height: 66px; }
       .brand { font-size: 1.28rem; }
       .brand .dotcom { display: none; }
-      .youtube-btn { padding: 10px 14px; font-size: .88rem; }
+      .header-actions { gap: 6px; }
+      .leaderboard-btn { padding: 10px 11px; font-size: .84rem; }
+      .leaderboard-btn .leaderboard-label { display:none; }
+      .youtube-btn { padding: 10px 12px; font-size: .86rem; }
       .youtube-btn .label-extra { display: none; }
       .hero-copy { padding: 42px 12px 26px; }
       h1 { font-size: clamp(3rem, 15vw, 4.6rem); }
@@ -546,10 +574,15 @@
         <a href="#about">About</a>
       </nav>
 
-      <a class="youtube-btn" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">
-        <span class="play-dot">▶</span>
-        <span>Watch <span class="label-extra">on YouTube</span></span>
-      </a>
+      <div class="header-actions">
+        <a class="leaderboard-btn" href="leaderboard.html" aria-label="View leaderboard">
+          <span>🏆</span><span class="leaderboard-label">Leaderboard</span>
+        </a>
+        <a class="youtube-btn" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">
+          <span class="play-dot">▶</span>
+          <span>Watch <span class="label-extra">on YouTube</span></span>
+        </a>
+      </div>
     </div>
   </header>
 
