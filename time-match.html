@@ -1,880 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Time Match</title>
-  <style>
-    :root {
-      --bg1: #f4f7ff;
-      --bg2: #fff8ef;
-      --card: rgba(255, 255, 255, 0.94);
-      --text: #21304a;
-      --muted: #64748b;
-      --blue: #5b8cff;
-      --blue-dark: #3f6de0;
-      --green: #34c759;
-      --green-dark: #1faa43;
-      --orange: #ffb648;
-      --pink: #ff6fae;
-      --purple: #8b5cf6;
-      --red: #ef4444;
-      --shadow: 0 14px 40px rgba(54, 84, 140, 0.18);
-      --radius: 22px;
-    }
-
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-:root {
-  --appbar-height: 78px;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="theme-color" content="#fbf9ff" />
+<title>Time Match | Learn With Nini</title>
+<meta name="description" content="Practice reading and setting analog clocks with Nini in fun 10-question time challenges." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --ink:#282062;--muted:#746e94;--purple:#7040df;--purple2:#9a72ef;
+  --pink:#f64b9a;--pink2:#ff79b7;--blue:#4b8ff7;--mint:#dff8ec;
+  --yellow:#fff3bd;--lav:#f3edff;--line:rgba(83,59,160,.12);
+  --shadow:0 18px 46px rgba(74,50,137,.13)
 }
-
-body {
-  padding-top: calc(var(--appbar-height) + 18px);
+html,body{margin:0;min-height:100%}
+body{
+  font-family:"Nunito",Arial,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(circle at 3% 8%,rgba(255,224,241,.9),transparent 22%),
+    radial-gradient(circle at 97% 4%,rgba(226,214,255,.9),transparent 24%),
+    linear-gradient(180deg,#fbf9ff,#fff 45%,#fffafb);
 }
-
-.appbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 3000;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
-  background: rgba(255,255,255,0.88);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(91,140,255,0.12);
-  box-shadow: 0 8px 20px rgba(54,84,140,0.08);
+button,select,input{font:inherit}
+.appbar{
+  position:sticky;top:0;z-index:1000;display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:14px;min-height:72px;
+  padding:10px max(16px,calc((100vw - 1440px)/2));
+  background:rgba(255,255,255,.94);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line)
 }
-
-.appbar-home,
-.appbar-avatar {
-  border: none;
-  border-radius: 16px;
-  min-height: 52px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 14px;
-  font-size: 18px;
-  font-weight: 900;
-  text-decoration: none;
-  cursor: pointer;
+.appbar-home,.appbar-avatar,.appbar-score-pill{
+  min-height:44px;border:0;border-radius:999px;padding:10px 16px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900
 }
-
-.appbar-home {
-  background: linear-gradient(135deg, #5b8cff, #8b5cf6);
-  color: white;
-  box-shadow: 0 8px 18px rgba(91,140,255,0.22);
+.appbar-home{background:#f0ebff;color:#5f36c7;text-decoration:none}
+.appbar-score{display:flex;justify-content:center}
+.appbar-score-pill{background:linear-gradient(135deg,#fff0f8,#eee6ff);color:#4b307d}
+.appbar-avatar{background:linear-gradient(135deg,#fff3c6,#ffe09b);color:#654b12;cursor:pointer}
+.wrap{width:min(1440px,calc(100% - 28px));margin:0 auto;padding:20px 0 38px}
+.game-shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.nini-card{
+  position:sticky;top:94px;border-radius:34px;overflow:hidden;min-height:660px;
+  background:#e8dcff;box-shadow:var(--shadow)
 }
-
-.appbar-score {
-  display: flex;
-  justify-content: center;
+.nini-card img{width:100%;height:660px;object-fit:cover;object-position:center 28%}
+.nini-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(64,34,125,.2));pointer-events:none}
+.nini-tip{
+  position:absolute;z-index:2;left:16px;right:16px;top:18px;background:white;border-radius:26px 26px 26px 8px;
+  padding:15px 17px;font-family:"Fredoka",sans-serif;font-size:1.32rem;color:#4d2ab6;line-height:1.08;
+  box-shadow:0 12px 28px rgba(66,38,130,.15);transform:rotate(-1.5deg)
 }
-
-.appbar-score-pill {
-  min-height: 52px;
-  min-width: 150px;
-  padding: 10px 18px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #ff6fae, #8b5cf6);
-  color: white;
-  font-size: 22px;
-  font-weight: 900;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 18px rgba(139,92,246,0.18);
+.nini-tip small{display:block;margin-top:8px;color:#ee4a94;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
+.game-main{min-width:0}
+.progress-card,.challenge-card,.clock-card,.controls-card,.levels-card,.extras-card{
+  border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.95);box-shadow:var(--shadow)
 }
-
-.appbar-avatar {
-  background: linear-gradient(135deg, #ffd84d, #ffb648);
-  color: #21304a;
-  box-shadow: 0 8px 18px rgba(255,182,72,0.18);
+.progress-card{display:grid;grid-template-columns:auto 1fr auto;gap:15px;align-items:center;padding:14px 18px;margin-bottom:14px}
+.question-text{font-weight:1000;white-space:nowrap}
+.progress-track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#a86ef2,#6f40df);transition:.25s}
+.star-meter{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}
+.star-meter .earned{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
+.challenge-card{
+  display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;
+  padding:18px 20px;margin-bottom:14px;background:linear-gradient(135deg,#f5efff,#eee5ff)
 }
-
-.appbar-avatar-emoji {
-  font-size: 22px;
-  line-height: 1;
+.challenge-label{font-family:"Fredoka",sans-serif;font-size:1.05rem;color:#7158a1}
+.challenge-time{font-family:"Fredoka",sans-serif;font-size:clamp(2.5rem,5vw,4.6rem);line-height:.98;color:#6337cf;margin-top:3px}
+.challenge-name{display:inline-flex;margin-top:9px;padding:6px 11px;border-radius:999px;background:#fff;color:#7040d3;font-weight:900;font-size:.88rem}
+.mode-mini{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mode-card{
+  border:2px solid transparent;border-radius:18px;padding:11px 13px;background:#fff;color:#5c4e82;cursor:pointer;font-weight:900
 }
-
-.appbar-avatar-name {
-  line-height: 1;
-  max-width: 120px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.mode-card.active{border-color:#7040df;background:#f1ebff;color:#5a31bf}
+.play-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:14px}
+.clock-card{padding:14px;position:relative;overflow:hidden}
+.clock-wrap{position:relative;width:min(610px,100%);aspect-ratio:1/1;margin:0 auto;user-select:none;touch-action:none}
+svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 12px 22px rgba(80,55,150,.13))}
+.clock-face{fill:#fff;stroke:#e4dcf8;stroke-width:8}
+.tick.big{stroke:#5d4a91;stroke-width:4;stroke-linecap:round}
+.tick.small{stroke:#c8bddf;stroke-width:2.4;stroke-linecap:round}
+.clock-number{font-size:25px;font-weight:900;fill:#493675;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+.hand{transform-origin:250px 250px;cursor:grab;touch-action:none}
+.hand .hit-area{stroke:rgba(0,0,0,0);stroke-width:44;stroke-linecap:round;pointer-events:stroke}
+.hand .visible-hand{pointer-events:none}
+.minute-hand .visible-hand{stroke:#ef4e9c;stroke-width:9;stroke-linecap:round}
+.hour-hand .visible-hand{stroke:#6841d3;stroke-width:13;stroke-linecap:round}
+.center-pin{fill:#fff;stroke:#392a69;stroke-width:5}.center-dot{fill:#ffbf2d}
+.help-text{text-align:center;color:var(--muted);font-weight:800;margin:3px 0 0}
+.sparkles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sparkle{position:absolute;font-size:18px;opacity:0;animation:sparkle-pop 900ms ease-out forwards}
+@keyframes sparkle-pop{0%{opacity:0;transform:translateY(12px) scale(.3)}15%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.1) rotate(240deg)}}
+.controls-card{padding:16px;display:flex;flex-direction:column;gap:12px}
+.status{min-height:82px;display:grid;place-items:center;text-align:center;padding:14px;border-radius:20px;background:linear-gradient(135deg,#faf8ff,#fff5fa);font-weight:900;line-height:1.35}
+.status.success{background:#e9fbf0;color:#168354}.status.error{background:#fff3df;color:#ad6600}.status.reveal{background:#f3edff;color:#6841c4}
+.panel{background:#faf9ff;border:1px solid #eee9f8;border-radius:20px;padding:13px}
+.panel h3{margin:0 0 10px;font-family:"Fredoka",sans-serif;font-size:1.15rem;color:#4e337e}
+.controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.control-box{background:#fff;border-radius:16px;padding:11px;border:1px solid #eee8f8}
+.control-box h4{margin:0 0 7px;text-align:center;color:#70658d}
+.adjust-row{display:flex;align-items:center;justify-content:center;gap:7px}
+.adjust-row .mini{width:44px;height:44px;border:0;border-radius:14px;background:#eee8ff;color:#5b39b9;font-size:1.3rem;font-weight:1000;cursor:pointer}
+.adjust-value{min-width:64px;text-align:center;font-size:1.65rem;font-weight:1000}
+.small-note{font-size:.79rem;color:var(--muted);font-weight:800;text-align:center;margin-top:7px}
+.typed-mode{display:none}.typed-mode.active{display:block}
+.typed-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.typed-row input,.typed-row select,.hidden-select{
+  width:100%;border:2px solid #e5ddf5;border-radius:14px;padding:11px;background:#fff;color:var(--ink);font-weight:900
 }
-
-.bounce-pop {
-  animation: bouncePop 0.45s ease;
-}
-
-@keyframes bouncePop {
-  0% { transform: scale(1); }
-  25% { transform: scale(1.12) translateY(-2px); }
-  50% { transform: scale(0.97); }
-  75% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-    body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
-  color: var(--text);
-  background: radial-gradient(circle at top left, #ffffff 0%, #eef4ff 34%, #fff6e7 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: calc(var(--appbar-height) + 18px) 18px 18px;
-}
-
-    .app {
-      width: min(1180px, 100%);
-      background: var(--card);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.7);
-    }
-
-    .topbar {
-      display: grid;
-      grid-template-columns: 1.3fr 0.9fr 0.9fr 1fr 1fr;
-      gap: 12px;
-      padding: 16px;
-      background: linear-gradient(135deg, rgba(91,140,255,0.11), rgba(255,182,72,0.12));
-      border-bottom: 1px solid rgba(91,140,255,0.12);
-    }
-
-    .stat, .difficulty-box, .profile-card {
-      background: white;
-      border-radius: 18px;
-      padding: 12px 14px;
-      box-shadow: 0 6px 20px rgba(91, 140, 255, 0.08);
-      min-height: 72px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .profile-card {
-      flex-direction: row;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .profile-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #eef4ff, #fff7eb);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      border: 2px solid #dbe7ff;
-      flex-shrink: 0;
-    }
-
-    .profile-text { min-width: 0; }
-    .profile-name { font-size: 20px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .profile-sub { color: var(--muted); font-size: 12px; font-weight: 800; text-transform: uppercase; }
-
-    .label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .value { font-size: 28px; font-weight: 800; }
-
-    .difficulty-box select, .input-mode select {
-      width: 100%;
-      border: 2px solid #dbe7ff;
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      background: #fff;
-      outline: none;
-    }
-
-    .main {
-      display: grid;
-      grid-template-columns: 1.2fr 0.95fr;
-      gap: 0;
-    }
-
-    .left, .right { padding: 20px; }
-
-    .left {
-      border-right: 1px solid rgba(91,140,255,0.12);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .right { background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(240,247,255,0.55)); }
-
-    .title {
-      text-align: center;
-      font-size: clamp(30px, 4vw, 42px);
-      font-weight: 900;
-      margin: 4px 0 8px;
-      color: #28406f;
-    }
-
-    .subtitle { text-align: center; color: var(--muted); font-size: 15px; margin-bottom: 14px; }
-
-    .top-actions {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .pill-btn, .teacher-indicator {
-      border: none;
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 14px;
-      font-weight: 900;
-      background: #eef4ff;
-      color: #2c4c82;
-      box-shadow: 0 8px 16px rgba(91,140,255,0.12);
-      cursor: pointer;
-    }
-
-    .teacher-indicator {
-      background: #fff4e5;
-      color: #a04d00;
-      cursor: default;
-      display: none;
-    }
-
-    .teacher-indicator.active { display: inline-flex; }
-
-    .target-card {
-      margin: 0 auto 16px;
-      max-width: 540px;
-      background: linear-gradient(135deg, #eff5ff, #fff7eb);
-      border: 2px solid #dce8ff;
-      border-radius: 20px;
-      padding: 14px 18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
-      text-align: center;
-    }
-
-    .target-label {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 6px;
-    }
-
-    .target-time {
-      font-size: clamp(30px, 4.5vw, 50px);
-      font-weight: 900;
-      color: var(--blue-dark);
-      line-height: 1.08;
-    }
-
-    .clock-wrap {
-      position: relative;
-      width: min(560px, 100%);
-      aspect-ratio: 1 / 1;
-      margin: 0 auto;
-      user-select: none;
-      touch-action: none;
-    }
-
-    svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      overflow: visible;
-      filter: drop-shadow(0 12px 22px rgba(63, 109, 224, 0.16));
-    }
-
-    .clock-face { fill: #ffffff; stroke: #dbe7ff; stroke-width: 8; }
-    .tick.big { stroke: #385a98; stroke-width: 4; stroke-linecap: round; }
-    .tick.small { stroke: #a9bbdf; stroke-width: 2.5; stroke-linecap: round; }
-    .clock-number {
-      font-size: 24px;
-      font-weight: 800;
-      fill: #37548d;
-      text-anchor: middle;
-      dominant-baseline: middle;
-      pointer-events: none;
-    }
-
-    .hand {
-      transform-origin: 250px 250px;
-      cursor: grab;
-      touch-action: none;
-    }
-
-    .hand.dragging { cursor: grabbing; }
-
-    .hand .hit-area {
-      stroke: rgba(0,0,0,0);
-      stroke-width: 44;
-      stroke-linecap: round;
-      pointer-events: stroke;
-    }
-
-    .hand .visible-hand { pointer-events: none; }
-
-    .minute-hand .visible-hand {
-      stroke: var(--pink);
-      stroke-width: 9;
-      stroke-linecap: round;
-    }
-
-    .hour-hand .visible-hand {
-      stroke: var(--blue-dark);
-      stroke-width: 13;
-      stroke-linecap: round;
-    }
-
-    .center-pin { fill: #ffffff; stroke: #243b63; stroke-width: 5; }
-    .center-dot { fill: var(--orange); }
-
-    .help-text {
-      text-align: center;
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .panel {
-      background: white;
-      border-radius: 22px;
-      padding: 16px;
-      box-shadow: 0 8px 24px rgba(55,84,141,0.08);
-      margin-bottom: 14px;
-    }
-
-    .panel h3 { margin: 0 0 12px; font-size: 19px; color: #24406f; }
-
-    .status {
-      min-height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 14px;
-      border-radius: 18px;
-      font-weight: 800;
-      font-size: 20px;
-      background: linear-gradient(135deg, #f8fbff, #fff9f1);
-      border: 2px solid #e4eeff;
-    }
-
-    .status.success { color: #14833a; background: linear-gradient(135deg, #eafff0, #f9fff6); border-color: #c9f2d4; }
-    .status.error { color: #b45309; background: linear-gradient(135deg, #fff7e8, #fffaf3); border-color: #ffe2b6; }
-    .status.reveal { color: #6d28d9; background: linear-gradient(135deg, #f6eeff, #fcf8ff); border-color: #eadcff; }
-
-    .controls-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .control-box {
-      background: #f8fbff;
-      border: 2px solid #e1ebff;
-      border-radius: 18px;
-      padding: 14px;
-    }
-
-    .control-box h4 { margin: 0 0 10px; font-size: 16px; color: #2c4c82; }
-
-    .adjust-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .adjust-row .mini {
-      min-width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      border: none;
-      background: #e8f0ff;
-      color: #29497c;
-      font-size: 22px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(63,109,224,0.1);
-    }
-
-    .adjust-row .mini:active { transform: translateY(1px); }
-    .adjust-value { min-width: 72px; text-align: center; font-size: 28px; font-weight: 900; color: #1f3356; }
-
-    .typed-mode { display: none; }
-    .typed-mode.active { display: block; }
-
-    .typed-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 10px;
-    }
-
-    .typed-row input, .typed-row select {
-      flex: 1;
-      border: 2px solid #dbe7ff;
-      border-radius: 14px;
-      padding: 12px 12px;
-      font-size: 18px;
-      font-weight: 800;
-      outline: none;
-    }
-
-    .button-stack { display: grid; gap: 12px; }
-
-    button.big-btn, button.secondary-btn, button.ghost-btn {
-      width: 100%;
-      border: none;
-      border-radius: 18px;
-      padding: 16px 18px;
-      font-size: 18px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
-    }
-
-    button.big-btn:hover, button.secondary-btn:hover, button.ghost-btn:hover { transform: translateY(-1px); }
-    button.big-btn:active, button.secondary-btn:active, button.ghost-btn:active { transform: translateY(1px); }
-
-    .check-btn { background: linear-gradient(135deg, var(--blue), #7aa3ff); color: white; box-shadow: 0 10px 18px rgba(91,140,255,0.25); }
-    .next-btn { background: linear-gradient(135deg, var(--green), #67df7f); color: white; box-shadow: 0 10px 18px rgba(52,199,89,0.24); }
-    .secondary-btn { background: linear-gradient(135deg, var(--purple), #a78bfa); color: white; box-shadow: 0 10px 18px rgba(139,92,246,0.23); }
-    .ghost-btn { background: #eef4ff; color: #2c4c82; box-shadow: 0 8px 16px rgba(91,140,255,0.12); }
-
-    .small-note { color: var(--muted); font-size: 13px; text-align: center; margin-top: 8px; font-weight: 700; }
-
-    .toggle-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: #f8fbff;
-      border: 2px solid #e1ebff;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .toggle-row:last-child { margin-bottom: 0; }
-
-    .toggle-btn {
-      min-width: 96px;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 999px;
-      font-weight: 900;
-      cursor: pointer;
-      background: #e8f0ff;
-      color: #28406f;
-    }
-
-    .leaderboard-list {
-      display: grid;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .leaderboard-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto auto;
-      gap: 10px;
-      align-items: center;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: #f8fbff;
-      border: 2px solid #e1ebff;
-      font-weight: 800;
-    }
-
-    .leaderboard-empty {
-      color: var(--muted);
-      font-weight: 700;
-      padding: 12px;
-      text-align: center;
-      background: #f8fbff;
-      border: 2px dashed #dbe7ff;
-      border-radius: 14px;
-    }
-
-    .leader-rank {
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      background: #eef4ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #29497c;
-      font-size: 13px;
-    }
-
-    .leader-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .leader-meta { color: #35568f; font-size: 13px; }
-
-    .avatar-options {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .avatar-btn {
-      border: 2px solid #dbe7ff;
-      background: #f8fbff;
-      border-radius: 16px;
-      height: 56px;
-      font-size: 24px;
-      cursor: pointer;
-      font-weight: 900;
-    }
-
-    .avatar-btn.active {
-      border-color: var(--blue);
-      background: #eef4ff;
-      box-shadow: 0 8px 16px rgba(91,140,255,0.12);
-    }
-
-    .profile-form { display: grid; gap: 10px; }
-    .profile-form input {
-      border: 2px solid #dbe7ff;
-      border-radius: 14px;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .sparkles {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .sparkle {
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      opacity: 0;
-      animation: sparkle-pop 900ms ease-out forwards;
-      font-size: 18px;
-    }
-
-    @keyframes sparkle-pop {
-      0% { transform: translateY(12px) scale(0.3) rotate(0deg); opacity: 0; }
-      15% { opacity: 1; }
-      100% { transform: translateY(-70px) scale(1.1) rotate(240deg); opacity: 0; }
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(20, 30, 60, 0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 1000;
-    }
-
-    .modal-backdrop.active { display: flex; }
-
-    .modal {
-      width: min(520px, 100%);
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 24px 50px rgba(24,40,79,0.25);
-      padding: 18px;
-      border: 1px solid rgba(255,255,255,0.8);
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .modal-title { font-size: 24px; font-weight: 900; color: #24406f; }
-    .close-btn {
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      cursor: pointer;
-      background: #eef4ff;
-      color: #24406f;
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 16px;
-    }
-
-    .modal-actions button {
-      border: none;
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .save-btn { background: linear-gradient(135deg, var(--green), #67df7f); color: white; }
-    .cancel-btn { background: #eef4ff; color: #24406f; }
-
-    @media (max-width: 1000px) {
-      .topbar { grid-template-columns: 1fr 1fr; }
-      .main { grid-template-columns: 1fr; }
-      .left { border-right: none; border-bottom: 1px solid rgba(91,140,255,0.12); }
-    }
-
-    @media (max-width: 560px) {
-      .topbar { grid-template-columns: 1fr; }
-      .controls-grid { grid-template-columns: 1fr; }
-      .left, .right { padding: 14px; }
-      .value { font-size: 24px; }
-      .status { font-size: 18px; }
-      .leaderboard-item { grid-template-columns: auto 1fr; }
-      .leader-score, .leader-streak { justify-self: start; }
-    }
-@media (max-width: 700px) {
-  .appbar {
-    grid-template-columns: 1fr;
-  }
-
-  .appbar-home,
-  .appbar-avatar,
-  .appbar-score {
-    width: 100%;
-  }
-
-  .appbar-score-pill {
-    width: 100%;
-  }
-
-  .appbar-avatar {
-    justify-content: center;
-  }
-}
-  </style>
+.hidden-selects{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hidden-selects label{font-size:.78rem;font-weight:900;color:#756b91}
+.button-stack{display:grid;gap:9px}
+.big-btn,.secondary-btn,.ghost-btn{width:100%;border:0;border-radius:18px;padding:14px;font-weight:1000;cursor:pointer}
+.check-btn{background:linear-gradient(135deg,#ff70b3,#f44495);color:#fff;box-shadow:0 10px 22px rgba(244,68,149,.2)}
+.next-btn{background:linear-gradient(135deg,#2bc27f,#25a969);color:white}
+.secondary-btn{background:#7647dc;color:#fff}.ghost-btn{background:#eeeaf6;color:#63577f}
+.settings-row{display:flex;gap:7px;flex-wrap:wrap}
+.toggle-btn,.pill-btn{border:0;border-radius:999px;padding:9px 12px;background:#eee9ff;color:#5941a4;font-weight:900;cursor:pointer}
+.teacher-indicator{display:none;border-radius:999px;padding:9px 12px;background:#fff1d5;color:#9a6200;font-weight:900}.teacher-indicator.active{display:inline-flex}
+.levels-card{margin-top:16px;padding:16px}
+.levels-title{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}
+.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.difficulty-card{border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;color:var(--ink);min-height:150px}
+.difficulty-card:nth-child(1){background:#e8faef}.difficulty-card:nth-child(2){background:#e9f4ff}.difficulty-card:nth-child(3){background:#f0e9ff}
+.difficulty-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}
+.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}
+.difficulty-card:nth-child(2) .level-num{background:#4c8ff1}.difficulty-card:nth-child(3) .level-num{background:#8051e7}
+.difficulty-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}.difficulty-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
+.extras-card{margin-top:14px;padding:13px 15px}
+details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
+.leaderboard-list{display:grid;gap:7px;margin-top:10px}
+.leaderboard-item{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;padding:9px 10px;border-radius:13px;background:#faf8ff;font-weight:900}
+.leader-rank{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#eee8ff;color:#6341c4}
+.leader-meta{font-size:.82rem;color:#6c5a9c}.leader-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.leaderboard-empty{padding:10px;color:#8e87a3}
+.modal-backdrop{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}.modal-backdrop.active{display:flex}
+.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:19px;box-shadow:0 25px 60px rgba(50,30,100,.25)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}.close-btn{border:0;width:40px;height:40px;border-radius:50%;background:#f0ebff;font-size:1.3rem;cursor:pointer}
+.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}.avatar-options{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar-btn{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar-btn.active{border-color:#7040df;background:#f0e9ff}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save-btn{background:#25b97b;color:white}.cancel-btn{background:#eee9ff;color:#56488b}
+.bounce-pop{animation:bouncePop .45s ease}@keyframes bouncePop{0%{transform:scale(1)}30%{transform:scale(1.08)}100%{transform:scale(1)}}
+@media(max-width:1100px){.game-shell{grid-template-columns:200px minmax(0,1fr)}.nini-card,.nini-card img{min-height:560px;height:560px}.play-grid{grid-template-columns:1fr}.controls-card{display:grid;grid-template-columns:1fr 1fr}.status{grid-column:1/-1}}
+@media(max-width:780px){.game-shell{grid-template-columns:1fr}.nini-card{position:relative;top:0;height:240px;min-height:240px}.nini-card img{height:240px;min-height:240px;object-position:center 26%}.nini-tip{max-width:190px;right:auto}.progress-card{grid-template-columns:1fr auto}.progress-track{grid-column:1/-1;grid-row:2}.challenge-card{grid-template-columns:1fr}.mode-mini{grid-template-columns:1fr 1fr}.controls-card{display:flex}.level-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.appbar{grid-template-columns:auto 1fr auto;padding:8px}.appbar-home{font-size:0}.appbar-home:after{content:"🏠";font-size:1.15rem}.appbar-avatar-name{display:none}.progress-card{padding:11px}.star-meter{font-size:1.4rem}.challenge-card{padding:15px}.challenge-time{font-size:3.1rem}.clock-card{padding:8px}.controls-card{padding:10px}.controls-grid{grid-template-columns:1fr 1fr}.level-grid{grid-template-columns:1fr}.leaderboard-item{grid-template-columns:auto 1fr}.leader-score,.leader-streak{justify-self:start}}
+</style>
 </head>
 <body>
+
 <div class="appbar">
- <a class="appbar-home" href="#" id="homeBtn" onclick="goHome(event)">🏠 Home</a>
-
-  <div class="appbar-score">
-    <div class="appbar-score-pill" id="appbarScore">⭐ Score: 0</div>
-  </div>
-
+  <a class="appbar-home" href="#" id="homeBtn" onclick="goHome(event)">🏠 Back to Home</a>
+  <div class="appbar-score"><div class="appbar-score-pill" id="appbarScore">⭐ Score: 0</div></div>
   <button class="appbar-avatar" id="appbarAvatarBtn" type="button">
     <span class="appbar-avatar-emoji" id="appbarAvatarEmoji">⭐</span>
     <span class="appbar-avatar-name" id="appbarAvatarName">Nini</span>
   </button>
 </div>
-  <div class="app">
-    <div class="topbar">
-      <div class="profile-card">
-        <div class="profile-avatar" id="profileAvatarTop">⭐</div>
-        <div class="profile-text">
-          <div class="profile-name" id="profileNameTop">Nini</div>
-          <div class="profile-sub">Nini Mode</div>
-        </div>
-      </div>
 
-      <div class="stat">
-        <div class="label">Score</div>
-        <div class="value" id="scoreDisplay">0</div>
-      </div>
+<div class="wrap">
+  <div class="game-shell">
+    <aside class="nini-card">
+      <img src="nini-hero.webp" alt="Nini" />
+      <div class="nini-tip">What time is it? ⏰<small>Move the hands and check your answer!</small></div>
+    </aside>
 
-      <div class="stat">
-        <div class="label">Streak</div>
-        <div class="value" id="streakDisplay">0</div>
-      </div>
-
-      <div class="difficulty-box">
-        <div class="label">Difficulty</div>
-        <select id="difficultySelect" aria-label="Choose difficulty">
-          <option value="easy">Easy, hour focus</option>
-          <option value="medium">Medium, quarter and half</option>
-          <option value="hard">Hard, full time</option>
-        </select>
-      </div>
-
-      <div class="difficulty-box input-mode">
-        <div class="label">Mode</div>
-        <select id="modeSelect" aria-label="Choose game mode">
-          <option value="set-clock">Set the clock</option>
-          <option value="read-clock">Read the clock</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="main">
-      <section class="left">
-        <div class="title">Time Match</div>
-        <div class="subtitle">Learn to read and set an analog clock</div>
-
-        <div class="top-actions">
-          <button class="pill-btn" id="profileBtn">Profile</button>
-          <button class="pill-btn" id="saveScoreBtn">Save Score</button>
-<button class="pill-btn" id="clearScoreBtn">Clear My Scores</button>
-          <div class="teacher-indicator" id="teacherIndicator">Teacher Mode ON</div>
-        </div>
-
-        <div class="target-card" id="targetCard">
-          <div class="target-label" id="targetLabel">Match this time</div>
-          <div class="target-time" id="targetTime">3 o’clock</div>
-        </div>
-
-        <div class="clock-wrap" id="clockWrap">
-          <svg viewBox="0 0 500 500" aria-label="Analog clock">
-            <circle cx="250" cy="250" r="220" class="clock-face"></circle>
-            <g id="ticksGroup"></g>
-            <g id="numbersGroup"></g>
-
-            <g class="hand hour-hand" id="hourHand" data-hand="hour">
-              <line class="hit-area" x1="250" y1="250" x2="250" y2="145"></line>
-              <line class="visible-hand" x1="250" y1="250" x2="250" y2="145"></line>
-            </g>
-
-            <g class="hand minute-hand" id="minuteHand" data-hand="minute">
-              <line class="hit-area" x1="250" y1="250" x2="250" y2="92"></line>
-              <line class="visible-hand" x1="250" y1="250" x2="250" y2="92"></line>
-            </g>
-
-            <circle cx="250" cy="250" r="15" class="center-pin"></circle>
-            <circle cx="250" cy="250" r="7" class="center-dot"></circle>
-          </svg>
-        </div>
-
-        <div class="help-text" id="helpText">Drag the hands, or use the buttons on the right.</div>
-        <div class="sparkles" id="sparkles"></div>
+    <main class="game-main">
+      <section class="progress-card">
+        <div class="question-text" id="questionText">Question 1 of 10</div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="star-meter" id="starMeter"><span class="earned">★</span><span class="earned">★</span><span class="earned">★</span></div>
       </section>
 
-      <section class="right">
-        <div class="panel">
-          <h3>Message</h3>
+      <section class="challenge-card">
+        <div>
+          <div class="challenge-label" id="targetLabel">Match this time</div>
+          <div class="challenge-time" id="targetTime">3 o’clock</div>
+          <div class="challenge-name" id="challengeName">O’Clock Warm Up</div>
+        </div>
+        <div class="mode-mini">
+          <button class="mode-card active" data-mode="set-clock" onclick="changeMode('set-clock')">🕒 Set Clock</button>
+          <button class="mode-card" data-mode="read-clock" onclick="changeMode('read-clock')">👀 Read Clock</button>
+        </div>
+      </section>
+
+      <div class="play-grid">
+        <section class="clock-card">
+          <div class="clock-wrap" id="clockWrap">
+            <svg viewBox="0 0 500 500" aria-label="Analog clock">
+              <circle cx="250" cy="250" r="220" class="clock-face"></circle>
+              <g id="ticksGroup"></g>
+              <g id="numbersGroup"></g>
+              <g class="hand hour-hand" id="hourHand" data-hand="hour">
+                <line class="hit-area" x1="250" y1="250" x2="250" y2="145"></line>
+                <line class="visible-hand" x1="250" y1="250" x2="250" y2="145"></line>
+              </g>
+              <g class="hand minute-hand" id="minuteHand" data-hand="minute">
+                <line class="hit-area" x1="250" y1="250" x2="250" y2="92"></line>
+                <line class="visible-hand" x1="250" y1="250" x2="250" y2="92"></line>
+              </g>
+              <circle cx="250" cy="250" r="15" class="center-pin"></circle>
+              <circle cx="250" cy="250" r="7" class="center-dot"></circle>
+            </svg>
+          </div>
+          <div class="help-text" id="helpText">Drag the hands or use the controls.</div>
+          <div class="sparkles" id="sparkles"></div>
+        </section>
+
+        <section class="controls-card">
           <div class="status" id="statusBox">Set the clock to match the time above.</div>
-        </div>
 
-        <div class="panel" id="setClockPanel">
-          <h3>Set the clock</h3>
-          <div class="controls-grid">
-            <div class="control-box">
-              <h4>Hour</h4>
-              <div class="adjust-row">
-                <button class="mini" id="hourDown" aria-label="Decrease hour">−</button>
-                <div class="adjust-value" id="hourValue">12</div>
-                <button class="mini" id="hourUp" aria-label="Increase hour">+</button>
+          <div class="panel" id="setClockPanel">
+            <h3>Set the clock</h3>
+            <div class="controls-grid">
+              <div class="control-box">
+                <h4>Hour</h4>
+                <div class="adjust-row">
+                  <button class="mini" id="hourDown">−</button>
+                  <div class="adjust-value" id="hourValue">12</div>
+                  <button class="mini" id="hourUp">+</button>
+                </div>
+              </div>
+              <div class="control-box">
+                <h4>Minutes</h4>
+                <div class="adjust-row">
+                  <button class="mini" id="minuteDown">−</button>
+                  <div class="adjust-value" id="minuteValue">00</div>
+                  <button class="mini" id="minuteUp">+</button>
+                </div>
               </div>
             </div>
+            <div class="small-note" id="minuteHelpText">Move minutes by 5 at first, then by 1 in Time Master.</div>
+          </div>
 
-            <div class="control-box">
-              <h4>Minutes</h4>
-              <div class="adjust-row">
-                <button class="mini" id="minuteDown" aria-label="Decrease minutes">−</button>
-                <div class="adjust-value" id="minuteValue">00</div>
-                <button class="mini" id="minuteUp" aria-label="Increase minutes">+</button>
-              </div>
+          <div class="panel typed-mode" id="readClockPanel">
+            <h3>Read the clock</h3>
+            <div class="small-note" style="text-align:left;margin-bottom:8px;">Enter the time shown on the clock.</div>
+            <div class="typed-row">
+              <input type="number" id="typedHour" min="1" max="12" placeholder="Hour" />
+              <select id="typedMinute"></select>
             </div>
           </div>
-          <div class="small-note" id="minuteHelpText">Easy and Medium buttons move by 5 minutes. Hard moves by 1 minute.</div>
-        </div>
 
-        <div class="panel typed-mode" id="readClockPanel">
-          <h3>Read the clock</h3>
-          <div class="small-note" style="text-align:left; margin-bottom:8px;">Look at the clock and type the time you see.</div>
-          <div class="typed-row">
-            <input type="number" id="typedHour" min="1" max="12" placeholder="Hour" />
-            <select id="typedMinute"></select>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h3>Actions</h3>
           <div class="button-stack">
-            <button class="big-btn check-btn" id="mainActionBtn">Check Answer</button>
-            <button class="secondary-btn" id="showAnswerBtn">Show Answer, Costs 1 Point</button>
-            <button class="ghost-btn" id="resetBtn">Reset Hands</button>
+            <button class="big-btn check-btn" id="mainActionBtn">Check Answer →</button>
+            <button class="secondary-btn" id="showAnswerBtn">Show Answer − 1 Star</button>
+            <button class="ghost-btn" id="resetBtn">Reset</button>
           </div>
-          <div class="small-note">After a correct answer, the main button turns into Next Time.</div>
-        </div>
 
-        <div class="panel">
-          <div class="toggle-row">
-            <span>Sound</span>
-            <button class="toggle-btn" id="soundToggleBtn">On</button>
+          <div class="settings-row">
+            <button class="toggle-btn" id="soundToggleBtn">Sound: On</button>
+            <button class="toggle-btn" id="voiceToggleBtn">Voice: On</button>
+            <button class="toggle-btn" id="teacherToggleBtn">Teacher: Off</button>
+            <div class="teacher-indicator" id="teacherIndicator">Teacher Mode ON</div>
           </div>
-          <div class="toggle-row">
-            <span>Voice Reading</span>
-            <button class="toggle-btn" id="voiceToggleBtn">On</button>
-          </div>
-          <div class="toggle-row">
-            <span>Teacher Mode</span>
-            <button class="toggle-btn" id="teacherToggleBtn">Off</button>
-          </div>
-        </div>
 
-        <div class="panel">
-          <h3>Leaderboard</h3>
-          <div id="leaderboardList" class="leaderboard-list"></div>
+          <div class="hidden-selects" style="display:none">
+            <label>Difficulty<select class="hidden-select" id="difficultySelect">
+              <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option>
+            </select></label>
+            <label>Mode<select class="hidden-select" id="modeSelect">
+              <option value="set-clock">Set clock</option><option value="read-clock">Read clock</option>
+            </select></label>
+          </div>
+
+          <div style="display:none">
+            <div id="profileAvatarTop">⭐</div><div id="profileNameTop">Nini</div>
+            <div id="scoreDisplay">0</div><div id="streakDisplay">0</div>
+          </div>
+        </section>
+      </div>
+
+      <section class="levels-card">
+        <h2 class="levels-title">⏰ Time Match — Choose a Level</h2>
+        <div class="level-grid">
+          <button class="difficulty-card active" data-difficulty="easy" onclick="changeDifficulty('easy')">
+            <div class="level-num">1</div><h3>O’Clock Warm Up</h3>
+            <p>Learn the hour hand and practice exact hours like 3:00 and 8:00.</p>
+          </button>
+          <button class="difficulty-card" data-difficulty="medium" onclick="changeDifficulty('medium')">
+            <div class="level-num">2</div><h3>Quarter & Half</h3>
+            <p>Practice quarter past, half past, and quarter to using 15-minute intervals.</p>
+          </button>
+          <button class="difficulty-card" data-difficulty="hard" onclick="changeDifficulty('hard')">
+            <div class="level-num">3</div><h3>Time Master</h3>
+            <p>Read and set any time to the exact minute.</p>
+          </button>
         </div>
       </section>
+
+      <section class="extras-card">
+        <details>
+          <summary>⚙️ Profile & leaderboard</summary>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+            <button class="pill-btn" id="profileBtn">Edit Profile</button>
+            <button class="pill-btn" id="saveScoreBtn">Save Score</button>
+            <button class="pill-btn" id="clearScoreBtn">Clear Scores</button>
+            <a class="pill-btn" href="leaderboard.html" style="text-decoration:none">Full Leaderboard</a>
+          </div>
+          <div id="leaderboardList" class="leaderboard-list"></div>
+        </details>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="profileModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Profile</div>
+      <button class="close-btn" id="closeProfileBtn">×</button>
+    </div>
+    <div class="profile-form">
+      <input id="profileNameInput" maxlength="16" placeholder="Player name" />
+      <div style="font-weight:900;color:#756b91">Choose an avatar</div>
+      <div class="avatar-options" id="avatarOptions"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel-btn" id="cancelProfileBtn">Cancel</button>
+      <button class="save-btn" id="saveProfileBtn">Save</button>
     </div>
   </div>
-
-  <div class="modal-backdrop" id="profileModal">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Edit Profile</div>
-        <button class="close-btn" id="closeProfileBtn">×</button>
-      </div>
-      <div class="profile-form">
-        <input id="profileNameInput" maxlength="16" placeholder="Player name" />
-        <div class="label" style="margin-bottom:0;">Choose an avatar</div>
-        <div class="avatar-options" id="avatarOptions"></div>
-      </div>
-      <div class="modal-actions">
-        <button class="cancel-btn" id="cancelProfileBtn">Cancel</button>
-        <button class="save-btn" id="saveProfileBtn">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
+</div>
+<script>
         const STORAGE_KEYS = {
       profile: "learningWithNiniProfileV1",
       leaderboard: "timeMatchLeaderboardV1",
@@ -959,6 +408,54 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
     let profile = { name: "Nini", avatar: "⭐" };
     let selectedAvatar = "⭐";
     let leaderboard = [];
+    let questionNumber = 1;
+    let questionStars = 3;
+    const ROUND_LENGTH = 10;
+
+    const questionTextEl = document.getElementById("questionText");
+    const progressFillEl = document.getElementById("progressFill");
+    const starMeterEl = document.getElementById("starMeter");
+    const challengeNameEl = document.getElementById("challengeName");
+    const difficultyCards = Array.from(document.querySelectorAll(".difficulty-card"));
+    const modeCards = Array.from(document.querySelectorAll(".mode-card"));
+
+    function changeDifficulty(value) {
+      difficultySelect.value = value;
+      difficultyCards.forEach(card => card.classList.toggle("active", card.dataset.difficulty === value));
+      questionNumber = 1;
+      questionStars = 3;
+      generateNewRound();
+    }
+
+    function changeMode(value) {
+      modeSelect.value = value;
+      modeCards.forEach(card => card.classList.toggle("active", card.dataset.mode === value));
+      questionNumber = 1;
+      questionStars = 3;
+      generateNewRound();
+    }
+
+    function syncChoiceCards() {
+      difficultyCards.forEach(card => card.classList.toggle("active", card.dataset.difficulty === getCurrentDifficulty()));
+      modeCards.forEach(card => card.classList.toggle("active", card.dataset.mode === getCurrentMode()));
+    }
+
+    function challengeLabel() {
+      const diff = getCurrentDifficulty();
+      if (diff === "easy") return "O’Clock Warm Up";
+      if (diff === "medium") return "Quarter & Half";
+      return "Time Master";
+    }
+
+    function updateRoundUI() {
+      if (questionTextEl) questionTextEl.textContent = `Question ${questionNumber} of ${ROUND_LENGTH}`;
+      if (progressFillEl) progressFillEl.style.width = `${questionNumber * 10}%`;
+      if (starMeterEl) {
+        starMeterEl.innerHTML = [0,1,2].map(i => `<span class="${i < questionStars ? "earned" : ""}">★</span>`).join("");
+      }
+      if (challengeNameEl) challengeNameEl.textContent = challengeLabel();
+      syncChoiceCards();
+    }
 
     const successMessages = ["Great job!", "You got it!", "Nice work!", "Awesome!", "Perfect!", "That is right!"];
     const tryAgainMessages = ["Try again", "Almost there", "Not quite yet", "Give it another try"];
@@ -1129,6 +626,7 @@ function goHome(event) {
   appbarScore.textContent = `⭐ Score: ${score}`;
   hourValue.textContent = normalizeHour(playerHour);
   minuteValue.textContent = String(playerMinute).padStart(2, "0");
+  updateRoundUI();
 }
 function bounceElement(el) {
   if (!el) return;
@@ -1293,29 +791,43 @@ function bounceAvatar() {
     }
 
    function rewardSuccess() {
-  score += 1;
+  score += questionStars;
   streak += 1;
   levelSolved = true;
   updateScoreboard();
   bounceScore();
-  setStatus(randomChoice(successMessages), "success");
-  mainActionBtn.textContent = "Next Time";
+
+  const phrase = getCurrentDifficulty() === "easy"
+    ? formatEasyPhrase(targetHour)
+    : getCurrentDifficulty() === "medium"
+      ? formatMediumPhrase(targetHour, targetMinute)
+      : formatTime(targetHour, targetMinute);
+
+  setStatus(`Great job! ${phrase}. You earned ${questionStars} star${questionStars === 1 ? "" : "s"}.`, "success");
+  mainActionBtn.textContent = questionNumber === ROUND_LENGTH ? "Finish Round →" : "Next Question →";
   mainActionBtn.className = "big-btn next-btn";
   burstSparkles();
   if (soundOn) successSound();
 }
 
     function handleWrongAnswer() {
-      if (score > 0) score -= 1;
+      questionStars = Math.max(1, questionStars - 1);
       streak = 0;
       updateScoreboard();
-      setStatus(randomChoice(tryAgainMessages), "error");
+
+      const diff = getCurrentDifficulty();
+      let clue = "";
+      if (diff === "easy") clue = " Look at where the short hour hand points.";
+      else if (diff === "medium") clue = " Remember: 15 = quarter past, 30 = half past, 45 = quarter to.";
+      else clue = " Count the minute marks by 5s first, then the extra minutes.";
+
+      setStatus(randomChoice(tryAgainMessages) + "." + clue, "error");
       if (soundOn) errorSound();
     }
 
     function showAnswer() {
       if (levelSolved) return;
-      if (score > 0) score -= 1;
+      questionStars = Math.max(1, questionStars - 1);
       streak = 0;
       updateScoreboard();
 
@@ -1581,6 +1093,15 @@ function bounceAvatar() {
     }
 
     function generateNewRound() {
+      if (levelSolved) {
+        if (questionNumber >= ROUND_LENGTH) {
+          questionNumber = 1;
+          showToastRoundComplete();
+        } else {
+          questionNumber += 1;
+        }
+      }
+      questionStars = 3;
       levelSolved = false;
       const newTime = generateTargetTime();
       targetHour = newTime.hour;
@@ -1607,6 +1128,12 @@ function bounceAvatar() {
       updateMinuteHelp();
       updateScoreboard();
       speakTarget();
+    }
+
+    function showToastRoundComplete() {
+      setTimeout(() => {
+        setStatus("New 10-question round started. Keep going!", "reveal");
+      }, 80);
     }
 
     function loadInitialState() {
@@ -1636,8 +1163,18 @@ resetBtn.addEventListener("click", () => {
   if (soundOn) clickSound(520, 0.03, 0.04);
   resetRoundPosition();
 });
-    difficultySelect.addEventListener("change", generateNewRound);
-    modeSelect.addEventListener("change", generateNewRound);
+    difficultySelect.addEventListener("change", () => {
+      questionNumber = 1;
+      questionStars = 3;
+      syncChoiceCards();
+      generateNewRound();
+    });
+    modeSelect.addEventListener("change", () => {
+      questionNumber = 1;
+      questionStars = 3;
+      syncChoiceCards();
+      generateNewRound();
+    });
     hourUp.addEventListener("click", () => incrementHour(1));
     hourDown.addEventListener("click", () => incrementHour(-1));
     minuteUp.addEventListener("click", () => incrementMinute(1));
@@ -1706,6 +1243,7 @@ appbarAvatarBtn.addEventListener("click", () => {
     updateToggles();
     renderLeaderboard();
     updateScoreboard();
+    syncChoiceCards();
     generateNewRound();
   </script>
 </body>
