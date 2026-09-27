@@ -57,6 +57,11 @@ button{font:inherit}
 .board-shell{border:1px solid var(--line);border-radius:30px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);overflow:hidden}
 .board-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 22px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#faf8ff,#fff)}
 .board-title-wrap{display:flex;align-items:center;gap:12px}.board-icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:#eee8ff;font-size:1.55rem}.board-title{font-family:"Fredoka",sans-serif;font-size:1.45rem;margin:0;color:#4d319f}.board-note{font-size:.86rem;color:var(--muted);font-weight:800;margin-top:2px}.count-badge{border-radius:999px;padding:7px 10px;background:#f4f1fb;color:#796d99;font-size:.82rem;font-weight:1000}
+.daily-tabs{display:none;gap:8px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line);background:#fcfbff}
+.daily-tabs.show{display:flex}
+.daily-tab{border:2px solid transparent;border-radius:999px;padding:9px 13px;background:#f3effc;color:#665786;font-weight:1000;cursor:pointer}
+.daily-tab.active{border-color:#7449df;background:#eee8ff;color:#5635b5}
+.daily-date-note{margin-left:auto;align-self:center;color:var(--muted);font-size:.82rem;font-weight:900}
 .leaderboard-list{display:grid}.leaderboard-item{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:15px 22px;border-bottom:1px solid rgba(83,59,160,.075);transition:.15s}.leaderboard-item:last-child{border-bottom:0}.leaderboard-item:hover{background:#fbf9ff}.leaderboard-rank{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#f0ebff;color:#6141bb;font-family:"Fredoka",sans-serif;font-size:1.04rem}.leaderboard-item:nth-child(1) .leaderboard-rank{background:#fff0af;color:#755700}.leaderboard-item:nth-child(2) .leaderboard-rank{background:#edf0f6;color:#5d6472}.leaderboard-item:nth-child(3) .leaderboard-rank{background:#ffe7d5;color:#8b5734}.leaderboard-name{font-family:"Fredoka",sans-serif;font-size:1.08rem;color:#49328d}.leaderboard-meta{font-size:.82rem;color:#8a829f;font-weight:800;margin-top:3px;white-space:normal}.leaderboard-total{font-family:"Fredoka",sans-serif;font-size:1.18rem;color:#6940c9;white-space:nowrap}.leaderboard-empty{padding:42px 20px;text-align:center;color:#857c9e;font-weight:900}.loading{padding:42px 20px;text-align:center;color:#82789d;font-weight:900}
 .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:18px}.rule{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.8);padding:15px}.rule-icon{font-size:1.3rem}.rule strong{display:block;margin:5px 0 2px;color:#50359b}.rule span{color:#817894;font-size:.88rem;font-weight:800;line-height:1.35}
 footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
@@ -107,6 +112,11 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
         <div class="board-title-wrap"><div class="board-icon" id="boardIcon">🏆</div><div><h3 class="board-title" id="boardTitle">Overall</h3><div class="board-note" id="boardNote">Combined best scores across all games</div></div></div>
         <div class="count-badge" id="countBadge">Top 10</div>
       </div>
+      <div class="daily-tabs" id="dailyTabs">
+        <button class="daily-tab active" id="dailyTodayBtn" type="button">Today</button>
+        <button class="daily-tab" id="dailyOverallBtn" type="button">Overall 20-Min</button>
+        <div class="daily-date-note" id="dailyDateNote"></div>
+      </div>
       <div class="leaderboard-list" id="activeLeaderboard"><div class="loading">Loading global scores…</div></div>
     </div>
 
@@ -124,7 +134,7 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
 <script>
 const GAMES=[
   {id:"overall",label:"Overall",icon:"🏆",note:"Combined best scores across all games"},
-  {id:"daily_challenge",label:"Daily Challenge",icon:"📝",note:"Daily 20-Minute Challenge high scores"},
+  {id:"daily_challenge",label:"Daily Challenge",icon:"📝",note:"Compare today's 20-minute results or all-time best scores"},
   {id:"money",label:"Money Match",icon:"💵",note:"Money Match high scores"},
   {id:"time",label:"Time Match",icon:"🕒",note:"Time Match high scores"},
   {id:"multiplication",label:"Multiplication Sprint",icon:"✖️",note:"Multiplication Sprint high scores"},
@@ -137,7 +147,24 @@ const GAMES=[
   {id:"detective",label:"Math Detective",icon:"🔎",note:"Math Detective high scores"}
 ];
 let activeGame="overall";
+let dailyView="today";
 const el=id=>document.getElementById(id);
+
+function hawaiiDateISO(){
+  const parts=new Intl.DateTimeFormat("en-US",{timeZone:"Pacific/Honolulu",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+  const get=t=>parts.find(p=>p.type===t)?.value||"";
+  return get("year")+"-"+get("month")+"-"+get("day");
+}
+function prettyHawaiiDate(iso){
+  const [y,m,d]=String(iso).split("-").map(Number);
+  if(!y||!m||!d)return iso;
+  return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric"}).format(new Date(Date.UTC(y,m-1,d,12)));
+}
+function gradeLabel(g){
+  if(g==="mix")return "Mixed";
+  if(g==="3"||g==="4")return "Grade "+g;
+  return g||"Daily Challenge";
+}
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 
 function buildSelector(){
@@ -155,7 +182,22 @@ function selectGame(id){
   buildSelector();
   const g=GAMES.find(x=>x.id===id);
   el("boardIcon").textContent=g.icon;el("boardTitle").textContent=g.label;el("boardNote").textContent=g.note;
+  const tabs=el("dailyTabs");
+  tabs.classList.toggle("show",id==="daily_challenge");
+  if(id==="daily_challenge"){
+    el("dailyDateNote").textContent="Hawaiʻi date: "+prettyHawaiiDate(hawaiiDateISO());
+    updateDailyTabs();
+  }
   renderActive();
+}
+function updateDailyTabs(){
+  el("dailyTodayBtn").classList.toggle("active",dailyView==="today");
+  el("dailyOverallBtn").classList.toggle("active",dailyView==="overall");
+}
+function dailyMeta(x){
+  const parts=[gradeLabel(x.grade),"20 min"];
+  if(x.date)parts.push(prettyHawaiiDate(x.date));
+  return parts.join(" • ");
 }
 function scoreMetaOverall(x){
   const parts=[
@@ -164,20 +206,39 @@ function scoreMetaOverall(x){
   ].filter(x=>Number(x[1])>0);
   return parts.length?parts.map(x=>x[0]+" "+x[1]).join("  •  "):"No game scores yet";
 }
-function rowHtml(x,i,overall=false){
+function rowHtml(x,i,overall=false,daily=false){
+  const meta=overall?scoreMetaOverall(x):(daily?dailyMeta(x):"Best global score");
   return '<div class="leaderboard-item">'+
     '<div class="leaderboard-rank">'+(i+1)+'</div>'+
     '<div><div class="leaderboard-name">'+esc(x.avatar||"⭐")+' '+esc(x.name||"Player")+'</div>'+
-    '<div class="leaderboard-meta">'+(overall?scoreMetaOverall(x):"Best global score")+'</div></div>'+
+    '<div class="leaderboard-meta">'+esc(meta)+'</div></div>'+
     '<div class="leaderboard-total">⭐ '+Number(overall?x.total:x.score||0)+'</div></div>';
 }
 async function renderActive(){
   const list=el("activeLeaderboard");list.innerHTML='<div class="loading">Loading global scores…</div>';
   try{
-    const rows=activeGame==="overall"?await LWNLeaderboard.overall(10):await LWNLeaderboard.top(activeGame,10);
+    let rows;
+    if(activeGame==="overall"){
+      rows=await LWNLeaderboard.overall(10);
+    }else if(activeGame==="daily_challenge"){
+      const date=dailyView==="today"?hawaiiDateISO():null;
+      rows=await LWNLeaderboard.dailyChallenge({date,minutes:20,limit:10});
+      el("boardTitle").textContent=dailyView==="today"?"Daily Challenge — Today":"Daily Challenge — Overall";
+      el("boardNote").textContent=dailyView==="today"
+        ?"Today's 20-minute scores using the same Hawaiʻi-date challenge"
+        :"All-time best 20-minute Daily Challenge scores";
+    }else{
+      rows=await LWNLeaderboard.top(activeGame,10);
+    }
     el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
-    if(!rows.length){list.innerHTML='<div class="leaderboard-empty">No global scores yet. Play this game and be the first on the board! 🌟</div>';return}
-    list.innerHTML=rows.map((x,i)=>rowHtml(x,i,activeGame==="overall")).join("");
+    if(!rows.length){
+      const msg=activeGame==="daily_challenge"&&dailyView==="today"
+        ?"No 20-minute Daily Challenge scores yet today. Be the first! 🌟"
+        :"No global scores yet. Play this game and be the first on the board! 🌟";
+      list.innerHTML='<div class="leaderboard-empty">'+msg+'</div>';
+      return;
+    }
+    list.innerHTML=rows.map((x,i)=>rowHtml(x,i,activeGame==="overall",activeGame==="daily_challenge")).join("");
   }catch{
     el("countBadge").textContent="Offline";
     list.innerHTML='<div class="leaderboard-empty">Could not load global scores right now.</div>';
@@ -195,6 +256,8 @@ async function renderPodium(){
     else box.innerHTML=cards[1]+cards[0]+cards[2];
   }catch{box.innerHTML='<div class="podium-empty">Could not load champions right now.</div>'}
 }
+el("dailyTodayBtn").addEventListener("click",()=>{dailyView="today";updateDailyTabs();renderActive()});
+el("dailyOverallBtn").addEventListener("click",()=>{dailyView="overall";updateDailyTabs();renderActive()});
 buildSelector();renderActive();renderPodium();
 </script>
 </body>
