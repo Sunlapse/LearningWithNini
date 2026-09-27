@@ -146,6 +146,13 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
 @media(max-width:1100px){.game-shell{grid-template-columns:200px minmax(0,1fr)}.nini-card,.nini-card img{min-height:560px;height:560px}.play-grid{grid-template-columns:1fr}.controls-card{display:grid;grid-template-columns:1fr 1fr}.status{grid-column:1/-1}}
 @media(max-width:780px){.game-shell{grid-template-columns:1fr}.nini-card{position:relative;top:0;height:240px;min-height:240px}.nini-card img{height:240px;min-height:240px;object-position:center 26%}.nini-tip{max-width:190px;right:auto}.progress-card{grid-template-columns:1fr auto}.progress-track{grid-column:1/-1;grid-row:2}.challenge-card{grid-template-columns:1fr}.mode-mini{grid-template-columns:1fr 1fr}.controls-card{display:flex}.level-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.appbar{grid-template-columns:auto 1fr auto;padding:8px}.appbar-home{font-size:0}.appbar-home:after{content:"🏠";font-size:1.15rem}.appbar-avatar-name{display:none}.progress-card{padding:11px}.star-meter{font-size:1.4rem}.challenge-card{padding:15px}.challenge-time{font-size:3.1rem}.clock-card{padding:8px}.controls-card{padding:10px}.controls-grid{grid-template-columns:1fr 1fr}.level-grid{grid-template-columns:1fr}.leaderboard-item{grid-template-columns:auto 1fr}.leader-score,.leader-streak{justify-self:start}}
+
+.level-jump{display:none;width:100%;margin:12px 0 0;border:1px solid rgba(112,64,223,.13);border-radius:18px;padding:11px 15px;background:linear-gradient(135deg,#f6f1ff,#eee8ff);color:#5c3bb0;font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(80,55,150,.08);align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}
+.level-jump strong{font-family:"Fredoka",sans-serif;color:#6a35cf}
+.challenge-options-anchor{scroll-margin-top:90px}
+@media(max-width:1080px){.level-jump{display:flex}}
+@media(max-width:520px){.level-jump{font-size:.92rem;padding:10px 12px;margin-top:10px}}
+
 </style>
 </head>
 <body>
@@ -272,7 +279,8 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
         </section>
       </div>
 
-      <section class="levels-card">
+      <button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Level ↓</strong></button>
+<section id="challenge-options" class="levels-card challenge-options-anchor">
         <h2 class="levels-title">⏰ Time Match — Choose a Level</h2>
         <div class="level-grid">
           <button class="difficulty-card active" data-difficulty="easy" onclick="changeDifficulty('easy')">
