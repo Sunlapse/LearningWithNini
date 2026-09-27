@@ -81,10 +81,44 @@ function fighterHTML(value,side,label=""){
   return '<button class="fighter" data-side="'+side+'"><div><div style="font-weight:900;color:#8b80a4;margin-bottom:8px">'+label+'</div><div class="fighter-number">'+fmt(value)+'</div></div></button>'
 }
 function makeCompare(){
-  left=rnd(100,9999);right=rnd(100,9999);while(right===left)right=rnd(100,9999);correct=left>right?"left":"right";
+  // Keep Easy mode approachable, but avoid overly obvious pairs like 500 vs 9,000.
+  // Most rounds share the same leading digit so players have to inspect lower place values.
+  const fourDigit=Math.random()<.75;
+  const base=fourDigit?rnd(1,9)*1000:rnd(1,9)*100;
+  const span=fourDigit?999:99;
+
+  if(Math.random()<.75){
+    left=base+rnd(0,span);
+    right=base+rnd(0,span);
+  }else{
+    const min=fourDigit?1000:100;
+    const max=fourDigit?9999:999;
+    left=rnd(min,max);
+    right=rnd(min,max);
+  }
+
+  // Avoid ties and very round values that make the comparison too obvious.
+  while(
+    right===left ||
+    left%100===0 ||
+    right%100===0 ||
+    Math.abs(left-right)>2500
+  ){
+    if(Math.random()<.75){
+      left=base+rnd(0,span);
+      right=base+rnd(0,span);
+    }else{
+      const min=fourDigit?1000:100;
+      const max=fourDigit?9999:999;
+      left=rnd(min,max);
+      right=rnd(min,max);
+    }
+  }
+
+  correct=left>right?"left":"right";
   el("levelName").textContent="Greater Number Battle";el("prompt").textContent="Which number wins?";
   el("arena").innerHTML='<div class="vs-grid">'+fighterHTML(left,"left","LEFT")+'<div class="vs">VS</div>'+fighterHTML(right,"right","RIGHT")+'</div>';
-  wireFighters();el("status").textContent="Choose the greater number.";el("status").className="status";el("notebook").innerHTML="<strong>Battle Tip:</strong><br>Compare thousands first, then hundreds, tens, and ones.";
+  wireFighters();el("status").textContent="Choose the greater number.";el("status").className="status";el("notebook").innerHTML="<strong>Battle Tip:</strong><br>Compare the largest place first. If it matches, move one place to the right.";
 }
 function makeBuild(){
   digits=[rnd(1,9),rnd(0,9),rnd(0,9),rnd(0,9)];
