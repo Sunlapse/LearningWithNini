@@ -55,6 +55,50 @@ window.LWNLeaderboard = (() => {
     return await res.json();
   }
 
+  function parseDailyLevel(level){
+    const parts=String(level||"").split("|");
+    const grade=parts[0]||"";
+    const minutes=(parts[1]||"").replace("min","");
+    const date=parts[2]||"";
+    return {grade,minutes:Number(minutes)||0,date};
+  }
+
+  async function dailyChallenge({date=null,minutes=20,limit=10}={}){
+    const rows=await all();
+    const filtered=rows.filter(r=>{
+      if(r.game!=="daily_challenge") return false;
+      const meta=parseDailyLevel(r.level);
+      if(minutes && meta.minutes!==Number(minutes)) return false;
+      if(date && meta.date!==date) return false;
+      return true;
+    });
+
+    const map=new Map();
+    for(const r of filtered){
+      const key=String(r.player_name||"Player").trim().toLowerCase();
+      const meta=parseDailyLevel(r.level);
+      const item={
+        name:r.player_name||"Player",
+        avatar:r.avatar||"⭐",
+        score:Number(r.score)||0,
+        level:r.level||"",
+        grade:meta.grade,
+        minutes:meta.minutes,
+        date:meta.date,
+        best_streak:Number(r.best_streak)||0,
+        updated_at:r.updated_at||""
+      };
+      const prev=map.get(key);
+      if(!prev || item.score>prev.score || (item.score===prev.score && item.updated_at<prev.updated_at)){
+        map.set(key,item);
+      }
+    }
+
+    const out=[...map.values()];
+    out.sort((a,b)=>b.score-a.score || b.best_streak-a.best_streak || String(a.updated_at).localeCompare(String(b.updated_at)) || a.name.localeCompare(b.name));
+    return out.slice(0,limit);
+  }
+
   async function overall(limit=10){
     const rows=await all();
     const map=new Map();
@@ -71,7 +115,7 @@ window.LWNLeaderboard = (() => {
     return out.slice(0,limit);
   }
 
-  return {saveScore,top,overall};
+  return {saveScore,top,overall,dailyChallenge};
 })();
 
 /* Playful browser-tab title when Learn With Nini is in the background. */
