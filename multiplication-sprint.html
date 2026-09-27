@@ -251,6 +251,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
   </div>
 </div>
 
+<script src="leaderboard-api.js"></script>
 <script>
 const KEYS={
   profile:"learningWithNiniProfileV1",
@@ -314,6 +315,7 @@ function check(){
   if(answer===""){el("status").textContent="Type an answer first.";el("status").className="status info";return}
   if(Number(answer)===a*b){
     solved=true;score+=stars;streak++;bestStreak=Math.max(bestStreak,streak);
+    LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"multiplication",score,level,best_streak:bestStreak}).then(renderBoard).catch(()=>{});
     el("status").textContent="Great job! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
     el("status").className="status good";
     el("checkBtn").textContent=question===10?"Finish Round →":"Next Question →";
@@ -359,15 +361,20 @@ function chooseLevel(v){
 function formatTime(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
 function tick(){if(timerOn)el("timer").textContent=formatTime(Math.floor((Date.now()-startTime)/1000));else el("timer").textContent="Off"}
 function toggleTimer(){timerOn=!timerOn;el("timerToggle").textContent="⏱ Timer: "+(timerOn?"On":"Off");if(timerOn)startTime=Date.now()}
-function saveScore(){
-  const entry={name:profile.name||"Nini",avatar:profile.avatar||"⭐",score,bestStreak,level,ts:Date.now()};
-  board.push(entry);board.sort((x,y)=>y.score-x.score||y.bestStreak-x.bestStreak||x.ts-y.ts);board=board.slice(0,10);store(KEYS.board,board);renderBoard();
-  el("status").textContent="Score saved for "+entry.name+".";el("status").className="status good";
+async function saveScore(){
+  try{
+    await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"multiplication",score,level,best_streak:bestStreak});
+    await renderBoard();
+    el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good";
+  }catch{el("status").textContent="Could not save the global score yet.";el("status").className="status bad";}
 }
-function renderBoard(){
+async function renderBoard(){
   const box=el("board");box.innerHTML="";
-  if(!board.length){box.innerHTML='<div class="empty">No saved scores yet.</div>';return}
-  board.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+escapeHtml(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})
+  try{
+    const rows=await LWNLeaderboard.top("multiplication",10);
+    if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}
+    rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+escapeHtml(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)});
+  }catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function updateProfile(){

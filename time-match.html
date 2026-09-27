@@ -323,6 +323,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
     </div>
   </div>
 </div>
+<script src="leaderboard-api.js"></script>
 <script>
         const STORAGE_KEYS = {
       profile: "learningWithNiniProfileV1",
@@ -796,6 +797,7 @@ function bounceAvatar() {
   score += questionStars;
   streak += 1;
   levelSolved = true;
+  LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"time",score,level:getCurrentDifficulty(),best_streak:streak}).then(renderLeaderboard).catch(()=>{});
   updateScoreboard();
   bounceScore();
 
@@ -856,50 +858,25 @@ function bounceAvatar() {
       }
     }
 
-        function saveScoreEntry() {
-      const entry = {
-        name: profile.name || "Nini",
-        avatar: profile.avatar || "⭐",
-        score,
-        streak,
-        ts: Date.now()
-      };
-
-      leaderboard.push(entry);
-      leaderboard.sort((a, b) =>
-        b.score - a.score ||
-        b.streak - a.streak ||
-        a.ts - b.ts
-      );
-      leaderboard = leaderboard.slice(0, 10);
-
-      saveJson(STORAGE_KEYS.leaderboard, leaderboard);
-      buildOverallFromBoards();
-      renderLeaderboard();
-      setStatus("Score saved to leaderboard.");
+        async function saveScoreEntry() {
+      try{
+        await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"time",score,level:getCurrentDifficulty(),best_streak:streak});
+        await renderLeaderboard();
+        setStatus("Global score saved.");
+      }catch{setStatus("Could not save the global score yet.");}
     }
 
-    function renderLeaderboard() {
-      leaderboardList.innerHTML = "";
-      if (!leaderboard.length) {
-        const empty = document.createElement("div");
-        empty.className = "leaderboard-empty";
-        empty.textContent = "No scores saved yet.";
-        leaderboardList.appendChild(empty);
-        return;
-      }
-
-      leaderboard.forEach((entry, index) => {
-        const item = document.createElement("div");
-        item.className = "leaderboard-item";
-        item.innerHTML = `
-          <div class="leader-rank">${index + 1}</div>
-          <div class="leader-name">${entry.avatar} ${entry.name}</div>
-          <div class="leader-score leader-meta">Score ${entry.score}</div>
-          <div class="leader-streak leader-meta">Streak ${entry.streak}</div>
-        `;
-        leaderboardList.appendChild(item);
-      });
+    async function renderLeaderboard() {
+      leaderboardList.innerHTML="";
+      try{
+        const rows=await LWNLeaderboard.top("time",10);
+        if(!rows.length){leaderboardList.innerHTML='<div class="leaderboard-empty">No global scores yet.</div>';return}
+        rows.forEach((entry,index)=>{
+          const item=document.createElement("div"); item.className="leaderboard-item";
+          item.innerHTML='<div class="leader-rank">'+(index+1)+'</div><div class="leader-name">'+entry.avatar+' '+entry.name+'</div><div class="leader-score leader-meta">Score '+entry.score+'</div><div class="leader-streak leader-meta">Streak '+(entry.best_streak||0)+'</div>';
+          leaderboardList.appendChild(item);
+        });
+      }catch{leaderboardList.innerHTML='<div class="leaderboard-empty">Could not load global scores.</div>'}
     }
 
     function burstSparkles() {

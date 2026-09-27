@@ -561,54 +561,34 @@
         .join(' + ');
     }
 
-    function renderMoneyLeaderboard() {
+    async function renderMoneyLeaderboard() {
       const list = document.getElementById("moneyLeaderboardList");
       if (!list) return;
-
-      list.innerHTML = "";
-
-      if (!moneyLeaderboard.length) {
-        list.innerHTML = `<div class="mini-leaderboard-empty">No saved scores yet.</div>`;
-        return;
+      try {
+        const rows = await LWNLeaderboard.top("money",10);
+        list.innerHTML = rows.length ? "" : '<div class="mini-leaderboard-empty">No global scores yet.</div>';
+        rows.forEach((entry,index)=>{
+          const row=document.createElement("div");
+          row.className="mini-leaderboard-item";
+          row.innerHTML='<div class="mini-leaderboard-rank">'+(index+1)+'</div><div class="mini-leaderboard-name">'+entry.avatar+' '+entry.name+'</div><div class="mini-leaderboard-score">'+entry.score+'</div>';
+          list.appendChild(row);
+        });
+      } catch {
+        list.innerHTML='<div class="mini-leaderboard-empty">Could not load global scores.</div>';
       }
-
-      moneyLeaderboard.forEach((entry, index) => {
-        const row = document.createElement("div");
-        row.className = "mini-leaderboard-item";
-        row.innerHTML = `
-          <div class="mini-leaderboard-rank">${index + 1}</div>
-          <div class="mini-leaderboard-name">${entry.avatar} ${entry.name}</div>
-          <div class="mini-leaderboard-score">${entry.score}</div>
-        `;
-        list.appendChild(row);
-      });
     }
 
-    function saveMoneyScore() {
+    async function saveMoneyScore() {
       playClickSound();
-
-      const profile = getSharedProfile();
-
-      const entry = {
-        name: profile.name,
-        avatar: profile.avatar,
-        score: score,
-        ts: Date.now()
-      };
-
-      moneyLeaderboard.push(entry);
-      moneyLeaderboard.sort((a, b) =>
-        b.score - a.score ||
-        a.ts - b.ts
-      );
-      moneyLeaderboard = moneyLeaderboard.slice(0, 10);
-
-      localStorage.setItem(SITE_KEYS.moneyLeaderboard, JSON.stringify(moneyLeaderboard));
-      buildOverallFromBoards();
-      renderMoneyLeaderboard();
-
-      setMessage(`Score saved for ${profile.name}.`, "success");
-      showToast("success", "Score saved!");
+      const profile=getSharedProfile();
+      try{
+        await LWNLeaderboard.saveScore({name:profile.name,avatar:profile.avatar,game:"money",score,level:gameMode});
+        await renderMoneyLeaderboard();
+        setMessage(`Global score saved for ${profile.name}.`,"success");
+        showToast("success","Global score saved!");
+      }catch(e){
+        setMessage("Could not save the global score yet.","warning");
+      }
     }
 
     function clearMoneyLeaderboard() {
@@ -980,7 +960,8 @@ playClickSound();
       if (wrongChecks > 0) feedback += ' Wrong check used, -1 point.';
 
       score += pointsEarned;
-updateTopBarScore(score); 
+      updateTopBarScore(score);
+      { const p=getSharedProfile(); LWNLeaderboard.saveScore({name:p.name,avatar:p.avatar,game:"money",score,level:gameMode}).then(renderMoneyLeaderboard).catch(()=>{}); } 
       levelSolved = true;
       levelScored = true;
       totalVisible = false;
@@ -1068,6 +1049,7 @@ updateTopBarScore(score);
 
     init();
   </script>
+<script src="leaderboard-api.js"></script>
 <script>
 let clickAudioContext = null;
 

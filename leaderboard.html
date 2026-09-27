@@ -257,7 +257,8 @@
     </footer>
   </div>
 
-  <script>
+  <script src="leaderboard-api.js"></script>
+<script>
     const SITE_KEYS = {
       profile: "learningWithNiniProfileV1",
       moneyLeaderboard: "moneyMatchLeaderboardV1",
@@ -416,5 +417,36 @@
     renderGameLeaderboard("fractionLeaderboardList", SITE_KEYS.fractionLeaderboard);
     renderGameLeaderboard("detectiveLeaderboardList", SITE_KEYS.detectiveLeaderboard);
   </script>
+<script>
+async function renderGlobalLeaderboard(){
+  const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+  const gameMap={money:"moneyLeaderboardList",time:"timeLeaderboardList",multiplication:"multiplicationLeaderboardList",fraction:"fractionLeaderboardList",detective:"detectiveLeaderboardList"};
+  for(const [game,id] of Object.entries(gameMap)){
+    const list=document.getElementById(id); if(!list) continue;
+    try{
+      const rows=await LWNLeaderboard.top(game,10); list.innerHTML="";
+      if(!rows.length){list.innerHTML='<div class="leaderboard-empty">No global scores yet.</div>';continue}
+      rows.forEach((x,i)=>{
+        const row=document.createElement("div"); row.className="leaderboard-item";
+        row.innerHTML='<div class="leaderboard-rank">'+(i+1)+'</div><div><div class="leaderboard-name">'+x.avatar+' '+esc(x.name)+'</div><div class="leaderboard-meta">Global score</div></div><div class="leaderboard-total">⭐ '+x.score+'</div>';
+        list.appendChild(row);
+      });
+    }catch{list.innerHTML='<div class="leaderboard-empty">Could not load global scores.</div>'}
+  }
+  const overallList=document.getElementById("overallLeaderboardList");
+  if(overallList){
+    try{
+      const rows=await LWNLeaderboard.overall(10); overallList.innerHTML="";
+      if(!rows.length){overallList.innerHTML='<div class="leaderboard-empty">No global scores yet.</div>';return}
+      rows.forEach((x,i)=>{
+        const row=document.createElement("div"); row.className="leaderboard-item";
+        row.innerHTML='<div class="leaderboard-rank">'+(i+1)+'</div><div><div class="leaderboard-name">'+x.avatar+' '+esc(x.name)+'</div><div class="leaderboard-meta">Money '+x.money+' • Time '+x.time+' • Multiply '+x.multiplication+' • Fractions '+x.fraction+' • Detective '+x.detective+'</div></div><div class="leaderboard-total">⭐ '+x.total+'</div>';
+        overallList.appendChild(row);
+      });
+    }catch{overallList.innerHTML='<div class="leaderboard-empty">Could not load global scores.</div>'}
+  }
+}
+renderGlobalLeaderboard();
+</script>
 </body>
 </html>
