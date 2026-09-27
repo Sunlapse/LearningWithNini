@@ -289,18 +289,155 @@
       pointer-events: none;
     }
 
-    .math-doodle {
+    .hero-sticker {
       position: absolute;
-      z-index: 2;
+      z-index: 3;
+      pointer-events: none;
       font-family: "Fredoka", sans-serif;
       font-weight: 700;
-      pointer-events: none;
-      text-shadow: 0 2px 0 rgba(255,255,255,.55);
     }
 
-    .doodle-one { left: 9%; top: 13%; color: #7b3cec; font-size: 2.3rem; transform: rotate(-8deg); }
-    .doodle-two { right: 7%; top: 23%; color: white; font-size: 2.4rem; transform: rotate(-8deg); text-align: center; }
-    .doodle-three { right: 4%; bottom: 12%; color: #f3b51e; font-size: 2rem; }
+    .hero-equation {
+      left: 4%;
+      top: 5%;
+      font-size: clamp(1.45rem, 2.7vw, 2.25rem);
+      color: #7138e8;
+      transform: rotate(-5deg);
+      text-shadow:
+        -3px -3px 0 #fff, 3px -3px 0 #fff,
+        -3px 3px 0 #fff, 3px 3px 0 #fff,
+        0 4px 12px rgba(75,45,140,.14);
+      letter-spacing: -.03em;
+    }
+    .hero-equation .pink { color: #ef4d9a; }
+
+    .hero-clock {
+      left: 4%;
+      top: 33%;
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      background: #fffdf4;
+      border: 9px solid #9b73ef;
+      box-shadow: 0 0 0 4px rgba(255,255,255,.95), 0 9px 20px rgba(71,48,130,.16);
+    }
+    .hero-clock span {
+      position: absolute;
+      color: #4f35b8;
+      font-size: .9rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .hero-clock .n12 { top: 8px; left: 50%; transform: translateX(-50%); }
+    .hero-clock .n3 { right: 8px; top: 50%; transform: translateY(-50%); }
+    .hero-clock .n6 { bottom: 8px; left: 50%; transform: translateX(-50%); }
+    .hero-clock .n9 { left: 8px; top: 50%; transform: translateY(-50%); }
+    .hero-clock::before,
+    .hero-clock::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 50%;
+      transform-origin: 50% 100%;
+      border-radius: 999px;
+    }
+    .hero-clock::before {
+      width: 6px;
+      height: 31px;
+      margin-left: -3px;
+      background: #ef4d9a;
+      transform: rotate(42deg);
+    }
+    .hero-clock::after {
+      width: 7px;
+      height: 22px;
+      margin-left: -3.5px;
+      background: #7040df;
+      transform: rotate(265deg);
+    }
+    .hero-clock-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      transform: translate(-50%,-50%);
+      border-radius: 50%;
+      background: #7040df;
+      border: 2px solid #fff;
+      z-index: 2;
+    }
+
+    .hero-shapes {
+      right: 3%;
+      top: 5%;
+      width: 132px;
+      height: 112px;
+    }
+    .hero-triangle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      border-left: 37px solid transparent;
+      border-right: 37px solid transparent;
+      border-bottom: 66px solid #ef4d9a;
+      transform: rotate(5deg);
+      filter: drop-shadow(0 0 0 #fff) drop-shadow(0 4px 8px rgba(70,45,120,.12));
+    }
+    .hero-triangle::after {
+      content: "";
+      position: absolute;
+      left: -27px;
+      top: 15px;
+      width: 0;
+      height: 0;
+      border-left: 27px solid transparent;
+      border-right: 27px solid transparent;
+      border-bottom: 48px solid #f7a9d1;
+    }
+    .hero-circle {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #69d5f5;
+      border: 6px solid #3462d5;
+      box-shadow: 0 0 0 4px #fff;
+    }
+
+    .hero-encourage {
+      right: 3%;
+      top: 39%;
+      width: 34%;
+      color: #7b3cec;
+      font-size: clamp(1.65rem, 3.3vw, 2.7rem);
+      line-height: .95;
+      text-align: center;
+      transform: rotate(-3deg);
+      text-shadow:
+        -3px -3px 0 #fff, 3px -3px 0 #fff,
+        -3px 3px 0 #fff, 3px 3px 0 #fff,
+        0 5px 12px rgba(70,40,125,.12);
+    }
+    .hero-encourage span { color: #ef4d9a; }
+
+    .hero-star {
+      left: 7%;
+      bottom: 10%;
+      font-size: 3.6rem;
+      filter: drop-shadow(0 0 0 #fff) drop-shadow(0 5px 10px rgba(80,55,145,.14));
+    }
+    .hero-heart {
+      right: 7%;
+      bottom: 11%;
+      color: #ef7ec0;
+      font-size: 2.6rem;
+      transform: rotate(8deg);
+    }
 
     .content {
       padding: 18px 0 0;
@@ -538,13 +675,15 @@
       .leaderboard-btn { display: inline-flex; }
       .hero { grid-template-columns: 1fr; }
       .hero-copy { padding: 56px 22px 34px; }
-      .hero-art { min-height: 470px; }
-      .hero-art::before {
-        width: 100%;
-        height: 22%;
-        bottom: auto;
-        background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,0));
-      }
+      .hero-art { min-height: 0; aspect-ratio: 4 / 5; }
+      .hero-art::before { display: none; }
+      .hero-photo { object-position: center 24%; }
+      .hero-equation { left: 4%; top: 4%; font-size: clamp(1.35rem, 5vw, 2rem); }
+      .hero-clock { left: 4%; top: 34%; width: 98px; height: 98px; border-width: 8px; }
+      .hero-shapes { right: 3%; top: 5%; transform: scale(.88); transform-origin: top right; }
+      .hero-encourage { right: 3%; top: 40%; width: 34%; font-size: clamp(1.45rem, 6vw, 2.15rem); }
+      .hero-star { left: 7%; bottom: 9%; font-size: 3.1rem; }
+      .hero-heart { right: 7%; bottom: 10%; font-size: 2.2rem; }
       .cards { grid-template-columns: repeat(2, 1fr); }
       .benefits { grid-template-columns: repeat(2, 1fr); }
     }
@@ -563,8 +702,14 @@
       h1 { font-size: clamp(3rem, 15vw, 4.6rem); }
       .hero-copy p { font-size: 1.05rem; }
       .primary-btn { width: 100%; min-width: 0; }
-      .hero-art { min-height: 430px; }
-      .doodle-two { font-size: 1.7rem; }
+      .hero-art { min-height: 0; aspect-ratio: 4 / 5; }
+      .hero-equation { top: 3.5%; left: 4%; font-size: 1.35rem; }
+      .hero-clock { top: 34%; left: 4%; width: 84px; height: 84px; border-width: 7px; }
+      .hero-clock span { font-size: .72rem; }
+      .hero-shapes { right: 2%; top: 4%; transform: scale(.72); transform-origin: top right; }
+      .hero-encourage { right: 2%; top: 39%; width: 35%; font-size: 1.55rem; }
+      .hero-star { left: 6%; bottom: 8%; font-size: 2.7rem; }
+      .hero-heart { right: 6%; bottom: 9%; font-size: 2rem; }
       .cards { grid-template-columns: 1fr; }
       .feature-card { min-height: 230px; }
       .benefits { grid-template-columns: 1fr; gap: 14px; }
@@ -612,11 +757,20 @@
           <a class="primary-btn" href="#games">Start Learning! <span>→</span></a>
         </div>
 
-        <div class="hero-art" aria-label="Nini">
+        <div class="hero-art" aria-label="Nini with fun math graphics">
           <img class="hero-photo" src="nini-hero.webp" alt="Nini smiling" />
-          <div class="math-doodle doodle-one">7 × 8 = 56</div>
-          <div class="math-doodle doodle-two">You<br>can do it! ♡</div>
-          <div class="math-doodle doodle-three">☆</div>
+          <div class="hero-sticker hero-equation">24 <span class="pink">÷</span> 6 <span class="pink">=</span> 4</div>
+          <div class="hero-sticker hero-clock" aria-hidden="true">
+            <span class="n12">12</span><span class="n3">3</span><span class="n6">6</span><span class="n9">9</span>
+            <i class="hero-clock-dot"></i>
+          </div>
+          <div class="hero-sticker hero-shapes" aria-hidden="true">
+            <i class="hero-triangle"></i>
+            <i class="hero-circle"></i>
+          </div>
+          <div class="hero-sticker hero-encourage">You<br><span>can do it!</span> ♡</div>
+          <div class="hero-sticker hero-star" aria-hidden="true">⭐</div>
+          <div class="hero-sticker hero-heart" aria-hidden="true">♡</div>
         </div>
       </div>
     </section>
