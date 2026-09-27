@@ -1,482 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Leaderboard | Learning With Nini</title>
-  <meta name="description" content="See the top scores for Learning With Nini." />
-  <style>
-    :root {
-      --bg1: #fff7fb;
-      --bg2: #eef6ff;
-      --card: rgba(255,255,255,0.88);
-      --text: #24324a;
-      --muted: #5d6b82;
-      --pink: #ff6fb5;
-      --purple: #8b5cf6;
-      --blue: #4f9cff;
-      --yellow: #ffd84d;
-      --shadow: 0 18px 50px rgba(69, 94, 143, 0.18);
-      --radius: 28px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, #ffe1f0 0, transparent 35%),
-        radial-gradient(circle at top right, #dff1ff 0, transparent 35%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      min-height: 100vh;
-    }
-
-    .wrap {
-      width: min(1100px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 24px 0 48px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-weight: 800;
-      font-size: 1.15rem;
-    }
-
-    .brand-badge {
-      width: 52px;
-      height: 52px;
-      display: grid;
-      place-items: center;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: white;
-      font-size: 1.5rem;
-      box-shadow: var(--shadow);
-    }
-
-    .navlinks {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      padding: 12px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.8);
-      color: var(--text);
-      font-weight: 700;
-      box-shadow: 0 8px 22px rgba(69, 94, 143, 0.1);
-      border: 1px solid rgba(255,255,255,0.7);
-      text-decoration: none;
-    }
-
-    .hero-card,
-    .leaderboard-panel {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.8);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-card {
-      padding: 30px;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      line-height: 1.05;
-      margin: 0 0 12px;
-    }
-
-    .hero-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.65;
-      max-width: 60ch;
-    }
-
-    .leaderboard-panel {
-      padding: 26px;
-      margin-bottom: 24px;
-    }
-
-    .leaderboard-panel h2 {
-      margin: 0 0 16px;
-      font-size: 1.5rem;
-    }
-
-    .leaderboard-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .leaderboard-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.78);
-      border: 1px solid rgba(36,50,74,0.08);
-      box-shadow: 0 8px 18px rgba(69, 94, 143, 0.08);
-    }
-
-    .leaderboard-rank {
-      width: 38px;
-      height: 38px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      background: linear-gradient(135deg, #ffd84d, #ffb648);
-      color: #24324a;
-    }
-
-    .leaderboard-name {
-      font-weight: 800;
-      font-size: 1.05rem;
-    }
-
-    .leaderboard-meta {
-      color: var(--muted);
-      font-size: 0.95rem;
-      margin-top: 4px;
-    }
-
-    .leaderboard-total {
-      text-align: right;
-      font-weight: 900;
-      color: var(--purple);
-      font-size: 1.05rem;
-      white-space: nowrap;
-    }
-
-    .leaderboard-empty {
-      padding: 16px;
-      text-align: center;
-      color: var(--muted);
-      background: rgba(255,255,255,0.75);
-      border: 1px dashed rgba(36,50,74,0.14);
-      border-radius: 18px;
-    }
-
-    footer {
-      text-align: center;
-      color: var(--muted);
-      margin-top: 26px;
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 820px) {
-      .hero-card,
-      .leaderboard-panel {
-        border-radius: 24px;
-      }
-
-      .hero-card {
-        padding: 24px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#faf8ff">
+<title>Leaderboard | Learn With Nini</title>
+<meta name="description" content="See global high scores across Learn With Nini math games.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --ink:#2b2260;--muted:#746d91;--purple:#7040df;--purple2:#8c62ed;
+  --pink:#ef559d;--blue:#4f9cef;--gold:#ffbd27;--green:#24b879;
+  --line:rgba(83,59,160,.11);--shadow:0 18px 45px rgba(74,50,137,.12)
+}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Nunito",Arial,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(circle at 5% 4%,rgba(255,224,241,.82),transparent 23%),
+    radial-gradient(circle at 96% 4%,rgba(226,216,255,.9),transparent 25%),
+    linear-gradient(180deg,#fbf9ff 0,#fff 45%,#fffafc 100%);
+  min-height:100vh
+}
+button{font:inherit}
+.topbar{
+  position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;
+  gap:16px;padding:12px max(18px,calc((100vw - 1240px)/2));
+  background:rgba(255,255,255,.93);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)
+}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);font-family:"Fredoka",sans-serif;font-size:1.22rem}
+.brand-mark{width:43px;height:43px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#ff77b7,#7448df);box-shadow:0 9px 20px rgba(104,67,191,.17);font-size:1.25rem}
+.top-actions{display:flex;gap:8px;align-items:center}.top-btn{border:0;border-radius:999px;padding:10px 15px;text-decoration:none;font-weight:900;color:#5a3aaa;background:#f0ebff}.top-btn.primary{background:linear-gradient(135deg,#6d43d9,#845ce8);color:#fff}
+.wrap{width:min(1240px,calc(100% - 28px));margin:0 auto;padding:24px 0 48px}
+.hero{
+  position:relative;overflow:hidden;border:1px solid var(--line);border-radius:34px;padding:30px 32px;
+  min-height:230px;display:grid;grid-template-columns:1fr 210px;align-items:center;gap:20px;
+  background:linear-gradient(135deg,#f6edff 0,#edf7ff 62%,#fff4f9 100%);box-shadow:var(--shadow)
+}
+.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(1px);opacity:.65}
+.hero:before{width:210px;height:210px;background:#ddd0ff;right:110px;top:-110px}
+.hero:after{width:170px;height:170px;background:#ffd8e9;left:-75px;bottom:-95px}
+.hero-copy,.hero-nini{position:relative;z-index:1}.eyebrow{display:inline-flex;gap:7px;align-items:center;border-radius:999px;padding:7px 11px;background:rgba(255,255,255,.9);color:#6542bd;font-weight:1000;font-size:.82rem}
+.hero h1{font-family:"Fredoka",sans-serif;font-size:clamp(2.4rem,6vw,4.6rem);line-height:.98;letter-spacing:-.035em;margin:11px 0 9px;color:#5532bd}.hero p{max-width:650px;margin:0;color:#665e84;font-size:1.05rem;line-height:1.55;font-weight:800}.hero-nini{height:195px;align-self:end;display:flex;justify-content:center;align-items:flex-end}.hero-nini img{max-height:205px;max-width:100%;object-fit:contain;filter:drop-shadow(0 12px 15px rgba(69,46,128,.15))}
+.section{margin-top:20px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:0 4px 11px}.section-title{font-family:"Fredoka",sans-serif;font-size:clamp(1.6rem,3vw,2rem);margin:0;color:#4e31aa}.section-sub{margin:2px 0 0;color:var(--muted);font-weight:800}.live-badge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:8px 11px;background:#e9faf1;color:#198157;font-weight:1000;font-size:.82rem}.live-dot{width:8px;height:8px;border-radius:50%;background:#23ba77;box-shadow:0 0 0 4px rgba(35,186,119,.12)}
+.podium-card{border:1px solid var(--line);border-radius:30px;background:rgba(255,255,255,.92);box-shadow:var(--shadow);padding:22px}
+.podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:12px;align-items:end;min-height:245px}
+.podium-player{border-radius:24px;text-align:center;padding:17px 12px 15px;position:relative;background:#faf8ff;border:1px solid #ede8f7}
+.podium-player.first{min-height:230px;background:linear-gradient(180deg,#fff7d7,#fffdf2);border-color:#f4dda0}
+.podium-player.second{min-height:195px;background:linear-gradient(180deg,#f4f5fa,#fff);border-color:#dde0e9}
+.podium-player.third{min-height:175px;background:linear-gradient(180deg,#fff0e5,#fff);border-color:#f0d2be}
+.crown{height:25px;font-size:1.35rem}.podium-avatar{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;margin:3px auto 8px;background:#fff;border:4px solid rgba(112,64,223,.1);font-size:2rem;box-shadow:0 9px 20px rgba(76,50,145,.1)}.podium-rank{position:absolute;top:12px;left:12px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:"Fredoka",sans-serif;background:#ebe5fb;color:#6542c1}.first .podium-rank{background:#ffd84c;color:#6e5310}.podium-name{font-family:"Fredoka",sans-serif;font-size:1.18rem;color:#49328f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.podium-score{font-weight:1000;color:#7c6c9c;margin-top:5px}.podium-empty{grid-column:1/-1;min-height:180px;display:grid;place-items:center;text-align:center;color:#847b9c;font-weight:900}
+.selector-wrap{position:relative}.game-selector{display:flex;gap:8px;overflow-x:auto;padding:3px 2px 9px;scrollbar-width:thin}.game-chip{flex:0 0 auto;border:2px solid transparent;border-radius:999px;padding:10px 14px;background:#fff;color:#665786;box-shadow:0 7px 17px rgba(75,51,137,.07);font-weight:1000;cursor:pointer;white-space:nowrap}.game-chip.active{border-color:#7449df;background:#eee8ff;color:#5635b5}.game-chip:hover{transform:translateY(-1px)}
+.board-shell{border:1px solid var(--line);border-radius:30px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);overflow:hidden}
+.board-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 22px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#faf8ff,#fff)}
+.board-title-wrap{display:flex;align-items:center;gap:12px}.board-icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:#eee8ff;font-size:1.55rem}.board-title{font-family:"Fredoka",sans-serif;font-size:1.45rem;margin:0;color:#4d319f}.board-note{font-size:.86rem;color:var(--muted);font-weight:800;margin-top:2px}.count-badge{border-radius:999px;padding:7px 10px;background:#f4f1fb;color:#796d99;font-size:.82rem;font-weight:1000}
+.leaderboard-list{display:grid}.leaderboard-item{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:15px 22px;border-bottom:1px solid rgba(83,59,160,.075);transition:.15s}.leaderboard-item:last-child{border-bottom:0}.leaderboard-item:hover{background:#fbf9ff}.leaderboard-rank{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#f0ebff;color:#6141bb;font-family:"Fredoka",sans-serif;font-size:1.04rem}.leaderboard-item:nth-child(1) .leaderboard-rank{background:#fff0af;color:#755700}.leaderboard-item:nth-child(2) .leaderboard-rank{background:#edf0f6;color:#5d6472}.leaderboard-item:nth-child(3) .leaderboard-rank{background:#ffe7d5;color:#8b5734}.leaderboard-name{font-family:"Fredoka",sans-serif;font-size:1.08rem;color:#49328d}.leaderboard-meta{font-size:.82rem;color:#8a829f;font-weight:800;margin-top:3px;white-space:normal}.leaderboard-total{font-family:"Fredoka",sans-serif;font-size:1.18rem;color:#6940c9;white-space:nowrap}.leaderboard-empty{padding:42px 20px;text-align:center;color:#857c9e;font-weight:900}.loading{padding:42px 20px;text-align:center;color:#82789d;font-weight:900}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:18px}.rule{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.8);padding:15px}.rule-icon{font-size:1.3rem}.rule strong{display:block;margin:5px 0 2px;color:#50359b}.rule span{color:#817894;font-size:.88rem;font-weight:800;line-height:1.35}
+footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
+@media(max-width:760px){
+  .topbar{padding:9px 10px}.brand span:last-child{display:none}.top-btn.primary{display:none}.wrap{width:min(100% - 16px,1240px);padding-top:12px}
+  .hero{grid-template-columns:1fr 120px;padding:22px 19px;min-height:200px;border-radius:27px}.hero-nini{height:160px}.hero-nini img{max-height:168px}.hero p{font-size:.92rem}
+  .podium{grid-template-columns:1fr;align-items:stretch}.podium-player.first,.podium-player.second,.podium-player.third{min-height:auto}.podium-player.first{order:-1}
+  .rules{grid-template-columns:1fr}.leaderboard-item{grid-template-columns:45px minmax(0,1fr) auto;padding:13px 12px}.leaderboard-meta{font-size:.75rem}.board-header{padding:15px}.section-head{align-items:start}
+}
+@media(max-width:470px){
+  .hero{grid-template-columns:1fr}.hero-nini{display:none}.hero h1{font-size:2.65rem}.live-badge{display:none}.board-note{display:none}.count-badge{display:none}.leaderboard-total{font-size:1rem}
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-badge">🏆</div>
-        <div>Learning With Nini</div>
-      </div>
-
-      <nav class="navlinks">
-        <a class="pill" href="index.html">Home</a>
-        <a class="pill" href="money-match.html">Math Game</a>
-        <a class="pill" href="time-match.html">Time Match</a>
-        <a class="pill" href="multiplication-sprint.html">Multiplication Sprint</a>
-        <a class="pill" href="division-dash.html">Division Dash</a>
-        <a class="pill" href="place-value-challenge.html">Place Value Challenge</a>
-        <a class="pill" href="number-battle.html">Number Battle</a>
-        <a class="pill" href="geometry-builder.html">Geometry Builder</a>
-        <a class="pill" href="math-maze.html">Math Maze</a>
-        <a class="pill" href="fraction-builder.html">Fraction Builder</a>
-        <a class="pill" href="math-detective.html">Math Detective</a>
-        <a class="pill" href="leaderboard.html">Leaderboard</a>
-      </nav>
-    </header>
-
-    <section class="hero-card">
-      <h1>Leaderboard</h1>
-      <p>See the top scores across Learning With Nini. This page shows the best scores from every Learn With Nini game, plus combined overall stars.</p>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Overall Stars</h2>
-      <div class="leaderboard-list" id="overallLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Money Match</h2>
-      <div class="leaderboard-list" id="moneyLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Time Match</h2>
-      <div class="leaderboard-list" id="timeLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Multiplication Sprint</h2>
-      <div class="leaderboard-list" id="multiplicationLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Division Dash</h2>
-      <div class="leaderboard-list" id="divisionLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Place Value Challenge</h2>
-      <div class="leaderboard-list" id="placeValueLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Number Battle</h2>
-      <div class="leaderboard-list" id="numberBattleLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Geometry Builder</h2>
-      <div class="leaderboard-list" id="geometryLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Math Maze</h2>
-      <div class="leaderboard-list" id="mathMazeLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Fraction Builder</h2>
-      <div class="leaderboard-list" id="fractionLeaderboardList"></div>
-    </section>
-
-    <section class="leaderboard-panel">
-      <h2>Math Detective</h2>
-      <div class="leaderboard-list" id="detectiveLeaderboardList"></div>
-    </section>
-
-    <footer>
-      Learning With Nini, learn, play, and grow 🌈
-    </footer>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">🏆</span><span>Learn With Nini</span></a>
+  <div class="top-actions">
+    <a class="top-btn" href="index.html">← Home</a>
+    <a class="top-btn primary" href="index.html#games">Play a Game</a>
   </div>
+</header>
 
-  <script src="leaderboard-api.js"></script>
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">🌎 GLOBAL LEADERBOARD</div>
+      <h1>Math Champions</h1>
+      <p>See the best scores from Learn With Nini players everywhere. Pick a game below to compare high scores and keep climbing.</p>
+    </div>
+    <div class="hero-nini"><img src="nini-mini.webp" alt="Nini"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div><h2 class="section-title">Overall Champions</h2><p class="section-sub">Combined best scores across every game.</p></div>
+      <div class="live-badge"><span class="live-dot"></span> Global scores</div>
+    </div>
+    <div class="podium-card"><div class="podium" id="podium"><div class="podium-empty">Loading champions…</div></div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2 class="section-title">Choose a Leaderboard</h2><p class="section-sub">Jump between games without scrolling through ten separate boards.</p></div></div>
+    <div class="selector-wrap"><div class="game-selector" id="gameSelector"></div></div>
+
+    <div class="board-shell">
+      <div class="board-header">
+        <div class="board-title-wrap"><div class="board-icon" id="boardIcon">🏆</div><div><h3 class="board-title" id="boardTitle">Overall</h3><div class="board-note" id="boardNote">Combined best scores across all games</div></div></div>
+        <div class="count-badge" id="countBadge">Top 10</div>
+      </div>
+      <div class="leaderboard-list" id="activeLeaderboard"><div class="loading">Loading global scores…</div></div>
+    </div>
+
+    <div class="rules">
+      <div class="rule"><div class="rule-icon">⭐</div><strong>Best score counts</strong><span>Your highest saved score for each game is what appears here.</span></div>
+      <div class="rule"><div class="rule-icon">🌎</div><strong>Shared globally</strong><span>Scores come from players using LearnWithNini.com on different devices.</span></div>
+      <div class="rule"><div class="rule-icon">🧒</div><strong>Use a nickname</strong><span>Choose a short nickname and avatar rather than a child's full real name.</span></div>
+    </div>
+  </section>
+
+  <footer>LearnWithNini.com ♡ Learn, play, and grow.</footer>
+</main>
+
+<script src="leaderboard-api.js"></script>
 <script>
-    const SITE_KEYS = {
-      profile: "learningWithNiniProfileV1",
-      moneyLeaderboard: "moneyMatchLeaderboardV1",
-      timeLeaderboard: "timeMatchLeaderboardV1",
-      multiplicationLeaderboard: "multiplicationSprintLeaderboardV1",
-      fractionLeaderboard: "fractionBuilderLeaderboardV1",
-      detectiveLeaderboard: "mathDetectiveLeaderboardV1",
-      overallLeaderboard: "learningWithNiniOverallLeaderboardV1"
-    };
+const GAMES=[
+  {id:"overall",label:"Overall",icon:"🏆",note:"Combined best scores across all games"},
+  {id:"money",label:"Money Match",icon:"💵",note:"Money Match high scores"},
+  {id:"time",label:"Time Match",icon:"🕒",note:"Time Match high scores"},
+  {id:"multiplication",label:"Multiplication Sprint",icon:"✖️",note:"Multiplication Sprint high scores"},
+  {id:"division",label:"Division Dash",icon:"➗",note:"Division Dash high scores"},
+  {id:"place_value",label:"Place Value",icon:"🔢",note:"Place Value Challenge high scores"},
+  {id:"number_battle",label:"Number Battle",icon:"⚔️",note:"Number Battle high scores"},
+  {id:"geometry",label:"Geometry Builder",icon:"📐",note:"Geometry Builder high scores"},
+  {id:"math_maze",label:"Math Maze",icon:"🧩",note:"Math Maze high scores"},
+  {id:"fraction",label:"Fraction Builder",icon:"🍕",note:"Fraction Builder high scores"},
+  {id:"detective",label:"Math Detective",icon:"🔎",note:"Math Detective high scores"}
+];
+let activeGame="overall";
+const el=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 
-    function safeParseJson(key, fallback) {
-      try {
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : fallback;
-      } catch {
-        return fallback;
-      }
-    }
-
-    function buildOverallFromBoards() {
-      const moneyBoard = safeParseJson(SITE_KEYS.moneyLeaderboard, []);
-      const timeBoard = safeParseJson(SITE_KEYS.timeLeaderboard, []);
-      const multiplicationBoard = safeParseJson(SITE_KEYS.multiplicationLeaderboard, []);
-      const fractionBoard = safeParseJson(SITE_KEYS.fractionLeaderboard, []);
-      const detectiveBoard = safeParseJson(SITE_KEYS.detectiveLeaderboard, []);
-      const map = new Map();
-
-      function ensurePlayer(name, avatar) {
-        const safeName = (name || "Nini").trim() || "Nini";
-        const id = safeName.toLowerCase();
-
-        if (!map.has(id)) {
-          map.set(id, {
-            name: safeName,
-            avatar: avatar || "⭐",
-            moneyBest: 0,
-            timeBest: 0,
-            multiplicationBest: 0,
-            fractionBest: 0,
-            detectiveBest: 0,
-            total: 0,
-            updatedAt: 0
-          });
-        }
-
-        return map.get(id);
-      }
-
-      moneyBoard.forEach((entry) => {
-        const player = ensurePlayer(entry.name, entry.avatar);
-        player.avatar = entry.avatar || player.avatar || "⭐";
-        player.moneyBest = Math.max(player.moneyBest, Number(entry.score) || 0);
-        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
-      });
-
-      timeBoard.forEach((entry) => {
-        const player = ensurePlayer(entry.name, entry.avatar);
-        player.avatar = entry.avatar || player.avatar || "⭐";
-        player.timeBest = Math.max(player.timeBest, Number(entry.score) || 0);
-        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
-      });
-
-      multiplicationBoard.forEach((entry) => {
-        const player = ensurePlayer(entry.name, entry.avatar);
-        player.avatar = entry.avatar || player.avatar || "⭐";
-        player.multiplicationBest = Math.max(player.multiplicationBest, Number(entry.score) || 0);
-        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
-      });
-
-      fractionBoard.forEach((entry) => {
-        const player = ensurePlayer(entry.name, entry.avatar);
-        player.avatar = entry.avatar || player.avatar || "⭐";
-        player.fractionBest = Math.max(player.fractionBest, Number(entry.score) || 0);
-        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
-      });
-
-      detectiveBoard.forEach((entry) => {
-        const player = ensurePlayer(entry.name, entry.avatar);
-        player.avatar = entry.avatar || player.avatar || "⭐";
-        player.detectiveBest = Math.max(player.detectiveBest, Number(entry.score) || 0);
-        player.updatedAt = Math.max(player.updatedAt, Number(entry.ts) || 0);
-      });
-
-      const overall = Array.from(map.values()).map((player) => ({
-        ...player,
-        total: player.moneyBest + player.timeBest + player.multiplicationBest + player.fractionBest + player.detectiveBest
-      }));
-
-      overall.sort((a, b) =>
-        b.total - a.total ||
-        b.moneyBest - a.moneyBest ||
-        b.timeBest - a.timeBest ||
-        a.updatedAt - b.updatedAt
-      );
-
-      localStorage.setItem(SITE_KEYS.overallLeaderboard, JSON.stringify(overall));
-      return overall;
-    }
-
-    function renderOverallLeaderboard() {
-      const list = document.getElementById("overallLeaderboardList");
-      const overall = buildOverallFromBoards();
-
-      list.innerHTML = "";
-
-      if (!overall.length) {
-        list.innerHTML = `<div class="leaderboard-empty">No saved scores yet.</div>`;
-        return;
-      }
-
-      overall.slice(0, 10).forEach((entry, index) => {
-        const row = document.createElement("div");
-        row.className = "leaderboard-item";
-        row.innerHTML = `
-          <div class="leaderboard-rank">${index + 1}</div>
-          <div>
-            <div class="leaderboard-name">${entry.avatar} ${entry.name}</div>
-            <div class="leaderboard-meta">Money ${entry.moneyBest} • Time ${entry.timeBest} • Multiply ${entry.multiplicationBest} • Fractions ${entry.fractionBest} • Detective ${entry.detectiveBest}</div>
-          </div>
-          <div class="leaderboard-total">⭐ ${entry.total}</div>
-        `;
-        list.appendChild(row);
-      });
-    }
-
-    function renderGameLeaderboard(listId, storageKey) {
-      const list = document.getElementById(listId);
-      const board = safeParseJson(storageKey, []);
-
-      list.innerHTML = "";
-
-      if (!board.length) {
-        list.innerHTML = `<div class="leaderboard-empty">No saved scores yet.</div>`;
-        return;
-      }
-
-      board.slice(0, 10).forEach((entry, index) => {
-        const row = document.createElement("div");
-        row.className = "leaderboard-item";
-        row.innerHTML = `
-          <div class="leaderboard-rank">${index + 1}</div>
-          <div>
-            <div class="leaderboard-name">${entry.avatar} ${entry.name}</div>
-            <div class="leaderboard-meta">Saved score</div>
-          </div>
-          <div class="leaderboard-total">⭐ ${entry.score}</div>
-        `;
-        list.appendChild(row);
-      });
-    }
-
-    renderOverallLeaderboard();
-    renderGameLeaderboard("moneyLeaderboardList", SITE_KEYS.moneyLeaderboard);
-    renderGameLeaderboard("timeLeaderboardList", SITE_KEYS.timeLeaderboard);
-    renderGameLeaderboard("multiplicationLeaderboardList", SITE_KEYS.multiplicationLeaderboard);
-    renderGameLeaderboard("fractionLeaderboardList", SITE_KEYS.fractionLeaderboard);
-    renderGameLeaderboard("detectiveLeaderboardList", SITE_KEYS.detectiveLeaderboard);
-  </script>
-<script>
-async function renderGlobalLeaderboard(){
-  const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-  const gameMap={money:"moneyLeaderboardList",time:"timeLeaderboardList",multiplication:"multiplicationLeaderboardList",division:"divisionLeaderboardList",place_value:"placeValueLeaderboardList",number_battle:"numberBattleLeaderboardList",geometry:"geometryLeaderboardList",math_maze:"mathMazeLeaderboardList",fraction:"fractionLeaderboardList",detective:"detectiveLeaderboardList"};
-  for(const [game,id] of Object.entries(gameMap)){
-    const list=document.getElementById(id); if(!list) continue;
-    try{
-      const rows=await LWNLeaderboard.top(game,10); list.innerHTML="";
-      if(!rows.length){list.innerHTML='<div class="leaderboard-empty">No global scores yet.</div>';continue}
-      rows.forEach((x,i)=>{
-        const row=document.createElement("div"); row.className="leaderboard-item";
-        row.innerHTML='<div class="leaderboard-rank">'+(i+1)+'</div><div><div class="leaderboard-name">'+x.avatar+' '+esc(x.name)+'</div><div class="leaderboard-meta">Global score</div></div><div class="leaderboard-total">⭐ '+x.score+'</div>';
-        list.appendChild(row);
-      });
-    }catch{list.innerHTML='<div class="leaderboard-empty">Could not load global scores.</div>'}
-  }
-  const overallList=document.getElementById("overallLeaderboardList");
-  if(overallList){
-    try{
-      const rows=await LWNLeaderboard.overall(10); overallList.innerHTML="";
-      if(!rows.length){overallList.innerHTML='<div class="leaderboard-empty">No global scores yet.</div>';return}
-      rows.forEach((x,i)=>{
-        const row=document.createElement("div"); row.className="leaderboard-item";
-        row.innerHTML='<div class="leaderboard-rank">'+(i+1)+'</div><div><div class="leaderboard-name">'+x.avatar+' '+esc(x.name)+'</div><div class="leaderboard-meta">Money '+x.money+' • Time '+x.time+' • Multiply '+x.multiplication+' • Division '+x.division+' • Place Value '+x.place_value+' • Number Battle '+x.number_battle+' • Geometry '+x.geometry+' • Maze '+x.math_maze+' • Fractions '+x.fraction+' • Detective '+x.detective+'</div></div><div class="leaderboard-total">⭐ '+x.total+'</div>';
-        overallList.appendChild(row);
-      });
-    }catch{overallList.innerHTML='<div class="leaderboard-empty">Could not load global scores.</div>'}
+function buildSelector(){
+  el("gameSelector").innerHTML="";
+  GAMES.forEach(g=>{
+    const b=document.createElement("button");
+    b.className="game-chip"+(g.id===activeGame?" active":"");
+    b.innerHTML=g.icon+" "+g.label;
+    b.onclick=()=>selectGame(g.id);
+    el("gameSelector").appendChild(b);
+  });
+}
+function selectGame(id){
+  activeGame=id;
+  buildSelector();
+  const g=GAMES.find(x=>x.id===id);
+  el("boardIcon").textContent=g.icon;el("boardTitle").textContent=g.label;el("boardNote").textContent=g.note;
+  renderActive();
+}
+function scoreMetaOverall(x){
+  const parts=[
+    ["💵",x.money],["🕒",x.time],["✖️",x.multiplication],["➗",x.division],["🔢",x.place_value],
+    ["⚔️",x.number_battle],["📐",x.geometry],["🧩",x.math_maze],["🍕",x.fraction],["🔎",x.detective]
+  ].filter(x=>Number(x[1])>0);
+  return parts.length?parts.map(x=>x[0]+" "+x[1]).join("  •  "):"No game scores yet";
+}
+function rowHtml(x,i,overall=false){
+  return '<div class="leaderboard-item">'+
+    '<div class="leaderboard-rank">'+(i+1)+'</div>'+
+    '<div><div class="leaderboard-name">'+esc(x.avatar||"⭐")+' '+esc(x.name||"Player")+'</div>'+
+    '<div class="leaderboard-meta">'+(overall?scoreMetaOverall(x):"Best global score")+'</div></div>'+
+    '<div class="leaderboard-total">⭐ '+Number(overall?x.total:x.score||0)+'</div></div>';
+}
+async function renderActive(){
+  const list=el("activeLeaderboard");list.innerHTML='<div class="loading">Loading global scores…</div>';
+  try{
+    const rows=activeGame==="overall"?await LWNLeaderboard.overall(10):await LWNLeaderboard.top(activeGame,10);
+    el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
+    if(!rows.length){list.innerHTML='<div class="leaderboard-empty">No global scores yet. Play this game and be the first on the board! 🌟</div>';return}
+    list.innerHTML=rows.map((x,i)=>rowHtml(x,i,activeGame==="overall")).join("");
+  }catch{
+    el("countBadge").textContent="Offline";
+    list.innerHTML='<div class="leaderboard-empty">Could not load global scores right now.</div>';
   }
 }
-renderGlobalLeaderboard();
+async function renderPodium(){
+  const box=el("podium");
+  try{
+    const rows=await LWNLeaderboard.overall(3);
+    if(!rows.length){box.innerHTML='<div class="podium-empty">No champions yet. Play a game to claim the first spot! 🏆</div>';return}
+    const rankClass=["first","second","third"],crowns=["👑","🥈","🥉"];
+    const cards=rows.map((x,i)=>'<div class="podium-player '+rankClass[i]+'"><div class="podium-rank">'+(i+1)+'</div><div class="crown">'+crowns[i]+'</div><div class="podium-avatar">'+esc(x.avatar||"⭐")+'</div><div class="podium-name">'+esc(x.name||"Player")+'</div><div class="podium-score">⭐ '+Number(x.total||0)+' total</div></div>');
+    if(rows.length===1)box.innerHTML='<div></div>'+cards[0]+'<div></div>';
+    else if(rows.length===2)box.innerHTML=cards[1]+cards[0]+'<div></div>';
+    else box.innerHTML=cards[1]+cards[0]+cards[2];
+  }catch{box.innerHTML='<div class="podium-empty">Could not load champions right now.</div>'}
+}
+buildSelector();renderActive();renderPodium();
 </script>
 </body>
 </html>
