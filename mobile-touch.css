@@ -4,6 +4,7 @@
    - Prevents iOS from zooming when a small form field receives focus */
 html, body {
   -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
 }
 
 a,
