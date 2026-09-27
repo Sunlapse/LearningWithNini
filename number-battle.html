@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#fbf9ff">
+<title>Number Battle | Learn With Nini</title>
+<meta name="description" content="Build number sense with Nini by comparing numbers, building the biggest or smallest number, and battling for the closest target.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#282061;--muted:#746e94;--purple:#7040df;--pink:#f64b9a;--blue:#4b8ff7;--green:#23b978;--yellow:#ffbf27;--orange:#f08b45;--line:rgba(83,59,160,.12);--shadow:0 18px 46px rgba(74,50,137,.13)}
+html,body{margin:0;min-height:100%}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 3% 8%,rgba(255,224,241,.9),transparent 22%),radial-gradient(circle at 97% 4%,rgba(226,214,255,.9),transparent 24%),linear-gradient(180deg,#fbf9ff,#fff 48%,#fffafb)}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;min-height:72px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:10px max(16px,calc((100vw - 1440px)/2));background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.home,.profile-btn,.score-pill{min-height:44px;border:0;border-radius:999px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900}.home{background:#f0ebff;color:#5f36c7;text-decoration:none}.score-wrap{display:flex;justify-content:center}.score-pill{background:linear-gradient(135deg,#fff0f8,#eee6ff);color:#4b307d}.profile-btn{background:linear-gradient(135deg,#fff3c6,#ffe09b);color:#654b12;cursor:pointer}
+.wrap{width:min(1440px,calc(100% - 28px));margin:0 auto;padding:20px 0 40px}.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.nini{position:sticky;top:94px;min-height:660px;border-radius:34px;overflow:hidden;background:#e8dcff;box-shadow:var(--shadow)}.nini img{width:100%;height:660px;object-fit:cover;object-position:center 28%}.nini:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(64,34,125,.2));pointer-events:none}.bubble{position:absolute;z-index:2;left:16px;right:16px;top:18px;background:#fff;border-radius:26px 26px 26px 8px;padding:15px 17px;font-family:"Fredoka",sans-serif;font-size:1.3rem;color:#4d2ab6;line-height:1.08;box-shadow:0 12px 28px rgba(66,38,130,.15);transform:rotate(-1.5deg)}.bubble small{display:block;margin-top:8px;color:#ee4a94;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
+.main{min-width:0}.progress,.battle-card,.levels,.extras,.leader{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.95);box-shadow:var(--shadow)}
+.progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}.qtext{font-weight:1000;white-space:nowrap}.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}.fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#ff9f57,#7050e4);transition:.25s}.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
+.battle-card{padding:20px}.battle-head{text-align:center}.level-pill{display:inline-flex;padding:7px 12px;border-radius:999px;background:#f0ebff;color:#7040d3;font-weight:900}.prompt{font-family:"Fredoka",sans-serif;font-size:clamp(1.75rem,3.8vw,2.65rem);line-height:1.18;color:#4b3489;margin:13px auto 6px}.arena{margin-top:14px;min-height:330px;border-radius:25px;background:linear-gradient(135deg,#fff7e9,#f3edff);border:1px solid #eee5f5;padding:18px;display:grid;align-content:center}
+.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}.fighter{border:3px solid transparent;border-radius:25px;background:#fff;min-height:180px;padding:20px;display:grid;place-items:center;cursor:pointer;box-shadow:0 12px 28px rgba(75,50,135,.08)}.fighter:hover{transform:translateY(-2px)}.fighter.selected{border-color:#7040df;background:#f2edff}.fighter.correct{border-color:#27b879;background:#eafaf0}.fighter.wrong{border-color:#e68d52;background:#fff2e7}.fighter-number{font-family:"Fredoka",sans-serif;font-size:clamp(2.8rem,7vw,5.2rem);color:#4930a6}.vs{font-family:"Fredoka",sans-serif;font-size:2rem;color:#ef579c;background:#fff;border-radius:50%;width:66px;height:66px;display:grid;place-items:center;box-shadow:0 8px 20px rgba(82,48,140,.1)}
+.build-wrap{text-align:center}.digit-bank{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:12px 0 18px}.digit{width:74px;height:82px;border:0;border-radius:20px;background:#fff;color:#5234a8;font-family:"Fredoka",sans-serif;font-size:2.4rem;cursor:pointer;box-shadow:0 10px 22px rgba(76,49,140,.11)}.digit.used{opacity:.28;pointer-events:none}.slots{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0 14px}.slot{width:76px;height:88px;border-radius:20px;border:3px dashed #d8cdf0;background:rgba(255,255,255,.72);display:grid;place-items:center;font-family:"Fredoka",sans-serif;font-size:2.6rem;color:#4c339a}.reset-build{border:0;border-radius:999px;padding:9px 14px;background:#eee9ff;color:#5d43aa;font-weight:900;cursor:pointer}
+.target-title{text-align:center;font-weight:900;color:#766a92}.target-number{text-align:center;font-family:"Fredoka",sans-serif;font-size:clamp(3rem,8vw,5rem);color:#ef579c;margin-bottom:14px}.distance-note{text-align:center;margin-top:12px;color:#72688b;font-weight:900}
+.side-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;margin-top:14px}.status{min-height:126px;border-radius:22px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}.actions{display:grid;gap:10px}.check,.hint,.next{border:0;border-radius:20px;min-height:66px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#f28c4e,#7a4ce0);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.25rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.hint{background:linear-gradient(135deg,#ff75b5,#ef4897);color:#fff}.notebook{border-radius:20px;background:#fff8dc;border:1px solid #f4df94;padding:13px;color:#725b18;font-weight:900;line-height:1.35}.notebook strong{color:#57420e}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:17px;padding:11px;text-align:center}.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.3rem}
+.levels{margin-top:16px;padding:16px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.level-card{border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;color:var(--ink);min-height:160px}.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#fff1df}.level-card:nth-child(3){background:#f0e9ff}.level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}.level-card:nth-child(2) .level-num{background:#ee934b}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}.level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
+.extras{margin-top:14px;padding:13px 15px}.pill{border:0;border-radius:999px;padding:10px 13px;background:#eee9ff;color:#5941a4;font-weight:900;cursor:pointer;text-decoration:none}.leader{margin-top:14px;padding:13px 15px}details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}.board{display:grid;gap:7px;margin-top:10px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eee8ff;color:#6341c4}.empty{padding:10px;color:#8d86a3}
+.modal-bg{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}.modal-bg.show{display:flex}.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;box-shadow:0 25px 60px rgba(50,30,100,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}.close{border:0;width:40px;height:40px;border-radius:50%;background:#f0ebff;font-size:1.25rem;cursor:pointer}.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}.avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#7040df;background:#f0e9ff}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#eee9ff;color:#56488b}
+@media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.side-grid{grid-template-columns:1fr 310px}}
+@media(max-width:780px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.side-grid{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.battle-card{padding:13px}.vs-grid{grid-template-columns:1fr auto 1fr;gap:7px}.fighter{padding:8px;min-height:130px}.fighter-number{font-size:2.3rem}.vs{width:48px;height:48px;font-size:1.2rem}.digit{width:62px;height:70px}.slot{width:62px;height:74px}.stats{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="topbar">
+<a class="home" href="index.html">🏠 Back to Home</a>
+<div class="score-wrap"><div class="score-pill" id="topScore">⭐ Score: 0</div></div>
+<button class="profile-btn" id="profileButton"><span id="avatarTop">⭐</span><span class="profile-name" id="nameTop">Nini</span></button>
+</header>
+<div class="wrap"><div class="shell">
+<aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Number Battle! ⚔️<small>Compare, build, and outsmart the numbers ♡</small></div></aside>
+<main class="main">
+<section class="progress"><div class="qtext" id="questionText">Battle 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span></div></section>
+<section class="battle-card">
+<div class="battle-head"><div class="level-pill" id="levelName">Greater Number Battle</div><div class="prompt" id="prompt">Which number wins?</div></div>
+<div class="arena" id="arena"></div>
+<div class="side-grid">
+<div><div class="status" id="status">Choose the greater number.</div><div class="notebook" id="notebook"><strong>Battle Tip:</strong><br>Compare from the largest place value first.</div></div>
+<div class="actions"><button class="check" id="checkBtn">Check Battle →</button><button class="hint" id="hintBtn">Battle Hint − 1 Star</button><div class="stats"><div class="stat"><small>Score</small><strong id="score">0</strong></div><div class="stat"><small>Streak</small><strong id="streak">0</strong></div><div class="stat"><small>Round</small><strong id="roundStat">1/10</strong></div></div></div>
+</div>
+</section>
+<section class="levels"><h2>⚔️ Number Battle — Choose a Mode</h2><div class="level-grid">
+<button class="level-card active" data-level="compare"><div class="level-num">1</div><h3>Greater Number Battle</h3><p>Compare two numbers up to 9,999 and choose the greater value.</p></button>
+<button class="level-card" data-level="build"><div class="level-num">2</div><h3>Build to Win</h3><p>Arrange four digits to make the greatest or smallest possible 4-digit number.</p></button>
+<button class="level-card" data-level="target"><div class="level-num">3</div><h3>Target Clash</h3><p>Choose which number is closer to the target and sharpen number-line reasoning.</p></button>
+</div></section>
+<section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
+<section class="leader"><details><summary>🏆 Number Battle global leaderboard</summary><div id="board" class="board"></div></details></section>
+</main>
+</div></div>
+<div class="modal-bg" id="profileModal"><div class="modal"><div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close" id="closeProfile">×</button></div><div class="profile-form"><input id="profileName" maxlength="16" placeholder="Player nickname"><div style="font-weight:900;color:#756b91">Choose an avatar</div><div class="avatars" id="avatars"></div></div><div class="modal-actions"><button class="cancel" id="cancelProfile">Cancel</button><button class="save" id="saveProfile">Save</button></div></div></div>
+<script src="leaderboard-api.js"></script>
+<script>
+const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
+let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
+let level="compare",q=1,score=0,streak=0,stars=3,solved=false,selected=null,correct=null,left=0,right=0,target=0,digits=[],built=[],buildGoal="greatest";
+function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function fmt(n){return Number(n).toLocaleString("en-US")}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function newBattle(){
+  stars=3;solved=false;selected=null;built=[];
+  if(level==="compare")makeCompare();else if(level==="build")makeBuild();else makeTarget();
+  el("checkBtn").textContent="Check Battle →";el("checkBtn").className="check";el("hintBtn").disabled=false;updateUI()
+}
+function fighterHTML(value,side,label=""){
+  return '<button class="fighter" data-side="'+side+'"><div><div style="font-weight:900;color:#8b80a4;margin-bottom:8px">'+label+'</div><div class="fighter-number">'+fmt(value)+'</div></div></button>'
+}
+function makeCompare(){
+  left=rnd(100,9999);right=rnd(100,9999);while(right===left)right=rnd(100,9999);correct=left>right?"left":"right";
+  el("levelName").textContent="Greater Number Battle";el("prompt").textContent="Which number wins?";
+  el("arena").innerHTML='<div class="vs-grid">'+fighterHTML(left,"left","LEFT")+'<div class="vs">VS</div>'+fighterHTML(right,"right","RIGHT")+'</div>';
+  wireFighters();el("status").textContent="Choose the greater number.";el("status").className="status";el("notebook").innerHTML="<strong>Battle Tip:</strong><br>Compare thousands first, then hundreds, tens, and ones.";
+}
+function makeBuild(){
+  digits=[rnd(1,9),rnd(0,9),rnd(0,9),rnd(0,9)];
+  buildGoal=Math.random()<.5?"greatest":"smallest";
+  const sorted=buildGoal==="greatest"?[...digits].sort((a,b)=>b-a):smallestOrder(digits);
+  correct=Number(sorted.join(""));
+  el("levelName").textContent="Build to Win";el("prompt").textContent="Build the "+buildGoal+" possible 4-digit number.";
+  el("arena").innerHTML='<div class="build-wrap"><div style="font-weight:900;color:#746b91">Tap the digits in the order you want them</div><div class="digit-bank">'+digits.map((d,i)=>'<button class="digit" data-i="'+i+'">'+d+'</button>').join("")+'</div><div class="slots">'+[0,1,2,3].map(i=>'<div class="slot" id="slot'+i+'">?</div>').join("")+'</div><button class="reset-build" id="resetBuild">Reset digits</button></div>';
+  el("arena").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>tapDigit(Number(b.dataset.i)));el("resetBuild").onclick=resetBuild;
+  el("status").textContent="Use each digit exactly once.";el("status").className="status";el("notebook").innerHTML="<strong>Build Tip:</strong><br>The leftmost digit has the greatest place value.";
+}
+function smallestOrder(a){
+  const s=[...a].sort((x,y)=>x-y);
+  if(s[0]===0){const j=s.findIndex(x=>x!==0);if(j>0)[s[0],s[j]]=[s[j],s[0]]}
+  return s;
+}
+function tapDigit(i){
+  if(solved||built.some(x=>x.i===i)||built.length>=4)return;
+  built.push({i,d:digits[i]});el("arena").querySelector('[data-i="'+i+'"]').classList.add("used");renderSlots()
+}
+function renderSlots(){for(let i=0;i<4;i++)el("slot"+i).textContent=built[i]?built[i].d:"?"}
+function resetBuild(){if(solved)return;built=[];el("arena").querySelectorAll("[data-i]").forEach(b=>b.classList.remove("used"));renderSlots()}
+function makeTarget(){
+  target=rnd(500,9500);
+  const d1=rnd(30,750),d2=rnd(30,750);let dist2=d2;while(dist2===d1)dist2=rnd(30,750);
+  left=Math.max(0,target+(Math.random()<.5?-d1:d1));right=Math.max(0,target+(Math.random()<.5?-dist2:dist2));
+  if(left===right){right=target+dist2+1}
+  correct=Math.abs(left-target)<Math.abs(right-target)?"left":"right";
+  el("levelName").textContent="Target Clash";el("prompt").textContent="Which number is closer to the target?";
+  el("arena").innerHTML='<div class="target-title">TARGET</div><div class="target-number">'+fmt(target)+'</div><div class="vs-grid">'+fighterHTML(left,"left","CHOICE A")+'<div class="vs">VS</div>'+fighterHTML(right,"right","CHOICE B")+'</div><div class="distance-note">Think about the distance from each choice to '+fmt(target)+'.</div>';
+  wireFighters();el("status").textContent="Choose the number closer to the target.";el("status").className="status";el("notebook").innerHTML="<strong>Target Tip:</strong><br>Estimate first, then compare each distance.";
+}
+function wireFighters(){el("arena").querySelectorAll("[data-side]").forEach(b=>b.onclick=()=>{if(solved)return;selected=b.dataset.side;el("arena").querySelectorAll("[data-side]").forEach(x=>x.classList.toggle("selected",x===b))})}
+function updateUI(){el("questionText").textContent="Battle "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("roundStat").textContent=q+"/10"}
+function check(){
+  if(solved){next();return}
+  let answer;
+  if(level==="build"){
+    if(built.length<4){el("status").textContent="Use all four digits first.";el("status").className="status info";return}
+    answer=Number(built.map(x=>x.d).join(""));
+  }else{
+    if(!selected){el("status").textContent="Choose a number first.";el("status").className="status info";return}
+    answer=selected;
+  }
+  if(answer===correct){
+    solved=true;score+=stars;streak++;
+    if(level!=="build")el("arena").querySelectorAll("[data-side]").forEach(x=>{if(x.dataset.side===correct)x.classList.add("correct")});
+    const explain=level==="compare"?(fmt(correct==="left"?left:right)+" is greater."):level==="build"?(fmt(correct)+" is the "+buildGoal+" number you can make."):(fmt(correct==="left"?left:right)+" is "+Math.min(Math.abs(left-target),Math.abs(right-target))+" away from the target.");
+    el("status").textContent="Battle won! "+explain+" You earned "+stars+" star"+(stars===1?"":"s")+"!";el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Battle →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();
+    LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"number_battle",score,level,best_streak:streak}).then(renderBoard).catch(()=>{});
+  }else{
+    stars=Math.max(1,stars-1);streak=0;
+    if(level==="compare")el("status").textContent="Not this time. Compare the highest place where the digits are different.";
+    else if(level==="build")el("status").textContent="Close! Think about which digit should control the thousands place first.";
+    else el("status").textContent="Not quite. Compare how far each number is from "+fmt(target)+".";
+    el("status").className="status bad";updateUI()
+  }
+}
+function hint(){
+  if(solved)return;stars=Math.max(1,stars-1);
+  if(level==="compare"){
+    const A=String(left).padStart(4,"0"),B=String(right).padStart(4,"0");let i=0;while(i<4&&A[i]===B[i])i++;
+    el("notebook").innerHTML="<strong>Hint:</strong><br>Look at the "+(["thousands","hundreds","tens","ones"][Math.min(i,3)])+" place first.";
+  }else if(level==="build"){
+    const ordered=buildGoal==="greatest"?[...digits].sort((a,b)=>b-a):smallestOrder(digits);
+    el("notebook").innerHTML="<strong>Hint:</strong><br>Your first digit should be "+ordered[0]+".";
+  }else{
+    el("notebook").innerHTML="<strong>Hint:</strong><br>"+fmt(left)+" is "+Math.abs(left-target)+" away. "+fmt(right)+" is "+Math.abs(right-target)+" away.";
+  }
+  el("status").textContent="A battle hint was revealed.";el("status").className="status info";updateUI()
+}
+function next(){if(!solved)return;if(q===10){q=1;score=0;streak=0}else q++;newBattle()}
+function chooseLevel(v){level=v;q=1;score=0;streak=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newBattle()}
+async function saveScore(){try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"number_battle",score,level,best_streak:streak});await renderBoard();el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"}catch{el("status").textContent="Could not save the global score yet.";el("status").className="status bad"}}
+async function renderBoard(){const box=el("board");box.innerHTML="";try{const rows=await LWNLeaderboard.top("number_battle",10);if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})}catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function updateProfile(){el("avatarTop").textContent=profile.avatar||"⭐";el("nameTop").textContent=profile.name||"Nini"}
+function openProfile(){picked=profile.avatar||"⭐";el("profileName").value=profile.name||"Nini";buildAvatars();el("profileModal").classList.add("show")}
+function closeProfile(){el("profileModal").classList.remove("show")}
+function buildAvatars(){const b=el("avatars");b.innerHTML="";AV.forEach(v=>{const x=document.createElement("button");x.className="avatar"+(v===picked?" active":"");x.textContent=v;x.onclick=()=>{picked=v;buildAvatars()};b.appendChild(x)})}
+function saveProfile(){profile={name:(el("profileName").value||"Nini").trim().slice(0,16)||"Nini",avatar:picked||"⭐"};store(PROFILE,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile()}
+document.querySelectorAll(".level-card").forEach(b=>b.onclick=()=>chooseLevel(b.dataset.level));el("checkBtn").onclick=check;el("hintBtn").onclick=hint;el("saveScore").onclick=saveScore;el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;el("profileModal").onclick=e=>{if(e.target===el("profileModal"))closeProfile()};
+window.addEventListener("keydown",e=>{if(e.key==="Enter")check()});
+updateProfile();renderBoard();newBattle();
+</script>
+</body></html>
