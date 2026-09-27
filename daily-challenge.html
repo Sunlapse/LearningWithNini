@@ -69,6 +69,9 @@ button:disabled{opacity:.28;cursor:default}
 .hist .empty{color:var(--muted)}
 .tip{background:#F5F0FF;border:2px solid #E5DCF8;border-radius:16px;padding:12px 14px;font-size:15px;color:#625586;line-height:1.45;font-weight:700}
 .challenge-badge{display:inline-flex;width:max-content;max-width:100%;padding:7px 11px;border-radius:999px;background:#FFF0F7;color:#C63D80;font-weight:900;font-size:13px;letter-spacing:.02em}
+.hawaii-clock{display:flex;align-items:center;gap:8px;width:max-content;max-width:100%;margin-top:10px;padding:8px 12px;border-radius:999px;background:#EEF4FF;border:1px solid #DCE6FA;color:#4D4281;font-weight:900;font-size:13px}
+.hawaii-clock .clock-dot{width:8px;height:8px;border-radius:50%;background:#24B879;box-shadow:0 0 0 4px rgba(36,184,121,.12)}
+.game-hawaii-time{font-size:12px;font-weight:900;color:var(--muted);white-space:nowrap}
 .global-save{border-radius:14px;padding:11px 13px;background:#F1ECFF;color:#5B3EAE;font-weight:800;text-align:center}
 
 /* game */
@@ -166,6 +169,7 @@ button:disabled{opacity:.28;cursor:default}
     <nav class="topnav"><a href="index.html">← All games</a><a href="leaderboard.html">🏆 Leaderboard</a><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener">▶ Watch Nini do it</a></nav>
     <div class="hello">
       <div class="challenge-badge">📝 NINI'S DAILY CHALLENGE</div>
+      <div class="hawaii-clock" aria-live="polite"><span class="clock-dot"></span><span id="hawaiiDateTime">Hawaiʻi time</span></div>
       <h1 id="dayTitle">Day 1</h1>
       <p style="margin:6px 0 0;font-weight:800;color:#3f3477">Daily 20-Minute Challenge ♡</p>
       <p style="margin:8px 0 0">Do the same dated problem set Nini uses in her videos. Work it out on the scratch pad and race the clock if you want.</p>
@@ -191,6 +195,7 @@ button:disabled{opacity:.28;cursor:default}
 <section id="game" class="screen" aria-label="Practice">
   <div class="bar">
     <div class="who" id="who"></div>
+    <div class="game-hawaii-time" id="gameHawaiiTime">Hawaiʻi time</div>
     <div class="score" aria-label="Correct answers">✓ <b id="score">0</b></div>
     <div class="timer" id="timer">20:00</div>
     <button class="icon" id="pauseBtn" aria-label="Pause">❚❚</button>
@@ -430,11 +435,32 @@ function isRight(p,input){
     case 'time':{const m=s.match(/^(\d{1,2}):(\d{2})$/);return !!m&&(+m[1])+':'+m[2]===p.a}
   }return false}
 
+/* ---------- Hawaiʻi clock ---------- */
+function hawaiiNowParts(){
+  const d=new Date();
+  const date=new Intl.DateTimeFormat('en-US',{
+    timeZone:'Pacific/Honolulu',weekday:'long',month:'long',day:'numeric',year:'numeric'
+  }).format(d);
+  const time=new Intl.DateTimeFormat('en-US',{
+    timeZone:'Pacific/Honolulu',hour:'numeric',minute:'2-digit',hour12:true
+  }).format(d);
+  return {date,time};
+}
+function updateHawaiiClock(){
+  const h=hawaiiNowParts();
+  const startClock=$('#hawaiiDateTime');
+  const gameClock=$('#gameHawaiiTime');
+  if(startClock)startClock.textContent='Hawaiʻi · '+h.date+' · '+h.time+' HST';
+  if(gameClock)gameClock.textContent='Hawaiʻi · '+h.time+' HST';
+}
+setInterval(updateHawaiiClock,30000);
+
 /* ---------- start screen ---------- */
 function dayNumber(){const ds=[...new Set(log.map(x=>x.date))].sort(),i=ds.indexOf(today());return i>=0?i+1:ds.length+1}
 function streak(){const ds=new Set(log.map(x=>x.date));const d=dayDate();if(!ds.has(fmtUTC(d)))d.setUTCDate(d.getUTCDate()-1);let n=0;while(ds.has(fmtUTC(d))){n++;d.setUTCDate(d.getUTCDate()-1)}return n}
 const gradeLabel=g=>g==='mix'?'Grades 3–4':'Grade '+g;
 function renderStart(){
+  updateHawaiiClock();
   $('#dayTitle').textContent='Day '+dayNumber();
   const s=streak();$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow for day 2.':"Let's warm up that brain.";
   $('#name').value=settings.name;
@@ -455,6 +481,7 @@ $('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();LS.s
 let S=null,tick=null;
 function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
 function startSession(){
+  updateHawaiiClock();
   R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+salt));
   lastType='';phaseQueues={};usedQuestionText=new Set();
   S={items:[],correct:0,idx:0,cur:null,input:'',tries:0,revealed:false,locked:false,msLeft:settings.mins*60000,end:0,paused:false,started:Date.now()};
