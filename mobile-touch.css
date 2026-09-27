@@ -1,0 +1,34 @@
+/* Mobile/iPad touch behavior for Learn With Nini
+   - Prevents accidental double-tap zoom on interactive controls
+   - Keeps normal scrolling and intentional pinch-to-zoom available
+   - Prevents iOS from zooming when a small form field receives focus */
+html, body {
+  -webkit-text-size-adjust: 100%;
+}
+
+a,
+button,
+[role="button"],
+input,
+select,
+textarea,
+label,
+.level-card,
+.difficulty-card,
+.mode-card,
+.fighter,
+.digit,
+.key,
+.op-btn,
+.door,
+.money-item {
+  touch-action: manipulation;
+}
+
+@media (max-width: 1080px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
