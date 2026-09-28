@@ -310,6 +310,7 @@
 
   let finaleShown = false;
   let suppressAdvanceFinale = false;
+  let choosingAnotherLevel = false;
 
   function buildConfetti() {
     const stage = finale.querySelector(".lwn-confetti-stage");
@@ -368,6 +369,7 @@
 
   finale.querySelector(".lwn-finale-again").addEventListener("click", advanceRound);
   finale.querySelector(".lwn-finale-levels").addEventListener("click", () => {
+    choosingAnotherLevel = true;
     closeFinale();
     const levels = document.getElementById("challenge-options");
     if (levels) setTimeout(() => levels.scrollIntoView({behavior:"smooth", block:"start"}), 80);
@@ -382,7 +384,7 @@
   }
 
   function maybeShowFinale() {
-    if (suppressAdvanceFinale || finaleShown) return;
+    if (suppressAdvanceFinale || choosingAnotherLevel || finaleShown) return;
     if (readRound() !== TOTAL) return;
     const control = activeFinishControl();
     if (control && isRoundFinishControl(control)) {
@@ -391,8 +393,22 @@
   }
 
   document.addEventListener("click", (event) => {
-    if (suppressAdvanceFinale) return;
     const control = event.target.closest("button,a");
+
+    if (choosingAnotherLevel) {
+      const levels = document.getElementById("challenge-options");
+      if (levels && control && levels.contains(control)) {
+        setTimeout(() => {
+          if (readRound() !== TOTAL) {
+            choosingAnotherLevel = false;
+            updateHud();
+          }
+        }, 250);
+      }
+      return;
+    }
+
+    if (suppressAdvanceFinale) return;
     if (readRound() === TOTAL && isRoundFinishControl(control)) {
       setTimeout(showFinale, 80);
       return;
@@ -408,6 +424,9 @@
   if (counter) {
     new MutationObserver(() => {
       updateHud();
+      if (choosingAnotherLevel && readRound() !== TOTAL) {
+        choosingAnotherLevel = false;
+      }
     }).observe(counter, {childList:true, characterData:true, subtree:true});
   }
 
@@ -415,6 +434,9 @@
   // which can create a mutation loop on mobile browsers.
   setInterval(() => {
     updateHud();
+    if (choosingAnotherLevel && readRound() !== TOTAL) {
+      choosingAnotherLevel = false;
+    }
     maybeShowFinale();
   }, 500);
 
