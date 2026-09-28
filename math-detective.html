@@ -59,6 +59,21 @@ button,input{font:inherit}
   </aside>
 
   <main class="main">
+<section id="challenge-options" class="levels challenge-options-anchor">
+      <h2>🔎 Math Detective — Choose a Case File</h2>
+      <div class="level-grid">
+        <button class="level-card active" data-level="one">
+          <div class="level-num">1</div><h3>Solve the Clue</h3><p>Read a one-step word problem and solve it yourself — no operation buttons shown.</p>
+        </button>
+        <button class="level-card" data-level="operation">
+          <div class="level-num">2</div><h3>Operation Detective</h3><p>Identify the operation first. The equation and answer step unlock after you get it right.</p>
+        </button>
+        <button class="level-card" data-level="two">
+          <div class="level-num">3</div><h3>Two-Step Mysteries</h3><p>Choose two operations in order, solve the intermediate result, then find the final answer.</p>
+        </button>
+      </div>
+    </section>
+
     <section class="progress">
       <div class="qtext" id="questionText">Case 1 of 10</div>
       <div class="track"><div class="fill" id="progressFill"></div></div>
@@ -129,21 +144,7 @@ button,input{font:inherit}
       </section>
     </div>
 
-    <button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Case File ↓</strong></button>
-<section id="challenge-options" class="levels challenge-options-anchor">
-      <h2>🔎 Math Detective — Choose a Case File</h2>
-      <div class="level-grid">
-        <button class="level-card active" data-level="one">
-          <div class="level-num">1</div><h3>Solve the Clue</h3><p>Read a one-step word problem and solve it yourself — no operation buttons shown.</p>
-        </button>
-        <button class="level-card" data-level="operation">
-          <div class="level-num">2</div><h3>Operation Detective</h3><p>Identify the operation first. The equation and answer step unlock after you get it right.</p>
-        </button>
-        <button class="level-card" data-level="two">
-          <div class="level-num">3</div><h3>Two-Step Mysteries</h3><p>Choose two operations in order, solve the intermediate result, then find the final answer.</p>
-        </button>
-      </div>
-    </section>
+    
 
     <section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
     <section class="leader"><details><summary>🏆 Math Detective leaderboard</summary><div id="board" class="board"></div></details></section>
