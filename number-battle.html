@@ -51,6 +51,12 @@ button,input{font:inherit}
 <div class="wrap"><div class="shell">
 <aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Number Battle! ⚔️<small>Compare, build, and outsmart the numbers ♡</small></div></aside>
 <main class="main">
+<section id="challenge-options" class="levels challenge-options-anchor"><h2>⚔️ Number Battle — Choose a Mode</h2><div class="level-grid">
+<button class="level-card active" data-level="compare"><div class="level-num">1</div><h3>Greater Number Battle</h3><p>Compare two numbers up to 9,999 and choose the greater value.</p></button>
+<button class="level-card" data-level="build"><div class="level-num">2</div><h3>Build to Win</h3><p>Arrange four digits to make the greatest or smallest possible 4-digit number.</p></button>
+<button class="level-card" data-level="target"><div class="level-num">3</div><h3>Target Clash</h3><p>Choose which number is closer to the target and sharpen number-line reasoning.</p></button>
+</div></section>
+
 <section class="progress"><div class="qtext" id="questionText">Battle 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span></div></section>
 <section class="battle-card">
 <div class="battle-head"><div class="level-pill" id="levelName">Greater Number Battle</div><div class="prompt" id="prompt">Which number wins?</div></div>
@@ -60,12 +66,7 @@ button,input{font:inherit}
 <div class="actions"><button class="check" id="checkBtn">Check Battle →</button><button class="hint" id="hintBtn">Battle Hint − 1 Star</button><div class="stats"><div class="stat"><small>Score</small><strong id="score">0</strong></div><div class="stat"><small>Streak</small><strong id="streak">0</strong></div><div class="stat"><small>Round</small><strong id="roundStat">1/10</strong></div></div></div>
 </div>
 </section>
-<button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Mode ↓</strong></button>
-<section id="challenge-options" class="levels challenge-options-anchor"><h2>⚔️ Number Battle — Choose a Mode</h2><div class="level-grid">
-<button class="level-card active" data-level="compare"><div class="level-num">1</div><h3>Greater Number Battle</h3><p>Compare two numbers up to 9,999 and choose the greater value.</p></button>
-<button class="level-card" data-level="build"><div class="level-num">2</div><h3>Build to Win</h3><p>Arrange four digits to make the greatest or smallest possible 4-digit number.</p></button>
-<button class="level-card" data-level="target"><div class="level-num">3</div><h3>Target Clash</h3><p>Choose which number is closer to the target and sharpen number-line reasoning.</p></button>
-</div></section>
+
 <section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
 <section class="leader"><details><summary>🏆 Number Battle global leaderboard</summary><div id="board" class="board"></div></details></section>
 </main>
