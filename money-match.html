@@ -259,6 +259,30 @@
     </aside>
 
     <main class="main">
+<section id="challenge-options" class="mode-section challenge-options-anchor">
+        <h2 class="mode-title">💰 Money Match — Choose a Level</h2>
+        <div class="mode-grid">
+          <button class="mode-card active" data-mode="warm" onclick="setGameMode('warm')">
+            <div class="mode-num">1</div>
+            <h3>Warm Up</h3>
+            <p>Cents and small amounts up to $2. Build confidence with coins and small bills.</p>
+            <div class="mode-stars">★★★</div>
+          </button>
+          <button class="mode-card" data-mode="master" onclick="setGameMode('master')">
+            <div class="mode-num">2</div>
+            <h3>Money Master</h3>
+            <p>Bigger amounts up to $20. Use coins and bills to make real-world amounts.</p>
+            <div class="mode-stars">☆☆☆</div>
+          </button>
+          <button class="mode-card" data-mode="change" onclick="setGameMode('change')">
+            <div class="mode-num">3</div>
+            <h3>Change Challenge 🔒</h3>
+            <p>Coming soon: figure out the correct change after a purchase.</p>
+            <div class="mode-stars">☆☆☆</div>
+          </button>
+        </div>
+      </section>
+
       <section class="progress-card">
         <div class="question-text" id="questionText">Question 1 of 10</div>
         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -320,30 +344,7 @@
         </div>
       </section>
 
-      <button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Level ↓</strong></button>
-<section id="challenge-options" class="mode-section challenge-options-anchor">
-        <h2 class="mode-title">💰 Money Match — Choose a Level</h2>
-        <div class="mode-grid">
-          <button class="mode-card active" data-mode="warm" onclick="setGameMode('warm')">
-            <div class="mode-num">1</div>
-            <h3>Warm Up</h3>
-            <p>Cents and small amounts up to $2. Build confidence with coins and small bills.</p>
-            <div class="mode-stars">★★★</div>
-          </button>
-          <button class="mode-card" data-mode="master" onclick="setGameMode('master')">
-            <div class="mode-num">2</div>
-            <h3>Money Master</h3>
-            <p>Bigger amounts up to $20. Use coins and bills to make real-world amounts.</p>
-            <div class="mode-stars">☆☆☆</div>
-          </button>
-          <button class="mode-card" data-mode="change" onclick="setGameMode('change')">
-            <div class="mode-num">3</div>
-            <h3>Change Challenge 🔒</h3>
-            <p>Coming soon: figure out the correct change after a purchase.</p>
-            <div class="mode-stars">☆☆☆</div>
-          </button>
-        </div>
-      </section>
+      
 
       <section class="leaderboard-card">
         <details>
