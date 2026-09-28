@@ -74,6 +74,7 @@ button,input{font:inherit}
 const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
 let level="shape",q=1,score=0,streak=0,stars=3,solved=false,target=5,sides=3,width=3,height=2,selectedChoice=null,perimeterKnown=0,missingSide=0,areaRows=0,areaCols=0;
+let recentShapeTargets=[];
 const shapeNames={3:"triangle",4:"quadrilateral",5:"pentagon",6:"hexagon",7:"heptagon",8:"octagon"};
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
@@ -89,13 +90,17 @@ function polygonPoints(n){
   return pts.join(" ")
 }
 function makeShape(){
-  target=rnd(3,8);sides=rnd(3,8);if(sides===target)sides=target===8?7:target+1;
+  const choices=[3,4,5,6,7,8].filter(n=>!recentShapeTargets.includes(n));
+  target=choices[rnd(0,choices.length-1)];
+  recentShapeTargets.push(target);
+  if(recentShapeTargets.length>2)recentShapeTargets.shift();
+  sides=rnd(3,8);if(sides===target)sides=target===8?7:target+1;
   el("levelName").textContent="Shape Builder";el("prompt").textContent="Build a "+shapeNames[target]+".";el("subprompt").textContent="Change the number of sides until the shape matches the challenge.";
   el("status").textContent="Build the requested polygon.";el("status").className="status";el("notebook").innerHTML="<strong>Geometry Tip:</strong><br>A "+shapeNames[target]+" has a specific number of straight sides.";
   renderShape()
 }
 function renderShape(){
-  el("canvas").innerHTML='<div class="shape-builder"><div class="polygon-wrap"><svg viewBox="0 0 300 300" aria-label="'+sides+' sided polygon"><polygon class="polygon-shape" points="'+polygonPoints(sides)+'"/></svg></div><div class="control-row"><button class="step-btn" id="minusSides">−</button><div class="count-box"><span>Sides</span><strong>'+sides+'</strong></div><button class="step-btn" id="plusSides">+</button></div><div class="shape-name">Current shape: '+shapeNames[sides]+'</div></div>';
+  el("canvas").innerHTML='<div class="shape-builder"><div class="polygon-wrap"><svg viewBox="0 0 300 300" aria-label="'+sides+' sided polygon"><polygon class="polygon-shape" points="'+polygonPoints(sides)+'"/></svg></div><div class="control-row"><button class="step-btn" id="minusSides">−</button><div class="count-box"><span>Sides</span><strong>'+sides+'</strong></div><button class="step-btn" id="plusSides">+</button></div><div class="shape-name">Adjust the number of sides, then check your build.</div></div>';
   el("minusSides").onclick=()=>{if(!solved&&sides>3){sides--;renderShape()}};
   el("plusSides").onclick=()=>{if(!solved&&sides<8){sides++;renderShape()}};
 }
