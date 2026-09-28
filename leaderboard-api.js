@@ -13,7 +13,123 @@ window.LWNLeaderboard = (() => {
     return id;
   }
 
+  let nicknamePromise=null;
+
+  function storedProfile(){
+    try{return JSON.parse(localStorage.getItem("learningWithNiniProfileV1")||"null")}catch{return null}
+  }
+
+  function setVisibleProfile(profile){
+    const name=profile&&profile.name?profile.name:"Set nickname";
+    const avatar=profile&&profile.avatar?profile.avatar:"⭐";
+    ["nameTop","topAvatarName","appbarAvatarName","profileNameTop"].forEach(id=>{
+      const node=document.getElementById(id); if(node) node.textContent=name;
+    });
+    ["avatarTop","topAvatarEmoji","appbarAvatarEmoji","profileAvatarTop"].forEach(id=>{
+      const node=document.getElementById(id); if(node) node.textContent=avatar;
+    });
+    ["profileButton","profileBtn","topAvatarButton","appbarAvatarBtn"].forEach(id=>{
+      const node=document.getElementById(id);
+      if(node){node.setAttribute("aria-label",profile&&profile.name?"Change leaderboard nickname":"Set leaderboard nickname");node.title=profile&&profile.name?"Change leaderboard nickname":"Set leaderboard nickname";}
+    });
+  }
+
+  function relabelEmptyProfile(){
+    const p=storedProfile();
+    if(!p||!String(p.name||"").trim()||String(p.name).trim().toLowerCase()==="nini"){
+      setTimeout(()=>setVisibleProfile(null),0);
+    }
+  }
+
+  function ensureLeaderboardNickname(name,avatar){
+    const p=storedProfile();
+    const proposed=String(name||"").trim();
+    if(p&&String(p.name||"").trim()&&String(p.name).trim().toLowerCase()!=="nini"){
+      return Promise.resolve({name:String(p.name).trim().slice(0,24),avatar:p.avatar||avatar||"⭐"});
+    }
+    if(proposed&&proposed.toLowerCase()!=="nini"){
+      return Promise.resolve({name:proposed.slice(0,24),avatar:avatar||"⭐"});
+    }
+    if(nicknamePromise)return nicknamePromise;
+
+    nicknamePromise=new Promise(resolve=>{
+      const overlay=document.createElement("div");
+      overlay.id="lwnNicknameOverlay";
+      overlay.innerHTML=`
+        <div class="lwn-nickname-card" role="dialog" aria-modal="true" aria-labelledby="lwnNicknameTitle">
+          <button class="lwn-nickname-close" type="button" aria-label="Close">×</button>
+          <div class="lwn-nickname-emoji">🏆</div>
+          <h2 id="lwnNicknameTitle">Join the leaderboard!</h2>
+          <p>Choose a nickname so your scores show up as <strong>you</strong>.</p>
+          <label>Leaderboard nickname
+            <input id="lwnNicknameInput" maxlength="24" autocomplete="off" placeholder="Example: Eric or Math Dragon">
+          </label>
+          <div class="lwn-avatar-label">Choose an avatar</div>
+          <div class="lwn-avatar-row">
+            <button type="button" data-av="⭐" class="selected">⭐</button>
+            <button type="button" data-av="🐱">🐱</button>
+            <button type="button" data-av="🐰">🐰</button>
+            <button type="button" data-av="🌈">🌈</button>
+            <button type="button" data-av="❤️">❤️</button>
+          </div>
+          <button class="lwn-nickname-save" type="button">Save nickname</button>
+          <button class="lwn-nickname-skip" type="button">Use an anonymous Math Star name</button>
+        </div>`;
+      const style=document.createElement("style");
+      style.textContent=`
+        #lwnNicknameOverlay{position:fixed;inset:0;z-index:99999;background:rgba(38,27,80,.42);display:grid;place-items:center;padding:18px;font-family:"Nunito",Arial,sans-serif}
+        .lwn-nickname-card{width:min(460px,100%);background:#fff;border-radius:28px;padding:24px;box-shadow:0 28px 70px rgba(45,29,96,.28);position:relative;text-align:center;color:#282061}
+        .lwn-nickname-close{position:absolute;right:14px;top:12px;border:0;background:#f1ecff;width:38px;height:38px;border-radius:50%;font-size:24px;color:#6542bd}
+        .lwn-nickname-emoji{font-size:34px}.lwn-nickname-card h2{font-family:"Fredoka","Nunito",sans-serif;color:#5d35c1;font-size:28px;margin:6px 0}
+        .lwn-nickname-card p{color:#6e6688;font-weight:800;line-height:1.4;margin:0 0 16px}
+        .lwn-nickname-card label{display:block;text-align:left;font-weight:900;color:#3f3475}
+        .lwn-nickname-card input{width:100%;margin-top:6px;border:2px solid #ddd4f3;border-radius:15px;padding:13px 14px;font:inherit;font-weight:800;outline:none}
+        .lwn-nickname-card input:focus{border-color:#7448dd;box-shadow:0 0 0 4px rgba(116,72,221,.10)}
+        .lwn-avatar-label{text-align:left;font-weight:900;margin:14px 0 7px;color:#3f3475}.lwn-avatar-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+        .lwn-avatar-row button{border:2px solid #e8e1f6;border-radius:14px;background:#faf9ff;min-height:50px;font-size:23px}.lwn-avatar-row button.selected{border-color:#7040df;background:#eee8ff}
+        .lwn-nickname-save,.lwn-nickname-skip{width:100%;border:0;border-radius:16px;font-weight:1000;cursor:pointer}
+        .lwn-nickname-save{margin-top:16px;padding:14px;background:linear-gradient(135deg,#ef579e,#7547dd);color:#fff;font-size:18px}
+        .lwn-nickname-skip{margin-top:8px;padding:10px;background:transparent;color:#72688c}
+      `;
+      document.head.appendChild(style);document.body.appendChild(overlay);
+      const input=overlay.querySelector("#lwnNicknameInput");
+      let selectedAvatar="⭐";
+      overlay.querySelectorAll("[data-av]").forEach(b=>b.addEventListener("click",()=>{
+        selectedAvatar=b.dataset.av;overlay.querySelectorAll("[data-av]").forEach(x=>x.classList.toggle("selected",x===b));
+      }));
+      function finish(profile){
+        overlay.remove();style.remove();nicknamePromise=null;
+        localStorage.setItem("learningWithNiniProfileV1",JSON.stringify(profile));
+        localStorage.setItem("niniPlayerName",profile.name);
+        localStorage.setItem("niniAvatar",profile.avatar);
+        setVisibleProfile(profile);resolve(profile);
+      }
+      overlay.querySelector(".lwn-nickname-save").addEventListener("click",()=>{
+        const entered=String(input.value||"").trim().replace(/\s+/g," ").slice(0,24);
+        if(!entered){input.focus();return}
+        finish({name:entered,avatar:selectedAvatar});
+      });
+      overlay.querySelector(".lwn-nickname-skip").addEventListener("click",()=>{
+        let anon=localStorage.getItem("dm-anon-name");
+        if(!anon){anon="Math Star "+(100+Math.floor(Math.random()*900));localStorage.setItem("dm-anon-name",anon)}
+        finish({name:anon,avatar:selectedAvatar});
+      });
+      overlay.querySelector(".lwn-nickname-close").addEventListener("click",()=>{
+        let anon=localStorage.getItem("dm-anon-name");
+        if(!anon){anon="Math Star "+(100+Math.floor(Math.random()*900));localStorage.setItem("dm-anon-name",anon)}
+        finish({name:anon,avatar:selectedAvatar});
+      });
+      setTimeout(()=>input.focus(),50);
+    });
+    return nicknamePromise;
+  }
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",relabelEmptyProfile);
+  else relabelEmptyProfile();
+
   async function saveScore({name,avatar="⭐",game,score,level=null,best_streak=0}){
+    const player=await ensureLeaderboardNickname(name,avatar);
+    name=player.name;avatar=player.avatar;
     const res=await fetch(URL+"/functions/v1/submit-score",{
       method:"POST",
       headers:{"Content-Type":"application/json","apikey":KEY},
