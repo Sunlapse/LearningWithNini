@@ -176,6 +176,24 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
     </aside>
 
     <main class="game-main">
+<section id="challenge-options" class="levels-card challenge-options-anchor">
+        <h2 class="levels-title">⏰ Time Match — Choose a Level</h2>
+        <div class="level-grid">
+          <button class="difficulty-card active" data-difficulty="easy" onclick="changeDifficulty('easy')">
+            <div class="level-num">1</div><h3>O’Clock Warm Up</h3>
+            <p>Learn the hour hand and practice exact hours like 3:00 and 8:00.</p>
+          </button>
+          <button class="difficulty-card" data-difficulty="medium" onclick="changeDifficulty('medium')">
+            <div class="level-num">2</div><h3>Quarter & Half</h3>
+            <p>Practice quarter past, half past, and quarter to using 15-minute intervals.</p>
+          </button>
+          <button class="difficulty-card" data-difficulty="hard" onclick="changeDifficulty('hard')">
+            <div class="level-num">3</div><h3>Time Master</h3>
+            <p>Read and set any time to the exact minute.</p>
+          </button>
+        </div>
+      </section>
+
       <section class="progress-card">
         <div class="question-text" id="questionText">Question 1 of 10</div>
         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -281,24 +299,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
         </section>
       </div>
 
-      <button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Level ↓</strong></button>
-<section id="challenge-options" class="levels-card challenge-options-anchor">
-        <h2 class="levels-title">⏰ Time Match — Choose a Level</h2>
-        <div class="level-grid">
-          <button class="difficulty-card active" data-difficulty="easy" onclick="changeDifficulty('easy')">
-            <div class="level-num">1</div><h3>O’Clock Warm Up</h3>
-            <p>Learn the hour hand and practice exact hours like 3:00 and 8:00.</p>
-          </button>
-          <button class="difficulty-card" data-difficulty="medium" onclick="changeDifficulty('medium')">
-            <div class="level-num">2</div><h3>Quarter & Half</h3>
-            <p>Practice quarter past, half past, and quarter to using 15-minute intervals.</p>
-          </button>
-          <button class="difficulty-card" data-difficulty="hard" onclick="changeDifficulty('hard')">
-            <div class="level-num">3</div><h3>Time Master</h3>
-            <p>Read and set any time to the exact minute.</p>
-          </button>
-        </div>
-      </section>
+      
 
       <section class="extras-card">
         <details>
