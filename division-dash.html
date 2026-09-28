@@ -47,6 +47,12 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 <div class="wrap"><div class="shell">
 <aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Division Dash! ➗<small>Use multiplication backwards and race through the facts ♡</small></div></aside>
 <main class="main">
+<section id="challenge-options" class="levels challenge-options-anchor"><h2>➗ Division Dash — Choose a Level</h2><div class="level-grid">
+<button class="level-card active" data-level="foundation"><div class="level-num">1</div><h3>Division Foundations</h3><p>Practice exact division with divisors 2 through 5 and build the multiplication connection.</p></button>
+<button class="level-card" data-level="power"><div class="level-num">2</div><h3>Power Division</h3><p>Practice tougher exact division facts with divisors 6 through 12.</p></button>
+<button class="level-card" data-level="remainder"><div class="level-num">3</div><h3>Remainder Rush</h3><p>Find both the quotient and remainder when numbers do not divide evenly.</p></button>
+</div></section>
+
 <section class="progress"><div class="qtext" id="questionText">Question 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span></div></section>
 <section class="question-card"><div class="level-pill" id="levelName">Division Foundations</div><div class="equation"><span id="dividend">24</span> <span class="divide">÷</span> <span id="divisor">4</span> = ?</div><div class="streak" id="streakText">⚡ Streak: 0</div></section>
 <div class="answer-grid">
@@ -70,12 +76,7 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 <div class="stats"><div class="stat"><small>Score</small><strong id="score">0</strong></div><div class="stat"><small>Best Streak</small><strong id="bestStreak">0</strong></div><div class="stat"><small>Round</small><strong id="roundStat">1/10</strong></div></div>
 </section>
 </div>
-<button class="level-jump" type="button" aria-controls="challenge-options" onclick="document.getElementById('challenge-options').scrollIntoView({behavior:'smooth',block:'start'})"><span>Want a different challenge?</span><strong>Choose a Level ↓</strong></button>
-<section id="challenge-options" class="levels challenge-options-anchor"><h2>➗ Division Dash — Choose a Level</h2><div class="level-grid">
-<button class="level-card active" data-level="foundation"><div class="level-num">1</div><h3>Division Foundations</h3><p>Practice exact division with divisors 2 through 5 and build the multiplication connection.</p></button>
-<button class="level-card" data-level="power"><div class="level-num">2</div><h3>Power Division</h3><p>Practice tougher exact division facts with divisors 6 through 12.</p></button>
-<button class="level-card" data-level="remainder"><div class="level-num">3</div><h3>Remainder Rush</h3><p>Find both the quotient and remainder when numbers do not divide evenly.</p></button>
-</div></section>
+
 <section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
 <section class="leader"><details><summary>🏆 Division Dash global leaderboard</summary><div id="board" class="board"></div></details></section>
 </main>
