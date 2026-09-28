@@ -144,6 +144,7 @@
     min-height:54px; transition:.15s ease;
   }
   .check-btn { flex:1; min-height:115px; background:linear-gradient(135deg,#ff76b8,#f83e94); color:white; font-family:"Fredoka",sans-serif; font-size:1.45rem; box-shadow:0 11px 22px rgba(248,62,148,.22); }
+  .check-btn.btn-green { background:linear-gradient(135deg,#39c98a,#24b978); box-shadow:0 11px 22px rgba(36,185,120,.24); }
   .utility-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .utility-btn { background:#eee9f8; color:#6c6090; }
   .reveal-btn { background:#7b49df; color:white; width:100%; }
@@ -289,7 +290,7 @@
           <div class="answer-zone" id="answerBox"></div>
 
           <div class="answer-actions">
-            <button class="check-btn" onclick="checkAnswer()">Check<br>Answer →</button>
+            <button class="check-btn" id="primaryActionButton" type="button">Check<br>Answer →</button>
             <div class="utility-row">
               <button class="utility-btn" onclick="clearBank()">🗑 Clear</button>
               <button class="utility-btn" onclick="undoLast()">↶ Undo</button>
@@ -730,27 +731,34 @@
       if (type === 'warning') el.classList.add('warning');
     }
 
-    function updateRevealNextButton() {
-      const btn = document.getElementById('revealNextButton');
+    function updateActionButtons() {
+      const primary = document.getElementById('primaryActionButton');
+      const reveal = document.getElementById('revealNextButton');
 
       if (levelSolved) {
-        btn.className = 'btn-green';
-        btn.textContent = solvedButtonText;
-        btn.onmousedown = null;
-        btn.onmouseup = null;
-        btn.onmouseleave = null;
-        btn.ontouchstart = null;
-        btn.ontouchend = null;
-        btn.onclick = nextLevel;
+        primary.className = 'check-btn btn-green';
+        primary.innerHTML = solvedButtonText + '<br>Next Amount →';
+        primary.onclick = nextLevel;
+
+        reveal.classList.add('hidden');
+        reveal.onmousedown = null;
+        reveal.onmouseup = null;
+        reveal.onmouseleave = null;
+        reveal.ontouchstart = null;
+        reveal.ontouchend = null;
       } else {
-        btn.className = 'btn-purple';
-        btn.textContent = 'Hold to Reveal (Costs 1 Point)';
-        btn.onclick = null;
-        btn.onmousedown = startReveal;
-        btn.onmouseup = stopReveal;
-        btn.onmouseleave = stopReveal;
-        btn.ontouchstart = function () { startReveal(); return false; };
-        btn.ontouchend = stopReveal;
+        primary.className = 'check-btn';
+        primary.innerHTML = 'Check<br>Answer →';
+        primary.onclick = checkAnswer;
+
+        reveal.className = 'reveal-btn';
+        reveal.textContent = 'Hold to Reveal Total';
+        reveal.onclick = null;
+        reveal.onmousedown = startReveal;
+        reveal.onmouseup = stopReveal;
+        reveal.onmouseleave = stopReveal;
+        reveal.ontouchstart = function () { startReveal(); return false; };
+        reveal.ontouchend = stopReveal;
       }
     }
 
@@ -774,7 +782,7 @@
       document.getElementById('betterWayButton').classList.toggle('hidden', !betterWayAvailable);
 
       updatePeekTotal();
-      updateRevealNextButton();
+      updateActionButtons();
     }
 
     function updatePeekTotal() {
