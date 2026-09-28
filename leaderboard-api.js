@@ -34,10 +34,73 @@ window.LWNLeaderboard = (() => {
     });
   }
 
-  function relabelEmptyProfile(){
+  function nicknameNeedsSetup(){
     const p=storedProfile();
-    if(!p||!String(p.name||"").trim()||String(p.name).trim().toLowerCase()==="nini"){
-      setTimeout(()=>setVisibleProfile(null),0);
+    return !p || !String(p.name||"").trim() || String(p.name).trim().toLowerCase()==="nini";
+  }
+
+  function isGamePage(){
+    const page=(location.pathname.split("/").pop()||"index.html").toLowerCase();
+    return !["","index.html","leaderboard.html","daily-challenge.html"].includes(page);
+  }
+
+  function removeNicknameNudge(){
+    const n=document.getElementById("lwnNicknameNudge");
+    if(n)n.remove();
+  }
+
+  function showNicknameNudge(){
+    if(!isGamePage() || !nicknameNeedsSetup() || document.getElementById("lwnNicknameNudge"))return;
+
+    const style=document.getElementById("lwnNicknameNudgeStyle")||document.createElement("style");
+    style.id="lwnNicknameNudgeStyle";
+    style.textContent=`
+      #lwnNicknameNudge{
+        width:min(680px,calc(100% - 24px));
+        margin:12px auto 2px;
+        border:0;
+        border-radius:18px;
+        padding:13px 16px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:9px;
+        background:linear-gradient(135deg,#fff4c8,#f3e9ff);
+        color:#50319f;
+        box-shadow:0 10px 25px rgba(79,50,143,.10);
+        font:900 15px/1.2 "Nunito",Arial,sans-serif;
+        cursor:pointer;
+      }
+      #lwnNicknameNudge strong{font-family:"Fredoka","Nunito",sans-serif;font-size:16px}
+      #lwnNicknameNudge .lwn-arrow{font-size:18px}
+      @media(max-width:600px){
+        #lwnNicknameNudge{
+          width:calc(100% - 20px);
+          margin:10px auto 4px;
+          padding:14px 12px;
+          border-radius:16px;
+          font-size:14px;
+        }
+        #lwnNicknameNudge strong{font-size:15px}
+      }`;
+    if(!style.parentNode)document.head.appendChild(style);
+
+    const n=document.createElement("button");
+    n.id="lwnNicknameNudge";
+    n.type="button";
+    n.innerHTML='<span>🏆</span><strong>Set your leaderboard nickname</strong><span class="lwn-arrow">→</span>';
+    n.addEventListener("click",()=>ensureLeaderboardNickname("", "⭐"));
+
+    const header=document.querySelector(".topbar,.game-topbar,.appbar,.top");
+    if(header&&header.parentNode)header.insertAdjacentElement("afterend",n);
+    else document.body.prepend(n);
+  }
+
+  function relabelEmptyProfile(){
+    if(nicknameNeedsSetup()){
+      setTimeout(()=>{setVisibleProfile(null);showNicknameNudge();},0);
+    }else{
+      removeNicknameNudge();
     }
   }
 
@@ -102,7 +165,7 @@ window.LWNLeaderboard = (() => {
         localStorage.setItem("learningWithNiniProfileV1",JSON.stringify(profile));
         localStorage.setItem("niniPlayerName",profile.name);
         localStorage.setItem("niniAvatar",profile.avatar);
-        setVisibleProfile(profile);resolve(profile);
+        setVisibleProfile(profile);removeNicknameNudge();resolve(profile);
       }
       overlay.querySelector(".lwn-nickname-save").addEventListener("click",()=>{
         const entered=String(input.value||"").trim().replace(/\s+/g," ").slice(0,24);
