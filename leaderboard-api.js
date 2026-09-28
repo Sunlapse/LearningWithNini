@@ -2,6 +2,7 @@ window.LWNLeaderboard = (() => {
   const URL = "https://wvcdihtphcjuegdkadsb.supabase.co";
   const KEY = "sb_publishable_Uso8SKT30uVsIDPxTzroIQ_kMCWOoaN";
   const GAMES = ["money","time","multiplication","division","place_value","number_battle","geometry","math_maze","daily_challenge","fraction","detective"];
+  const HIDDEN_NAMES = new Set(["nini"]);
 
   function getDeviceId(){
     let id=localStorage.getItem("lwnGlobalDeviceId");
@@ -36,12 +37,15 @@ window.LWNLeaderboard = (() => {
       select:"player_name,avatar,game,score,level,best_streak,updated_at",
       game:"eq."+game,
       order:"score.desc,updated_at.asc",
-      limit:String(limit)
+      limit:String(Math.max(limit*3,30))
     });
     const res=await fetch(URL+"/rest/v1/game_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load leaderboard");
     const rows=await res.json();
-    return rows.map(r=>({name:r.player_name,avatar:r.avatar,game:r.game,score:r.score,level:r.level,best_streak:r.best_streak,updated_at:r.updated_at}));
+    return rows
+      .filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()))
+      .slice(0,limit)
+      .map(r=>({name:r.player_name,avatar:r.avatar,game:r.game,score:r.score,level:r.level,best_streak:r.best_streak,updated_at:r.updated_at}));
   }
 
   async function all(limit=1000){
@@ -52,7 +56,8 @@ window.LWNLeaderboard = (() => {
     });
     const res=await fetch(URL+"/rest/v1/game_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load leaderboard");
-    return await res.json();
+    const rows=await res.json();
+    return rows.filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()));
   }
 
   async function dailyChallenge({date=null,minutes=20,limit=10}={}){
