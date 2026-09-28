@@ -311,6 +311,7 @@
   let finaleShown = false;
   let suppressAdvanceFinale = false;
   let choosingAnotherLevel = false;
+  let finaleTimer = null;
 
   function buildConfetti() {
     const stage = finale.querySelector(".lwn-confetti-stage");
@@ -337,7 +338,8 @@
   }
 
   function showFinale() {
-    if (finaleShown) return;
+    finaleTimer = null;
+    if (suppressAdvanceFinale || choosingAnotherLevel || finaleShown) return;
     finaleShown = true;
     buildConfetti();
     const score = scoreValue();
@@ -346,7 +348,17 @@
     finale.classList.add("show");
   }
 
+  function scheduleFinale(delay) {
+    if (suppressAdvanceFinale || choosingAnotherLevel || finaleShown) return;
+    if (finaleTimer) clearTimeout(finaleTimer);
+    finaleTimer = setTimeout(showFinale, delay);
+  }
+
   function closeFinale() {
+    if (finaleTimer) {
+      clearTimeout(finaleTimer);
+      finaleTimer = null;
+    }
     finale.classList.remove("show");
     finaleShown = false;
     setTimeout(updateHud, 80);
@@ -370,6 +382,10 @@
   finale.querySelector(".lwn-finale-again").addEventListener("click", advanceRound);
   finale.querySelector(".lwn-finale-levels").addEventListener("click", () => {
     choosingAnotherLevel = true;
+    if (finaleTimer) {
+      clearTimeout(finaleTimer);
+      finaleTimer = null;
+    }
     closeFinale();
     const levels = document.getElementById("challenge-options");
     if (levels) setTimeout(() => levels.scrollIntoView({behavior:"smooth", block:"start"}), 80);
@@ -388,7 +404,7 @@
     if (readRound() !== TOTAL) return;
     const control = activeFinishControl();
     if (control && isRoundFinishControl(control)) {
-      setTimeout(showFinale, 180);
+      scheduleFinale(180);
     }
   }
 
@@ -410,7 +426,7 @@
 
     if (suppressAdvanceFinale) return;
     if (readRound() === TOTAL && isRoundFinishControl(control)) {
-      setTimeout(showFinale, 80);
+      scheduleFinale(80);
       return;
     }
     // Re-check shortly after any game control changes state.
