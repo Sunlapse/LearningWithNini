@@ -284,7 +284,7 @@ const GEN={
   place3(){
     const n=ri(100,999),p=pick([['hundreds',100],['tens',10],['ones',1]]);
     const digit=Math.floor(n/p[1])%10;
-    return{q:`What is the value of the ${digit} in ${n}?`,a:digit*p[1],k:'num'}
+    return{q:`What is the value of the digit in the ${p[0]} place in ${n}?`,a:digit*p[1],k:'num'}
   },
   fraccmp(){
     let L,Rt,ans;
