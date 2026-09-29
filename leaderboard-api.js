@@ -276,6 +276,46 @@ window.LWNLeaderboard = (() => {
     return out.slice(0,limit);
   }
 
+  async function dailyHistory({name,minutes=20,limit=30}={}){
+    name=String(name||"").trim();
+    if(!name)return [];
+    const u=new URLSearchParams({
+      select:"player_name,avatar,score,grade,minutes,challenge_date,best_streak,updated_at",
+      player_name:"eq."+name,
+      minutes:"eq."+String(minutes||20),
+      order:"challenge_date.asc,score.desc,updated_at.asc",
+      limit:"500"
+    });
+
+    const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
+    if(!res.ok) throw new Error("Could not load Daily Challenge history");
+    const rows=await res.json();
+
+    const byDate=new Map();
+    for(const r of rows){
+      const date=String(r.challenge_date||"");
+      if(!date)continue;
+      const item={
+        name:r.player_name||name,
+        avatar:r.avatar||"⭐",
+        score:Number(r.score)||0,
+        grade:String(r.grade||""),
+        minutes:Number(r.minutes)||0,
+        date,
+        best_streak:Number(r.best_streak)||0,
+        updated_at:r.updated_at||""
+      };
+      const prev=byDate.get(date);
+      if(!prev || item.score>prev.score || (item.score===prev.score && String(item.updated_at)<String(prev.updated_at))){
+        byDate.set(date,item);
+      }
+    }
+
+    const out=[...byDate.values()].sort((a,b)=>a.date.localeCompare(b.date));
+    out.forEach((x,i)=>x.day=i+1);
+    return out.slice(-Math.max(1,Number(limit)||30)).reverse();
+  }
+
   async function overall(limit=10){
     const rows=await all();
     const map=new Map();
@@ -292,7 +332,7 @@ window.LWNLeaderboard = (() => {
     return out.slice(0,limit);
   }
 
-  return {saveScore,top,overall,dailyChallenge};
+  return {saveScore,top,overall,dailyChallenge,dailyHistory};
 })();
 
 /* Playful browser-tab title when Learn With Nini is in the background. */
