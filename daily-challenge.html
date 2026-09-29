@@ -257,6 +257,7 @@ let settings=Object.assign({name:'',grade:'3',mins:20},LS.get('dm-settings',{}))
 if(sharedProfile.name&&sharedProfile.name.trim())settings.name=sharedProfile.name.trim();
 let log=LS.get('dm-log',[]);if(!Array.isArray(log))log=[];
 let pendingGlobal=LS.get('dm-pending-global-v1',[]);if(!Array.isArray(pendingGlobal))pendingGlobal=[];
+let remoteDailyDates=new Set();
 let salt=0;
 function globalName(){
   if(sharedProfile.name&&sharedProfile.name.trim())return sharedProfile.name.trim().slice(0,24);
@@ -492,8 +493,23 @@ function updateHawaiiClock(){
 setInterval(updateHawaiiClock,30000);
 
 /* ---------- start screen ---------- */
-function dayNumber(){const ds=[...new Set(log.map(x=>x.date))].sort(),i=ds.indexOf(today());return i>=0?i+1:ds.length+1}
-function streak(){const ds=new Set(log.map(x=>x.date));const d=dayDate();if(!ds.has(fmtUTC(d)))d.setUTCDate(d.getUTCDate()-1);let n=0;while(ds.has(fmtUTC(d))){n++;d.setUTCDate(d.getUTCDate()-1)}return n}
+function knownDailyDates(){
+  const ds=new Set(log.map(x=>x&&x.date).filter(Boolean));
+  remoteDailyDates.forEach(d=>ds.add(d));
+  return ds;
+}
+function dayNumber(){const ds=[...knownDailyDates()].sort(),i=ds.indexOf(today());return i>=0?i+1:ds.length+1}
+function streak(){const ds=knownDailyDates();const d=dayDate();if(!ds.has(fmtUTC(d)))d.setUTCDate(d.getUTCDate()-1);let n=0;while(ds.has(fmtUTC(d))){n++;d.setUTCDate(d.getUTCDate()-1)}return n}
+async function syncGlobalDailyDates(){
+  if(!window.LWNLeaderboard||typeof LWNLeaderboard.dailyHistory!=='function')return;
+  const name=globalName();
+  if(!name)return;
+  try{
+    const rows=await LWNLeaderboard.dailyHistory({name,minutes:20,limit:365});
+    remoteDailyDates=new Set(rows.map(x=>x&&x.date).filter(Boolean));
+    if($('#start').classList.contains('on'))renderStart();
+  }catch(e){}
+}
 const gradeLabel=g=>g==='mix'?'Grades 3–4':'Grade '+g;
 function renderStart(){
   updateHawaiiClock();
@@ -608,9 +624,10 @@ document.addEventListener('keydown',e=>{if(!S||document.activeElement===$('#name
 // Recover a locally saved Daily Challenge result from today and retry failed uploads.
 queueTodayLocalResultIfNeeded();
 setTimeout(()=>flushPendingGlobal(),800);
-window.addEventListener('online',()=>flushPendingGlobal());
-window.addEventListener('pageshow',()=>flushPendingGlobal());
-setInterval(()=>{if(navigator.onLine)flushPendingGlobal()},30000);
+setTimeout(()=>syncGlobalDailyDates(),350);
+window.addEventListener('online',()=>{flushPendingGlobal();syncGlobalDailyDates()});
+window.addEventListener('pageshow',()=>{flushPendingGlobal();syncGlobalDailyDates()});
+setInterval(()=>{if(navigator.onLine){flushPendingGlobal();syncGlobalDailyDates()}},30000);
 
 /* ---------- scratch pad ---------- */
 const cv=$('#pad'),cx=cv.getContext('2d');
