@@ -104,13 +104,13 @@ window.LWNLeaderboard = (() => {
     }
   }
 
-  function ensureLeaderboardNickname(name,avatar){
+  function ensureLeaderboardNickname(name,avatar,force=false){
     const p=storedProfile();
     const proposed=String(name||"").trim();
-    if(p&&String(p.name||"").trim()&&String(p.name).trim().toLowerCase()!=="nini"){
+    if(!force&&p&&String(p.name||"").trim()&&String(p.name).trim().toLowerCase()!=="nini"){
       return Promise.resolve({name:String(p.name).trim().slice(0,24),avatar:p.avatar||avatar||"⭐"});
     }
-    if(proposed&&proposed.toLowerCase()!=="nini"){
+    if(!force&&proposed&&proposed.toLowerCase()!=="nini"){
       return Promise.resolve({name:proposed.slice(0,24),avatar:avatar||"⭐"});
     }
     if(nicknamePromise)return nicknamePromise;
@@ -156,10 +156,17 @@ window.LWNLeaderboard = (() => {
       `;
       document.head.appendChild(style);document.body.appendChild(overlay);
       const input=overlay.querySelector("#lwnNicknameInput");
-      let selectedAvatar="⭐";
-      overlay.querySelectorAll("[data-av]").forEach(b=>b.addEventListener("click",()=>{
-        selectedAvatar=b.dataset.av;overlay.querySelectorAll("[data-av]").forEach(x=>x.classList.toggle("selected",x===b));
-      }));
+      const existingName=p&&String(p.name||"").trim()&&String(p.name).trim().toLowerCase()!=="nini"
+        ?String(p.name).trim().slice(0,24)
+        :(proposed&&proposed.toLowerCase()!=="nini"?proposed.slice(0,24):"");
+      let selectedAvatar=(p&&p.avatar)||avatar||"⭐";
+      input.value=existingName;
+      overlay.querySelectorAll("[data-av]").forEach(b=>{
+        b.classList.toggle("selected",b.dataset.av===selectedAvatar);
+        b.addEventListener("click",()=>{
+          selectedAvatar=b.dataset.av;overlay.querySelectorAll("[data-av]").forEach(x=>x.classList.toggle("selected",x===b));
+        });
+      });
       function finish(profile){
         overlay.remove();style.remove();nicknamePromise=null;
         localStorage.setItem("learningWithNiniProfileV1",JSON.stringify(profile));
@@ -178,6 +185,10 @@ window.LWNLeaderboard = (() => {
         finish({name:anon,avatar:selectedAvatar});
       });
       overlay.querySelector(".lwn-nickname-close").addEventListener("click",()=>{
+        if(force&&existingName){
+          finish({name:existingName,avatar:selectedAvatar});
+          return;
+        }
         let anon=localStorage.getItem("dm-anon-name");
         if(!anon){anon="Math Star "+(100+Math.floor(Math.random()*900));localStorage.setItem("dm-anon-name",anon)}
         finish({name:anon,avatar:selectedAvatar});
@@ -332,7 +343,9 @@ window.LWNLeaderboard = (() => {
     return out.slice(0,limit);
   }
 
-  return {saveScore,top,overall,dailyChallenge,dailyHistory};
+  function setNickname(){return ensureLeaderboardNickname("","⭐",true)}
+  function getProfile(){return storedProfile()}
+  return {saveScore,top,overall,dailyChallenge,dailyHistory,setNickname,getProfile};
 })();
 
 /* Playful browser-tab title when Learn With Nini is in the background. */
