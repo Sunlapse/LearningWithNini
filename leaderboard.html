@@ -33,7 +33,8 @@ button{font:inherit}
 }
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);font-family:"Fredoka",sans-serif;font-size:1.22rem}
 .brand-mark{width:43px;height:43px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#ff77b7,#7448df);box-shadow:0 9px 20px rgba(104,67,191,.17);font-size:1.25rem}
-.top-actions{display:flex;gap:8px;align-items:center}.top-btn{border:0;border-radius:999px;padding:10px 15px;text-decoration:none;font-weight:900;color:#5a3aaa;background:#f0ebff}.top-btn.primary{background:linear-gradient(135deg,#6d43d9,#845ce8);color:#fff}
+.top-actions{display:flex;gap:8px;align-items:center}.top-btn{border:0;border-radius:999px;padding:10px 15px;text-decoration:none;font-weight:900;color:#5a3aaa;background:#f0ebff;cursor:pointer}.top-btn.primary{background:linear-gradient(135deg,#6d43d9,#845ce8);color:#fff}
+.history-profile-cta{margin-top:16px;border:0;border-radius:999px;padding:12px 18px;background:linear-gradient(135deg,#ef579e,#7547dd);color:#fff;font-weight:1000;cursor:pointer;box-shadow:0 8px 18px rgba(112,64,223,.16)}
 .wrap{width:min(1240px,calc(100% - 28px));margin:0 auto;padding:24px 0 48px}
 .hero{
   position:relative;overflow:hidden;border:1px solid var(--line);border-radius:34px;padding:30px 32px;
@@ -80,6 +81,7 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
 <header class="topbar">
   <a class="brand" href="index.html"><span class="brand-mark">🏆</span><span>Learn With Nini</span></a>
   <div class="top-actions">
+    <button class="top-btn" id="leaderboardProfileBtn" type="button">👤 Set nickname</button>
     <a class="top-btn" href="index.html">← Home</a>
     <a class="top-btn primary" href="index.html#games">Play a Game</a>
   </div>
@@ -202,6 +204,17 @@ function currentDailyNickname(){
     return p&&String(p.name||"").trim()?String(p.name).trim():"";
   }catch{return ""}
 }
+function updateLeaderboardProfileButton(){
+  const name=currentDailyNickname();
+  el("leaderboardProfileBtn").textContent=name?"👤 "+name:"👤 Set nickname";
+  el("leaderboardProfileBtn").title=name?"Change leaderboard nickname":"Set leaderboard nickname";
+}
+async function chooseLeaderboardProfile(){
+  if(!window.LWNLeaderboard||typeof LWNLeaderboard.setNickname!=="function")return;
+  await LWNLeaderboard.setNickname();
+  updateLeaderboardProfileButton();
+  if(activeGame==="daily_challenge"&&dailyView==="history")renderActive();
+}
 function dailyMeta(x){
   const parts=[gradeLabel(x.grade),"20 min"];
   if(x.date)parts.push(prettyHawaiiDate(x.date));
@@ -260,7 +273,8 @@ async function renderActive(){
         el("dailyDateNote").textContent=name?"Player: "+name:"Set a nickname to see your history";
         if(!name){
           el("countBadge").textContent="Your history";
-          list.innerHTML='<div class="leaderboard-empty">Set your leaderboard nickname on a game page to see your Daily Challenge history here.</div>';
+          list.innerHTML='<div class="leaderboard-empty">Choose the nickname you use for Learn With Nini to see your Daily Challenge history here.<br><button class="history-profile-cta" id="historyProfileCta" type="button">👤 Set nickname here</button></div>';
+          el("historyProfileCta").addEventListener("click",chooseLeaderboardProfile);
           return;
         }
         rows=await LWNLeaderboard.dailyHistory({name,minutes:20,limit:30});
@@ -301,6 +315,8 @@ async function renderPodium(){
 el("dailyTodayBtn").addEventListener("click",()=>{dailyView="today";updateDailyTabs();renderActive()});
 el("dailyHistoryBtn").addEventListener("click",()=>{dailyView="history";updateDailyTabs();renderActive()});
 el("dailyBestBtn").addEventListener("click",()=>{dailyView="best";updateDailyTabs();renderActive()});
+el("leaderboardProfileBtn").addEventListener("click",chooseLeaderboardProfile);
+updateLeaderboardProfileButton();
 buildSelector();renderActive();renderPodium();
 </script>
 </body>
