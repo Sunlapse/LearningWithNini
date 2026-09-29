@@ -62,7 +62,7 @@ button{font:inherit}
 .daily-tab{border:2px solid transparent;border-radius:999px;padding:9px 13px;background:#f3effc;color:#665786;font-weight:1000;cursor:pointer}
 .daily-tab.active{border-color:#7449df;background:#eee8ff;color:#5635b5}
 .daily-date-note{margin-left:auto;align-self:center;color:var(--muted);font-size:.82rem;font-weight:900}
-.leaderboard-list{display:grid}.leaderboard-item{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:15px 22px;border-bottom:1px solid rgba(83,59,160,.075);transition:.15s}.leaderboard-item:last-child{border-bottom:0}.leaderboard-item:hover{background:#fbf9ff}.leaderboard-rank{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#f0ebff;color:#6141bb;font-family:"Fredoka",sans-serif;font-size:1.04rem}.leaderboard-item:nth-child(1) .leaderboard-rank{background:#fff0af;color:#755700}.leaderboard-item:nth-child(2) .leaderboard-rank{background:#edf0f6;color:#5d6472}.leaderboard-item:nth-child(3) .leaderboard-rank{background:#ffe7d5;color:#8b5734}.leaderboard-name{font-family:"Fredoka",sans-serif;font-size:1.08rem;color:#49328d}.leaderboard-meta{font-size:.82rem;color:#8a829f;font-weight:800;margin-top:3px;white-space:normal}.leaderboard-total{font-family:"Fredoka",sans-serif;font-size:1.18rem;color:#6940c9;white-space:nowrap}.leaderboard-empty{padding:42px 20px;text-align:center;color:#857c9e;font-weight:900}.loading{padding:42px 20px;text-align:center;color:#82789d;font-weight:900}
+.leaderboard-list{display:grid}.leaderboard-item{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:15px 22px;border-bottom:1px solid rgba(83,59,160,.075);transition:.15s}.leaderboard-item:last-child{border-bottom:0}.leaderboard-item:hover{background:#fbf9ff}.leaderboard-rank{min-width:38px;width:auto;height:38px;padding:0 9px;border-radius:13px;display:grid;place-items:center;background:#f0ebff;color:#6141bb;font-family:"Fredoka",sans-serif;font-size:1.04rem}.leaderboard-item:nth-child(1) .leaderboard-rank{background:#fff0af;color:#755700}.leaderboard-item:nth-child(2) .leaderboard-rank{background:#edf0f6;color:#5d6472}.leaderboard-item:nth-child(3) .leaderboard-rank{background:#ffe7d5;color:#8b5734}.leaderboard-name{font-family:"Fredoka",sans-serif;font-size:1.08rem;color:#49328d}.leaderboard-meta{font-size:.82rem;color:#8a829f;font-weight:800;margin-top:3px;white-space:normal}.leaderboard-total{font-family:"Fredoka",sans-serif;font-size:1.18rem;color:#6940c9;white-space:nowrap}.leaderboard-empty{padding:42px 20px;text-align:center;color:#857c9e;font-weight:900}.loading{padding:42px 20px;text-align:center;color:#82789d;font-weight:900}
 .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:18px}.rule{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.8);padding:15px}.rule-icon{font-size:1.3rem}.rule strong{display:block;margin:5px 0 2px;color:#50359b}.rule span{color:#817894;font-size:.88rem;font-weight:800;line-height:1.35}
 footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
 @media(max-width:760px){
@@ -114,7 +114,8 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
       </div>
       <div class="daily-tabs" id="dailyTabs">
         <button class="daily-tab active" id="dailyTodayBtn" type="button">Today</button>
-        <button class="daily-tab" id="dailyOverallBtn" type="button">Overall 20-Min</button>
+        <button class="daily-tab" id="dailyHistoryBtn" type="button">Daily History</button>
+        <button class="daily-tab" id="dailyBestBtn" type="button">Personal Best</button>
         <div class="daily-date-note" id="dailyDateNote"></div>
       </div>
       <div class="leaderboard-list" id="activeLeaderboard"><div class="loading">Loading global scores…</div></div>
@@ -192,12 +193,28 @@ function selectGame(id){
 }
 function updateDailyTabs(){
   el("dailyTodayBtn").classList.toggle("active",dailyView==="today");
-  el("dailyOverallBtn").classList.toggle("active",dailyView==="overall");
+  el("dailyHistoryBtn").classList.toggle("active",dailyView==="history");
+  el("dailyBestBtn").classList.toggle("active",dailyView==="best");
+}
+function currentDailyNickname(){
+  try{
+    const p=JSON.parse(localStorage.getItem("learningWithNiniProfileV1")||"null");
+    return p&&String(p.name||"").trim()?String(p.name).trim():"";
+  }catch{return ""}
 }
 function dailyMeta(x){
   const parts=[gradeLabel(x.grade),"20 min"];
   if(x.date)parts.push(prettyHawaiiDate(x.date));
   return parts.join(" • ");
+}
+function historyRowHtml(x){
+  const meta=[gradeLabel(x.grade),"20 min",prettyHawaiiDate(x.date)];
+  if(Number(x.best_streak)>0)meta.push("🔥 "+Number(x.best_streak)+" day streak");
+  return '<div class="leaderboard-item">'+
+    '<div class="leaderboard-rank">Day '+Number(x.day||1)+'</div>'+
+    '<div><div class="leaderboard-name">'+esc(x.avatar||"⭐")+' '+esc(x.name||"Player")+'</div>'+
+    '<div class="leaderboard-meta">'+esc(meta.join(" • "))+'</div></div>'+
+    '<div class="leaderboard-total">⭐ '+Number(x.score||0)+'</div></div>';
 }
 function scoreMetaOverall(x){
   const parts=[
@@ -220,25 +237,50 @@ async function renderActive(){
     let rows;
     if(activeGame==="overall"){
       rows=await LWNLeaderboard.overall(10);
-    }else if(activeGame==="daily_challenge"){
-      const date=dailyView==="today"?hawaiiDateISO():null;
-      rows=await LWNLeaderboard.dailyChallenge({date,minutes:20,limit:10});
-      el("boardTitle").textContent=dailyView==="today"?"Daily Challenge — Today":"Daily Challenge — Overall";
-      el("boardNote").textContent=dailyView==="today"
-        ?"Today's 20-minute scores using the same Hawaiʻi-date challenge"
-        :"All-time best 20-minute Daily Challenge scores";
-    }else{
-      rows=await LWNLeaderboard.top(activeGame,10);
-    }
-    el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
-    if(!rows.length){
-      const msg=activeGame==="daily_challenge"&&dailyView==="today"
-        ?"No 20-minute Daily Challenge scores yet today. Be the first! 🌟"
-        :"No global scores yet. Play this game and be the first on the board! 🌟";
-      list.innerHTML='<div class="leaderboard-empty">'+msg+'</div>';
+      el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
+      list.innerHTML=rows.length?rows.map((x,i)=>rowHtml(x,i,true,false)).join(""):'<div class="leaderboard-empty">No global scores yet. Play a game and be the first on the board! 🌟</div>';
       return;
     }
-    list.innerHTML=rows.map((x,i)=>rowHtml(x,i,activeGame==="overall",activeGame==="daily_challenge")).join("");
+
+    if(activeGame==="daily_challenge"){
+      if(dailyView==="today"){
+        rows=await LWNLeaderboard.dailyChallenge({date:hawaiiDateISO(),minutes:20,limit:10});
+        el("boardTitle").textContent="Daily Challenge — Today";
+        el("boardNote").textContent="Today's 20-minute scores using the same Hawaiʻi-date challenge";
+        el("dailyDateNote").textContent="Hawaiʻi date: "+prettyHawaiiDate(hawaiiDateISO());
+        el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
+        list.innerHTML=rows.length?rows.map((x,i)=>rowHtml(x,i,false,true)).join(""):'<div class="leaderboard-empty">No 20-minute Daily Challenge scores yet today. Be the first! 🌟</div>';
+        return;
+      }
+
+      if(dailyView==="history"){
+        const name=currentDailyNickname();
+        el("boardTitle").textContent="Daily Challenge — Daily History";
+        el("boardNote").textContent=name?"Your best 20-minute result from each recorded day":"Your day-by-day 20-minute results";
+        el("dailyDateNote").textContent=name?"Player: "+name:"Set a nickname to see your history";
+        if(!name){
+          el("countBadge").textContent="Your history";
+          list.innerHTML='<div class="leaderboard-empty">Set your leaderboard nickname on a game page to see your Daily Challenge history here.</div>';
+          return;
+        }
+        rows=await LWNLeaderboard.dailyHistory({name,minutes:20,limit:30});
+        el("countBadge").textContent=rows.length?(rows.length+" days"):"No history";
+        list.innerHTML=rows.length?rows.map(historyRowHtml).join(""):'<div class="leaderboard-empty">No saved Daily Challenge history yet for '+esc(name)+'.</div>';
+        return;
+      }
+
+      rows=await LWNLeaderboard.dailyChallenge({date:null,minutes:20,limit:10});
+      el("boardTitle").textContent="Daily Challenge — Personal Best";
+      el("boardNote").textContent="Each player's highest 20-minute Daily Challenge score ever";
+      el("dailyDateNote").textContent="Best score per player";
+      el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
+      list.innerHTML=rows.length?rows.map((x,i)=>rowHtml(x,i,false,true)).join(""):'<div class="leaderboard-empty">No 20-minute Daily Challenge scores yet.</div>';
+      return;
+    }
+
+    rows=await LWNLeaderboard.top(activeGame,10);
+    el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
+    list.innerHTML=rows.length?rows.map((x,i)=>rowHtml(x,i,false,false)).join(""):'<div class="leaderboard-empty">No global scores yet. Play this game and be the first on the board! 🌟</div>';
   }catch{
     el("countBadge").textContent="Offline";
     list.innerHTML='<div class="leaderboard-empty">Could not load global scores right now.</div>';
@@ -257,7 +299,8 @@ async function renderPodium(){
   }catch{box.innerHTML='<div class="podium-empty">Could not load champions right now.</div>'}
 }
 el("dailyTodayBtn").addEventListener("click",()=>{dailyView="today";updateDailyTabs();renderActive()});
-el("dailyOverallBtn").addEventListener("click",()=>{dailyView="overall";updateDailyTabs();renderActive()});
+el("dailyHistoryBtn").addEventListener("click",()=>{dailyView="history";updateDailyTabs();renderActive()});
+el("dailyBestBtn").addEventListener("click",()=>{dailyView="best";updateDailyTabs();renderActive()});
 buildSelector();renderActive();renderPodium();
 </script>
 </body>
