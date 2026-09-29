@@ -252,15 +252,53 @@ const dayDate=()=>new Date(today()+'T12:00:00Z');
 const fmtUTC=d=>d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTCDate());
 
 const sharedProfile=LS.get('learningWithNiniProfileV1',{name:'',avatar:'⭐'});
-let settings=Object.assign({name:sharedProfile.name||'',grade:'3',mins:20},LS.get('dm-settings',{}));
-if(!settings.name&&sharedProfile.name)settings.name=sharedProfile.name;
+let settings=Object.assign({name:'',grade:'3',mins:20},LS.get('dm-settings',{}));
+// Keep Daily Challenge on the same leaderboard identity as the rest of the site.
+if(sharedProfile.name&&sharedProfile.name.trim())settings.name=sharedProfile.name.trim();
 let log=LS.get('dm-log',[]);if(!Array.isArray(log))log=[];
+let pendingGlobal=LS.get('dm-pending-global-v1',[]);if(!Array.isArray(pendingGlobal))pendingGlobal=[];
 let salt=0;
 function globalName(){
+  if(sharedProfile.name&&sharedProfile.name.trim())return sharedProfile.name.trim().slice(0,24);
   if(settings.name&&settings.name.trim())return settings.name.trim().slice(0,24);
   let n=localStorage.getItem('dm-anon-name');
   if(!n){n='Math Star '+(100+Math.floor(Math.random()*900));localStorage.setItem('dm-anon-name',n)}
   return n;
+}
+function pendingKey(p){return [p.name,p.game,p.level].join('|').toLowerCase()}
+function queueGlobalScore(payload){
+  const key=pendingKey(payload),existing=pendingGlobal.find(x=>pendingKey(x)===key);
+  if(existing){
+    if((Number(payload.score)||0)>(Number(existing.score)||0))Object.assign(existing,payload);
+  }else pendingGlobal.push(payload);
+  LS.set('dm-pending-global-v1',pendingGlobal);
+}
+async function flushPendingGlobal(){
+  if(!window.LWNLeaderboard||!pendingGlobal.length)return false;
+  let changed=false,anySaved=false;
+  for(const payload of [...pendingGlobal]){
+    try{
+      await LWNLeaderboard.saveScore(payload);
+      pendingGlobal=pendingGlobal.filter(x=>pendingKey(x)!==pendingKey(payload));
+      changed=true;anySaved=true;
+    }catch(e){}
+  }
+  if(changed)LS.set('dm-pending-global-v1',pendingGlobal);
+  return anySaved;
+}
+function queueTodayLocalResultIfNeeded(){
+  const todays=log.filter(x=>x&&x.date===today());
+  if(!todays.length)return;
+  const best=[...todays].sort((a,b)=>(Number(b.correct)||0)-(Number(a.correct)||0))[0];
+  const mins=Number(best.mins)||Number(settings.mins)||20;
+  queueGlobalScore({
+    name:globalName(),
+    avatar:sharedProfile.avatar||'⭐',
+    game:'daily_challenge',
+    score:Number(best.correct)||0,
+    level:String(best.grade||settings.grade)+'|'+mins+'min|'+best.date,
+    best_streak:streak()
+  });
 }
 
 /* ---------- random ---------- */
@@ -530,13 +568,17 @@ function finish(){
   if(!S)return;clearInterval(tick);const done=S;S=null;
   const attempted=done.items.filter(x=>x.r!=='skip').length;
   const secs=Math.round(settings.mins*60-done.msLeft/1000);
-  if(attempted>0){log.push({date:today(),grade:settings.grade,correct:done.correct,attempted,secs});LS.set('dm-log',log)}
+  if(attempted>0){log.push({date:today(),grade:settings.grade,mins:settings.mins,correct:done.correct,attempted,secs});LS.set('dm-log',log)}
   const globalStatus=$('#globalSaveStatus');
   if(attempted>0&&window.LWNLeaderboard){
+    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:done.correct,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()};
+    queueGlobalScore(payload);
     globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
-    LWNLeaderboard.saveScore({name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:done.correct,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()})
-      .then(()=>{globalStatus.textContent='🏆 Global best score saved for '+globalName()+'.'})
-      .catch(()=>{globalStatus.textContent='Your local result is saved. The global leaderboard could not update right now.'});
+    flushPendingGlobal().then(saved=>{
+      globalStatus.textContent=saved&&!pendingGlobal.some(x=>pendingKey(x)===pendingKey(payload))
+        ?'🏆 Global best score saved for '+globalName()+'.'
+        :'Your local result is saved. It will retry automatically when the connection returns.';
+    });
   }else{globalStatus.textContent='Your result is saved on this device.'}
   $('#bigScore').innerHTML=`${done.correct}<small> correct</small>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
@@ -562,6 +604,13 @@ document.addEventListener('keydown',e=>{if(!S||document.activeElement===$('#name
   if(e.key==='Enter'){e.preventDefault();submit()}else if(e.key==='Backspace')press('⌫');
   else if(S.cur&&S.cur.k==='cmp'&&'<=>'.includes(e.key))submit(e.key);
   else if('0123456789'.includes(e.key)||(KEYSET[S.cur&&S.cur.k]||'').includes(e.key.toUpperCase()))press(e.key.toUpperCase())});
+
+// Recover a locally saved Daily Challenge result from today and retry failed uploads.
+queueTodayLocalResultIfNeeded();
+setTimeout(()=>flushPendingGlobal(),800);
+window.addEventListener('online',()=>flushPendingGlobal());
+window.addEventListener('pageshow',()=>flushPendingGlobal());
+setInterval(()=>{if(navigator.onLine)flushPendingGlobal()},30000);
 
 /* ---------- scratch pad ---------- */
 const cv=$('#pad'),cx=cv.getContext('2d');
