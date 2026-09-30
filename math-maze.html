@@ -78,25 +78,26 @@ button,input{font:inherit}
 const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 const ROUTE=[20,15,10,11,12,7,2,3,8,9,4];
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
-let level="addsub",q=1,score=0,streak=0,bestStreak=0,stars=3,gateSolved=false,selected=null,current={text:"",answer:0,hint:""};
+let level="addsub",q=1,round=1,score=0,streak=0,bestStreak=0,stars=3,gateSolved=false,selected=null,current={text:"",answer:0,hint:""},lastEquationText="";
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 function makeEquation(mode){
+  const boost=Math.min(round-1,5),factMin=Math.min(8,2+boost);
   if(mode==="addsub"){
-    if(Math.random()<.5){const a=rnd(24,499),b=rnd(12,299);return{text:a+" + "+b+" = ?",answer:a+b,hint:"Add hundreds, tens, and ones carefully. You can estimate first."}}
-    const a=rnd(120,999),b=rnd(15,a-1);return{text:a+" − "+b+" = ?",answer:a-b,hint:"Subtract by place value. Check your answer by adding it back to "+b+"."}
+    if(Math.random()<.5){const a=rnd(24,499+boost*250),b=rnd(12,299+boost*160);return{text:a+" + "+b+" = ?",answer:a+b,hint:"Add hundreds, tens, and ones carefully. You can estimate first."}}
+    const a=rnd(120,999+boost*350),b=rnd(15,a-1);return{text:a+" − "+b+" = ?",answer:a-b,hint:"Subtract by place value. Check your answer by adding it back to "+b+"."}
   }
   if(mode==="facts"){
-    if(Math.random()<.5){const a=rnd(2,12),b=rnd(2,12);return{text:a+" × "+b+" = ?",answer:a*b,hint:"Think of "+a+" equal groups of "+b+"."}}
-    const d=rnd(2,12),ans=rnd(2,12),n=d*ans;return{text:n+" ÷ "+d+" = ?",answer:ans,hint:"Use multiplication backwards: "+d+" × ? = "+n+"."}
+    if(Math.random()<.5){const a=rnd(factMin,12),b=rnd(factMin,12);return{text:a+" × "+b+" = ?",answer:a*b,hint:"Think of "+a+" equal groups of "+b+"."}}
+    const d=rnd(factMin,12),ans=rnd(factMin,12),n=d*ans;return{text:n+" ÷ "+d+" = ?",answer:ans,hint:"Use multiplication backwards: "+d+" × ? = "+n+"."}
   }
   const op=["+","−","×","÷"][rnd(0,3)];
-  if(op==="+"){const a=rnd(35,650),b=rnd(18,350);return{text:a+" + "+b+" = ?",answer:a+b,hint:"Line up place values and combine."}}
-  if(op==="−"){const a=rnd(150,999),b=rnd(20,a-1);return{text:a+" − "+b+" = ?",answer:a-b,hint:"Subtract by place value, then use addition to check."}}
-  if(op==="×"){const a=rnd(2,12),b=rnd(2,12);return{text:a+" × "+b+" = ?",answer:a*b,hint:"Use a fact you know or repeated addition."}}
-  const d=rnd(2,12),ans=rnd(2,12),n=d*ans;return{text:n+" ÷ "+d+" = ?",answer:ans,hint:"Ask what number times "+d+" equals "+n+"."}
+  if(op==="+"){const a=rnd(35,650+boost*300),b=rnd(18,350+boost*180);return{text:a+" + "+b+" = ?",answer:a+b,hint:"Line up place values and combine."}}
+  if(op==="−"){const a=rnd(150,999+boost*400),b=rnd(20,a-1);return{text:a+" − "+b+" = ?",answer:a-b,hint:"Subtract by place value, then use addition to check."}}
+  if(op==="×"){const a=rnd(factMin,12),b=rnd(factMin,12);return{text:a+" × "+b+" = ?",answer:a*b,hint:"Use a fact you know or repeated addition."}}
+  const d=rnd(factMin,12),ans=rnd(factMin,12),n=d*ans;return{text:n+" ÷ "+d+" = ?",answer:ans,hint:"Ask what number times "+d+" equals "+n+"."}
 }
 function makeChoices(ans){
   const s=new Set([ans]);const deltas=[1,-1,2,-2,5,-5,10,-10];
@@ -116,7 +117,10 @@ function renderMaze(position=q-1){
   }
 }
 function newGate(){
-  stars=3;gateSolved=false;selected=null;current=makeEquation(level);
+  stars=3;gateSolved=false;selected=null;
+  let tries=0;
+  do{current=makeEquation(level);tries++;}while(current.text===lastEquationText&&tries<20);
+  lastEquationText=current.text;
   el("levelName").textContent=level==="addsub"?"Addition Alley":level==="facts"?"Fact Forest":"Mixed Maze";
   el("gateTitle").textContent="Gate "+q;el("equation").textContent=current.text;
   const choices=makeChoices(current.answer);el("doors").innerHTML=choices.map(v=>'<button class="door" data-answer="'+v+'">'+v.toLocaleString("en-US")+'</button>').join("");
@@ -125,7 +129,7 @@ function newGate(){
   el("notebook").innerHTML="<strong>Maze Tip:</strong><br>Only the correct answer opens the next path.";
   el("checkBtn").textContent="Open Door →";el("checkBtn").className="check";el("hintBtn").disabled=false;renderMaze(q-1);updateUI()
 }
-function updateUI(){el("questionText").textContent="Gate "+q+" of 10";el("progressFill").style.width=((q-1)*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("exitStat").textContent=(q-1)+"/10"}
+function updateUI(){el("questionText").textContent="Round "+round+" · Gate "+q+" of 10";el("progressFill").style.width=((q-1)*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("exitStat").textContent=(q-1)+"/10"}
 function check(){
   if(gateSolved){advance();return}
   if(selected===null){el("status").textContent="Choose a door first.";el("status").className="status info";return}
@@ -143,9 +147,9 @@ function check(){
   }
 }
 function updateScoreOnly(){el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak}
-function advance(){if(!gateSolved)return;if(q===10){q=1;score=0;streak=0;bestStreak=0;newGate()}else{q++;newGate()}}
+function advance(){if(!gateSolved)return;if(q===10){q=1;round++;el("status").textContent="Round "+round+" starts now — harder maze math, and your "+score+" points carry forward.";newGate()}else{q++;newGate()}}
 function hint(){if(gateSolved)return;stars=Math.max(1,stars-1);el("notebook").innerHTML="<strong>Hint:</strong><br>"+current.hint;el("status").textContent="A clue appeared on the maze wall.";el("status").className="status info";updateScoreOnly()}
-function chooseLevel(v){level=v;q=1;score=0;streak=0;bestStreak=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newGate()}
+function chooseLevel(v){level=v;q=1;round=1;score=0;streak=0;bestStreak=0;lastEquationText="";document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newGate()}
 async function saveScore(){try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"math_maze",score,level,best_streak:bestStreak});await renderBoard();el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"}catch{el("status").textContent="Could not save the global score yet.";el("status").className="status bad"}}
 async function renderBoard(){const box=el("board");box.innerHTML="";try{const rows=await LWNLeaderboard.top("math_maze",10);if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})}catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
