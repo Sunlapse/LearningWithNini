@@ -163,7 +163,24 @@
   .peek-total { margin-top:8px; padding:8px 12px; border-radius:12px; background:#eee8ff; color:#5f39bb; text-align:center; font-weight:1000; }
   .peek-total.hidden { background:#f6f4f9; color:#9d98ad; }
   .mode-section { margin-top:18px; padding:17px; }
-  .mode-title { text-align:center; font-family:"Fredoka",sans-serif; font-size:1.7rem; margin:0 0 14px; color:#4c2cbc; }
+  .mode-title { text-align:center; font-family:"Fredoka",sans-serif; font-size:1.7rem; margin:0 0 10px; color:#4c2cbc; }
+  .review-money-row { display:flex; justify-content:center; margin:0 0 16px; }
+  .review-money-btn {
+    border:0; border-radius:999px; padding:11px 17px; cursor:pointer;
+    background:linear-gradient(135deg,#fff4c7,#ffe6a8); color:#66480b;
+    font-weight:1000; box-shadow:0 8px 18px rgba(115,82,20,.10);
+  }
+  .money-review-modal { width:min(900px,100%); max-height:88vh; overflow:auto; }
+  .money-review-copy { margin:-2px 0 14px; color:#6e6789; font-weight:800; line-height:1.4; }
+  .money-review-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .money-review-card {
+    border:1px solid rgba(95,68,170,.12); border-radius:20px; padding:14px 10px;
+    text-align:center; background:linear-gradient(180deg,#fff,#faf8ff);
+  }
+  .money-review-card img { width:100%; max-width:130px; height:75px; object-fit:contain; }
+  .money-review-name { margin-top:7px; font-family:"Fredoka",sans-serif; font-size:1.08rem; color:#432c8d; }
+  .money-review-value { margin-top:3px; font-size:1.2rem; font-weight:1000; color:#16855c; }
+  @media(max-width:650px){.money-review-grid{grid-template-columns:repeat(2,1fr)}.money-review-card img{height:62px}}
   .mode-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
   .mode-card {
     position:relative; border:2px solid transparent; border-radius:22px;
@@ -262,6 +279,9 @@
     <main class="main">
 <section id="challenge-options" class="mode-section challenge-options-anchor">
         <h2 class="mode-title">💰 Money Match — Choose a Level</h2>
+        <div class="review-money-row">
+          <button class="review-money-btn" type="button" onclick="openMoneyReview()">👀 Review Coins & Bills</button>
+        </div>
         <div class="mode-grid">
           <button class="mode-card active" data-mode="warm" onclick="setGameMode('warm')">
             <div class="mode-num">1</div>
@@ -359,6 +379,20 @@
         </details>
       </section>
     </main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="moneyReviewModal" onclick="if(event.target===this) closeMoneyReview()">
+  <div class="modal money-review-modal">
+    <div class="modal-header">
+      <div class="modal-title">Coins & Bills Review</div>
+      <button class="close-btn" type="button" onclick="closeMoneyReview()">×</button>
+    </div>
+    <div class="money-review-copy">Study the picture, name, and value here. During the game, the Money Bank shows pictures only — just like real money.</div>
+    <div class="money-review-grid" id="moneyReviewGrid"></div>
+    <div class="modal-actions">
+      <button class="save-btn" type="button" onclick="closeMoneyReview()">I’m Ready to Play</button>
+    </div>
   </div>
 </div>
 
@@ -493,13 +527,22 @@
     const MONEY_LESSONS = {
       warm: [
         {
+          prompt: 'Tap the Penny.',
+          target: 1,
+          required: { penny: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'picture',
+          success: 'Yes! That is a penny. A penny is worth 1¢.',
+          retry: 'Not quite. Look closely at the coin pictures and find the penny.'
+        },
+        {
           prompt: 'Tap the Nickel.',
           target: 5,
           required: { nickel: 1 },
           availableIds: COIN_IDS,
           bankDisplay: 'picture',
           success: 'Yes! That is a nickel. A nickel is worth 5¢.',
-          retry: 'Not quite. Look closely at the coin pictures and try to find the nickel.'
+          retry: 'Not quite. Look closely at the coin pictures and find the nickel.'
         },
         {
           prompt: 'Tap the Dime.',
@@ -508,16 +551,43 @@
           availableIds: COIN_IDS,
           bankDisplay: 'picture',
           success: 'Yes! That is a dime. A dime is worth 10¢.',
-          retry: 'Not quite. Look closely at the coin pictures and try to find the dime.'
+          retry: 'Not quite. Look closely at the coin pictures and find the dime.'
+        },
+        {
+          prompt: 'Tap the Quarter.',
+          target: 25,
+          required: { quarter: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'picture',
+          success: 'Yes! That is a quarter. A quarter is worth 25¢.',
+          retry: 'Not quite. Look closely at the coin pictures and find the quarter.'
         },
         {
           prompt: 'Which coin is worth 5¢?',
           target: 5,
           required: { nickel: 1 },
           availableIds: COIN_IDS,
-          bankDisplay: 'name',
+          bankDisplay: 'picture',
           success: 'Correct! A nickel is worth 5¢.',
-          retry: 'Try again. Which named coin is worth 5¢?'
+          retry: 'Try again. Which coin is worth 5¢?'
+        },
+        {
+          prompt: 'Which coin is worth 10¢?',
+          target: 10,
+          required: { dime: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! A dime is worth 10¢.',
+          retry: 'Try again. Which coin is worth 10¢?'
+        },
+        {
+          prompt: 'Which coin is worth 25¢?',
+          target: 25,
+          required: { quarter: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! A quarter is worth 25¢.',
+          retry: 'Try again. Which coin is worth 25¢?'
         },
         {
           prompt: 'Add 2 dimes and 1 nickel.',
@@ -525,8 +595,26 @@
           required: { dime: 2, nickel: 1 },
           availableIds: COIN_IDS,
           bankDisplay: 'picture',
-          success: 'Correct! A dime is 10¢, so 2 dimes are 20¢. A nickel is 5¢. Altogether that is 25¢.',
+          success: 'Correct! Two dimes are 20¢ and one nickel is 5¢. Altogether that is 25¢.',
           retry: 'Not quite. Use exactly 2 dimes and 1 nickel.'
+        },
+        {
+          prompt: 'Add 1 quarter and 1 dime.',
+          target: 35,
+          required: { quarter: 1, dime: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! A quarter is 25¢ and a dime is 10¢. Altogether that is 35¢.',
+          retry: 'Not quite. Use exactly 1 quarter and 1 dime.'
+        },
+        {
+          prompt: 'Add 3 nickels.',
+          target: 15,
+          required: { nickel: 3 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! Three nickels are 15¢.',
+          retry: 'Not quite. Use exactly 3 nickels.'
         }
       ],
       master: [
@@ -537,16 +625,16 @@
           availableIds: BILL_IDS,
           bankDisplay: 'picture',
           success: 'Correct! The one dollar bill is worth $1.',
-          retry: 'Not quite. Look at the bill pictures and find the one dollar bill.'
+          retry: 'Not quite. Find the one dollar bill.'
         },
         {
-          prompt: 'Which bill is worth $5?',
+          prompt: 'Tap the Five Dollar Bill.',
           target: 500,
           required: { five: 1 },
           availableIds: BILL_IDS,
           bankDisplay: 'picture',
           success: 'Correct! The five dollar bill is worth $5.',
-          retry: 'Not quite. Try the bill worth $5.'
+          retry: 'Not quite. Find the five dollar bill.'
         },
         {
           prompt: 'Which bill is worth $10?',
@@ -558,6 +646,15 @@
           retry: 'Not quite. Try the bill worth $10.'
         },
         {
+          prompt: 'Which bill is worth $20?',
+          target: 2000,
+          required: { twenty: 1 },
+          availableIds: BILL_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! The twenty dollar bill is worth $20.',
+          retry: 'Not quite. Try the bill worth $20.'
+        },
+        {
           prompt: 'Add one Ten Dollar Bill and one Five Dollar Bill.',
           target: 1500,
           required: { ten: 1, five: 1 },
@@ -565,6 +662,15 @@
           bankDisplay: 'picture',
           success: 'Correct! $10 + $5 = $15.',
           retry: 'Not quite. Use exactly one Ten Dollar Bill and one Five Dollar Bill.'
+        },
+        {
+          prompt: 'Add two Five Dollar Bills.',
+          target: 1000,
+          required: { five: 2 },
+          availableIds: BILL_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! Two $5 bills make $10.',
+          retry: 'Not quite. Use exactly two Five Dollar Bills.'
         }
       ]
     };
@@ -594,9 +700,9 @@
     let currentLesson = null;
     let currentPurchase = null;
     const modeState = {
-      warm: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null },
-      master: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null },
-      change: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null }
+      warm: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null, lessonSchedule: null },
+      master: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null, lessonSchedule: null },
+      change: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null, lessonSchedule: null }
     };
     const ROUND_LENGTH = 10;
 
@@ -660,11 +766,35 @@
       return 'Warm Up · Round ' + round;
     }
 
+    function shuffleCopy(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function buildLessonSchedule(mode) {
+      const pool = MONEY_LESSONS[mode] || [];
+      if (!pool.length) return {};
+      const count = mode === 'warm' ? 4 : 3;
+      const chosenLessons = shuffleCopy(pool).slice(0, count);
+      const positions = shuffleCopy([1,2,3,4,5,6,7,8,9,10]).slice(0, count);
+      const schedule = {};
+      positions.forEach((position, index) => {
+        schedule[position] = chosenLessons[index];
+      });
+      return schedule;
+    }
+
     function getLessonForCurrentQuestion() {
-      // Teach denomination names/values in the first round only.
-      if (getRoundIndex() > 0) return null;
-      const lessons = MONEY_LESSONS[gameMode] || [];
-      return lessons[getQuestionNumber() - 1] || null;
+      // Vocabulary practice is mixed into the first round instead of
+      // appearing as the same fixed opening questions every time.
+      if (getRoundIndex() > 0 || gameMode === 'change') return null;
+      const state = modeState[gameMode];
+      if (!state.lessonSchedule) state.lessonSchedule = buildLessonSchedule(gameMode);
+      return state.lessonSchedule[getQuestionNumber()] || null;
     }
 
     function bankMatchesRequired(required) {
@@ -677,7 +807,7 @@
     }
 
     function itemDisplayMode() {
-      return currentLesson ? currentLesson.bankDisplay : 'name';
+      return 'picture';
     }
 
     function summarizePieces(items) {
@@ -768,6 +898,30 @@
 
     function shouldShowValues() {
       return true;
+    }
+
+    function renderMoneyReview() {
+      const grid = document.getElementById('moneyReviewGrid');
+      if (!grid || grid.dataset.ready === '1') return;
+      grid.innerHTML = DENOMS.map(item => `
+        <div class="money-review-card">
+          <img src="${item.img}" alt="${item.label}">
+          <div class="money-review-name">${item.label}</div>
+          <div class="money-review-value">${item.valueText}</div>
+        </div>
+      `).join('');
+      grid.dataset.ready = '1';
+    }
+
+    function openMoneyReview() {
+      playClickSound();
+      renderMoneyReview();
+      document.getElementById('moneyReviewModal').classList.add('active');
+    }
+
+    function closeMoneyReview() {
+      const modal = document.getElementById('moneyReviewModal');
+      if (modal) modal.classList.remove('active');
     }
 
     function showToast(type, text) {
@@ -1006,10 +1160,10 @@
       document.getElementById('total').textContent = totalVisible ? formatCents(getTotal()) : 'Hidden';
       document.getElementById('levelPoints').textContent = `${possible} star${possible === 1 ? '' : 's'} available`;
       document.getElementById('moneyHint').textContent = currentLesson
-        ? (currentLesson.bankDisplay === 'picture' ? 'Use the pictures — names and values hidden' : 'Names shown — remember the values')
+        ? 'Use the pictures — names and values are hidden'
         : gameMode === 'change'
-          ? 'Build the change — values stay hidden'
-          : 'Names shown — remember each value';
+          ? 'Build the change from the pictures — labels stay hidden'
+          : 'Pictures only — use what you know';
       document.getElementById('questionText').textContent = `Round ${getRoundNumber()} · Question ${q} of ${ROUND_LENGTH}`;
       document.getElementById('progressFill').style.width = `${q * 10}%`;
       document.getElementById('stageName').textContent = getStageName();
@@ -1372,9 +1526,14 @@ playClickSound();
     }
 
     function init() {
-       setupNewLevel();
+      renderMoneyReview();
+      setupNewLevel();
       setMessage(currentLesson ? 'Read the money-skill question, then choose carefully.' : 'Tap a coin or bill to start building the amount.');
     }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMoneyReview();
+    });
 
     init();
   </script>
