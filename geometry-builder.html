@@ -74,7 +74,7 @@ button,input{font:inherit}
 <script>
 const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
-let level="shape",q=1,score=0,streak=0,stars=3,solved=false,target=5,sides=3,width=3,height=2,selectedChoice=null,perimeterKnown=0,missingSide=0,areaRows=0,areaCols=0;
+let level="shape",q=1,round=1,score=0,streak=0,stars=3,solved=false,target=5,sides=3,width=3,height=2,selectedChoice=null,perimeterKnown=0,missingSide=0,areaRows=0,areaCols=0;
 let recentShapeTargets=[];
 const shapeNames={3:"triangle",4:"quadrilateral",5:"pentagon",6:"hexagon",7:"heptagon",8:"octagon"};
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
@@ -91,7 +91,8 @@ function polygonPoints(n){
   return pts.join(" ")
 }
 function makeShape(){
-  const choices=[3,4,5,6,7,8].filter(n=>!recentShapeTargets.includes(n));
+  const minSides=Math.min(6,3+Math.floor((round-1)/2));
+  const choices=[3,4,5,6,7,8].filter(n=>n>=minSides&&!recentShapeTargets.includes(n));
   target=choices[rnd(0,choices.length-1)];
   recentShapeTargets.push(target);
   if(recentShapeTargets.length>2)recentShapeTargets.shift();
@@ -106,7 +107,7 @@ function renderShape(){
   el("plusSides").onclick=()=>{if(!solved&&sides<8){sides++;renderShape()}};
 }
 function makePerimeter(){
-  const length=rnd(3,10),other=rnd(2,8);
+  const boost=Math.min(round-1,5),length=rnd(3+Math.floor(boost/2),Math.min(18,10+boost*2)),other=rnd(2+Math.floor(boost/2),Math.min(15,8+boost));
   target=2*(length+other);
   if(Math.random()<.5){perimeterKnown=length;missingSide=other}else{perimeterKnown=other;missingSide=length}
   selectedChoice=null;
@@ -130,7 +131,8 @@ function renderPerimeterPuzzle(){
   el("canvas").querySelectorAll("[data-perim]").forEach(b=>b.onclick=()=>{if(solved)return;selectedChoice=Number(b.dataset.perim);el("canvas").querySelectorAll("[data-perim]").forEach(x=>x.classList.toggle("selected",x===b))});
 }
 function makeArea(){
-  width=rnd(2,10);height=rnd(2,8);target=width*height;areaRows=0;areaCols=0;
+  const boost=Math.min(round-1,5),minSide=Math.min(5,2+Math.floor(boost/2));
+  width=rnd(minSide,10);height=rnd(minSide,8);target=width*height;areaRows=0;areaCols=0;
   el("levelName").textContent="Area Builder";
   el("prompt").textContent="Build a rectangle with area "+target+" square units.";
   el("subprompt").textContent="Tap a square to choose the rectangle's bottom-right corner. No running total is shown.";
@@ -156,7 +158,7 @@ function renderAreaGrid(){
     areaRows=r;areaCols=col;renderAreaGrid();
   });
 }
-function updateUI(){el("questionText").textContent="Build "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("roundStat").textContent=q+"/10"}
+function updateUI(){el("questionText").textContent="Round "+round+" · Build "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("roundStat").textContent=q+"/10"}
 function check(){
   if(solved){next();return}
   let value;
@@ -202,8 +204,8 @@ function hint(){
   }
   el("status").textContent="A geometry hint was revealed.";el("status").className="status info";updateUI()
 }
-function next(){if(!solved)return;if(q===10){q=1;score=0;streak=0}else q++;newChallenge()}
-function chooseLevel(v){level=v;q=1;score=0;streak=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newChallenge()}
+function next(){if(!solved)return;if(q===10){q=1;round++;el("status").textContent="Round "+round+" starts now — harder geometry, and your "+score+" points carry forward."}else q++;newChallenge()}
+function chooseLevel(v){level=v;q=1;round=1;score=0;streak=0;recentShapeTargets=[];document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newChallenge()}
 async function saveScore(){try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"geometry",score,level,best_streak:streak});await renderBoard();el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"}catch{el("status").textContent="Could not save the global score yet.";el("status").className="status bad"}}
 async function renderBoard(){const box=el("board");box.innerHTML="";try{const rows=await LWNLeaderboard.top("geometry",10);if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})}catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
