@@ -243,7 +243,7 @@
 
 <div class="game-topbar">
   <a class="home-button" href="#" onclick="goHome(event)">🏠 Back to Home</a>
-  <div class="topbar-center"><div class="score-pill" id="topScoreDisplay">⭐ Score: 0</div></div>
+  <div class="topbar-center"><div class="score-pill" id="topScoreDisplay">⭐ Level Points: 0</div></div>
   <button class="avatar-pill" id="topAvatarButton" type="button" onclick="playClickSound(); openProfileModal();">
     <span id="topAvatarEmoji">⭐</span><span id="topAvatarName">Nini</span>
   </button>
@@ -337,7 +337,7 @@
           <div class="message" id="message">Tap a coin or bill to start building the amount.</div>
           <div class="answer-meta">
             <span>Question <strong id="level">1</strong></span>
-            <span>Score <strong id="score">0</strong></span>
+            <span>Level points <strong id="score">0</strong></span>
             <span id="levelPoints">3 stars available</span>
             <span>Your total: <strong id="total">Hidden</strong></span>
           </div>
@@ -593,23 +593,42 @@
     let gameMode = 'warm';
     let currentLesson = null;
     let currentPurchase = null;
+    const modeState = {
+      warm: { level: 0, score: 0 },
+      master: { level: 0, score: 0 },
+      change: { level: 0, score: 0 }
+    };
     const ROUND_LENGTH = 10;
 
+    function saveCurrentModeState() {
+      if (!modeState[gameMode]) return;
+      modeState[gameMode].level = level;
+      modeState[gameMode].score = score;
+    }
+
+    function loadModeState(mode) {
+      const state = modeState[mode] || { level: 0, score: 0 };
+      level = state.level;
+      score = state.score;
+    }
+
     function setGameMode(mode) {
+      saveCurrentModeState();
+      const switchingModes = mode !== gameMode;
       gameMode = mode;
-      level = 0;
-      score = 0;
+      loadModeState(mode);
       updateTopBarScore(score);
       document.querySelectorAll('.mode-card').forEach((card) => {
         card.classList.toggle('active', card.dataset.mode === mode);
       });
       setupNewLevel();
+      const progressText = ' Round ' + getRoundNumber() + ' · ' + score + ' total point' + (score === 1 ? '' : 's') + '.';
       setMessage(
         mode === 'warm'
-          ? 'Warm Up: learn the money names, then build each amount.'
+          ? (switchingModes ? 'Warm Up: learn the money names, then build increasingly tricky amounts.' : 'Continuing Warm Up.') + progressText
           : mode === 'master'
-            ? 'Money Master: bigger amounts and more ways to solve them.'
-            : 'Change Challenge: subtract the purchase price from the amount paid, then build the change.'
+            ? (switchingModes ? 'Money Master: bigger amounts and more ways to solve them.' : 'Continuing Money Master.') + progressText
+            : (switchingModes ? 'Change Challenge: work out the change and build it.' : 'Continuing Change Challenge.') + progressText
       );
     }
 
@@ -869,24 +888,30 @@
 
     function generateChangeProblem() {
       const q = getQuestionNumber();
-      const tier = Math.min(getRoundIndex(), 3);
+      const round = getRoundIndex();
       let paid;
 
-      if (tier === 0) {
+      if (round === 0) {
         paid = q <= 3 ? 100 : q <= 6 ? 500 : q <= 8 ? 1000 : 2000;
-      } else if (tier === 1) {
-        paid = q <= 3 ? 500 : q <= 6 ? 1000 : q <= 8 ? 2000 : 4000;
-      } else if (tier === 2) {
-        paid = q <= 3 ? 1000 : q <= 6 ? 2000 : q <= 8 ? 4000 : 5000;
       } else {
-        paid = q <= 3 ? 2000 : q <= 6 ? 4000 : 5000;
+        // Every later round raises the payment range. Keep the growth bounded
+        // enough that the physical bill/coin building still feels reasonable.
+        const stageBase = q <= 3 ? 500 : q <= 6 ? 1000 : q <= 8 ? 2000 : 4000;
+        const roundBump = Math.min(round - 1, 8) * 500;
+        paid = Math.min(10000, stageBase + roundBump);
+        // Round common cash payments to $5 increments once amounts grow.
+        paid = Math.max(500, Math.round(paid / 500) * 500);
       }
 
       const maxWhole = Math.max(1, Math.floor(paid / 100) - 1);
-      const minWhole = tier === 0 ? 0 : Math.max(1, Math.floor(maxWhole * 0.35));
-      const centsPool = tier === 0
+      const difficulty = Math.min(round, 6);
+      const minRatio = round === 0 ? 0 : Math.min(.3 + difficulty * .05, .6);
+      const minWhole = round === 0 ? 0 : Math.max(1, Math.floor(maxWhole * minRatio));
+      const centsPool = round === 0
         ? [0,5,10,15,20,25,35,40,50,60,65,75,80,85,90,95]
-        : [1,3,7,12,18,23,27,32,38,43,47,52,58,63,67,72,78,83,87,92,98,99];
+        : round === 1
+          ? [3,7,12,18,23,27,32,38,43,47,52,58,63,67,72,78,83,87,92,98]
+          : [1,2,4,6,9,11,13,17,19,24,28,31,36,41,46,53,57,61,68,73,79,84,89,93,97,99];
       let price = randInt(minWhole, maxWhole) * 100 + pickOne(centsPool);
 
       if (price <= 0) price = 35;
@@ -1215,6 +1240,7 @@ playClickSound();
       if (wrongChecks > 0) feedback += ' Wrong check used, -1 point.';
 
       score += pointsEarned;
+      saveCurrentModeState();
       updateTopBarScore(score);
       { const p=getSharedProfile(); LWNLeaderboard.saveScore({name:p.name,avatar:p.avatar,game:"money",score,level:gameMode}).then(renderMoneyLeaderboard).catch(()=>{}); } 
       levelSolved = true;
@@ -1296,10 +1322,11 @@ playClickSound();
 
       const finishedRound = getQuestionNumber() === ROUND_LENGTH;
       level += 1;
+      saveCurrentModeState();
       setupNewLevel();
       if (finishedRound) {
-        setMessage('Round ' + getRoundNumber() + ' starts now — the questions just got a little harder.');
-        showToast('info', 'Round ' + getRoundNumber() + ' — harder!');
+        setMessage('Round ' + getRoundNumber() + ' starts now — harder questions, and your ' + score + ' points carry forward.');
+        showToast('info', 'Round ' + getRoundNumber() + ' · ' + score + ' points');
       } else {
         setMessage(
           currentLesson
@@ -1391,7 +1418,7 @@ function updateTopBarProfile() {
 function updateTopBarScore(scoreValue) {
   const scoreEl = document.getElementById("topScoreDisplay");
   if (!scoreEl) return;
-  scoreEl.textContent = `⭐ Score: ${scoreValue}`;
+  scoreEl.textContent = `⭐ Level Points: ${scoreValue}`;
   scoreEl.classList.remove("bounce-pop");
   void scoreEl.offsetWidth;
   scoreEl.classList.add("bounce-pop");
