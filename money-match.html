@@ -111,6 +111,7 @@
   }
   .target-label { text-transform:none; letter-spacing:0; font-family:"Fredoka",sans-serif; font-weight:700; font-size:1.65rem; color:#38227d; }
   .target-amount { font-family:"Fredoka",sans-serif; font-size:clamp(4rem,8vw,6.2rem); line-height:1; color:#6738d5; font-weight:700; margin-top:2px; }
+  .target-amount.lesson { font-size:clamp(1.8rem,4vw,3rem); line-height:1.15; max-width:900px; margin:8px auto 0; }
   .stage-pill { display:inline-flex; padding:7px 13px; border-radius:999px; background:#fff; color:#7541d7; font-weight:900; margin-top:12px; }
   .sparkle-layer,.page-celebration { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
   .money-card { padding:16px; margin-bottom:14px; }
@@ -476,15 +477,97 @@
       return overall;
     }
     const DENOMS = [
-      { id: 'penny', label: '1¢', value: 1, img: 'penny.png' },
-      { id: 'nickel', label: '5¢', value: 5, img: 'nickel.png' },
-      { id: 'dime', label: '10¢', value: 10, img: 'dime.png' },
-      { id: 'quarter', label: '25¢', value: 25, img: 'quarter.png' },
-      { id: 'one', label: '$1', value: 100, img: '1dollar.png' },
-      { id: 'five', label: '$5', value: 500, img: '5dollar.png' },
-      { id: 'ten', label: '$10', value: 1000, img: '10dollar.png' },
-      { id: 'twenty', label: '$20', value: 2000, img: '20dollar.png' }
+      { id: 'penny', label: 'Penny', valueText: '1¢', value: 1, img: 'penny.png' },
+      { id: 'nickel', label: 'Nickel', valueText: '5¢', value: 5, img: 'nickel.png' },
+      { id: 'dime', label: 'Dime', valueText: '10¢', value: 10, img: 'dime.png' },
+      { id: 'quarter', label: 'Quarter', valueText: '25¢', value: 25, img: 'quarter.png' },
+      { id: 'one', label: 'One Dollar Bill', valueText: '$1', value: 100, img: '1dollar.png' },
+      { id: 'five', label: 'Five Dollar Bill', valueText: '$5', value: 500, img: '5dollar.png' },
+      { id: 'ten', label: 'Ten Dollar Bill', valueText: '$10', value: 1000, img: '10dollar.png' },
+      { id: 'twenty', label: 'Twenty Dollar Bill', valueText: '$20', value: 2000, img: '20dollar.png' }
     ];
+
+    const COIN_IDS = ['penny','nickel','dime','quarter'];
+    const BILL_IDS = ['one','five','ten','twenty'];
+
+    const MONEY_LESSONS = {
+      warm: [
+        {
+          prompt: 'Tap the Nickel.',
+          target: 5,
+          required: { nickel: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'picture',
+          success: 'Yes! That is a nickel. A nickel is worth 5¢.',
+          retry: 'Not quite. Look closely at the coin pictures and try to find the nickel.'
+        },
+        {
+          prompt: 'Tap the Dime.',
+          target: 10,
+          required: { dime: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'picture',
+          success: 'Yes! That is a dime. A dime is worth 10¢.',
+          retry: 'Not quite. Look closely at the coin pictures and try to find the dime.'
+        },
+        {
+          prompt: 'Which coin is worth 5¢?',
+          target: 5,
+          required: { nickel: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'name',
+          success: 'Correct! A nickel is worth 5¢.',
+          retry: 'Try again. Which named coin is worth 5¢?'
+        },
+        {
+          prompt: 'Add 2 dimes and 1 nickel.',
+          target: 25,
+          required: { dime: 2, nickel: 1 },
+          availableIds: COIN_IDS,
+          bankDisplay: 'name',
+          success: 'Correct! A dime is 10¢, so 2 dimes are 20¢. A nickel is 5¢. Altogether that is 25¢.',
+          retry: 'Not quite. Use exactly 2 dimes and 1 nickel.'
+        }
+      ],
+      master: [
+        {
+          prompt: 'Tap the One Dollar Bill.',
+          target: 100,
+          required: { one: 1 },
+          availableIds: BILL_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! The one dollar bill is worth $1.',
+          retry: 'Not quite. Look at the bill pictures and find the one dollar bill.'
+        },
+        {
+          prompt: 'Which bill is worth $5?',
+          target: 500,
+          required: { five: 1 },
+          availableIds: BILL_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! The five dollar bill is worth $5.',
+          retry: 'Not quite. Try the bill worth $5.'
+        },
+        {
+          prompt: 'Which bill is worth $10?',
+          target: 1000,
+          required: { ten: 1 },
+          availableIds: BILL_IDS,
+          bankDisplay: 'picture',
+          success: 'Correct! The ten dollar bill is worth $10.',
+          retry: 'Not quite. Try the bill worth $10.'
+        },
+        {
+          prompt: 'Add one Ten Dollar Bill and one Five Dollar Bill.',
+          target: 1500,
+          required: { ten: 1, five: 1 },
+          availableIds: BILL_IDS,
+          bankDisplay: 'name',
+          success: 'Correct! $10 + $5 = $15.',
+          retry: 'Not quite. Use exactly one Ten Dollar Bill and one Five Dollar Bill.'
+        }
+      ]
+    };
 
     const SUCCESS_NEXT_TEXTS = [
       'Great Job! Next Amount',
@@ -508,6 +591,7 @@
     let solvedButtonText = SUCCESS_NEXT_TEXTS[0];
     let moneyLeaderboard = safeParseJson(SITE_KEYS.moneyLeaderboard, []);
     let gameMode = 'warm';
+    let currentLesson = null;
     const ROUND_LENGTH = 10;
 
     function setGameMode(mode) {
@@ -546,6 +630,24 @@
       return 'Warm Up';
     }
 
+    function getLessonForCurrentQuestion() {
+      const lessons = MONEY_LESSONS[gameMode] || [];
+      return lessons[getQuestionNumber() - 1] || null;
+    }
+
+    function bankMatchesRequired(required) {
+      const counts = {};
+      bank.forEach(item => { counts[item.id] = (counts[item.id] || 0) + 1; });
+      const requiredIds = Object.keys(required);
+      const selectedIds = Object.keys(counts);
+      if (requiredIds.length !== selectedIds.length) return false;
+      return requiredIds.every(id => counts[id] === required[id]);
+    }
+
+    function itemDisplayMode() {
+      return currentLesson ? currentLesson.bankDisplay : 'name';
+    }
+
     function summarizePieces(items) {
       if (!items.length) return '';
       const counts = {};
@@ -557,17 +659,18 @@
         nickel: ['nickel','nickels'],
         dime: ['dime','dimes'],
         quarter: ['quarter','quarters'],
-        one: ['$1 bill','$1 bills'],
-        five: ['$5 bill','$5 bills'],
-        ten: ['$10 bill','$10 bills'],
-        twenty: ['$20 bill','$20 bills']
+        one: ['one dollar bill','one dollar bills'],
+        five: ['five dollar bill','five dollar bills'],
+        ten: ['ten dollar bill','ten dollar bills'],
+        twenty: ['twenty dollar bill','twenty dollar bills']
       };
       return DENOMS
         .filter(d => counts[d.id])
         .map(d => {
           const n = counts[d.id];
           const pair = names[d.id];
-          return n + ' ' + (n === 1 ? pair[0] : pair[1]);
+          const name = n === 1 ? pair[0] : pair[1];
+          return n + ' ' + name + ' (' + d.valueText + (n > 1 ? ' each' : '') + ')';
         })
         .join(' + ');
     }
@@ -752,14 +855,24 @@
         primary.innerHTML = 'Check<br>Answer →';
         primary.onclick = checkAnswer;
 
-        reveal.className = 'reveal-btn';
-        reveal.textContent = 'Hold to Reveal Total';
-        reveal.onclick = null;
-        reveal.onmousedown = startReveal;
-        reveal.onmouseup = stopReveal;
-        reveal.onmouseleave = stopReveal;
-        reveal.ontouchstart = function () { startReveal(); return false; };
-        reveal.ontouchend = stopReveal;
+        if (currentLesson) {
+          reveal.className = 'reveal-btn hidden';
+          reveal.onclick = null;
+          reveal.onmousedown = null;
+          reveal.onmouseup = null;
+          reveal.onmouseleave = null;
+          reveal.ontouchstart = null;
+          reveal.ontouchend = null;
+        } else {
+          reveal.className = 'reveal-btn';
+          reveal.textContent = 'Hold to Reveal Total';
+          reveal.onclick = null;
+          reveal.onmousedown = startReveal;
+          reveal.onmouseup = stopReveal;
+          reveal.onmouseleave = stopReveal;
+          reveal.ontouchstart = function () { startReveal(); return false; };
+          reveal.ontouchend = stopReveal;
+        }
       }
     }
 
@@ -768,10 +881,22 @@
       const possible = getCurrentLevelPossiblePoints();
       document.getElementById('level').textContent = q;
       document.getElementById('score').textContent = score;
-      document.getElementById('target').textContent = formatCents(currentTarget);
+      const targetEl = document.getElementById('target');
+      const targetLabel = document.querySelector('.target-label');
+      if (currentLesson) {
+        targetLabel.textContent = 'Money Skill:';
+        targetEl.textContent = currentLesson.prompt;
+        targetEl.classList.add('lesson');
+      } else {
+        targetLabel.textContent = 'Make this amount:';
+        targetEl.textContent = formatCents(currentTarget);
+        targetEl.classList.remove('lesson');
+      }
       document.getElementById('total').textContent = totalVisible ? formatCents(getTotal()) : 'Hidden';
       document.getElementById('levelPoints').textContent = `${possible} star${possible === 1 ? '' : 's'} available`;
-      document.getElementById('moneyHint').textContent = 'Tap any coin or bill to add it';
+      document.getElementById('moneyHint').textContent = currentLesson
+        ? (currentLesson.bankDisplay === 'picture' ? 'Use the pictures — no values shown' : 'Names shown — remember the values')
+        : 'Names shown — remember each value';
       document.getElementById('questionText').textContent = `Question ${q} of ${ROUND_LENGTH}`;
       document.getElementById('progressFill').style.width = `${q * 10}%`;
       document.getElementById('stageName').textContent = getStageName();
@@ -805,7 +930,7 @@
     }
 
     function startReveal() {
-      if (levelSolved) return;
+      if (levelSolved || currentLesson) return;
       totalVisible = true;
       usedReveal = true;
       updateTop();
@@ -847,14 +972,16 @@
     function renderMoneyBank() {
       const grid = document.getElementById('moneyGrid');
       grid.innerHTML = '';
+      const displayMode = itemDisplayMode();
+      const allowed = currentLesson && currentLesson.availableIds ? currentLesson.availableIds : null;
 
-      DENOMS.forEach((item) => {
+      DENOMS.filter(item => !allowed || allowed.includes(item.id)).forEach((item) => {
         const btn = document.createElement('button');
         btn.className = 'money-item';
         btn.innerHTML = `
-          <img src="${item.img}" alt="${item.label}" class="money-img">
-          <div class="money-label">${shouldShowValues() ? item.label : ''}</div>
-          <div class="money-sub">${shouldShowValues() ? formatCents(item.value) : 'Tap to add'}</div>
+          <img src="${item.img}" alt="${displayMode === 'picture' ? 'Money choice' : item.label}" class="money-img">
+          <div class="money-label">${displayMode === 'picture' ? '' : item.label}</div>
+          <div class="money-sub">${displayMode === 'picture' ? 'Tap to choose' : 'Tap to add'}</div>
         `;
         btn.onclick = () => addMoney(item.id);
         grid.appendChild(btn);
@@ -879,9 +1006,10 @@
       bank.forEach((item, index) => {
         const btn = document.createElement('button');
         btn.className = 'money-item bank-item';
+        const displayMode = itemDisplayMode();
         btn.innerHTML = `
-          <img src="${item.img}" alt="${item.label}" class="money-img">
-          <div class="money-label">${shouldShowValues() ? item.label : ''}</div>
+          <img src="${item.img}" alt="${displayMode === 'picture' ? 'Selected money' : item.label}" class="money-img">
+          <div class="money-label">${displayMode === 'picture' ? '' : item.label}</div>
           <div class="money-sub">Tap to remove</div>
         `;
         btn.onclick = () => {
@@ -902,7 +1030,9 @@
       lockLevelAgain();
       renderAnswerBox();
       updateTop();
-      setMessage('Nice. Keep going.');
+      setMessage(currentLesson
+        ? (currentLesson.bankDisplay === 'picture' ? 'Choice added. Check your answer.' : 'Good. Check when you are ready.')
+        : 'Nice. Keep going.');
     }
 
     function removeMoney(index) {
@@ -936,15 +1066,19 @@ playClickSound();
 
       const total = getTotal();
       const target = currentTarget;
+      const lessonQuestion = !!(currentLesson && currentLesson.required);
+      const isCorrect = lessonQuestion ? bankMatchesRequired(currentLesson.required) : total === target;
 
-      if (total !== target) {
+      if (!isCorrect) {
         wrongChecks = 1;
         levelSolved = false;
         betterWayAvailable = false;
         totalVisible = false;
         updateTop();
 
-        if (total < target) {
+        if (lessonQuestion) {
+          setMessage(currentLesson.retry + ' Wrong check costs 1 point.', 'warning');
+        } else if (total < target) {
           setMessage(`Not enough. You need ${formatCents(target - total)} more. Wrong check costs 1 point.`, 'warning');
         } else {
           setMessage(`Too much. You went over by ${formatCents(total - target)}. Wrong check costs 1 point.`, 'warning');
@@ -954,7 +1088,7 @@ playClickSound();
         return;
       }
 
-      const minPieces = getMinPieces(target);
+      const minPieces = lessonQuestion ? bank.length : getMinPieces(target);
       const usedPieces = bank.length;
 
       let pointsEarned = 3;
@@ -963,7 +1097,10 @@ playClickSound();
       if (usedReveal) pointsEarned -= 1;
       if (wrongChecks > 0) pointsEarned -= 1;
 
-      if (usedPieces === minPieces) {
+      if (lessonQuestion) {
+        feedback = currentLesson.success;
+        betterWayAvailable = false;
+      } else if (usedPieces === minPieces) {
         feedback = `Perfect — you used the fewest pieces!`;
         betterWayAvailable = false;
       } else {
@@ -988,7 +1125,8 @@ playClickSound();
       updateTop();
       renderAnswerBox();
       const pieceSummary = summarizePieces(bank);
-      setMessage(`${feedback} ${pieceSummary ? pieceSummary + ' = ' + formatCents(target) + '. ' : ''}You earned ${pointsEarned} star${pointsEarned === 1 ? '' : 's'}.`, 'success');
+      const learningSummary = lessonQuestion ? '' : (pieceSummary ? pieceSummary + ' = ' + formatCents(target) + '. ' : '');
+      setMessage(`${feedback} ${learningSummary}You earned ${pointsEarned} star${pointsEarned === 1 ? '' : 's'}.`, 'success');
       showToast('success', pickOne(['Great job!', 'Awesome!', 'You got it!', 'Perfect!']));
       triggerTargetSparkles();
       triggerPageCelebration();
@@ -1034,7 +1172,8 @@ playClickSound();
       betterWayAvailable = false;
       animatingBetterWay = false;
       solvedButtonText = pickOne(SUCCESS_NEXT_TEXTS);
-      currentTarget = generateTargetForLevel(level);
+      currentLesson = getLessonForCurrentQuestion();
+      currentTarget = currentLesson ? currentLesson.target : generateTargetForLevel(level);
 
       renderMoneyBank();
       renderAnswerBox();
@@ -1055,14 +1194,14 @@ playClickSound();
         setMessage('New 10-question round! Keep going.');
         showToast('info', 'New round!');
       } else {
-        setMessage('Next question. Make the amount shown.');
+        setMessage(currentLesson ? 'Read the money-skill question, then choose carefully.' : 'Next question. Make the amount shown.');
         showToast('info', 'Next question!');
       }
     }
 
     function init() {
        setupNewLevel();
-      setMessage('Tap a coin or bill to start building the amount.');
+      setMessage(currentLesson ? 'Read the money-skill question, then choose carefully.' : 'Tap a coin or bill to start building the amount.');
     }
 
     init();
