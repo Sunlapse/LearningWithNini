@@ -162,7 +162,7 @@ button,input{font:inherit}
 const KEY_PROFILE="learningWithNiniProfileV1",KEY_BOARD="mathDetectiveLeaderboardV1";
 const AVATARS=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(KEY_PROFILE,{name:"Nini",avatar:"⭐"}),selectedAvatar=profile.avatar||"⭐";
-let level="one",caseIndex=1,score=0,streak=0,casesSolved=0,stars=3,solved=false,answer="",selectedOp=null,selectedOp2=null,operationConfirmed=false,current=null;
+let level="one",caseIndex=1,round=1,score=0,streak=0,casesSolved=0,stars=3,solved=false,answer="",selectedOp=null,selectedOp2=null,operationConfirmed=false,current=null;
 let board=safe(KEY_BOARD,[]);
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
@@ -171,22 +171,22 @@ function pick(a){return a[rnd(0,a.length-1)]}
 function opWord(op){return op==="+"?"addition":op==="-"?"subtraction":op==="×"?"multiplication":"division"}
 function setStatus(t,type=""){el("status").textContent=t;el("status").className="status"+(type?" "+type:"")}
 function oneStep(){
-  const op=pick(["+","-","×","÷"]);
+  const op=pick(["+","-","×","÷"]),boost=Math.min(round-1,5);
   const names=["Nini","Maya","Kai","Leo","Ava"];
   const name=pick(names);
   if(op==="+"){
-    const a=rnd(18,68),b=rnd(12,49);
+    const a=rnd(18,68+boost*35),b=rnd(12,49+boost*25);
     return {op,answer:a+b,story:name+" collected "+a+" stickers and then got "+b+" more.",question:"How many stickers does "+name+" have now?",equation:a+" + "+b+" = "+(a+b),hint:"The amount grows because more stickers are added."};
   }
   if(op==="-"){
-    const start=rnd(45,95),left=rnd(12,start-8);
+    const start=rnd(45,95+boost*45),left=rnd(12,start-8);
     return {op,answer:start-left,story:name+" had "+start+" shells and gave "+left+" away.",question:"How many shells are left?",equation:start+" − "+left+" = "+(start-left),hint:"The amount gets smaller because some are given away."};
   }
   if(op==="×"){
-    const groups=rnd(3,9),each=rnd(3,10);
+    const groups=rnd(3,Math.min(12,9+boost)),each=rnd(3,Math.min(12,10+boost));
     return {op,answer:groups*each,story:name+" packed "+groups+" bags with "+each+" marbles in each bag.",question:"How many marbles are there altogether?",equation:groups+" × "+each+" = "+(groups*each),hint:"There are equal groups with the same number in each group."};
   }
-  const groups=rnd(3,9),each=rnd(3,10),total=groups*each;
+  const groups=rnd(3,Math.min(12,9+boost)),each=rnd(3,Math.min(12,10+boost)),total=groups*each;
   return {op,answer:each,story:name+" shared "+total+" cards equally among "+groups+" friends.",question:"How many cards does each friend get?",equation:total+" ÷ "+groups+" = "+each,hint:"A total is being split into equal groups."};
 }
 function operationCase(){
@@ -196,20 +196,20 @@ function operationCase(){
   return q;
 }
 function twoStep(){
-  const type=rnd(0,3),name=pick(["Nini","Maya","Kai","Leo"]);
+  const type=rnd(0,3),name=pick(["Nini","Maya","Kai","Leo"]),boost=Math.min(round-1,5);
   if(type===0){
-    const boxes=rnd(3,7),each=rnd(4,9),extra=rnd(5,18),ans=boxes*each+extra;
+    const boxes=rnd(3,Math.min(10,7+boost)),each=rnd(4,Math.min(12,9+boost)),extra=rnd(5,18+boost*8),ans=boxes*each+extra;
     return {op:"×",secondOp:"+",intermediate:boxes*each,answer:ans,story:name+" has "+boxes+" boxes with "+each+" pencils in each box and "+extra+" loose pencils.",question:"How many pencils are there altogether?",equation:boxes+" × "+each+" + "+extra+" = "+ans,hint:"First find the pencils in all the equal boxes. Then add the loose pencils."};
   }
   if(type===1){
-    const groups=rnd(4,8),each=rnd(5,10),used=rnd(6,15),total=groups*each,ans=total-used;
+    const groups=rnd(4,Math.min(12,8+boost)),each=rnd(5,Math.min(12,10+boost)),used=rnd(6,15+boost*6),total=groups*each,ans=total-used;
     return {op:"×",secondOp:"-",intermediate:total,answer:ans,story:name+" made "+groups+" trays with "+each+" cookies on each tray. Then "+used+" cookies were eaten.",question:"How many cookies are left?",equation:groups+" × "+each+" − "+used+" = "+ans,hint:"First find the total cookies in all trays. Then subtract the cookies that were eaten."};
   }
   if(type===2){
-    const a=rnd(24,55),b=rnd(18,45),teams=rnd(3,7),sum=a+b,usable=sum-(sum%teams),adj=usable-a;
+    const a=rnd(24,55+boost*20),b=rnd(18,45+boost*18),teams=rnd(3,Math.min(10,7+boost)),sum=a+b,usable=sum-(sum%teams),adj=usable-a;
     if(adj>0){const ans=usable/teams;return {op:"+",secondOp:"÷",intermediate:usable,answer:ans,story:name+" collected "+a+" blue beads and "+adj+" green beads, then shared all the beads equally among "+teams+" teams.",question:"How many beads does each team get?",equation:"("+a+" + "+adj+") ÷ "+teams+" = "+ans,hint:"First add the two colors. Then divide the total equally among the teams."};}
   }
-  const start=rnd(60,95),spent=rnd(10,25),more=rnd(8,20),ans=start-spent+more;
+  const start=rnd(60,95+boost*45),spent=rnd(10,25+boost*12),more=rnd(8,20+boost*10),ans=start-spent+more;
   return {op:"-",secondOp:"+",intermediate:start-spent,answer:ans,story:name+" had "+start+" points, spent "+spent+" points on a prize, then earned "+more+" more points.",question:"How many points does "+name+" have now?",equation:start+" − "+spent+" + "+more+" = "+ans,hint:"First subtract what was spent. Then add the new points earned."};
 }
 function generate(){return level==="two"?twoStep():level==="operation"?operationCase():oneStep()}
@@ -233,7 +233,7 @@ function newCase(){
   updateUI();
 }
 function updateUI(){
-  el("questionText").textContent="Case "+caseIndex+" of 10";el("progressFill").style.width=(caseIndex*10)+"%";
+  el("questionText").textContent="Round "+round+" · Case "+caseIndex+" of 10";el("progressFill").style.width=(caseIndex*10)+"%";
   el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");
   el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("casesSolved").textContent=casesSolved;
 }
@@ -297,8 +297,8 @@ function explainOperation(q){
 function hint(){
   if(solved)return;stars=Math.max(1,stars-1);el("notebook").innerHTML="<strong>Clue:</strong><br>"+current.hint;setStatus("A clue was added to your detective notebook.","info");updateUI()
 }
-function nextCase(){if(!solved)return;if(caseIndex===10){caseIndex=1;score=0;streak=0;casesSolved=0;setTimeout(newCase,250)}else{caseIndex++;newCase()}}
-function chooseLevel(v){level=v;caseIndex=1;score=0;streak=0;casesSolved=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newCase()}
+function nextCase(){if(!solved)return;if(caseIndex===10){caseIndex=1;round++;setStatus("Round "+round+" starts now — tougher cases, and your "+score+" points carry forward.","info");setTimeout(newCase,250)}else{caseIndex++;newCase()}}
+function chooseLevel(v){level=v;caseIndex=1;round=1;score=0;streak=0;casesSolved=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newCase()}
 async function saveScore(){
   try{
     await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"detective",score,level,best_streak:streak});
