@@ -272,7 +272,7 @@ const el=id=>document.getElementById(id);
 let profile=safe(KEYS.profile,{name:"Nini",avatar:"⭐"});
 let selectedAvatar=profile.avatar||"⭐";
 let level="build";
-let question=1,score=0,streak=0,bestStreak=0,stars=3;
+let question=1,round=1,score=0,streak=0,bestStreak=0,stars=3;
 let a=4,b=6,answer="",solved=false;
 let questionPool=[];
 let timerOn=true,startTime=Date.now(),timerHandle=null;
@@ -282,9 +282,10 @@ function safe(key,fallback){try{const v=localStorage.getItem(key);return v?JSON.
 function store(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch{}}
 function rnd(min,max){return Math.floor(Math.random()*(max-min+1))+min}
 function currentRange(){
-  if(level==="build")return {min:2,max:5,name:"Build Up"};
-  if(level==="power")return {min:6,max:9,name:"Power Facts"};
-  return {min:2,max:12,name:"Mixed Master"};
+  const boost=Math.min(round-1,5);
+  if(level==="build")return {min:2,max:Math.min(10,5+boost),name:"Build Up"};
+  if(level==="power")return {min:Math.max(4,6-Math.floor(boost/2)),max:Math.min(12,9+boost),name:"Power Facts"};
+  return {min:Math.min(7,2+boost),max:12,name:"Mixed Master"};
 }
 function shuffleFacts(items){
   const a=[...items];
@@ -299,7 +300,8 @@ function resetQuestionPool(){
   const seen=new Set();
 
   if(level==="master"){
-    for(let x=2;x<=12;x++){
+    const r=currentRange();
+    for(let x=r.min;x<=12;x++){
       for(let y=x;y<=12;y++){
         const key=x+"x"+y;
         if(!seen.has(key)){seen.add(key);facts.push([x,y])}
@@ -329,7 +331,7 @@ function makeQuestion(){
 
   answer="";stars=3;solved=false;
   el("factorA").textContent=a;el("factorB").textContent=b;
-  el("levelName").textContent=r.name;
+  el("levelName").textContent=r.name+" · Round "+round;
   el("answerDisplay").textContent="Type your answer";
   el("answerDisplay").classList.add("placeholder");
   el("status").textContent="Enter the product, then check your answer.";
@@ -341,7 +343,7 @@ function makeQuestion(){
   updateUI();
 }
 function updateUI(){
-  el("questionText").textContent="Question "+question+" of 10";
+  el("questionText").textContent="Round "+round+" · Question "+question+" of 10";
   el("progressFill").style.width=(question*10)+"%";
   el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");
   el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;
@@ -386,8 +388,9 @@ function next(){
     const seconds=Math.max(1,Math.floor((Date.now()-startTime)/1000));
     el("status").textContent="Round complete! "+roundScore+" stars in "+formatTime(seconds)+". Starting a new round.";
     el("status").className="status good";
-    question=1;score=0;streak=0;bestStreak=0;startTime=Date.now();
+    round+=1;question=1;startTime=Date.now();
     resetQuestionPool();
+    el("status").textContent="Round "+round+" starts now — harder facts, and your "+score+" points carry forward.";
     setTimeout(makeQuestion,700);
   }else{question++;makeQuestion()}
 }
@@ -403,7 +406,7 @@ function showHint(){
   updateUI();
 }
 function chooseLevel(v){
-  level=v;question=1;score=0;streak=0;bestStreak=0;startTime=Date.now();
+  level=v;question=1;round=1;score=0;streak=0;bestStreak=0;startTime=Date.now();
   resetQuestionPool();
   document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));
   makeQuestion();
