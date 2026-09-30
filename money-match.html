@@ -524,7 +524,7 @@
           target: 25,
           required: { dime: 2, nickel: 1 },
           availableIds: COIN_IDS,
-          bankDisplay: 'name',
+          bankDisplay: 'picture',
           success: 'Correct! A dime is 10¢, so 2 dimes are 20¢. A nickel is 5¢. Altogether that is 25¢.',
           retry: 'Not quite. Use exactly 2 dimes and 1 nickel.'
         }
@@ -562,7 +562,7 @@
           target: 1500,
           required: { ten: 1, five: 1 },
           availableIds: BILL_IDS,
-          bankDisplay: 'name',
+          bankDisplay: 'picture',
           success: 'Correct! $10 + $5 = $15.',
           retry: 'Not quite. Use exactly one Ten Dollar Bill and one Five Dollar Bill.'
         }
@@ -594,9 +594,9 @@
     let currentLesson = null;
     let currentPurchase = null;
     const modeState = {
-      warm: { level: 0, score: 0 },
-      master: { level: 0, score: 0 },
-      change: { level: 0, score: 0 }
+      warm: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null },
+      master: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null },
+      change: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null }
     };
     const ROUND_LENGTH = 10;
 
@@ -1006,7 +1006,7 @@
       document.getElementById('total').textContent = totalVisible ? formatCents(getTotal()) : 'Hidden';
       document.getElementById('levelPoints').textContent = `${possible} star${possible === 1 ? '' : 's'} available`;
       document.getElementById('moneyHint').textContent = currentLesson
-        ? (currentLesson.bankDisplay === 'picture' ? 'Use the pictures — no values shown' : 'Names shown — remember the values')
+        ? (currentLesson.bankDisplay === 'picture' ? 'Use the pictures — names and values hidden' : 'Names shown — remember the values')
         : gameMode === 'change'
           ? 'Build the change — values stay hidden'
           : 'Names shown — remember each value';
@@ -1288,6 +1288,33 @@ playClickSound();
       }, 300);
     }
 
+    function generateUniqueTarget() {
+      const state = modeState[gameMode];
+      let target = generateTargetForLevel(level);
+      let tries = 0;
+      while (target === state.lastTarget && tries < 25) {
+        target = generateTargetForLevel(level);
+        tries++;
+      }
+      state.lastTarget = target;
+      return target;
+    }
+
+    function generateUniqueChangeProblem() {
+      const state = modeState.change;
+      let problem = generateChangeProblem();
+      let key = problem.price + '|' + problem.paid;
+      let tries = 0;
+      while ((problem.change === state.lastTarget || key === state.lastPurchaseKey) && tries < 25) {
+        problem = generateChangeProblem();
+        key = problem.price + '|' + problem.paid;
+        tries++;
+      }
+      state.lastTarget = problem.change;
+      state.lastPurchaseKey = key;
+      return problem;
+    }
+
     function setupNewLevel() {
       bank = [];
       totalVisible = false;
@@ -1301,11 +1328,16 @@ playClickSound();
       currentLesson = getLessonForCurrentQuestion();
       if (gameMode === 'change') {
         currentLesson = null;
-        currentPurchase = generateChangeProblem();
+        currentPurchase = generateUniqueChangeProblem();
         currentTarget = currentPurchase.change;
       } else {
         currentPurchase = null;
-        currentTarget = currentLesson ? currentLesson.target : generateTargetForLevel(level);
+        if (currentLesson) {
+          currentTarget = currentLesson.target;
+          modeState[gameMode].lastTarget = currentTarget;
+        } else {
+          currentTarget = generateUniqueTarget();
+        }
       }
 
       renderMoneyBank();
