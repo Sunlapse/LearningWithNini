@@ -90,7 +90,7 @@ button,input{font:inherit}
 <script>
 const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
-let level="digit",q=1,score=0,streak=0,stars=3,solved=false,number=4372,targetPlace=2,correct=70,answer="",selectedChoice=null,roundUnit=10;
+let level="digit",q=1,round=1,score=0,streak=0,stars=3,solved=false,number=4372,targetPlace=2,correct=70,answer="",selectedChoice=null,roundUnit=10,lastNumber=null;
 const places=["Thousands","Hundreds","Tens","Ones"],placeValues=[1000,100,10,1];
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
@@ -104,7 +104,17 @@ function shuffledExpandedOf(n){const d=digitsOf(n);const terms=d.map((x,i)=>x*pl
 function keypadHTML(){return '<div class="answer-display placeholder" id="answerDisplay">Enter answer</div><div class="keypad"><button class="key" data-n="1">1</button><button class="key" data-n="2">2</button><button class="key" data-n="3">3</button><button class="key" data-n="4">4</button><button class="key" data-n="5">5</button><button class="key" data-n="6">6</button><button class="key" data-n="7">7</button><button class="key" data-n="8">8</button><button class="key" data-n="9">9</button><button class="key clear" id="clearKey">Clear</button><button class="key" data-n="0">0</button><button class="key back" id="backKey">←</button></div>'}
 function newQuestion(){
   stars=3;solved=false;answer="";selectedChoice=null;
-  number=rnd(1000,9999);
+  let tries=0;
+  do{
+    number=rnd(1000,9999);
+    if(round>=2&&Math.random()<Math.min(.65,.25+round*.1)){
+      const chars=String(number).split("");
+      chars[rnd(1,3)]="0";
+      number=Number(chars.join(""));
+    }
+    tries++;
+  }while(number===lastNumber&&tries<20);
+  lastNumber=number;
   if(level==="digit")makeDigit();else if(level==="build")makeBuild();else makeRound();
   el("checkBtn").textContent="Check Answer →";el("checkBtn").className="check";el("hintBtn").disabled=false;updateUI()
 }
@@ -115,8 +125,9 @@ function renderBigNumber(hot=-1){
 function makeDigit(){
   targetPlace=rnd(0,3);const d=digitsOf(number);correct=d[targetPlace]*placeValues[targetPlace];
   if(d[targetPlace]===0){number+=placeValues[targetPlace];return makeDigit()}
-  el("levelName").textContent="Digit Detective";el("prompt").textContent="What is the value of the highlighted digit?";renderBigNumber(targetPlace);
-  el("placeChart").innerHTML=chartHTML(number,targetPlace);el("expanded").textContent=expandedOf(number);
+  el("levelName").textContent="Digit Detective · Round "+round;el("prompt").textContent="What is the value of the highlighted digit?";renderBigNumber(targetPlace);
+  el("placeChart").innerHTML=round===1?chartHTML(number,targetPlace):blankChartHTML();
+  el("expanded").textContent=round===1?expandedOf(number):"Use the digit's position to determine its value.";
   const opts=new Set([correct]);
   [d[targetPlace],placeValues[targetPlace],d[targetPlace]*100,d[targetPlace]*10,d[targetPlace]*1000].forEach(x=>{if(x>=0&&x!==correct)opts.add(x)});
   while(opts.size<4)opts.add(rnd(1,9)*placeValues[rnd(0,3)]);
@@ -127,7 +138,7 @@ function makeDigit(){
 }
 function makeBuild(){
   correct=number;
-  el("levelName").textContent="Build the Number";
+  el("levelName").textContent="Build the Number · Round "+round;
   el("prompt").textContent="Build the standard number from these expanded pieces.";
   el("bigNumber").textContent="?";
   el("placeChart").innerHTML=blankChartHTML();
@@ -138,8 +149,8 @@ function makeBuild(){
   el("notebook").innerHTML="<strong>Build It:</strong><br>The expanded pieces may be out of order. Match each piece to thousands, hundreds, tens, or ones.";
 }
 function makeRound(){
-  roundUnit=[10,100,1000][rnd(0,2)];correct=Math.round(number/roundUnit)*roundUnit;
-  el("levelName").textContent="Rounding Challenge";el("prompt").textContent="Round this number to the nearest "+fmt(roundUnit)+".";renderBigNumber(-1);
+  const units=round===1?[10,100]:[10,100,1000];roundUnit=units[rnd(0,units.length-1)];correct=Math.round(number/roundUnit)*roundUnit;
+  el("levelName").textContent="Rounding Challenge · Round "+round;el("prompt").textContent="Round this number to the nearest "+fmt(roundUnit)+".";renderBigNumber(-1);
   const hot=roundUnit===10?2:roundUnit===100?1:0;el("placeChart").innerHTML=chartHTML(number,hot);el("expanded").textContent="Round "+fmt(number)+" to the nearest "+fmt(roundUnit);
   el("answerArea").innerHTML=keypadHTML();wireKeypad();el("status").textContent="Look one place to the right to decide whether to round up or down.";el("status").className="status";el("notebook").innerHTML="<strong>Rounding Rule:</strong><br>0–4 stays the same. 5–9 rounds the target digit up.";
 }
@@ -148,7 +159,7 @@ function renderAnswer(){const a=el("answerDisplay");if(!a)return;a.textContent=a
 function typeDigit(n){if(solved||answer.length>=5)return;answer=(answer==="0"?"":answer)+n;answer=String(Number(answer));renderAnswer()}
 function clearAnswer(){if(solved)return;answer="";renderAnswer()}
 function backspace(){if(solved)return;answer=answer.slice(0,-1);renderAnswer()}
-function updateUI(){el("questionText").textContent="Question "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("roundStat").textContent=q+"/10"}
+function updateUI(){el("questionText").textContent="Round "+round+" · Question "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak;el("roundStat").textContent=q+"/10"}
 function check(){
   if(solved){next();return}
   const response=level==="digit"?selectedChoice:Number(answer);
@@ -172,8 +183,8 @@ function hint(){
   else{const hot=roundUnit===10?2:roundUnit===100?1:0,look=d[hot+1];el("notebook").innerHTML="<strong>Hint:</strong><br>The deciding digit is "+look+". "+(look>=5?"Round up.":"Keep the target digit the same.");}
   el("status").textContent="A place-value hint was added.";el("status").className="status info";updateUI()
 }
-function next(){if(!solved)return;if(q===10){q=1;score=0;streak=0}else q++;newQuestion()}
-function chooseLevel(v){level=v;q=1;score=0;streak=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newQuestion()}
+function next(){if(!solved)return;if(q===10){q=1;round++;el("status").textContent="Round "+round+" starts now — less scaffolding and harder place-value work. Your "+score+" points carry forward."}else q++;newQuestion()}
+function chooseLevel(v){level=v;q=1;round=1;score=0;streak=0;lastNumber=null;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));newQuestion()}
 async function saveScore(){try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"place_value",score,level,best_streak:streak});await renderBoard();el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"}catch{el("status").textContent="Could not save the global score yet.";el("status").className="status bad"}}
 async function renderBoard(){const box=el("board");box.innerHTML="";try{const rows=await LWNLeaderboard.top("place_value",10);if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})}catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
