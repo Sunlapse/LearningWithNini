@@ -187,7 +187,7 @@ button:disabled{opacity:.28;cursor:default}
       </div></div>
     <button class="go" id="goBtn">Start</button>
     <div class="row"><span id="setLabel">Today's shared problem set</span><a class="link" href="leaderboard.html">Global leaderboard →</a></div>
-    <div class="tip">Everyone playing the same level on the same Hawaiʻi date gets the same challenge. The session progresses from a quick warm-up to balanced grade-level practice and then harder reasoning problems. Your best score can appear on the global leaderboard.</div>
+    <div class="tip">Everyone playing the same level on the same Hawaiʻi date gets the same challenge. Topics rotate to avoid repetitive question patterns, and the difficulty begins stepping up after question 50. Your best score can appear on the global leaderboard.</div>
     <div class="hist"><h2>Recent days</h2><ul id="histList"></ul></div>
   </div>
 </section>
@@ -395,26 +395,52 @@ const GEN={
   areaBig(){const l=ri(12,35),w=ri(3,9);return{q:`A rug is ${l} ft long and ${w} ft wide. What is its area in square feet?`,a:l*w,k:'num'}}
 };
 
+/* Extra variety + fact-family tracking. Related multiplication/division facts share a factKey
+   so a player does not see 7×8, 56÷7, and ?×8=56 in the same daily run. */
+Object.assign(GEN,{
+  mult(){const a=ri(2,10),b=ri(2,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a} × ${b} = <span class='blank'>?</span>`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
+  div(){const b=ri(2,10),q=ri(2,10),lo=Math.min(b,q),hi=Math.max(b,q);return{q:`${b*q} ÷ ${b} = <span class='blank'>?</span>`,a:q,k:'num',factKey:`mul:${lo}x${hi}`}},
+  missing(){const a=ri(2,9),b=ri(3,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`<span class='blank'>?</span> × ${a} = ${a*b}`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
+  missingDiv3(){const d=ri(2,10),q=ri(2,10),lo=Math.min(d,q),hi=Math.max(d,q);return{q:`${d*q} ÷ <span class='blank'>?</span> = ${q}`,a:d,k:'num',factKey:`mul:${lo}x${hi}`}},
+  missingDividend3(){const d=ri(2,10),q=ri(2,10),lo=Math.min(d,q),hi=Math.max(d,q);return{q:`<span class='blank'>?</span> ÷ ${d} = ${q}`,a:d*q,k:'num',factKey:`mul:${lo}x${hi}`}},
+  pattern3(){const start=ri(4,55),step=pick([3,4,5,6,7,8,9,10,12,15,20,25]);return{q:`What comes next? ${start}, ${start+step}, ${start+2*step}, ${start+3*step}, <span class='blank'>?</span>`,a:start+4*step,k:'num'}},
+  fracOf3(){const d=pick([2,3,4,5,6,8,10]),unit=ri(2,12),whole=d*unit;return{q:`What is {1/${d}} of ${whole}?`,a:unit,k:'num'}},
+  expanded3(){const h=ri(1,9),t=ri(0,9),o=ri(0,9),n=h*100+t*10+o;return{q:`${n} = ${h*100} + <span class='blank'>?</span> + ${o}`,a:t*10,k:'num'}},
+  money3(){const q=ri(1,5),d=ri(0,5),n=ri(0,4);return{q:`${q} quarters + ${d} dimes + ${n} nickels = how many cents?`,a:q*25+d*10+n*5,k:'num'}},
+  measure3(){const yd=ri(2,12);return{q:`${yd} yards = <span class='blank'>?</span> feet`,a:yd*3,k:'num'}},
+  wordMult(){const a=ri(3,9),b=ri(4,9),n=pick(NAMES),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${n} has ${a} bags with ${b} marbles in each bag. How many marbles in all?`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
+  wordDiv(){const groups=ri(3,8),each=ri(3,9),lo=Math.min(groups,each),hi=Math.max(groups,each);return{q:`${groups*each} stickers are shared equally among ${groups} friends. How many stickers does each friend get?`,a:each,k:'num',factKey:`mul:${lo}x${hi}`}},
+  factorPair4(){const a=ri(3,12),b=ri(3,12),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a*b} = ${a} × <span class='blank'>?</span>`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
+  pattern4(){const start=ri(120,950),step=pick([25,40,50,75,100,125]);return{q:`Find the rule and continue: ${fmt(start)}, ${fmt(start+step)}, ${fmt(start+2*step)}, ${fmt(start+3*step)}, <span class='blank'>?</span>`,a:start+4*step,k:'num'}},
+  fracOf4(){const d=pick([3,4,5,6,8,10,12]),n=ri(2,Math.min(4,d-1)),unit=ri(3,18),whole=d*unit;return{q:`What is {${n}/${d}} of ${whole}?`,a:n*unit,k:'num'}},
+  money4(){const dollars=ri(10,45),cents=pick([0,25,50,75]),spendD=ri(2,dollars-2),spendC=pick([0,25,50,75]),left=(dollars*100+cents-spendD*100-spendC)/100;return{q:`You have ${(dollars+cents/100).toFixed(2)} and spend ${(spendD+spendC/100).toFixed(2)}. How many dollars are left?`,a:left,k:'num'}},
+  measure4(){const ft=ri(3,15);return{q:`${ft} feet = <span class='blank'>?</span> inches`,a:ft*12,k:'num'}}
+});
+
 const PHASE_POOLS={
   '3':{
-    warmup:['mult','div','missing','add','sub','round','place3','mult'],
-    core:['wordMult','wordDiv','wordAddSub3','time','fraccmp','area','perim','mult','div','add','sub','round','place3','missing'],
-    challenge:['twoStep3','wordUnknown3','time','fraccmp','area','perim','missing','wordMult','wordDiv','wordAddSub3']
+    warmup:['mult','div','missing','missingDiv3','add','sub','round','place3','pattern3','money3'],
+    core:['wordMult','wordDiv','wordAddSub3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
+    stretch:['twoStep3','wordUnknown3','fracOf3','expanded3','measure3','time','fraccmp','area','perim','missingDividend3','add4','sub4','equivfrac','angle','factorPair4'],
+    challenge:['twoStep3','wordUnknown3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
   },
   '4':{
-    warmup:['mult','mult4x1','add4','sub4','placeMillion','roundBig','deccmp','factorPair4'],
-    core:['mult2x2','mult4x1','longdiv','equivfrac','addfrac','subfrac','fraccompare4','angle','placeMillion','roundBig','factorPair4','wordMulti','areaBig'],
-    challenge:['multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','factorPair4','wordMulti']
+    warmup:['mult','factorPair4','add4','sub4','placeMillion','roundBig','deccmp','pattern4','money4','measure4'],
+    core:['mult2x2','mult4x1','longdiv','equivfrac','addfrac','subfrac','fraccompare4','angle','placeMillion','roundBig','factorPair4','wordMulti','areaBig','pattern4','fracOf4','money4','measure4'],
+    stretch:['multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','factorPair4','wordMulti','fracOf4','money4','pattern4','measure4'],
+    challenge:['multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','wordMulti','fracOf4','money4','pattern4']
   }
 };
+const mergePools=(a,b)=>[...new Set(a.concat(b))];
 PHASE_POOLS.mix={
-  warmup:PHASE_POOLS['3'].warmup.concat(PHASE_POOLS['4'].warmup),
-  core:PHASE_POOLS['3'].core.concat(PHASE_POOLS['4'].core),
-  challenge:PHASE_POOLS['3'].challenge.concat(PHASE_POOLS['4'].challenge)
+  warmup:mergePools(PHASE_POOLS['3'].warmup,PHASE_POOLS['4'].warmup),
+  core:mergePools(PHASE_POOLS['3'].core,PHASE_POOLS['4'].core),
+  stretch:mergePools(PHASE_POOLS['3'].stretch,PHASE_POOLS['4'].stretch),
+  challenge:mergePools(PHASE_POOLS['3'].challenge,PHASE_POOLS['4'].challenge)
 };
 
-const PHASE_LABEL={warmup:'Warm-up',core:'Core Practice',challenge:'Challenge'};
-let lastType='',phaseQueues={},usedQuestionText=new Set();
+const PHASE_LABEL={warmup:'Warm-up',core:'Core Practice',stretch:'Stretch',challenge:'Challenge'};
+let lastType='',recentTypes=[],phaseQueues={},usedQuestionText=new Set(),usedFactKeys=new Set();
 
 function shuffleSeeded(items){
   const a=[...items];
@@ -422,34 +448,38 @@ function shuffleSeeded(items){
   return a
 }
 function phaseForQuestion(n){
-  if(n<=8)return 'warmup';
-  if(n<=24)return 'core';
-  return 'challenge'
+  if(n<=10)return 'warmup';
+  if(n<=50)return 'core';
+  if(n<=70){
+    const slot=(n-51)%10;
+    return [2,4,7,9].includes(slot)?'stretch':'core';
+  }
+  const slot=(n-71)%10;
+  return ['core','stretch','core','stretch','stretch','challenge','stretch','challenge','stretch','challenge'][slot];
 }
 function refillPhaseQueue(phase){
-  const pool=PHASE_POOLS[settings.grade][phase];
-  phaseQueues[phase]=shuffleSeeded(pool)
+  phaseQueues[phase]=shuffleSeeded(PHASE_POOLS[settings.grade][phase]);
 }
 function nextType(phase){
   if(!phaseQueues[phase]||!phaseQueues[phase].length)refillPhaseQueue(phase);
-  let t=phaseQueues[phase].shift();
-  if(t===lastType&&phaseQueues[phase].length){
-    const alt=phaseQueues[phase].shift();
-    phaseQueues[phase].push(t);
-    t=alt
-  }
-  return t
+  let i=phaseQueues[phase].findIndex(t=>t!==lastType&&!recentTypes.includes(t));
+  if(i<0)i=phaseQueues[phase].findIndex(t=>t!==lastType);
+  if(i<0)i=0;
+  return phaseQueues[phase].splice(i,1)[0];
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
-  let p,t,tries=0;
+  let p,t,tries=0,duplicate=false;
   do{
     t=nextType(phase);
     p=GEN[t]();
     p.type=t;p.phase=phase;p.html=toHTML(p.q);p.text=toText(p.q);
+    duplicate=usedQuestionText.has(p.text)||(p.factKey&&usedFactKeys.has(p.factKey));
     tries++;
-  }while(usedQuestionText.has(p.text)&&tries<8);
+  }while(duplicate&&tries<24);
   usedQuestionText.add(p.text);
+  if(p.factKey)usedFactKeys.add(p.factKey);
+  recentTypes.push(t);if(recentTypes.length>4)recentTypes.shift();
   lastType=t;
   return p
 }
@@ -535,7 +565,7 @@ function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
 function startSession(){
   updateHawaiiClock();
   R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+salt));
-  lastType='';phaseQueues={};usedQuestionText=new Set();
+  lastType='';recentTypes=[];phaseQueues={};usedQuestionText=new Set();usedFactKeys=new Set();
   S={items:[],correct:0,idx:0,cur:null,input:'',tries:0,revealed:false,locked:false,msLeft:settings.mins*60000,end:0,paused:false,started:Date.now()};
   $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)}</small>`;
   $('#score').textContent='0';
@@ -570,7 +600,7 @@ function submit(val){
   const given=val!==undefined?val:S.input;if(!given)return;
   if(isRight(S.cur,given)){
     S.correct++;$('#score').textContent=S.correct;S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:S.tries?'ok2':'ok'});
-    $('#ans').classList.add('good');setFb(S.tries?'Got it!':pick(['Correct!','Nice!','Yes!','Great job!']),'good');
+    $('#ans').classList.add('good');setFb(S.tries?'Got it!':['Correct!','Nice!','Yes!','Great job!'][Math.floor(Math.random()*4)],'good');
     S.locked=true;const fl=$('#flash');fl.classList.add('on');setTimeout(()=>{fl.classList.remove('on');nextProblem()},750);
   }else{
     S.tries++;const a=$('#ans');a.classList.remove('bad');void a.offsetWidth;a.classList.add('bad');
