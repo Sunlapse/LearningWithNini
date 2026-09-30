@@ -5,28 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Length Lab | Learn With Nini</title>
 <style>
-body{font-family:Arial,sans-serif;background:#f8f5ff;color:#272052;text-align:center;padding:25px}h1{color:#6f35df}.card{background:white;border-radius:25px;padding:25px;max-width:700px;margin:auto;box-shadow:0 10px 30px #ddd}.btn{padding:12px 20px;border:0;border-radius:20px;background:#6f35df;color:white;font-weight:bold;margin:8px;cursor:pointer}.choice{background:#eee;color:#272052}.fact{background:#fff4c7;padding:15px;border-radius:15px;margin:15px}.score{font-size:22px;font-weight:bold}
+body{font-family:Nunito,Arial,sans-serif;background:#fff8fc;color:#272052;text-align:center;padding:20px}.card{background:white;border-radius:30px;padding:28px;max-width:760px;margin:auto;box-shadow:0 10px 35px #ddd}h1{color:#6f35df;font-size:42px}.fact{background:#fff3c9;border-radius:18px;padding:18px;margin:15px;display:none}.score{font-size:22px;font-weight:bold}.btn{padding:14px 22px;border:0;border-radius:24px;background:#6f35df;color:white;font-weight:bold;margin:8px;cursor:pointer;font-size:16px}.choice{background:#f0edff;color:#272052}.choice:hover{background:#e5dcff}.small{color:#666}
 </style>
 </head>
 <body>
 <div class="card">
 <h1>📏 Length Lab</h1>
-<p>Learn inches, feet, yards, and real-world measurement!</p>
+<p>Learn inches, feet, yards, and real-world measuring!</p>
 <button class="btn" onclick="review()">📏 Review Measurement Facts</button>
-<div id="review" class="fact" style="display:none">12 inches = 1 foot<br>3 feet = 1 yard<br>36 inches = 1 yard</div>
-<h2 id="level">Level 1</h2>
+<div id="review" class="fact">📏 12 inches = 1 foot<br>📏 3 feet = 1 yard<br>📏 36 inches = 1 yard</div>
+<h2 id="level">Level 1: Measurement Explorer</h2>
 <div class="score">⭐ Points: <span id="score">0</span></div>
-<h3 id="q"></h3>
+<div class="small">Round <span id="round">1</span> · Question <span id="num">1</span>/10</div>
+<h3 id="question"></h3>
 <div id="choices"></div>
 <p id="message"></p>
 </div>
 <script>
 let level=1,round=1,question=1,score=0,last="";
-const levels={1:[['How many inches are in 1 foot?',['10','12','20'],1],['A pencil is measured in?', ['inches','feet','yards'],0],['Which is longer?',['2 feet','18 inches'],0]],2:[['3 feet equals how many inches?',['24','36','48'],1],['48 inches equals how many feet?',['3','4','5'],1],['A rope is 3 feet 6 inches. How many inches?',['36','42','48'],1]],3:[['A surfboard is 6 feet long. How many inches?',['60','72','84'],1],['A room is best measured in?',['inches','feet','yards'],1],['A book is about?',['10 inches','10 feet','10 yards'],0]],4:[['A rope is 8 feet. How many inches?',['86','96','108'],1],['4 ft 8 in + 3 ft 9 in = ?',['7 ft 17 in','8 ft 5 in','9 ft'],1],['A 60 inch board is how many feet?',['4','5','6'],1]]};
-function newQuestion(){let pool=levels[level];let item;do{item=pool[Math.floor(Math.random()*pool.length)]}while(item[0]===last);last=item[0];q.innerHTML='Round '+round+' Question '+question+'/10<br>'+item[0];choices.innerHTML='';item[1].forEach((x,i)=>{let b=document.createElement('button');b.className='btn choice';b.innerHTML=x;b.onclick=()=>answer(i===item[2]);choices.appendChild(b)});}
-function answer(ok){if(ok){score+=10;message.innerHTML='✅ Correct!';}else{message.innerHTML='Try again. Remember the measurement facts.'}document.getElementById('score').innerHTML=score;question++;if(question>10){question=1;round++;if(round%2===0&&level<4)level++;document.getElementById('level').innerHTML='Level '+level;message.innerHTML='🎉 Round complete! Harder measurements ahead!'}setTimeout(newQuestion,800)}
+const levelNames={1:'Measurement Explorer',2:'Feet & Inches Builder',3:'Real World Measurement',4:'Measurement Challenge'};
+const bank=[
+[{q:'How many inches are in 1 foot?',a:['10','12','20'],c:1},{q:'A pencil is best measured in?',a:['inches','feet','yards'],c:0},{q:'Which is longer?',a:['2 feet','18 inches'],c:0}],
+[{q:'3 feet equals how many inches?',a:['24','36','48'],c:1},{q:'48 inches equals how many feet?',a:['3','4','5'],c:1},{q:'A rope is 3 feet 6 inches. How many inches?',a:['36','42','48'],c:1}],
+[{q:'A surfboard is 6 feet long. How many inches?',a:['60','72','84'],c:1},{q:'A classroom is best measured in?',a:['inches','feet','yards'],c:1},{q:'A book is about?',a:['10 inches','10 feet','10 yards'],c:0}],
+[{q:'An 8 foot rope is how many inches?',a:['86','96','108'],c:1},{q:'4 ft 8 in + 3 ft 9 in = ?',a:['7 ft 17 in','8 ft 5 in','9 ft'],c:1},{q:'60 inches equals how many feet?',a:['4','5','6'],c:1}]
+];
 function review(){document.getElementById('review').style.display='block'}
-newQuestion();
+function next(){let list=bank[level-1],item;do{item=list[Math.floor(Math.random()*list.length)]}while(item.q===last);last=item.q;questionEl=item;document.getElementById('question').innerHTML=item.q;document.getElementById('choices').innerHTML='';item.a.forEach((x,i)=>{let b=document.createElement('button');b.className='btn choice';b.innerHTML=x;b.onclick=()=>answer(i===item.c);document.getElementById('choices').appendChild(b)});document.getElementById('round').innerHTML=round;document.getElementById('num').innerHTML=question}
+function answer(ok){if(ok){score+=10;document.getElementById('message').innerHTML='✅ Correct!'}else{document.getElementById('message').innerHTML='Remember: 12 inches = 1 foot'}document.getElementById('score').innerHTML=score;question++;if(question>10){question=1;round++;if(round%2===1&&level<4)level++;document.getElementById('level').innerHTML='Level '+level+': '+levelNames[level];document.getElementById('message').innerHTML='🎉 New round! Keep going — it gets harder!'}setTimeout(next,700)}
+next();
 </script>
 </body>
 </html>
