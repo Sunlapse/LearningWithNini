@@ -421,7 +421,9 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
     let selectedAvatar = "⭐";
     let leaderboard = [];
     let questionNumber = 1;
+    let roundNumber = 1;
     let questionStars = 3;
+    let lastTimeKey = "";
     const ROUND_LENGTH = 10;
 
     const questionTextEl = document.getElementById("questionText");
@@ -435,6 +437,8 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
       difficultySelect.value = value;
       difficultyCards.forEach(card => card.classList.toggle("active", card.dataset.difficulty === value));
       questionNumber = 1;
+      roundNumber = 1;
+      lastTimeKey = "";
       questionStars = 3;
       levelSolved = false;
       generateNewRound();
@@ -444,6 +448,8 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
       modeSelect.value = value;
       modeCards.forEach(card => card.classList.toggle("active", card.dataset.mode === value));
       questionNumber = 1;
+      roundNumber = 1;
+      lastTimeKey = "";
       questionStars = 3;
       levelSolved = false;
       generateNewRound();
@@ -456,13 +462,13 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
 
     function challengeLabel() {
       const diff = getCurrentDifficulty();
-      if (diff === "easy") return "O’Clock Warm Up";
-      if (diff === "medium") return "Quarter & Half";
-      return "Time Master";
+      if (diff === "easy") return "O’Clock Warm Up · Round " + roundNumber;
+      if (diff === "medium") return "Quarter & Half · Round " + roundNumber;
+      return "Time Master · Round " + roundNumber;
     }
 
     function updateRoundUI() {
-      if (questionTextEl) questionTextEl.textContent = `Question ${questionNumber} of ${ROUND_LENGTH}`;
+      if (questionTextEl) questionTextEl.textContent = `Round ${roundNumber} · Question ${questionNumber} of ${ROUND_LENGTH}`;
       if (progressFillEl) progressFillEl.style.width = `${questionNumber * 10}%`;
       if (starMeterEl) {
         starMeterEl.innerHTML = [0,1,2].map(i => `<span class="${i < questionStars ? "earned" : ""}">★</span>`).join("");
@@ -700,14 +706,30 @@ function bounceAvatar() {
 
     function getTargetMinutePool() {
       const diff = getCurrentDifficulty();
-      if (diff === "easy") return [0];
-      if (diff === "medium") return [15, 30, 45];
-      return Array.from({ length: 60 }, (_, i) => i);
+      if (diff === "easy") {
+        if (roundNumber === 1) return [0];
+        if (roundNumber === 2) return [0,30];
+        if (roundNumber === 3) return [0,15,30,45];
+        return Array.from({length:12},(_,i)=>i*5);
+      }
+      if (diff === "medium") {
+        if (roundNumber === 1) return [15,30,45];
+        if (roundNumber === 2) return [0,15,30,45];
+        return Array.from({length:12},(_,i)=>i*5);
+      }
+      const all=Array.from({ length: 60 }, (_, i) => i);
+      return roundNumber===1?all:all.filter(m=>m%5!==0);
     }
 
     function generateTargetTime() {
-      const hour = Math.floor(Math.random() * 12) + 1;
-      const minute = randomChoice(getTargetMinutePool());
+      let hour,minute,key,tries=0;
+      do{
+        hour = Math.floor(Math.random() * 12) + 1;
+        minute = randomChoice(getTargetMinutePool());
+        key=hour+"|"+minute;
+        tries++;
+      }while(key===lastTimeKey&&tries<20);
+      lastTimeKey=key;
       return { hour, minute };
     }
 
@@ -1086,6 +1108,7 @@ function bounceAvatar() {
       if (levelSolved) {
         if (questionNumber >= ROUND_LENGTH) {
           questionNumber = 1;
+          roundNumber += 1;
           showToastRoundComplete();
         } else {
           questionNumber += 1;
@@ -1122,7 +1145,7 @@ function bounceAvatar() {
 
     function showToastRoundComplete() {
       setTimeout(() => {
-        setStatus("New 10-question round started. Keep going!", "reveal");
+        setStatus("Round " + roundNumber + " started — the clock work is harder, and your " + score + " points carry forward.", "reveal");
       }, 80);
     }
 
@@ -1155,6 +1178,8 @@ resetBtn.addEventListener("click", () => {
 });
     difficultySelect.addEventListener("change", () => {
       questionNumber = 1;
+      roundNumber = 1;
+      lastTimeKey = "";
       questionStars = 3;
       levelSolved = false;
       syncChoiceCards();
@@ -1162,6 +1187,8 @@ resetBtn.addEventListener("click", () => {
     });
     modeSelect.addEventListener("change", () => {
       questionNumber = 1;
+      roundNumber = 1;
+      lastTimeKey = "";
       questionStars = 3;
       levelSolved = false;
       syncChoiceCards();
