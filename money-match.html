@@ -172,7 +172,7 @@
   }
   .mode-card:nth-child(1) { background:#e9faee; }
   .mode-card:nth-child(2) { background:#e9f4ff; }
-  .mode-card:nth-child(3) { background:#f0eaff; cursor:not-allowed; }
+  .mode-card:nth-child(3) { background:#f0eaff; cursor:pointer; }
   .mode-card.active { border-color:#7b49df; box-shadow:0 0 0 4px rgba(123,73,223,.10); }
   .mode-num { width:34px;height:34px;border-radius:50%;display:grid;place-items:center;margin:0 auto 8px;background:#2cc873;color:#fff;font-weight:1000; }
   .mode-card:nth-child(2) .mode-num { background:#478df5; }
@@ -277,8 +277,8 @@
           </button>
           <button class="mode-card" data-mode="change" onclick="setGameMode('change')">
             <div class="mode-num">3</div>
-            <h3>Change Challenge 🔒</h3>
-            <p>Coming soon: figure out the correct change after a purchase.</p>
+            <h3>Change Challenge</h3>
+            <p>Work out the change after a purchase, then build it with the correct coins and bills.</p>
             <div class="mode-stars">☆☆☆</div>
           </button>
         </div>
@@ -592,13 +592,10 @@
     let moneyLeaderboard = safeParseJson(SITE_KEYS.moneyLeaderboard, []);
     let gameMode = 'warm';
     let currentLesson = null;
+    let currentPurchase = null;
     const ROUND_LENGTH = 10;
 
     function setGameMode(mode) {
-      if (mode === 'change') {
-        showToast('info', 'Change Challenge is coming soon!');
-        return;
-      }
       gameMode = mode;
       level = 0;
       score = 0;
@@ -607,9 +604,13 @@
         card.classList.toggle('active', card.dataset.mode === mode);
       });
       setupNewLevel();
-      setMessage(mode === 'warm'
-        ? 'Warm Up: build each amount with coins and small bills.'
-        : 'Money Master: bigger amounts and more ways to solve them.');
+      setMessage(
+        mode === 'warm'
+          ? 'Warm Up: learn the money names, then build each amount.'
+          : mode === 'master'
+            ? 'Money Master: bigger amounts and more ways to solve them.'
+            : 'Change Challenge: subtract the purchase price from the amount paid, then build the change.'
+      );
     }
 
     function undoLast() {
@@ -627,6 +628,7 @@
 
     function getStageName() {
       if (gameMode === 'master') return 'Money Master';
+      if (gameMode === 'change') return 'Change Challenge';
       return 'Warm Up';
     }
 
@@ -815,6 +817,37 @@
       return whole + pickOne([13, 17, 28, 34, 41, 46, 57, 62, 69, 74, 81, 86, 93, 99]);
     }
 
+    function generateChangeProblem() {
+      const q = getQuestionNumber();
+      let paid;
+      let price;
+
+      if (q <= 3) {
+        paid = 100;
+        price = pickOne([35,40,45,50,55,60,65,70,75,80,85,90,95]);
+      } else if (q <= 6) {
+        paid = 500;
+        const dollars = randInt(1,4);
+        const cents = pickOne([10,15,25,35,40,50,60,65,75,85,90]);
+        price = dollars * 100 + cents;
+        if (price >= paid) price = 475;
+      } else if (q <= 8) {
+        paid = 1000;
+        const dollars = randInt(3,9);
+        const cents = pickOne([12,18,25,32,38,45,57,63,75,82,88,95]);
+        price = dollars * 100 + cents;
+        if (price >= paid) price = 925;
+      } else {
+        paid = 2000;
+        const dollars = randInt(7,18);
+        const cents = pickOne([13,17,24,31,46,52,64,73,81,87,92,99]);
+        price = dollars * 100 + cents;
+        if (price >= paid) price = 1875;
+      }
+
+      return { price, paid, change: paid - price };
+    }
+
     function getTotal() {
       return bank.reduce((sum, item) => sum + item.value, 0);
     }
@@ -841,7 +874,9 @@
 
       if (levelSolved) {
         primary.className = 'check-btn btn-green';
-        primary.innerHTML = solvedButtonText + '<br>Next Amount →';
+        primary.innerHTML = gameMode === 'change'
+          ? 'Great Job!<br>Next Purchase →'
+          : solvedButtonText + '<br>Next Amount →';
         primary.onclick = nextLevel;
 
         reveal.classList.add('hidden');
@@ -887,6 +922,10 @@
         targetLabel.textContent = 'Money Skill:';
         targetEl.textContent = currentLesson.prompt;
         targetEl.classList.add('lesson');
+      } else if (gameMode === 'change' && currentPurchase) {
+        targetLabel.textContent = 'Make the correct change:';
+        targetEl.textContent = 'Cost ' + formatCents(currentPurchase.price) + ' • Paid ' + formatCents(currentPurchase.paid);
+        targetEl.classList.add('lesson');
       } else {
         targetLabel.textContent = 'Make this amount:';
         targetEl.textContent = formatCents(currentTarget);
@@ -896,7 +935,9 @@
       document.getElementById('levelPoints').textContent = `${possible} star${possible === 1 ? '' : 's'} available`;
       document.getElementById('moneyHint').textContent = currentLesson
         ? (currentLesson.bankDisplay === 'picture' ? 'Use the pictures — no values shown' : 'Names shown — remember the values')
-        : 'Names shown — remember each value';
+        : gameMode === 'change'
+          ? 'Build the change — values stay hidden'
+          : 'Names shown — remember each value';
       document.getElementById('questionText').textContent = `Question ${q} of ${ROUND_LENGTH}`;
       document.getElementById('progressFill').style.width = `${q * 10}%`;
       document.getElementById('stageName').textContent = getStageName();
@@ -1078,6 +1119,8 @@ playClickSound();
 
         if (lessonQuestion) {
           setMessage(currentLesson.retry + ' Wrong check costs 1 point.', 'warning');
+        } else if (gameMode === 'change') {
+          setMessage('That is not the correct change yet. Check the cost and the amount paid, then try again. Wrong check costs 1 point.', 'warning');
         } else if (total < target) {
           setMessage(`Not enough. You need ${formatCents(target - total)} more. Wrong check costs 1 point.`, 'warning');
         } else {
@@ -1100,6 +1143,16 @@ playClickSound();
       if (lessonQuestion) {
         feedback = currentLesson.success;
         betterWayAvailable = false;
+      } else if (gameMode === 'change') {
+        const changeMath = formatCents(currentPurchase.paid) + ' − ' + formatCents(currentPurchase.price) + ' = ' + formatCents(target) + '.';
+        if (usedPieces === minPieces) {
+          feedback = 'Correct change! ' + changeMath + ' You also used the fewest pieces.';
+          betterWayAvailable = false;
+        } else {
+          feedback = 'Correct change! ' + changeMath + ' Can you make it with fewer pieces? Best possible is ' + minPieces + '.';
+          betterWayAvailable = true;
+          pointsEarned = Math.min(pointsEarned, 2);
+        }
       } else if (usedPieces === minPieces) {
         feedback = `Perfect — you used the fewest pieces!`;
         betterWayAvailable = false;
@@ -1125,7 +1178,7 @@ playClickSound();
       updateTop();
       renderAnswerBox();
       const pieceSummary = summarizePieces(bank);
-      const learningSummary = lessonQuestion ? '' : (pieceSummary ? pieceSummary + ' = ' + formatCents(target) + '. ' : '');
+      const learningSummary = (lessonQuestion || gameMode === 'change') ? '' : (pieceSummary ? pieceSummary + ' = ' + formatCents(target) + '. ' : '');
       setMessage(`${feedback} ${learningSummary}You earned ${pointsEarned} star${pointsEarned === 1 ? '' : 's'}.`, 'success');
       showToast('success', pickOne(['Great job!', 'Awesome!', 'You got it!', 'Perfect!']));
       triggerTargetSparkles();
@@ -1173,7 +1226,14 @@ playClickSound();
       animatingBetterWay = false;
       solvedButtonText = pickOne(SUCCESS_NEXT_TEXTS);
       currentLesson = getLessonForCurrentQuestion();
-      currentTarget = currentLesson ? currentLesson.target : generateTargetForLevel(level);
+      if (gameMode === 'change') {
+        currentLesson = null;
+        currentPurchase = generateChangeProblem();
+        currentTarget = currentPurchase.change;
+      } else {
+        currentPurchase = null;
+        currentTarget = currentLesson ? currentLesson.target : generateTargetForLevel(level);
+      }
 
       renderMoneyBank();
       renderAnswerBox();
@@ -1194,7 +1254,13 @@ playClickSound();
         setMessage('New 10-question round! Keep going.');
         showToast('info', 'New round!');
       } else {
-        setMessage(currentLesson ? 'Read the money-skill question, then choose carefully.' : 'Next question. Make the amount shown.');
+        setMessage(
+          currentLesson
+            ? 'Read the money-skill question, then choose carefully.'
+            : gameMode === 'change'
+              ? 'Next purchase. Work out the change, then build it.'
+              : 'Next question. Make the amount shown.'
+        );
         showToast('info', 'Next question!');
       }
     }
