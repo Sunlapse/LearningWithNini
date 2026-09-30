@@ -86,17 +86,24 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 <script>
 const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
-let level="foundation",q=1,score=0,streak=0,bestStreak=0,stars=3,solved=false;
+let level="foundation",q=1,round=1,score=0,streak=0,bestStreak=0,stars=3,solved=false,lastProblemKey="";
 let divisor=4,quotient=6,remainder=0,dividend=24,answers={quotient:"",remainder:""},activeField="quotient";
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function makeProblem(){
   stars=3;solved=false;answers={quotient:"",remainder:""};activeField="quotient";
-  if(level==="foundation"){divisor=rnd(2,5);quotient=rnd(2,12);remainder=0}
-  else if(level==="power"){divisor=rnd(6,12);quotient=rnd(2,12);remainder=0}
-  else{divisor=rnd(2,9);quotient=rnd(2,10);remainder=rnd(1,divisor-1)}
-  dividend=divisor*quotient+remainder;
+  const boost=Math.min(round-1,5);
+  let tries=0,key="";
+  do{
+    if(level==="foundation"){divisor=rnd(2,Math.min(10,5+boost));quotient=rnd(2,Math.min(20,12+boost*2));remainder=0}
+    else if(level==="power"){divisor=rnd(6,12);quotient=rnd(Math.min(7,2+boost),Math.min(20,12+boost*2));remainder=0}
+    else{divisor=rnd(2,Math.min(12,9+boost));quotient=rnd(2,Math.min(18,10+boost*2));remainder=rnd(1,divisor-1)}
+    dividend=divisor*quotient+remainder;
+    key=dividend+"|"+divisor+"|"+remainder;
+    tries++;
+  }while(key===lastProblemKey&&tries<20);
+  lastProblemKey=key;
   el("dividend").textContent=dividend;el("divisor").textContent=divisor;
   el("levelName").textContent=level==="foundation"?"Division Foundations":level==="power"?"Power Division":"Remainder Rush";
   const remMode=level==="remainder";
@@ -118,7 +125,7 @@ function setActive(field){if(solved)return;if(field==="remainder"&&level!=="rema
 function typeDigit(n){if(solved)return;let v=answers[activeField];if(v.length>=3)return;v=(v==="0"?"":v)+n;answers[activeField]=String(Number(v));renderAnswer()}
 function clearActive(){if(solved)return;answers[activeField]="";renderAnswer()}
 function backspace(){if(solved)return;answers[activeField]=answers[activeField].slice(0,-1);renderAnswer()}
-function updateUI(){el("questionText").textContent="Question "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streakText").textContent="⚡ Streak: "+streak;el("bestStreak").textContent=bestStreak;el("roundStat").textContent=q+"/10"}
+function updateUI(){el("questionText").textContent="Round "+round+" · Question "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streakText").textContent="⚡ Streak: "+streak;el("bestStreak").textContent=bestStreak;el("roundStat").textContent=q+"/10"}
 function check(){
   if(solved){next();return}
   if(!answers.quotient){el("status").textContent="Enter the quotient first.";el("status").className="status info";return}
@@ -144,8 +151,8 @@ function hint(){
   else el("factFamily").innerHTML="<strong>Hint</strong><br>Think multiplication: "+divisor+" × ? = "+dividend+".";
   el("status").textContent="Use the multiplication fact family to solve division.";el("status").className="status info";updateUI()
 }
-function next(){if(!solved)return;if(q===10){q=1;score=0;streak=0;bestStreak=0}else q++;makeProblem()}
-function chooseLevel(v){level=v;q=1;score=0;streak=0;bestStreak=0;document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));makeProblem()}
+function next(){if(!solved)return;if(q===10){q=1;round++;el("status").textContent="Round "+round+" starts now — harder division, and your "+score+" points carry forward."}else q++;makeProblem()}
+function chooseLevel(v){level=v;q=1;round=1;score=0;streak=0;bestStreak=0;lastProblemKey="";document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));makeProblem()}
 async function saveScore(){try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"division",score,level,best_streak:bestStreak});await renderBoard();el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"}catch{el("status").textContent="Could not save the global score yet.";el("status").className="status bad"}}
 async function renderBoard(){const box=el("board");box.innerHTML="";try{const rows=await LWNLeaderboard.top("division",10);if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})}catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
