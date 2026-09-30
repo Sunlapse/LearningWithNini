@@ -413,7 +413,7 @@ Object.assign(GEN,{
   factorPair4(){const a=ri(3,12),b=ri(3,12),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a*b} = ${a} × <span class='blank'>?</span>`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
   pattern4(){const start=ri(120,950),step=pick([25,40,50,75,100,125]);return{q:`Find the rule and continue: ${fmt(start)}, ${fmt(start+step)}, ${fmt(start+2*step)}, ${fmt(start+3*step)}, <span class='blank'>?</span>`,a:start+4*step,k:'num'}},
   fracOf4(){const d=pick([3,4,5,6,8,10,12]),n=ri(2,Math.min(4,d-1)),unit=ri(3,18),whole=d*unit;return{q:`What is {${n}/${d}} of ${whole}?`,a:n*unit,k:'num'}},
-  money4(){const dollars=ri(10,45),cents=pick([0,25,50,75]),spendD=ri(2,dollars-2),spendC=pick([0,25,50,75]),left=(dollars*100+cents-spendD*100-spendC)/100;return{q:'You have ,
+  money4(){const dollars=ri(10,45),cents=pick([0,25,50,75]),spendD=ri(2,dollars-2),spendC=pick([0,25,50,75]),left=(dollars*100+cents-spendD*100-spendC)/100;return{q:`You have ${(dollars+cents/100).toFixed(2)} dollars and spend ${(spendD+spendC/100).toFixed(2)} dollars. How many dollars are left?`,a:left,k:'num'}},
   measure4(){const ft=ri(3,15);return{q:`${ft} feet = <span class='blank'>?</span> inches`,a:ft*12,k:'num'}}
 });
 
