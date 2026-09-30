@@ -321,9 +321,12 @@ const GEN={
   sub(){const a=ri(402,951),b=ri(128,a-60);return{q:`${a} − ${b} = <span class="blank">?</span>`,a:a-b,k:'num'}},
   round(){const n=ri(101,989),to=pick([10,100]);return{q:`Round ${n} to the nearest ${to}.`,a:Math.round(n/to)*to,k:'num'}},
   place3(){
-    const n=ri(100,999),p=pick([['hundreds',100],['tens',10],['ones',1]]);
-    const digit=Math.floor(n/p[1])%10;
-    return{q:`What is the value of the digit in the ${p[0]} place in ${n}?`,a:digit*p[1],k:'num'}
+    const p=pick([['hundreds',100],['tens',10],['ones',1]]);
+    let n=ri(100,999),digit=Math.floor(n/p[1])%10,tries=0;
+    while(String(n).split('').filter(x=>Number(x)===digit).length>1&&tries<30){
+      n=ri(100,999);digit=Math.floor(n/p[1])%10;tries++;
+    }
+    return{q:`In ${n}, what value does the ${digit} in the ${p[0]} place represent?`,a:digit*p[1],k:'num'}
   },
   fraccmp(){
     let L,Rt,ans;
