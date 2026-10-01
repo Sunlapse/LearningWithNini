@@ -479,6 +479,7 @@
     .feature-card.geometry { background: linear-gradient(180deg, #e9f8ff, #e8e7ff); }
     .feature-card.mathmaze { background: linear-gradient(180deg, #eef9ff, #efe6ff); }
     .feature-card.length { background: linear-gradient(180deg, #eafbf6, #e8f2ff); }
+    .feature-card.capacity { background: linear-gradient(180deg, #e7fbff, #eef0ff); }
     .new-game-badge{
       position:absolute;
       top:12px;
@@ -556,6 +557,7 @@
     .geometry .card-btn { background: linear-gradient(135deg, #49a8e9, #6547d6); }
     .mathmaze .card-btn { background: linear-gradient(135deg, #4fa9e9, #7a48dc); }
     .length .card-btn { background: linear-gradient(135deg, #35aee8, #6547d6); box-shadow: 0 9px 20px rgba(71,102,214,.18); }
+    .capacity .card-btn { background: linear-gradient(135deg, #22b8c8, #5570dc); box-shadow: 0 9px 20px rgba(47,132,192,.18); }
     .leader .card-btn { background: linear-gradient(135deg, #ffbd24, #f3a400); }
 
     .why {
@@ -917,6 +919,14 @@
             <a class="card-btn" href="length-lab.html?v=20260930-4">Start Measuring <span>→</span></a>
           </article>
 
+          <article class="feature-card capacity">
+            <div class="new-game-badge" id="capacityNewBadge">✨ NEW GAME</div>
+            <div class="card-icon">🥤</div>
+            <h3>Capacity Lab</h3>
+            <p>Practice cups, pints, quarts, gallons, liters, milliliters, and real-life capacity!</p>
+            <a class="card-btn" href="capacity-lab.html?v=20260930-1">Start Capacity Lab <span>→</span></a>
+          </article>
+
           <article class="feature-card leader">
             <div class="card-icon">🏆</div>
             <h3>Leaderboard</h3>
@@ -985,6 +995,7 @@
             <a href="fraction-builder.html">Fraction Builder</a>
             <a href="math-detective.html">Math Detective</a>
             <a href="length-lab.html?v=20260930-4">Length Lab</a>
+            <a href="capacity-lab.html?v=20260930-1">Capacity Lab</a>
             <a href="leaderboard.html">Leaderboard</a>
           </div>
           <div>LearnWithNini.com ♡ Learn, play, and grow.</div>
@@ -995,10 +1006,12 @@
   <script src="leaderboard-api.js"></script>
   <script>
     (() => {
-      const badge = document.getElementById("lengthNewBadge");
-      if (!badge) return;
       const expires = new Date("2026-10-15T00:00:00-10:00");
-      if (new Date() >= expires) badge.remove();
+      if (new Date() < expires) return;
+      ["lengthNewBadge","capacityNewBadge"].forEach(id => {
+        const badge = document.getElementById(id);
+        if (badge) badge.remove();
+      });
     })();
   </script>
 </body>
