@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#f8fbff">
+<title>Capacity Lab | Learn With Nini</title>
+<meta name="description" content="Practice cups, pints, quarts, gallons, liters, milliliters, and real-life capacity with Nini.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#282061;--muted:#746e94;--purple:#7040df;--pink:#f64b9a;--blue:#3d9dea;--aqua:#29b8c7;--green:#23b978;--yellow:#ffbf27;--line:rgba(83,59,160,.12);--shadow:0 18px 46px rgba(74,50,137,.13)}
+html,body{margin:0;min-height:100%}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 5% 6%,rgba(211,247,250,.95),transparent 23%),radial-gradient(circle at 96% 6%,rgba(232,222,255,.95),transparent 24%),linear-gradient(180deg,#f9fbff,#fff 46%,#fffafd)}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;min-height:72px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:10px max(16px,calc((100vw - 1440px)/2));background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.home,.profile-btn,.score-pill{min-height:44px;border:0;border-radius:999px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900}.home{background:#e9f8fb;color:#24798b;text-decoration:none}.score-wrap{display:flex;justify-content:center}.score-pill{background:linear-gradient(135deg,#e8fbff,#eee6ff);color:#3f447f}.profile-btn{background:linear-gradient(135deg,#fff3c6,#ffe09b);color:#654b12;cursor:pointer}
+.wrap{width:min(1440px,calc(100% - 28px));margin:0 auto;padding:20px 0 40px}.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.nini{position:sticky;top:94px;min-height:660px;border-radius:34px;overflow:hidden;background:#dff8fb;box-shadow:var(--shadow)}.nini img{width:100%;height:660px;object-fit:cover;object-position:center 28%}.nini:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(36,122,145,.18));pointer-events:none}.bubble{position:absolute;z-index:2;left:16px;right:16px;top:18px;background:#fff;border-radius:26px 26px 26px 8px;padding:15px 17px;font-family:"Fredoka",sans-serif;font-size:1.3rem;color:#3067a8;line-height:1.08;box-shadow:0 12px 28px rgba(49,89,145,.15);transform:rotate(-1.5deg)}.bubble small{display:block;margin-top:8px;color:#e74991;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
+.main{min-width:0}.panel,.progress,.challenge,.workspace,.levels,.extras,.leader{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.96);box-shadow:var(--shadow)}
+.hero{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-bottom:14px;padding:18px 20px;border-radius:28px;background:linear-gradient(135deg,#eafcff,#f1ebff);border:1px solid var(--line);box-shadow:var(--shadow)}.hero h1{font-family:"Fredoka",sans-serif;margin:0;color:#3758aa;font-size:clamp(2rem,4vw,3rem)}.hero p{margin:5px 0 0;color:#6e708c;font-weight:900}.review-btn{border:0;border-radius:18px;padding:12px 15px;background:#fff;color:#4767b3;font-weight:1000;cursor:pointer;box-shadow:0 7px 17px rgba(62,91,155,.1)}
+.fact-panel{display:none;margin-bottom:14px;padding:15px 18px}.fact-panel.show{display:block}.fact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.fact{padding:12px;border-radius:18px;background:#f7fbff;text-align:center;font-weight:900}.fact strong{display:block;font-family:"Fredoka",sans-serif;color:#425cb0;font-size:1.2rem}.fact small{color:#756d8d}
+.levels{padding:16px;margin-bottom:14px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4252a7}.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.level-card{border:2px solid transparent;border-radius:21px;padding:13px 11px;text-align:center;cursor:pointer;color:var(--ink);min-height:150px;background:#f6f8ff}.level-card:nth-child(1){background:#e7fbf5}.level-card:nth-child(2){background:#e9f5ff}.level-card:nth-child(3){background:#fff5da}.level-card:nth-child(4){background:#f1ebff}.level-card:nth-child(5){background:#e7fbff}.level-card:nth-child(6){background:#fff0f7}.level-card:nth-child(7){background:#eff8e8}.level-card.active{border-color:#4f73d8;box-shadow:0 0 0 4px rgba(79,115,216,.09);transform:translateY(-1px)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#4f73d8;color:#fff;font-weight:1000}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif;font-size:1rem}.level-card p{margin:0;color:#68617f;line-height:1.23;font-size:.79rem;font-weight:800}
+.progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}.qtext{font-weight:1000;white-space:nowrap}.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}.fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#28b9ca,#6548df);transition:.25s}.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
+.challenge{padding:20px;text-align:center;background:linear-gradient(135deg,#f4fdff,#f5f0ff);margin-bottom:14px}.level-pill{display:inline-flex;padding:7px 12px;border-radius:999px;background:#fff;color:#4f66b9;font-weight:900}.prompt{font-family:"Fredoka",sans-serif;font-size:clamp(1.7rem,3.6vw,2.7rem);line-height:1.18;color:#3d4389;margin:13px auto 5px}.subprompt{color:#73698e;font-weight:900}
+.workspace{padding:17px}.play-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px}.visual{min-height:410px;border-radius:24px;background:linear-gradient(180deg,#fbfeff,#f8f7ff);border:1px solid #e6ebf6;padding:18px;display:grid;place-items:center}.side{display:grid;gap:10px}.status{min-height:116px;border-radius:22px;background:linear-gradient(135deg,#f7fbff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#eef4ff;color:#4f65b5}.check,.hint,.next{border:0;border-radius:20px;min-height:64px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#2fb7cf,#6548df);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.hint{background:linear-gradient(135deg,#ff75b5,#ef4897);color:#fff}.notebook{border-radius:20px;background:#fff8dc;border:1px solid #f4df94;padding:13px;color:#725b18;font-weight:900;line-height:1.35}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:17px;padding:10px;text-align:center}.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.25rem}
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;width:min(650px,100%)}.choice{border:2px solid #dde4f3;border-radius:22px;background:#fff;min-height:84px;padding:14px;color:#4253a2;font-family:"Fredoka",sans-serif;font-size:1.22rem;cursor:pointer;box-shadow:0 8px 18px rgba(70,48,130,.05)}.choice:hover,.choice.selected{border-color:#5472d3;background:#edf3ff}.choice.correct{border-color:#25b778;background:#e8f9ef;color:#178258}
+.scene{width:min(620px,100%);text-align:center}.scene-emoji{font-size:6rem;line-height:1;margin-bottom:10px}.scene-title{font-family:"Fredoka",sans-serif;font-size:1.7rem;color:#4450a1}.scene-note{color:#766d90;font-weight:900;margin:8px 0 18px}
+.capacity-visual{width:min(620px,100%);text-align:center}.containers{display:flex;align-items:flex-end;justify-content:center;gap:16px;min-height:170px;margin-bottom:16px}.container-icon{position:relative;display:grid;place-items:end center;border:4px solid #5474b8;background:#eaf8ff;overflow:hidden;color:#364e8b;font-family:"Fredoka",sans-serif;font-size:.83rem}.container-icon.cup{width:82px;height:78px;border-radius:10px 10px 25px 25px}.container-icon.pint{width:96px;height:112px;border-radius:12px 12px 22px 22px}.container-icon.quart{width:112px;height:142px;border-radius:15px 15px 24px 24px}.container-icon.gallon{width:132px;height:160px;border-radius:30px 14px 24px 24px}.container-icon.liter{width:86px;height:158px;border-radius:18px 18px 28px 28px}.container-icon .water{position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(#83d8ed,#54bddb);opacity:.82}.container-icon span{position:relative;z-index:2;margin-bottom:8px;background:rgba(255,255,255,.78);padding:3px 6px;border-radius:8px}.relation{font-family:"Fredoka",sans-serif;font-size:1.5rem;color:#4454a6;margin-bottom:16px}.metric-scale{width:min(180px,46%);height:240px;margin:0 auto 18px;border:5px solid #4f70b5;border-radius:24px 24px 34px 34px;position:relative;background:#eafaff;overflow:hidden}.metric-water{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(#7fd7ed,#52badb);height:72%}.metric-labels{position:absolute;inset:12px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;color:#39528c;font-weight:1000;z-index:2}.metric-cap{width:72px;height:20px;background:#4f70b5;border-radius:8px 8px 3px 3px;margin:0 auto -4px}
+.round-card{display:none;margin-top:14px;padding:18px;text-align:center;border-radius:28px;background:linear-gradient(135deg,#fff5d7,#eaf8ff);border:1px solid var(--line);box-shadow:var(--shadow)}.round-card.show{display:block}.round-card h2{font-family:"Fredoka",sans-serif;color:#4c5db3;margin:0 0 8px}.round-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:12px}.round-actions button{border:0;border-radius:16px;padding:12px 16px;font-weight:1000;cursor:pointer}.keep{background:#5a55cf;color:#fff}.advance{background:#22b778;color:#fff}
+.extras,.leader{margin-top:14px;padding:13px 15px}.pill{border:0;border-radius:999px;padding:10px 13px;background:#eaf0ff;color:#4d59a2;font-weight:900;cursor:pointer;text-decoration:none}.board{display:grid;gap:7px;margin-top:10px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#e8efff;color:#4f60b2}.empty{padding:10px;color:#8d86a3}details summary{cursor:pointer;font-weight:1000;color:#4d5cac}
+.modal-bg{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}.modal-bg.show{display:flex}.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;box-shadow:0 25px 60px rgba(50,30,100,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}.close{border:0;width:40px;height:40px;border-radius:50%;background:#edf2ff;font-size:1.25rem;cursor:pointer}.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #dce4f4;border-radius:14px;padding:12px;font-weight:900}.avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #e5eaf7;background:#fafcff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#5472d3;background:#edf3ff}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#edf2ff;color:#4b5486}
+@media(max-width:1180px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.level-grid{grid-template-columns:repeat(3,1fr)}.play-grid{grid-template-columns:1fr 310px}}
+@media(max-width:800px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:205px;right:auto}.hero{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr 1fr}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.play-grid{grid-template-columns:1fr}.fact-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.hero{padding:15px}.level-grid{grid-template-columns:1fr}.progress{padding:11px}.stars{font-size:1.35rem}.challenge{padding:15px}.workspace{padding:10px}.visual{min-height:360px;padding:10px}.choice-grid{grid-template-columns:1fr}.fact-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}
+</style>
+<link rel="stylesheet" href="mobile-touch.css">
+</head>
+<body>
+<header class="topbar">
+<a class="home" href="index.html">🏠 Back to Home</a>
+<div class="score-wrap"><div class="score-pill" id="topScore">⭐ Points: 0</div></div>
+<button class="profile-btn" id="profileButton"><span id="avatarTop">⭐</span><span class="profile-name" id="nameTop">Nini</span></button>
+</header>
+
+<div class="wrap"><div class="shell">
+<aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Capacity Lab! 🥤<small>How much can it hold?</small></div></aside>
+<main class="main">
+
+<section class="hero">
+<div><h1>🥤 Capacity Lab</h1><p>Learn cups, pints, quarts, gallons, liters, and milliliters through real-life problems.</p></div>
+<button class="review-btn" id="reviewBtn">🥤 Capacity Cheat Sheet</button>
+</section>
+
+<section class="panel fact-panel" id="factPanel">
+<div style="text-align:center;margin:0 0 12px"><strong style="font-family:Fredoka,sans-serif;font-size:1.25rem;color:#4458a8">The relationships worth remembering</strong><div style="color:#756d8d;font-weight:800;margin-top:3px">Keep U.S. customary and metric units separate unless a problem gives you a conversion.</div></div>
+<div class="fact-grid">
+<div class="fact"><strong>2 cups = 1 pint</strong><small>2 c = 1 pt</small></div>
+<div class="fact"><strong>2 pints = 1 quart</strong><small>2 pt = 1 qt</small></div>
+<div class="fact"><strong>4 quarts = 1 gallon</strong><small>4 qt = 1 gal</small></div>
+<div class="fact"><strong>1,000 mL = 1 L</strong><small>metric capacity</small></div>
+</div>
+</section>
+
+<section class="levels">
+<h2>Choose a Capacity Skill</h2>
+<div class="level-grid">
+<button class="level-card active" data-level="0"><div class="level-num">1</div><h3>Choose the Unit</h3><p>Decide whether cups, gallons, or liters make sense in everyday situations.</p></button>
+<button class="level-card" data-level="1"><div class="level-num">2</div><h3>Cups & Pints</h3><p>Use 2 cups = 1 pint in both directions.</p></button>
+<button class="level-card" data-level="2"><div class="level-num">3</div><h3>Pints & Quarts</h3><p>Use 2 pints = 1 quart and connect the units.</p></button>
+<button class="level-card" data-level="3"><div class="level-num">4</div><h3>Quarts & Gallons</h3><p>Use 4 quarts = 1 gallon and build larger amounts.</p></button>
+<button class="level-card" data-level="4"><div class="level-num">5</div><h3>Liters & mL</h3><p>Convert metric capacity using 1,000 mL = 1 L.</p></button>
+<button class="level-card" data-level="5"><div class="level-num">6</div><h3>Kitchen & Bottles</h3><p>Solve recipes, pitchers, bottles, coolers, and other real-life problems.</p></button>
+<button class="level-card" data-level="6"><div class="level-num">7</div><h3>Capacity Challenge</h3><p>Mix conversions, comparisons, and multi-step problems.</p></button>
+</div>
+</section>
+
+<section class="progress"><div class="qtext" id="questionText">Question 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"></div></section>
+<section class="challenge"><div class="level-pill" id="levelName">Choose the Unit</div><div class="prompt" id="prompt"></div><div class="subprompt" id="subprompt"></div></section>
+
+<section class="workspace">
+<div class="play-grid">
+<div class="visual" id="visual"></div>
+<div class="side">
+<div class="status" id="status">Choose an answer, then check it.</div>
+<button class="check" id="checkBtn">Check Answer →</button>
+<button class="hint" id="hintBtn">Hint − 1 Star</button>
+<div class="notebook" id="notebook"><strong>Capacity Tip:</strong><br>2 cups make 1 pint.</div>
+<div class="stats"><div class="stat"><small>Points</small><strong id="score">0</strong></div><div class="stat"><small>Streak</small><strong id="streak">0</strong></div><div class="stat"><small>Round</small><strong id="roundStat">1</strong></div></div>
+</div>
+</div>
+</section>
+
+<section class="round-card" id="roundCard">
+<h2 id="roundTitle">Round complete!</h2>
+<div id="roundMessage"></div>
+<div class="round-actions">
+<button class="keep" id="keepLevelBtn">Keep Practicing This Skill</button>
+<button class="advance" id="advanceBtn">Try Next Skill →</button>
+</div>
+</section>
+
+<section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
+<section class="leader"><details><summary>🏆 Capacity Lab global leaderboard</summary><div id="board" class="board"></div></details></section>
+</main>
+</div></div>
+
+<div class="modal-bg" id="profileModal"><div class="modal"><div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close" id="closeProfile">×</button></div><div class="profile-form"><input id="profileName" maxlength="16" placeholder="Player nickname"><div style="font-weight:900;color:#756b91">Choose an avatar</div><div class="avatars" id="avatars"></div></div><div class="modal-actions"><button class="cancel" id="cancelProfile">Cancel</button><button class="save" id="saveProfile">Save</button></div></div></div>
+
+<script src="leaderboard-api.js"></script>
+<script>
+const el=id=>document.getElementById(id);
+const PROFILE="learningWithNiniProfileV1",STATE="capacityLabStateV1",AV=["⭐","🐱","🐰","🌈","❤️"];
+const LEVELS=[
+  {name:"Choose the Unit",tip:"Use cups for recipe-sized amounts, gallons for very large household amounts, and liters for common metric drink containers."},
+  {name:"Cups & Pints",tip:"2 cups = 1 pint. To change pints to cups, multiply by 2."},
+  {name:"Pints & Quarts",tip:"2 pints = 1 quart. To change quarts to pints, multiply by 2."},
+  {name:"Quarts & Gallons",tip:"4 quarts = 1 gallon. To change gallons to quarts, multiply by 4."},
+  {name:"Liters & mL",tip:"1 liter = 1,000 milliliters. Multiply liters by 1,000 to get milliliters."},
+  {name:"Kitchen & Bottles",tip:"First decide which capacity relationship the story uses. Keep every amount in the same unit before calculating."},
+  {name:"Capacity Challenge",tip:"Convert to the same unit first. Then add, subtract, compare, or solve the multi-step problem."}
+];
+const SCENES=[
+  {name:"milk for a pancake recipe",emoji:"🥛",answer:"cups",why:"Recipes commonly measure small liquid amounts in cups."},
+  {name:"juice for four smoothies",emoji:"🥤",answer:"cups",why:"A few recipe-sized servings are reasonably measured in cups."},
+  {name:"a bathtub full of water",emoji:"🛁",answer:"gallons",why:"A bathtub holds a large amount of water, so gallons make sense."},
+  {name:"a large fish tank",emoji:"🐠",answer:"gallons",why:"Large aquarium capacity is commonly described in gallons in the U.S."},
+  {name:"a large bottle of soda",emoji:"🧃",answer:"liters",why:"Large beverage bottles are commonly sold by the liter."},
+  {name:"a large bottle of sparkling water",emoji:"💧",answer:"liters",why:"Large bottled drinks are often labeled in liters."}
+];
+function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function commas(n){return Number(n).toLocaleString("en-US")}
+function choiceQuestion(prompt,sub,answer,options,explain,tip,visual){
+  return {kind:"choice",prompt,sub,answer:String(answer),options:shuffle(options.map(String)),explain,tip,visual};
+}
+let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),pickedAvatar=profile.avatar||"⭐";
+let saved=safe(STATE,{score:0,level:0,round:1});
+let level=Math.min(6,Math.max(0,Number(saved.level)||0)),round=Math.max(1,Number(saved.round)||1),score=Math.max(0,Number(saved.score)||0);
+let q=1,streak=0,stars=3,solved=false,selected=null,masteryThisRound=0,lastKey="",current=null;
+
+function makeLevel0(){
+  const s=pick(SCENES);
+  return choiceQuestion(
+    "Which unit makes the most sense for "+s.name+"?",
+    "Choose the unit you would most naturally use in this situation.",
+    s.answer,["cups","gallons","liters"],
+    s.why,
+    "Think about both the size of the amount and how people usually describe it.",
+    {type:"scene",emoji:s.emoji,title:s.name,note:"Think about the situation, not just the picture."}
+  );
+}
+function makeLevel1(){
+  if(Math.random()<.5){
+    const pt=rnd(1,Math.min(8,3+round)),ans=pt*2;
+    return choiceQuestion(pt+" pint"+(pt===1?"":"s")+" equals how many cups?","Use 2 cups for every pint.",ans+" cups",[ans+" cups",(ans+2)+" cups",Math.max(1,ans-2)+" cups",pt+" cups"],pt+" × 2 = "+ans+" cups.","2 cups = 1 pint.",{type:"relation",small:"cup",large:"pint",text:"2 cups = 1 pint"});
+  }
+  const pt=rnd(1,Math.min(8,3+round)),cups=pt*2;
+  return choiceQuestion(cups+" cups equals how many pints?","Make groups of 2 cups.",pt+" pint"+(pt===1?"":"s"),[pt+" pint"+(pt===1?"":"s"),(pt+1)+" pints",Math.max(1,pt-1)+" pint"+(pt-1===1?"":"s"),cups+" pints"],cups+" ÷ 2 = "+pt+" pint"+(pt===1?"":"s")+".","Group the cups in pairs.",{type:"relation",small:"cup",large:"pint",text:"2 cups = 1 pint"});
+}
+function makeLevel2(){
+  if(Math.random()<.5){
+    const qt=rnd(1,Math.min(7,3+round)),ans=qt*2;
+    return choiceQuestion(qt+" quart"+(qt===1?"":"s")+" equals how many pints?","Use 2 pints for every quart.",ans+" pints",[ans+" pints",(ans+2)+" pints",Math.max(1,ans-2)+" pints",qt+" pints"],qt+" × 2 = "+ans+" pints.","2 pints = 1 quart.",{type:"relation",small:"pint",large:"quart",text:"2 pints = 1 quart"});
+  }
+  const qt=rnd(1,Math.min(7,3+round)),pints=qt*2;
+  return choiceQuestion(pints+" pints equals how many quarts?","Make groups of 2 pints.",qt+" quart"+(qt===1?"":"s"),[qt+" quart"+(qt===1?"":"s"),(qt+1)+" quarts",Math.max(1,qt-1)+" quart"+(qt-1===1?"":"s"),pints+" quarts"],pints+" ÷ 2 = "+qt+" quart"+(qt===1?"":"s")+".","Group the pints in pairs.",{type:"relation",small:"pint",large:"quart",text:"2 pints = 1 quart"});
+}
+function makeLevel3(){
+  if(Math.random()<.5){
+    const gal=rnd(1,Math.min(5,2+round)),ans=gal*4;
+    return choiceQuestion(gal+" gallon"+(gal===1?"":"s")+" equals how many quarts?","Use 4 quarts for every gallon.",ans+" quarts",[ans+" quarts",(ans+4)+" quarts",Math.max(1,ans-4)+" quarts",gal+" quarts"],gal+" × 4 = "+ans+" quarts.","4 quarts = 1 gallon.",{type:"relation",small:"quart",large:"gallon",text:"4 quarts = 1 gallon"});
+  }
+  const gal=rnd(1,Math.min(5,2+round)),qts=gal*4;
+  return choiceQuestion(qts+" quarts equals how many gallons?","Make groups of 4 quarts.",gal+" gallon"+(gal===1?"":"s"),[gal+" gallon"+(gal===1?"":"s"),(gal+1)+" gallons",Math.max(1,gal-1)+" gallon"+(gal-1===1?"":"s"),qts+" gallons"],qts+" ÷ 4 = "+gal+" gallon"+(gal===1?"":"s")+".","Group the quarts in groups of 4.",{type:"relation",small:"quart",large:"gallon",text:"4 quarts = 1 gallon"});
+}
+function makeLevel4(){
+  const harder=round>=2;
+  if(harder&&Math.random()<.45){
+    const halves=pick([0.5,1.5,2.5,3.5,4.5]);
+    const ml=halves*1000;
+    if(Math.random()<.5){
+      return choiceQuestion(halves+" L equals how many mL?","Use 1 L = 1,000 mL.",commas(ml)+" mL",[commas(ml)+" mL",commas(ml+500)+" mL",commas(Math.max(250,ml-500))+" mL",commas(halves*100)+" mL"],halves+" × 1,000 = "+commas(ml)+" mL.","A half liter is 500 mL.",{type:"metric"});
+    }
+    return choiceQuestion(commas(ml)+" mL equals how many liters?","Use 1,000 mL for each liter.",halves+" L",[halves+" L",(halves+0.5)+" L",Math.max(0.5,halves-0.5)+" L",(ml/100)+" L"],commas(ml)+" ÷ 1,000 = "+halves+" L.","1,000 mL = 1 L, and 500 mL = 0.5 L.",{type:"metric"});
+  }
+  const liters=rnd(1,Math.min(7,3+round)),ml=liters*1000;
+  if(Math.random()<.5){
+    return choiceQuestion(liters+" L equals how many mL?","Multiply the liters by 1,000.",commas(ml)+" mL",[commas(ml)+" mL",commas(ml+1000)+" mL",commas(Math.max(1000,ml-1000))+" mL",commas(liters*100)+" mL"],liters+" × 1,000 = "+commas(ml)+" mL.","1 L = 1,000 mL.",{type:"metric"});
+  }
+  return choiceQuestion(commas(ml)+" mL equals how many liters?","Make groups of 1,000 mL.",liters+" L",[liters+" L",(liters+1)+" L",Math.max(1,liters-1)+" L",(ml/100)+" L"],commas(ml)+" ÷ 1,000 = "+liters+" L.","1,000 mL = 1 L.",{type:"metric"});
+}
+function makeLevel5(){
+  const mode=rnd(0,4);
+  if(mode===0){
+    const per=rnd(1,3),batches=rnd(2,4),ans=per*batches;
+    return choiceQuestion("A recipe uses "+per+" cup"+(per===1?"":"s")+" of milk per batch. You make "+batches+" batches. How many cups do you need?","Multiply the cups per batch by the number of batches.",ans+" cups",[ans+" cups",(ans+batches)+" cups",Math.max(1,ans-per)+" cups",(per+batches)+" cups"],per+" × "+batches+" = "+ans+" cups.","This one is repeated addition or multiplication.",{type:"scene",emoji:"🥞",title:"Pancake recipe",note:"Same amount in every batch."});
+  }
+  if(mode===1){
+    const qt=rnd(1,4),ans=qt*2;
+    return choiceQuestion("A pitcher holds "+qt+" quart"+(qt===1?"":"s")+". How many pints is that?","Convert the pitcher capacity to pints.",ans+" pints",[ans+" pints",(ans+2)+" pints",qt+" pints",Math.max(1,ans-2)+" pints"],qt+" quart"+(qt===1?"":"s")+" = "+ans+" pints.","2 pints = 1 quart.",{type:"scene",emoji:"🫗",title:"Pitcher",note:"Convert before answering."});
+  }
+  if(mode===2){
+    const gal=rnd(1,3),ans=gal*4;
+    return choiceQuestion("A cooler holds "+gal+" gallon"+(gal===1?"":"s")+" of drink. How many quarts can it hold?","Convert gallons to quarts.",ans+" quarts",[ans+" quarts",(ans+4)+" quarts",gal+" quarts",Math.max(1,ans-4)+" quarts"],gal+" × 4 = "+ans+" quarts.","4 quarts = 1 gallon.",{type:"scene",emoji:"🧊",title:"Drink cooler",note:"Think in groups of 4 quarts."});
+  }
+  if(mode===3){
+    const bottles=rnd(2,6),each=500,ans=bottles*each;
+    return choiceQuestion("You have "+bottles+" water bottles. Each holds 500 mL. How many milliliters is that altogether?","Multiply the number of bottles by 500 mL.",commas(ans)+" mL",[commas(ans)+" mL",commas(ans+500)+" mL",commas(Math.max(500,ans-500))+" mL",bottles+" mL"],bottles+" × 500 = "+commas(ans)+" mL.","Each pair of 500 mL bottles makes 1,000 mL.",{type:"scene",emoji:"🧴",title:"Water bottles",note:"Each bottle holds the same amount."});
+  }
+  const start=pick([2,3,4]),used=pick([500,750,1000,1250]),ans=start*1000-used;
+  return choiceQuestion("A jug starts with "+start+" L of water. You pour out "+commas(used)+" mL. How much remains?","Convert liters to milliliters before subtracting.",commas(ans)+" mL",[commas(ans)+" mL",commas(ans+500)+" mL",commas(Math.max(250,ans-500))+" mL",commas(start*1000+used)+" mL"],start+" L = "+commas(start*1000)+" mL. "+commas(start*1000)+" − "+commas(used)+" = "+commas(ans)+" mL.","Use the same unit before subtracting.",{type:"metric"});
+}
+function makeLevel6(){
+  const mode=rnd(0,5);
+  if(mode===0){
+    return choiceQuestion("Which is greater: 1 quart or 3 cups?","Convert the quart to cups before comparing.","1 quart",["1 quart","3 cups","They are equal"],"1 quart = 2 pints = 4 cups, so 1 quart is greater.","A quart contains 4 cups.",{type:"relation",small:"cup",large:"quart",text:"4 cups = 1 quart"});
+  }
+  if(mode===1){
+    const gal=rnd(1,3),extra=rnd(1,3),ans=gal*4+extra;
+    return choiceQuestion(gal+" gallon"+(gal===1?"":"s")+" and "+extra+" extra quart"+(extra===1?"":"s")+" equals how many total quarts?","Convert the gallons first, then add the extra quarts.",ans+" quarts",[ans+" quarts",(ans+4)+" quarts",gal+extra+" quarts",Math.max(1,ans-extra)+" quarts"],gal+" gallon"+(gal===1?"":"s")+" = "+(gal*4)+" quarts. Add "+extra+" to get "+ans+".","4 quarts = 1 gallon.",{type:"relation",small:"quart",large:"gallon",text:"4 quarts = 1 gallon"});
+  }
+  if(mode===2){
+    const pints=rnd(2,5),extra=rnd(1,3),ans=pints*2+extra;
+    return choiceQuestion(pints+" pints plus "+extra+" cup"+(extra===1?"":"s")+" equals how many cups?","Convert the pints to cups, then add.",ans+" cups",[ans+" cups",(ans+2)+" cups",pints+extra+" cups",Math.max(1,ans-extra)+" cups"],pints+" pints = "+(pints*2)+" cups. Add "+extra+" to get "+ans+" cups.","2 cups = 1 pint.",{type:"relation",small:"cup",large:"pint",text:"2 cups = 1 pint"});
+  }
+  if(mode===3){
+    const liters=rnd(1,4),extra=pick([250,500,750]),ans=liters*1000+extra;
+    return choiceQuestion(liters+" L + "+extra+" mL = how many total mL?","Convert the liters, then add the milliliters.",commas(ans)+" mL",[commas(ans)+" mL",commas(ans+500)+" mL",commas(Math.max(250,ans-500))+" mL",commas(liters*100+extra)+" mL"],liters+" L = "+commas(liters*1000)+" mL. Add "+extra+" mL to get "+commas(ans)+" mL.","1 L = 1,000 mL.",{type:"metric"});
+  }
+  if(mode===4){
+    const liters=rnd(3,5),used=pick([500,1000,1500]),ans=liters*1000-used;
+    return choiceQuestion(liters+" L − "+commas(used)+" mL = ?","Convert to milliliters before subtracting.",commas(ans)+" mL",[commas(ans)+" mL",commas(ans+1000)+" mL",commas(Math.max(500,ans-1000))+" mL",commas(liters*1000+used)+" mL"],commas(liters*1000)+" − "+commas(used)+" = "+commas(ans)+" mL.","Convert first, then subtract.",{type:"metric"});
+  }
+  const gal=rnd(1,3),usedQ=rnd(1,Math.min(3,gal*4-1)),ans=gal*4-usedQ;
+  return choiceQuestion("A container holds "+gal+" gallon"+(gal===1?"":"s")+". If "+usedQ+" quart"+(usedQ===1?" is":"s are")+" used, how many quarts remain?","Convert gallons to quarts, then subtract.",ans+" quarts",[ans+" quarts",(ans+4)+" quarts",Math.max(1,ans-1)+" quarts",(gal*4+usedQ)+" quarts"],gal+" gallon"+(gal===1?"":"s")+" = "+(gal*4)+" quarts. Subtract "+usedQ+" to get "+ans+" quarts.","4 quarts = 1 gallon.",{type:"relation",small:"quart",large:"gallon",text:"4 quarts = 1 gallon"});
+}
+function makeQuestion(){
+  let x,tries=0;
+  do{x=[makeLevel0,makeLevel1,makeLevel2,makeLevel3,makeLevel4,makeLevel5,makeLevel6][level]();tries++}
+  while((x.prompt+"|"+x.answer)===lastKey&&tries<12);
+  lastKey=x.prompt+"|"+x.answer;
+  return x;
+}
+function containerHtml(kind,label){
+  return '<div class="container-icon '+kind+'"><div class="water"></div><span>'+label+'</span></div>';
+}
+function renderVisual(v){
+  if(v.type==="scene"){
+    el("visual").innerHTML='<div class="scene"><div class="scene-emoji">'+v.emoji+'</div><div class="scene-title">'+v.title+'</div><div class="scene-note">'+v.note+'</div><div id="choiceArea" class="choice-grid"></div></div>';
+    return;
+  }
+  if(v.type==="metric"){
+    el("visual").innerHTML='<div class="capacity-visual"><div class="metric-cap"></div><div class="metric-scale"><div class="metric-water"></div><div class="metric-labels"><span>1,000 mL</span><span>750</span><span>500</span><span>250</span></div></div><div class="relation">1,000 mL = 1 L</div><div id="choiceArea" class="choice-grid" style="margin:0 auto"></div></div>';
+    return;
+  }
+  if(v.type==="relation"){
+    const labels={cup:"cup",pint:"pint",quart:"quart",gallon:"gallon"};
+    el("visual").innerHTML='<div class="capacity-visual"><div class="containers">'+containerHtml(v.small,labels[v.small])+containerHtml(v.large,labels[v.large])+'</div><div class="relation">'+v.text+'</div><div id="choiceArea" class="choice-grid" style="margin:0 auto"></div></div>';
+    return;
+  }
+  el("visual").innerHTML='<div id="choiceArea" class="choice-grid"></div>';
+}
+function renderChoices(){
+  const box=el("choiceArea");box.innerHTML="";
+  current.options.forEach(v=>{const b=document.createElement("button");b.className="choice";b.textContent=v;b.onclick=()=>{if(solved)return;selected=String(v);box.querySelectorAll(".choice").forEach(x=>x.classList.toggle("selected",x===b))};box.appendChild(b)});
+}
+function updateUI(){
+  el("questionText").textContent="Round "+round+" · Question "+q+" of 10";
+  el("progressFill").style.width=(q*10)+"%";
+  el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");
+  el("score").textContent=score;el("topScore").textContent="⭐ Points: "+score;el("streak").textContent=streak;el("roundStat").textContent=round;
+  document.querySelectorAll(".level-card").forEach(b=>b.classList.toggle("active",Number(b.dataset.level)===level));
+}
+function newQuestion(){
+  solved=false;selected=null;stars=3;current=makeQuestion();
+  el("levelName").textContent="Level "+(level+1)+" · "+LEVELS[level].name;
+  el("prompt").textContent=current.prompt;el("subprompt").textContent=current.sub||"";
+  el("status").textContent="Choose an answer, then check it.";el("status").className="status";
+  el("notebook").innerHTML="<strong>Capacity Tip:</strong><br>"+LEVELS[level].tip;
+  el("checkBtn").textContent="Check Answer →";el("checkBtn").className="check";el("hintBtn").disabled=false;
+  renderVisual(current.visual||{});renderChoices();updateUI();
+}
+function checkAnswer(){
+  if(solved){nextQuestion();return}
+  if(selected===null){el("status").textContent="Choose an answer first.";el("status").className="status info";return}
+  const ok=selected===String(current.answer);
+  if(ok){
+    solved=true;score+=stars;streak++;if(stars===3)masteryThisRound++;
+    el("status").textContent="✅ Correct! "+current.explain+" You earned "+stars+" star"+(stars===1?"":"s")+".";
+    el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Question →";el("checkBtn").className="next";el("hintBtn").disabled=true;
+    el("visual").querySelectorAll(".choice").forEach(b=>{if(b.textContent===String(current.answer))b.classList.add("correct")});
+    persist();saveGlobal(false);updateUI();
+  }else{
+    stars=Math.max(1,stars-1);streak=0;el("status").textContent="Not quite. Try again — you still have a chance to solve it.";el("status").className="status bad";updateUI();
+  }
+}
+function hint(){
+  if(solved)return;stars=Math.max(1,stars-1);
+  el("notebook").innerHTML="<strong>Hint:</strong><br>"+(current.tip||LEVELS[level].tip);
+  el("status").textContent="Hint revealed. Use it, then try the question again.";el("status").className="status info";updateUI();
+}
+function nextQuestion(){if(!solved)return;if(q<10){q++;newQuestion();return}finishRound()}
+function finishRound(){
+  el("roundTitle").textContent="🎉 Round "+round+" complete!";
+  el("roundMessage").innerHTML="<strong>"+masteryThisRound+"/10 mastered on the first try with no hint</strong> in "+LEVELS[level].name+". Your "+score+" points carry forward.";
+  el("roundCard").classList.add("show");el("advanceBtn").style.display=level<6?"inline-block":"none";el("advanceBtn").textContent=level<6?"Try Level "+(level+2)+": "+LEVELS[level+1].name+" →":"";
+  el("roundCard").scrollIntoView({behavior:"smooth",block:"center"});saveGlobal(true);persist();
+}
+function beginNext(nextLevel){if(nextLevel&&level<6)level++;round++;q=1;masteryThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();window.scrollTo({top:0,behavior:"smooth"})}
+function chooseLevel(n){level=Math.max(0,Math.min(6,n));q=1;masteryThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion()}
+function persist(){store(STATE,{score,level,round})}
+async function saveGlobal(show){
+  if(!window.LWNLeaderboard)return;
+  try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"capacity",score,level:"level-"+(level+1),best_streak:streak});if(show)await renderBoard()}catch{}
+}
+async function renderBoard(){
+  const box=el("board");box.innerHTML="";
+  if(!window.LWNLeaderboard){box.innerHTML='<div class="empty">Leaderboard is unavailable.</div>';return}
+  try{
+    const rows=await LWNLeaderboard.top("capacity",10);
+    if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}
+    rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})
+  }catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function updateProfile(){el("avatarTop").textContent=profile.avatar||"⭐";el("nameTop").textContent=profile.name||"Nini"}
+function buildAvatars(){const b=el("avatars");b.innerHTML="";AV.forEach(v=>{const x=document.createElement("button");x.className="avatar"+(v===pickedAvatar?" active":"");x.textContent=v;x.onclick=()=>{pickedAvatar=v;buildAvatars()};b.appendChild(x)})}
+function openProfile(){pickedAvatar=profile.avatar||"⭐";el("profileName").value=profile.name||"Nini";buildAvatars();el("profileModal").classList.add("show")}
+function closeProfile(){el("profileModal").classList.remove("show")}
+function saveProfile(){profile={name:(el("profileName").value||"Nini").trim().slice(0,16)||"Nini",avatar:pickedAvatar||"⭐"};store(PROFILE,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile()}
+el("reviewBtn").onclick=()=>el("factPanel").classList.toggle("show");
+document.querySelectorAll(".level-card").forEach(b=>b.onclick=()=>chooseLevel(Number(b.dataset.level)));
+el("checkBtn").onclick=checkAnswer;el("hintBtn").onclick=hint;el("keepLevelBtn").onclick=()=>beginNext(false);el("advanceBtn").onclick=()=>beginNext(true);
+el("saveScore").onclick=async()=>{await saveGlobal(true);el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"};
+el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;el("profileModal").onclick=e=>{if(e.target===el("profileModal"))closeProfile()};
+window.addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer()});
+updateProfile();renderBoard();newQuestion();
+</script>
+</body>
+</html>
