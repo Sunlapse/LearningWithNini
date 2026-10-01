@@ -137,6 +137,11 @@ function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function estimateLabel(value){
+  const s=String(value||"").trim();
+  if(/^about\s+/i.test(s)||/^many\s+/i.test(s))return s.charAt(0).toUpperCase()+s.slice(1);
+  return "About "+s;
+}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 function inchLabel(v){
   const whole=Math.floor(v),frac=Math.round((v-whole)*4);
@@ -173,7 +178,7 @@ function makeLevel0(){
       o.unit,["inches","feet","yards"],
       "A "+o.name+" is usually measured in "+o.unit+".",
       "Think about the object's size before doing any math.",
-      {emoji:o.emoji,name:o.name,note:"About "+o.approx}
+      {emoji:o.emoji,name:o.name,note:estimateLabel(o.approx)}
     );
   }
   const o=pick(OBJECTS.filter(x=>x.name!=="school field"));
