@@ -137,12 +137,17 @@ function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function inchLabel(v){
+  const whole=Math.floor(v),frac=Math.round((v-whole)*4);
+  const mark=frac===1?"¼":frac===2?"½":frac===3?"¾":"";
+  return (whole?whole:"")+(mark||(!whole?"0":""));
+}
 function fmt(total){
-  total=Math.round(total*2)/2;
+  total=Math.round(total*4)/4;
   const ft=Math.floor(total/12),inch=total-ft*12;
-  if(ft&&inch)return ft+" ft "+inch+" in";
+  if(ft&&inch)return ft+" ft "+inchLabel(inch)+" in";
   if(ft)return ft+" ft";
-  return inch+" in";
+  return inchLabel(inch)+" in";
 }
 function total(ft,inch){return ft*12+inch}
 function normalize(t){return {ft:Math.floor(t/12),inch:t%12}}
@@ -155,7 +160,7 @@ function builderQuestion(prompt,sub,answerTotal,explain,tip){
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),pickedAvatar=profile.avatar||"⭐";
 let saved=safe(STATE,{score:0,level:0,round:1});
 let level=Math.min(4,Math.max(0,Number(saved.level)||0)),round=Math.max(1,Number(saved.round)||1),score=Math.max(0,Number(saved.score)||0);
-let q=1,streak=0,stars=3,solved=false,selected=null,builderFeet=0,builderInches=0,correctThisRound=0,lastKey="",current=null;
+let q=1,streak=0,stars=3,solved=false,selected=null,builderFeet=0,builderInches=0,masteryThisRound=0,lastKey="",current=null;
 
 function makeLevel0(){
   const harder=round>=2;
@@ -188,19 +193,22 @@ function makeLevel0(){
 }
 
 function makeLevel1(){
-  const allowHalf=round>=2;
+  const allowHalf=round>=2,allowQuarter=round>=3;
   const start=round>=3?rnd(0,4):0;
   let len=rnd(2,Math.max(3,11-start));
-  if(allowHalf&&Math.random()<.35)len+=.5;
+  if(allowQuarter&&Math.random()<.5)len+=pick([.25,.5,.75]);
+  else if(allowHalf&&Math.random()<.4)len+=.5;
   const end=Math.min(12,start+len);
-  const actual=Math.round((end-start)*2)/2;
-  const wrong1=Math.max(.5,actual+1),wrong2=Math.max(.5,actual-1),wrong3=end;
+  const actual=Math.round((end-start)*4)/4;
+  const wrong1=Math.max(.25,actual+1),wrong2=Math.max(.25,actual-1),wrong3=end;
+  const answer=inchLabel(actual)+" in";
+  const options=[answer,inchLabel(wrong1)+" in",inchLabel(wrong2)+" in",inchLabel(wrong3)+" in"].filter((v,i,a)=>a.indexOf(v)===i);
   return {
     kind:"choice",prompt:"How long is the purple strip?",sub:start===0?"Read the ruler from zero to the end mark.":"Careful: it starts at "+start+" inches, not at zero.",
-    answer:String(actual+" in"),options:shuffle([actual+" in",wrong1+" in",wrong2+" in",wrong3+" in"].filter((v,i,a)=>a.indexOf(v)===i)).slice(0,4),
-    explain:start===0?"The strip ends at "+end+" inches, so its length is "+actual+" inches.":"End − start = "+end+" − "+start+" = "+actual+" inches.",
-    tip:start===0?"Read the mark where the object ends.":"When an object starts after zero, subtract the start mark from the end mark.",
-    ruler:{start,end,half:allowHalf}
+    answer,options:shuffle(options).slice(0,4),
+    explain:start===0?"The strip ends at "+inchLabel(end)+" inches, so its length is "+inchLabel(actual)+" inches.":"End − start = "+inchLabel(end)+" − "+inchLabel(start)+" = "+inchLabel(actual)+" inches.",
+    tip:allowQuarter?"The shortest ruler marks show quarter inches. Four quarter-inch steps make 1 inch.":start===0?"Read the mark where the object ends.":"When an object starts after zero, subtract the start mark from the end mark.",
+    ruler:{start,end,half:allowHalf,quarter:allowQuarter}
   };
 }
 
@@ -338,7 +346,7 @@ function checkAnswer(){
     ok=selected===String(current.answer);
   }
   if(ok){
-    solved=true;score+=stars;streak++;correctThisRound++;
+    solved=true;score+=stars;streak++;if(stars===3)masteryThisRound++;
     el("status").textContent="✅ Correct! "+current.explain+" You earned "+stars+" star"+(stars===1?"":"s")+".";
     el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Question →";el("checkBtn").className="next";el("hintBtn").disabled=true;
     if(current.kind==="choice")el("visual").querySelectorAll(".choice").forEach(b=>{if(b.textContent===String(current.answer))b.classList.add("correct")});
@@ -360,9 +368,9 @@ function nextQuestion(){
   finishRound();
 }
 function finishRound(){
-  const rate=correctThisRound;
+  const rate=masteryThisRound;
   el("roundTitle").textContent="🎉 Round "+round+" complete!";
-  el("roundMessage").innerHTML="<strong>"+rate+"/10 solved</strong> on "+LEVELS[level].name+". Your "+score+" points carry forward into the next round.";
+  el("roundMessage").innerHTML="<strong>"+rate+"/10 mastered on the first try with no hint</strong> in "+LEVELS[level].name+". Your "+score+" points carry forward into the next round.";
   el("roundCard").classList.add("show");
   el("advanceBtn").style.display=level<4?"inline-block":"none";
   el("advanceBtn").textContent=level<4?"Try Level "+(level+2)+": "+LEVELS[level+1].name+" →":"";
@@ -371,10 +379,10 @@ function finishRound(){
 }
 function beginNext(nextLevel){
   if(nextLevel&&level<4)level++;
-  round++;q=1;correctThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();window.scrollTo({top:0,behavior:"smooth"});
+  round++;q=1;masteryThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();window.scrollTo({top:0,behavior:"smooth"});
 }
 function chooseLevel(n){
-  level=Math.max(0,Math.min(4,n));q=1;correctThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();
+  level=Math.max(0,Math.min(4,n));q=1;masteryThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();
 }
 function persist(){store(STATE,{score,level,round})}
 async function saveGlobal(show){
