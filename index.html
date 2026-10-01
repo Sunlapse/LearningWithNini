@@ -479,6 +479,24 @@
     .feature-card.geometry { background: linear-gradient(180deg, #e9f8ff, #e8e7ff); }
     .feature-card.mathmaze { background: linear-gradient(180deg, #eef9ff, #efe6ff); }
     .feature-card.length { background: linear-gradient(180deg, #eafbf6, #e8f2ff); }
+    .new-game-badge{
+      position:absolute;
+      top:12px;
+      right:12px;
+      z-index:3;
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:7px 11px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#ff5ca8,#7a49e4);
+      color:#fff;
+      font-family:"Fredoka",sans-serif;
+      font-size:.78rem;
+      font-weight:700;
+      letter-spacing:.03em;
+      box-shadow:0 7px 16px rgba(111,63,203,.22);
+    }
     .feature-card.leader { background: linear-gradient(180deg, #fff8dc, #fff2c9); }
     .feature-card.multiply { cursor: pointer; }
     .feature-card.multiply::after {
@@ -892,6 +910,7 @@
           </article>
 
           <article class="feature-card length">
+            <div class="new-game-badge" id="lengthNewBadge">✨ NEW GAME</div>
             <div class="card-icon">📏</div>
             <h3>Length Lab</h3>
             <p>Practice rulers, inches, feet, yards, conversions, and real-world measurement!</p>
@@ -974,5 +993,13 @@
     </section>
   </main>
   <script src="leaderboard-api.js"></script>
+  <script>
+    (() => {
+      const badge = document.getElementById("lengthNewBadge");
+      if (!badge) return;
+      const expires = new Date("2026-10-15T00:00:00-10:00");
+      if (new Date() >= expires) badge.remove();
+    })();
+  </script>
 </body>
 </html>
