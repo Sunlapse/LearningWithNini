@@ -2,38 +2,410 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#fbf9ff">
 <title>Length Lab | Learn With Nini</title>
+<meta name="description" content="Practice inches, feet, yards, rulers, conversions, and real-world measurement with Nini.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
-body{font-family:Nunito,Arial,sans-serif;background:#fff8fc;color:#272052;text-align:center;padding:20px}.card{background:white;border-radius:30px;padding:28px;max-width:760px;margin:auto;box-shadow:0 10px 35px #ddd}h1{color:#6f35df;font-size:42px}.fact{background:#fff3c9;border-radius:18px;padding:18px;margin:15px;display:none}.score{font-size:22px;font-weight:bold}.btn{padding:14px 22px;border:0;border-radius:24px;background:#6f35df;color:white;font-weight:bold;margin:8px;cursor:pointer;font-size:16px}.choice{background:#f0edff;color:#272052}.choice:hover{background:#e5dcff}.small{color:#666}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#282061;--muted:#746e94;--purple:#7040df;--pink:#f64b9a;--blue:#4b8ff7;--green:#23b978;--yellow:#ffbf27;--line:rgba(83,59,160,.12);--shadow:0 18px 46px rgba(74,50,137,.13)}
+html,body{margin:0;min-height:100%}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 4% 8%,rgba(220,242,255,.9),transparent 22%),radial-gradient(circle at 96% 5%,rgba(235,220,255,.9),transparent 24%),linear-gradient(180deg,#fbf9ff,#fff 48%,#fffafb)}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;min-height:72px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:10px max(16px,calc((100vw - 1440px)/2));background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.home,.profile-btn,.score-pill{min-height:44px;border:0;border-radius:999px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900}.home{background:#f0ebff;color:#5f36c7;text-decoration:none}.score-wrap{display:flex;justify-content:center}.score-pill{background:linear-gradient(135deg,#ecf7ff,#eee6ff);color:#4b307d}.profile-btn{background:linear-gradient(135deg,#fff3c6,#ffe09b);color:#654b12;cursor:pointer}
+.wrap{width:min(1440px,calc(100% - 28px));margin:0 auto;padding:20px 0 40px}.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.nini{position:sticky;top:94px;min-height:660px;border-radius:34px;overflow:hidden;background:#e8dcff;box-shadow:var(--shadow)}.nini img{width:100%;height:660px;object-fit:cover;object-position:center 28%}.nini:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(64,34,125,.2));pointer-events:none}.bubble{position:absolute;z-index:2;left:16px;right:16px;top:18px;background:#fff;border-radius:26px 26px 26px 8px;padding:15px 17px;font-family:"Fredoka",sans-serif;font-size:1.3rem;color:#4d2ab6;line-height:1.08;box-shadow:0 12px 28px rgba(66,38,130,.15);transform:rotate(-1.5deg)}.bubble small{display:block;margin-top:8px;color:#ee4a94;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
+.main{min-width:0}.panel,.progress,.challenge,.workspace,.levels,.extras,.leader{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.95);box-shadow:var(--shadow)}
+.hero{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-bottom:14px;padding:18px 20px;border-radius:28px;background:linear-gradient(135deg,#edf8ff,#f2eaff);border:1px solid var(--line);box-shadow:var(--shadow)}.hero h1{font-family:"Fredoka",sans-serif;margin:0;color:#5830bd;font-size:clamp(2rem,4vw,3rem)}.hero p{margin:5px 0 0;color:#73698e;font-weight:900}.review-btn{border:0;border-radius:18px;padding:12px 15px;background:#fff;color:#6840c5;font-weight:1000;cursor:pointer;box-shadow:0 7px 17px rgba(80,55,150,.1)}
+.fact-panel{display:none;margin-bottom:14px;padding:15px 18px}.fact-panel.show{display:block}.fact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.fact{padding:12px;border-radius:18px;background:#faf8ff;text-align:center;font-weight:900}.fact strong{display:block;font-family:"Fredoka",sans-serif;color:#5d38b6;font-size:1.2rem}.fact small{color:#756d8d}
+.levels{padding:16px;margin-bottom:14px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.level-card{border:2px solid transparent;border-radius:21px;padding:13px 11px;text-align:center;cursor:pointer;color:var(--ink);min-height:150px;background:#f6f4ff}.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#fff5da}.level-card:nth-child(4){background:#f3ebff}.level-card:nth-child(5){background:#fff0f7}.level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09);transform:translateY(-1px)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#7040df;color:#fff;font-weight:1000}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif;font-size:1.04rem}.level-card p{margin:0;color:#68617f;line-height:1.23;font-size:.8rem;font-weight:800}
+.progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}.qtext{font-weight:1000;white-space:nowrap}.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}.fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#57b8ef,#7144e0);transition:.25s}.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
+.challenge{padding:20px;text-align:center;background:linear-gradient(135deg,#f8fbff,#f4efff);margin-bottom:14px}.level-pill{display:inline-flex;padding:7px 12px;border-radius:999px;background:#fff;color:#7040d3;font-weight:900}.prompt{font-family:"Fredoka",sans-serif;font-size:clamp(1.7rem,3.6vw,2.7rem);line-height:1.18;color:#4a3488;margin:13px auto 5px}.subprompt{color:#73698e;font-weight:900}
+.workspace{padding:17px}.play-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px}.visual{min-height:410px;border-radius:24px;background:linear-gradient(180deg,#fbfdff,#f9f6ff);border:1px solid #eae5f7;padding:18px;display:grid;place-items:center}.side{display:grid;gap:10px}.status{min-height:116px;border-radius:22px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}.check,.hint,.next{border:0;border-radius:20px;min-height:64px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#4da9ee,#7048dd);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.hint{background:linear-gradient(135deg,#ff75b5,#ef4897);color:#fff}.notebook{border-radius:20px;background:#fff8dc;border:1px solid #f4df94;padding:13px;color:#725b18;font-weight:900;line-height:1.35}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:17px;padding:10px;text-align:center}.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.25rem}
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;width:min(650px,100%)}.choice{border:2px solid #e4dcf5;border-radius:22px;background:#fff;min-height:84px;padding:14px;color:#5439a5;font-family:"Fredoka",sans-serif;font-size:1.25rem;cursor:pointer;box-shadow:0 8px 18px rgba(70,48,130,.06)}.choice:hover,.choice.selected{border-color:#7040df;background:#eee8ff}.choice.correct{border-color:#25b778;background:#e8f9ef;color:#178258}
+.object-card{width:min(580px,100%);text-align:center}.object-emoji{font-size:6rem;line-height:1;margin-bottom:12px}.object-name{font-family:"Fredoka",sans-serif;font-size:1.7rem;color:#51369c}.object-note{color:#766d90;font-weight:900;margin:8px 0 18px}
+.ruler-wrap{width:min(700px,100%);padding:18px 16px 24px}.ruler-title{text-align:center;font-weight:1000;color:#6e6390;margin-bottom:18px}.ruler{position:relative;height:150px;border:3px solid #d49d29;border-radius:18px;background:linear-gradient(#fff8d3,#ffe9a1);box-shadow:inset 0 -12px 0 rgba(219,164,47,.12),0 10px 22px rgba(111,79,20,.09);overflow:hidden}.ruler-line{position:absolute;left:4%;right:4%;top:30px;height:3px;background:#5b431c}.tick{position:absolute;top:30px;width:2px;background:#5b431c}.tick.major{height:42px}.tick.half{height:26px}.tick.quarter{height:17px;opacity:.75}.tick-label{position:absolute;top:72px;transform:translateX(-50%);font-weight:1000;color:#5f461d}.measure-bar{position:absolute;top:112px;height:15px;border-radius:999px;background:linear-gradient(90deg,#6e42d7,#f0529d);box-shadow:0 4px 8px rgba(85,50,160,.2)}.measure-bar:before,.measure-bar:after{content:"";position:absolute;top:-8px;width:4px;height:31px;background:#41306e;border-radius:2px}.measure-bar:before{left:0}.measure-bar:after{right:0}
+.builder-box{width:min(620px,100%);text-align:center}.builder-title{font-family:"Fredoka",sans-serif;font-size:1.55rem;color:#55369f;margin-bottom:15px}.builder-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.unit-box{background:#fff;border:2px solid #e7e0f6;border-radius:24px;padding:16px}.unit-box small{display:block;color:#756c90;font-weight:900}.stepper{display:grid;grid-template-columns:54px 1fr 54px;align-items:center;gap:8px;margin-top:8px}.stepper button{height:54px;border:0;border-radius:16px;background:#eee8ff;color:#5b39b9;font-size:1.6rem;font-weight:1000;cursor:pointer}.step-value{font-family:"Fredoka",sans-serif;font-size:2.3rem;color:#4c329c}.equiv{margin-top:14px;border-radius:18px;background:#f5f1ff;padding:12px;font-weight:1000;color:#6a4bb4}
+.round-card{display:none;margin-top:14px;padding:18px;text-align:center;border-radius:28px;background:linear-gradient(135deg,#fff5d7,#f0e8ff);border:1px solid var(--line);box-shadow:var(--shadow)}.round-card.show{display:block}.round-card h2{font-family:"Fredoka",sans-serif;color:#6036c8;margin:0 0 8px}.round-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:12px}.round-actions button{border:0;border-radius:16px;padding:12px 16px;font-weight:1000;cursor:pointer}.keep{background:#7040df;color:#fff}.advance{background:#22b778;color:#fff}
+.extras,.leader{margin-top:14px;padding:13px 15px}.pill{border:0;border-radius:999px;padding:10px 13px;background:#eee9ff;color:#5941a4;font-weight:900;cursor:pointer;text-decoration:none}.board{display:grid;gap:7px;margin-top:10px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eee8ff;color:#6341c4}.empty{padding:10px;color:#8d86a3}details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
+.modal-bg{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}.modal-bg.show{display:flex}.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;box-shadow:0 25px 60px rgba(50,30,100,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}.close{border:0;width:40px;height:40px;border-radius:50%;background:#f0ebff;font-size:1.25rem;cursor:pointer}.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}.avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#7040df;background:#f0e9ff}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#eee9ff;color:#56488b}
+@media(max-width:1180px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.level-grid{grid-template-columns:repeat(3,1fr)}.play-grid{grid-template-columns:1fr 310px}}
+@media(max-width:800px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.hero{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr 1fr}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.play-grid{grid-template-columns:1fr}.fact-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.hero{padding:15px}.level-grid{grid-template-columns:1fr}.progress{padding:11px}.stars{font-size:1.35rem}.challenge{padding:15px}.workspace{padding:10px}.visual{min-height:360px;padding:10px}.choice-grid{grid-template-columns:1fr}.builder-controls{grid-template-columns:1fr}.fact-grid{grid-template-columns:1fr}.ruler{height:140px}.tick-label{font-size:.78rem}.stats{grid-template-columns:repeat(3,1fr)}}
 </style>
+<link rel="stylesheet" href="mobile-touch.css">
 </head>
 <body>
-<div class="card">
-<h1>📏 Length Lab</h1>
-<p>Learn inches, feet, yards, and real-world measuring!</p>
-<button class="btn" onclick="review()">📏 Review Measurement Facts</button>
-<div id="review" class="fact">📏 12 inches = 1 foot<br>📏 3 feet = 1 yard<br>📏 36 inches = 1 yard</div>
-<h2 id="level">Level 1: Measurement Explorer</h2>
-<div class="score">⭐ Points: <span id="score">0</span></div>
-<div class="small">Round <span id="round">1</span> · Question <span id="num">1</span>/10</div>
-<h3 id="question"></h3>
-<div id="choices"></div>
-<p id="message"></p>
+<header class="topbar">
+<a class="home" href="index.html">🏠 Back to Home</a>
+<div class="score-wrap"><div class="score-pill" id="topScore">⭐ Points: 0</div></div>
+<button class="profile-btn" id="profileButton"><span id="avatarTop">⭐</span><span class="profile-name" id="nameTop">Nini</span></button>
+</header>
+
+<div class="wrap"><div class="shell">
+<aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Length Lab! 📏<small>Measure it. Convert it. Use it in real life.</small></div></aside>
+<main class="main">
+
+<section class="hero">
+<div><h1>📏 Length Lab</h1><p>Learn what inches and feet actually mean — not just conversion facts.</p></div>
+<button class="review-btn" id="reviewBtn">Quick Measurement Review</button>
+</section>
+
+<section class="panel fact-panel" id="factPanel">
+<div class="fact-grid">
+<div class="fact"><strong>12 in = 1 ft</strong><small>Think: one ruler</small></div>
+<div class="fact"><strong>3 ft = 1 yd</strong><small>Think: a yardstick</small></div>
+<div class="fact"><strong>36 in = 1 yd</strong><small>12 + 12 + 12</small></div>
+<div class="fact"><strong>5 ft 4 in</strong><small>= 64 total inches</small></div>
 </div>
+</section>
+
+<section class="levels">
+<h2>Choose a Measurement Skill</h2>
+<div class="level-grid">
+<button class="level-card active" data-level="0"><div class="level-num">1</div><h3>Measure Smart</h3><p>Choose inches, feet, or yards and learn reasonable real-life lengths.</p></button>
+<button class="level-card" data-level="1"><div class="level-num">2</div><h3>Ruler Reader</h3><p>Read ruler marks and find length even when an object does not start at zero.</p></button>
+<button class="level-card" data-level="2"><div class="level-num">3</div><h3>Feet & Inches</h3><p>Convert between total inches and mixed measurements like 5 ft 4 in.</p></button>
+<button class="level-card" data-level="3"><div class="level-num">4</div><h3>Length Solver</h3><p>Compare, add, subtract, and regroup feet and inches.</p></button>
+<button class="level-card" data-level="4"><div class="level-num">5</div><h3>Measurement Mission</h3><p>Solve multi-step real-world measurement problems.</p></button>
+</div>
+</section>
+
+<section class="progress"><div class="qtext" id="questionText">Question 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"></div></section>
+<section class="challenge"><div class="level-pill" id="levelName">Measure Smart</div><div class="prompt" id="prompt"></div><div class="subprompt" id="subprompt"></div></section>
+
+<section class="workspace">
+<div class="play-grid">
+<div class="visual" id="visual"></div>
+<div class="side">
+<div class="status" id="status">Choose an answer, then check it.</div>
+<button class="check" id="checkBtn">Check Answer →</button>
+<button class="hint" id="hintBtn">Hint − 1 Star</button>
+<div class="notebook" id="notebook"><strong>Measurement Tip:</strong><br>12 inches make 1 foot.</div>
+<div class="stats"><div class="stat"><small>Points</small><strong id="score">0</strong></div><div class="stat"><small>Streak</small><strong id="streak">0</strong></div><div class="stat"><small>Round</small><strong id="roundStat">1</strong></div></div>
+</div>
+</div>
+</section>
+
+<section class="round-card" id="roundCard">
+<h2 id="roundTitle">Round complete!</h2>
+<div id="roundMessage"></div>
+<div class="round-actions">
+<button class="keep" id="keepLevelBtn">Keep Practicing This Skill</button>
+<button class="advance" id="advanceBtn">Try Next Skill →</button>
+</div>
+</section>
+
+<section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
+<section class="leader"><details><summary>🏆 Length Lab global leaderboard</summary><div id="board" class="board"></div></details></section>
+</main>
+</div></div>
+
+<div class="modal-bg" id="profileModal"><div class="modal"><div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close" id="closeProfile">×</button></div><div class="profile-form"><input id="profileName" maxlength="16" placeholder="Player nickname"><div style="font-weight:900;color:#756b91">Choose an avatar</div><div class="avatars" id="avatars"></div></div><div class="modal-actions"><button class="cancel" id="cancelProfile">Cancel</button><button class="save" id="saveProfile">Save</button></div></div></div>
+
+<script src="leaderboard-api.js"></script>
 <script>
-let level=1,round=1,question=1,score=0,last="";
-const levelNames={1:'Measurement Explorer',2:'Feet & Inches Builder',3:'Real World Measurement',4:'Measurement Challenge'};
-const bank=[
-[{q:'How many inches are in 1 foot?',a:['10','12','20'],c:1},{q:'A pencil is best measured in?',a:['inches','feet','yards'],c:0},{q:'Which is longer?',a:['2 feet','18 inches'],c:0}],
-[{q:'3 feet equals how many inches?',a:['24','36','48'],c:1},{q:'48 inches equals how many feet?',a:['3','4','5'],c:1},{q:'A rope is 3 feet 6 inches. How many inches?',a:['36','42','48'],c:1}],
-[{q:'A surfboard is 6 feet long. How many inches?',a:['60','72','84'],c:1},{q:'A classroom is best measured in?',a:['inches','feet','yards'],c:1},{q:'A book is about?',a:['10 inches','10 feet','10 yards'],c:0}],
-[{q:'An 8 foot rope is how many inches?',a:['86','96','108'],c:1},{q:'4 ft 8 in + 3 ft 9 in = ?',a:['7 ft 17 in','8 ft 5 in','9 ft'],c:1},{q:'60 inches equals how many feet?',a:['4','5','6'],c:1}]
+const el=id=>document.getElementById(id);
+const PROFILE="learningWithNiniProfileV1",STATE="lengthLabStateV2",AV=["⭐","🐱","🐰","🌈","❤️"];
+const LEVELS=[
+  {name:"Measure Smart",tip:"Use inches for small objects, feet for people and furniture, and yards for larger spaces."},
+  {name:"Ruler Reader",tip:"Length is the end mark minus the start mark. An object does not have to begin at zero."},
+  {name:"Feet & Inches",tip:"Every group of 12 inches becomes 1 foot. The leftover inches stay as inches."},
+  {name:"Length Solver",tip:"Line up feet with feet and inches with inches. Regroup whenever inches reach 12 or go below 0."},
+  {name:"Measurement Mission",tip:"Draw a quick model and convert to the same unit before you calculate."}
 ];
-function review(){document.getElementById('review').style.display='block'}
-function next(){let list=bank[level-1],item;do{item=list[Math.floor(Math.random()*list.length)]}while(item.q===last);last=item.q;questionEl=item;document.getElementById('question').innerHTML=item.q;document.getElementById('choices').innerHTML='';item.a.forEach((x,i)=>{let b=document.createElement('button');b.className='btn choice';b.innerHTML=x;b.onclick=()=>answer(i===item.c);document.getElementById('choices').appendChild(b)});document.getElementById('round').innerHTML=round;document.getElementById('num').innerHTML=question}
-function answer(ok){if(ok){score+=10;document.getElementById('message').innerHTML='✅ Correct!'}else{document.getElementById('message').innerHTML='Remember: 12 inches = 1 foot'}document.getElementById('score').innerHTML=score;question++;if(question>10){question=1;round++;if(round%2===1&&level<4)level++;document.getElementById('level').innerHTML='Level '+level+': '+levelNames[level];document.getElementById('message').innerHTML='🎉 New round! Keep going — it gets harder!'}setTimeout(next,700)}
-next();
+const OBJECTS=[
+  {name:"paper clip",emoji:"📎",unit:"inches",approx:"1 inch"},
+  {name:"pencil",emoji:"✏️",unit:"inches",approx:"7 inches"},
+  {name:"school notebook",emoji:"📓",unit:"inches",approx:"11 inches"},
+  {name:"water bottle",emoji:"🧴",unit:"inches",approx:"10 inches"},
+  {name:"skateboard",emoji:"🛹",unit:"feet",approx:"about 2.5 feet"},
+  {name:"surfboard",emoji:"🏄",unit:"feet",approx:"about 6 feet"},
+  {name:"door",emoji:"🚪",unit:"feet",approx:"about 7 feet"},
+  {name:"sofa",emoji:"🛋️",unit:"feet",approx:"about 7 feet"},
+  {name:"bed",emoji:"🛏️",unit:"feet",approx:"about 6 feet"},
+  {name:"classroom",emoji:"🏫",unit:"feet",approx:"about 30 feet across"},
+  {name:"basketball court",emoji:"🏀",unit:"yards",approx:"about 31 yards long"},
+  {name:"school field",emoji:"🌳",unit:"yards",approx:"many yards across"}
+];
+function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function fmt(total){
+  total=Math.round(total*2)/2;
+  const ft=Math.floor(total/12),inch=total-ft*12;
+  if(ft&&inch)return ft+" ft "+inch+" in";
+  if(ft)return ft+" ft";
+  return inch+" in";
+}
+function total(ft,inch){return ft*12+inch}
+function normalize(t){return {ft:Math.floor(t/12),inch:t%12}}
+function choiceQuestion(prompt,sub,answer,options,explain,tip,visual){
+  return {kind:"choice",prompt,sub,answer:String(answer),options:shuffle(options.map(String)),explain,tip,visual};
+}
+function builderQuestion(prompt,sub,answerTotal,explain,tip){
+  return {kind:"builder",prompt,sub,answerTotal,explain,tip};
+}
+let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),pickedAvatar=profile.avatar||"⭐";
+let saved=safe(STATE,{score:0,level:0,round:1});
+let level=Math.min(4,Math.max(0,Number(saved.level)||0)),round=Math.max(1,Number(saved.round)||1),score=Math.max(0,Number(saved.score)||0);
+let q=1,streak=0,stars=3,solved=false,selected=null,builderFeet=0,builderInches=0,correctThisRound=0,lastKey="",current=null;
+
+function makeLevel0(){
+  const harder=round>=2;
+  if(Math.random()<.55){
+    const o=pick(OBJECTS);
+    return choiceQuestion(
+      "What unit makes the most sense for a "+o.name+"?",
+      "Choose the unit you would actually use in real life.",
+      o.unit,["inches","feet","yards"],
+      "A "+o.name+" is usually measured in "+o.unit+".",
+      "Think about the object's size before doing any math.",
+      {emoji:o.emoji,name:o.name,note:"About "+o.approx}
+    );
+  }
+  const o=pick(OBJECTS.filter(x=>x.name!=="school field"));
+  let correct=o.approx;
+  let opts;
+  if(o.unit==="inches") opts=[correct,"7 feet","7 yards"];
+  else if(o.unit==="feet") opts=[correct,"7 inches","30 yards"];
+  else opts=[correct,"31 inches","3 feet"];
+  if(harder&&o.name==="classroom")opts=[correct,"30 inches","30 yards"];
+  return choiceQuestion(
+    "Which measurement is most reasonable for a "+o.name+"?",
+    "Estimate first. Do not calculate.",
+    correct,opts,
+    o.name.charAt(0).toUpperCase()+o.name.slice(1)+" is "+o.approx+".",
+    "A good estimate should match the size you see in everyday life.",
+    {emoji:o.emoji,name:o.name,note:"Use a benchmark you already know."}
+  );
+}
+
+function makeLevel1(){
+  const allowHalf=round>=2;
+  const start=round>=3?rnd(0,4):0;
+  let len=rnd(2,Math.max(3,11-start));
+  if(allowHalf&&Math.random()<.35)len+=.5;
+  const end=Math.min(12,start+len);
+  const actual=Math.round((end-start)*2)/2;
+  const wrong1=Math.max(.5,actual+1),wrong2=Math.max(.5,actual-1),wrong3=end;
+  return {
+    kind:"choice",prompt:"How long is the purple strip?",sub:start===0?"Read the ruler from zero to the end mark.":"Careful: it starts at "+start+" inches, not at zero.",
+    answer:String(actual+" in"),options:shuffle([actual+" in",wrong1+" in",wrong2+" in",wrong3+" in"].filter((v,i,a)=>a.indexOf(v)===i)).slice(0,4),
+    explain:start===0?"The strip ends at "+end+" inches, so its length is "+actual+" inches.":"End − start = "+end+" − "+start+" = "+actual+" inches.",
+    tip:start===0?"Read the mark where the object ends.":"When an object starts after zero, subtract the start mark from the end mark.",
+    ruler:{start,end,half:allowHalf}
+  };
+}
+
+function makeLevel2(){
+  const mode=rnd(0,3);
+  if(mode===0){
+    const ft=rnd(2,Math.min(12,5+round));
+    const ans=ft*12;
+    return choiceQuestion(ft+" feet equals how many inches?","Use 12 inches for every foot.",ans+" in",[ans+" in",(ans-12)+" in",(ans+12)+" in",(ft*10)+" in"],ft+" × 12 = "+ans+" inches.","Multiply the number of feet by 12.");
+  }
+  if(mode===1){
+    const ft=rnd(2,Math.min(9,4+round)),inch=rnd(1,11),ans=total(ft,inch);
+    return choiceQuestion("How many total inches are in "+ft+" ft "+inch+" in?","Convert the feet first, then add the extra inches.",ans+" in",[ans+" in",(ans-12)+" in",(ft*12)+" in",(ans+inch)+" in"],ft+" ft = "+(ft*12)+" in. Then "+(ft*12)+" + "+inch+" = "+ans+" in.","Convert the feet to inches before adding.");
+  }
+  if(mode===2){
+    const ft=rnd(2,Math.min(8,4+round)),inch=rnd(1,11),ans=total(ft,inch);
+    return builderQuestion(ans+" inches equals how many feet and inches?","Build the equivalent mixed measurement.",ans,ans+" inches = "+ft+" ft "+inch+" in.","Make groups of 12. The remainder is the inches.");
+  }
+  const yd=rnd(1,Math.min(6,2+round)),ans=yd*3;
+  return choiceQuestion(yd+" yards equals how many feet?","A yard contains 3 feet.",ans+" ft",[ans+" ft",(yd*12)+" ft",(ans+3)+" ft",(ans-1)+" ft"],yd+" × 3 = "+ans+" feet.","Multiply yards by 3 to get feet.");
+}
+
+function makeLevel3(){
+  const mode=rnd(0,3);
+  if(mode===0){
+    let a=total(rnd(2,7),rnd(0,11)),b=total(rnd(2,7),rnd(0,11));if(a===b)b+=1;
+    const ans=a>b?fmt(a):fmt(b);
+    return choiceQuestion("Which length is longer?","Convert or compare carefully.",ans,[fmt(a),fmt(b)],fmt(a)+" = "+a+" in and "+fmt(b)+" = "+b+" in. "+ans+" is longer.","Converting both lengths to total inches makes comparison easy.");
+  }
+  if(mode===1){
+    const aFt=rnd(2,6),aIn=rnd(4,11),bFt=rnd(1,5),bIn=rnd(4,11),ans=total(aFt,aIn)+total(bFt,bIn);
+    const n=normalize(ans);
+    return choiceQuestion(aFt+" ft "+aIn+" in + "+bFt+" ft "+bIn+" in = ?","Add inches and regroup if you reach 12.",fmt(ans),[fmt(ans),fmt(ans-12),fmt(ans+12),(aFt+bFt)+" ft "+((aIn+bIn)%12)+" in"],"The total is "+n.ft+" ft "+n.inch+" in.","If the inches add to 12 or more, trade 12 inches for 1 foot.");
+  }
+  if(mode===2){
+    const b=total(rnd(1,4),rnd(1,11)),diff=total(rnd(1,3),rnd(1,11)),a=b+diff;
+    return choiceQuestion(fmt(a)+" − "+fmt(b)+" = ?","Subtract. You may need to borrow 1 foot as 12 inches.",fmt(diff),[fmt(diff),fmt(diff+12),fmt(Math.max(1,diff-12)),fmt(diff+1)],fmt(a)+" − "+fmt(b)+" = "+fmt(diff)+".","If the top inches are too small, borrow 1 foot and turn it into 12 inches.");
+  }
+  const vals=[total(rnd(2,5),rnd(0,11)),total(rnd(2,5),rnd(0,11)),total(rnd(2,5),rnd(0,11))].sort((a,b)=>a-b);
+  const correct=vals.map(fmt).join(" < ");
+  const reverse=[...vals].reverse().map(fmt).join(" < ");
+  const swap=[vals[1],vals[0],vals[2]].map(fmt).join(" < ");
+  return choiceQuestion("Which list goes from shortest to longest?","Compare all three measurements.",correct,[correct,reverse,swap],correct+" is the correct order.","Convert each one to total inches if the mixed units feel confusing.");
+}
+
+function makeLevel4(){
+  const mode=rnd(0,4);
+  if(mode===0){
+    const board=total(5,rnd(6,11)),extra=rnd(7,18),ans=board+extra;
+    return choiceQuestion("A surfboard is "+fmt(board)+" long. Its bag is "+extra+" inches longer. How long is the bag?","Add the extra inches and regroup if needed.",fmt(ans),[fmt(ans),fmt(ans-12),fmt(ans+12),fmt(board-extra)],"The bag is "+fmt(ans)+" long.","Convert to total inches or add and regroup.");
+  }
+  if(mode===1){
+    const ribbon=total(rnd(6,10),rnd(0,11)),used=total(rnd(2,4),rnd(1,11)),ans=ribbon-used;
+    return choiceQuestion("You have "+fmt(ribbon)+" of ribbon and use "+fmt(used)+". How much is left?","Find the difference.",fmt(ans),[fmt(ans),fmt(ans+12),fmt(Math.max(1,ans-12)),fmt(used)],fmt(ribbon)+" − "+fmt(used)+" = "+fmt(ans)+".","Convert both amounts to inches if borrowing is tricky.");
+  }
+  if(mode===2){
+    const ft=rnd(4,8),inch=rnd(1,11),twice=2*total(ft,inch);
+    return choiceQuestion("Two shelves are each "+ft+" ft "+inch+" in long. What is their total length?","Double the measurement.",fmt(twice),[fmt(twice),fmt(twice-12),fmt(twice+12),fmt(total(ft*2,inch))],ft+" ft "+inch+" in doubled is "+fmt(twice)+".","Double the total inches, then convert back.");
+  }
+  if(mode===3){
+    const roomFt=rnd(18,35),deskIn=rnd(24,42),roomIn=roomFt*12,ans=roomIn-deskIn;
+    return choiceQuestion("A room is "+roomFt+" ft long. A desk takes up "+deskIn+" in along one wall. How much wall length remains?","Use the same unit before subtracting.",fmt(ans),[fmt(ans),fmt(ans+12),fmt(ans-12),roomFt-deskIn+" ft"],roomFt+" ft = "+roomIn+" in. "+roomIn+" − "+deskIn+" = "+ans+" in = "+fmt(ans)+".","Never subtract feet from inches until you convert them to the same unit.");
+  }
+  const yd=rnd(2,5),extraFt=rnd(1,2),ans=yd*3+extraFt;
+  return choiceQuestion("A banner is "+yd+" yd "+extraFt+" ft long. How many total feet is that?","Convert the yards, then add the extra feet.",ans+" ft",[ans+" ft",(yd*12+extraFt)+" ft",(yd*3)+" ft",(ans+3)+" ft"],yd+" yd = "+(yd*3)+" ft. Add "+extraFt+" ft to get "+ans+" ft.","3 feet make 1 yard.");
+}
+
+function makeQuestion(){
+  let x,tries=0;
+  do{
+    x=[makeLevel0,makeLevel1,makeLevel2,makeLevel3,makeLevel4][level]();
+    tries++;
+  }while((x.prompt+"|"+x.answer)===lastKey&&tries<12);
+  lastKey=x.prompt+"|"+x.answer;
+  return x;
+}
+
+function renderObject(v){
+  el("visual").innerHTML='<div class="object-card"><div class="object-emoji">'+v.emoji+'</div><div class="object-name">'+v.name+'</div><div class="object-note">'+v.note+'</div><div id="choiceArea" class="choice-grid"></div></div>';
+}
+function renderRuler(r){
+  let ticks="";
+  for(let i=0;i<=48;i++){
+    const pos=4+(i/48)*92;
+    const cls=i%4===0?"major":i%2===0?"half":"quarter";
+    ticks+='<span class="tick '+cls+'" style="left:'+pos+'%"></span>';
+    if(i%4===0)ticks+='<span class="tick-label" style="left:'+pos+'%">'+(i/4)+'</span>';
+  }
+  const left=4+(r.start/12)*92,width=((r.end-r.start)/12)*92;
+  el("visual").innerHTML='<div class="ruler-wrap"><div class="ruler-title">Read the marks where the strip starts and ends.</div><div class="ruler"><div class="ruler-line"></div>'+ticks+'<div class="measure-bar" style="left:'+left+'%;width:'+width+'%"></div></div><div id="choiceArea" class="choice-grid" style="margin:18px auto 0"></div></div>';
+}
+function renderBuilder(){
+  builderFeet=Math.floor(current.answerTotal/12)-1;if(builderFeet<0)builderFeet=0;builderInches=rnd(0,11);
+  el("visual").innerHTML='<div class="builder-box"><div class="builder-title">Build your answer</div><div class="builder-controls"><div class="unit-box"><small>FEET</small><div class="stepper"><button data-step="feet-" type="button">−</button><div class="step-value" id="feetValue">'+builderFeet+'</div><button data-step="feet+" type="button">+</button></div></div><div class="unit-box"><small>INCHES</small><div class="stepper"><button data-step="inch-" type="button">−</button><div class="step-value" id="inchValue">'+builderInches+'</div><button data-step="inch+" type="button">+</button></div></div></div><div class="equiv">Your build: <span id="buildReadout">'+builderFeet+' ft '+builderInches+' in</span></div></div>';
+  el("visual").querySelectorAll("[data-step]").forEach(b=>b.onclick=()=>adjustBuilder(b.dataset.step));
+}
+function renderChoices(){
+  const area=el("choiceArea")||el("visual");
+  if(!el("choiceArea"))area.innerHTML='<div class="choice-grid" id="choiceArea"></div>';
+  const box=el("choiceArea");box.innerHTML="";
+  current.options.forEach(v=>{const b=document.createElement("button");b.className="choice";b.textContent=v;b.onclick=()=>{if(solved)return;selected=String(v);box.querySelectorAll(".choice").forEach(x=>x.classList.toggle("selected",x===b))};box.appendChild(b)});
+}
+function adjustBuilder(dir){
+  if(solved)return;
+  if(dir==="feet-")builderFeet=Math.max(0,builderFeet-1);
+  if(dir==="feet+")builderFeet=Math.min(20,builderFeet+1);
+  if(dir==="inch-")builderInches=(builderInches+11)%12;
+  if(dir==="inch+")builderInches=(builderInches+1)%12;
+  el("feetValue").textContent=builderFeet;el("inchValue").textContent=builderInches;el("buildReadout").textContent=builderFeet+" ft "+builderInches+" in";
+}
+function updateUI(){
+  el("questionText").textContent="Round "+round+" · Question "+q+" of 10";
+  el("progressFill").style.width=(q*10)+"%";
+  el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");
+  el("score").textContent=score;el("topScore").textContent="⭐ Points: "+score;el("streak").textContent=streak;el("roundStat").textContent=round;
+  document.querySelectorAll(".level-card").forEach(b=>b.classList.toggle("active",Number(b.dataset.level)===level));
+}
+function newQuestion(){
+  solved=false;selected=null;stars=3;current=makeQuestion();
+  el("levelName").textContent="Level "+(level+1)+" · "+LEVELS[level].name;
+  el("prompt").textContent=current.prompt;el("subprompt").textContent=current.sub||"";
+  el("status").textContent=current.kind==="builder"?"Build the measurement, then check it.":"Choose an answer, then check it.";
+  el("status").className="status";el("notebook").innerHTML="<strong>Measurement Tip:</strong><br>"+LEVELS[level].tip;
+  el("checkBtn").textContent="Check Answer →";el("checkBtn").className="check";el("hintBtn").disabled=false;
+  if(current.ruler)renderRuler(current.ruler);else if(current.kind==="builder")renderBuilder();else if(current.visual)renderObject(current.visual);else el("visual").innerHTML='<div id="choiceArea" class="choice-grid"></div>';
+  if(current.kind==="choice")renderChoices();
+  updateUI();
+}
+function checkAnswer(){
+  if(solved){nextQuestion();return}
+  let ok=false;
+  if(current.kind==="builder")ok=total(builderFeet,builderInches)===current.answerTotal;
+  else{
+    if(selected===null){el("status").textContent="Choose an answer first.";el("status").className="status info";return}
+    ok=selected===String(current.answer);
+  }
+  if(ok){
+    solved=true;score+=stars;streak++;correctThisRound++;
+    el("status").textContent="✅ Correct! "+current.explain+" You earned "+stars+" star"+(stars===1?"":"s")+".";
+    el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Question →";el("checkBtn").className="next";el("hintBtn").disabled=true;
+    if(current.kind==="choice")el("visual").querySelectorAll(".choice").forEach(b=>{if(b.textContent===String(current.answer))b.classList.add("correct")});
+    persist();saveGlobal(false);updateUI();
+  }else{
+    stars=Math.max(1,stars-1);streak=0;
+    el("status").textContent="Not quite. Try again — you still have a chance to solve it.";
+    el("status").className="status bad";updateUI();
+  }
+}
+function hint(){
+  if(solved)return;stars=Math.max(1,stars-1);
+  el("notebook").innerHTML="<strong>Hint:</strong><br>"+(current.tip||LEVELS[level].tip);
+  el("status").textContent="Hint revealed. Use it, then try the question again.";el("status").className="status info";updateUI();
+}
+function nextQuestion(){
+  if(!solved)return;
+  if(q<10){q++;newQuestion();return}
+  finishRound();
+}
+function finishRound(){
+  const rate=correctThisRound;
+  el("roundTitle").textContent="🎉 Round "+round+" complete!";
+  el("roundMessage").innerHTML="<strong>"+rate+"/10 solved</strong> on "+LEVELS[level].name+". Your "+score+" points carry forward into the next round.";
+  el("roundCard").classList.add("show");
+  el("advanceBtn").style.display=level<4?"inline-block":"none";
+  el("advanceBtn").textContent=level<4?"Try Level "+(level+2)+": "+LEVELS[level+1].name+" →":"";
+  el("roundCard").scrollIntoView({behavior:"smooth",block:"center"});
+  saveGlobal(true);persist();
+}
+function beginNext(nextLevel){
+  if(nextLevel&&level<4)level++;
+  round++;q=1;correctThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();window.scrollTo({top:0,behavior:"smooth"});
+}
+function chooseLevel(n){
+  level=Math.max(0,Math.min(4,n));q=1;correctThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();
+}
+function persist(){store(STATE,{score,level,round})}
+async function saveGlobal(show){
+  if(!window.LWNLeaderboard)return;
+  try{
+    await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"length",score,level:"level-"+(level+1),best_streak:streak});
+    if(show){await renderBoard()}
+  }catch{}
+}
+async function renderBoard(){
+  const box=el("board");box.innerHTML="";
+  if(!window.LWNLeaderboard){box.innerHTML='<div class="empty">Leaderboard is unavailable.</div>';return}
+  try{
+    const rows=await LWNLeaderboard.top("length",10);
+    if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}
+    rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})
+  }catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function updateProfile(){el("avatarTop").textContent=profile.avatar||"⭐";el("nameTop").textContent=profile.name||"Nini"}
+function buildAvatars(){const b=el("avatars");b.innerHTML="";AV.forEach(v=>{const x=document.createElement("button");x.className="avatar"+(v===pickedAvatar?" active":"");x.textContent=v;x.onclick=()=>{pickedAvatar=v;buildAvatars()};b.appendChild(x)})}
+function openProfile(){pickedAvatar=profile.avatar||"⭐";el("profileName").value=profile.name||"Nini";buildAvatars();el("profileModal").classList.add("show")}
+function closeProfile(){el("profileModal").classList.remove("show")}
+function saveProfile(){profile={name:(el("profileName").value||"Nini").trim().slice(0,16)||"Nini",avatar:pickedAvatar||"⭐"};store(PROFILE,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile()}
+el("reviewBtn").onclick=()=>el("factPanel").classList.toggle("show");
+document.querySelectorAll(".level-card").forEach(b=>b.onclick=()=>chooseLevel(Number(b.dataset.level)));
+el("checkBtn").onclick=checkAnswer;el("hintBtn").onclick=hint;el("keepLevelBtn").onclick=()=>beginNext(false);el("advanceBtn").onclick=()=>beginNext(true);
+el("saveScore").onclick=async()=>{await saveGlobal(true);el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"};
+el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;el("profileModal").onclick=e=>{if(e.target===el("profileModal"))closeProfile()};
+window.addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer()});
+updateProfile();renderBoard();newQuestion();
 </script>
 </body>
 </html>
