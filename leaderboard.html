@@ -118,7 +118,7 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
   </section>
 
   <section class="section">
-    <div class="section-head"><div><h2 class="section-title">Choose a Leaderboard</h2><p class="section-sub">Jump between games without scrolling through ten separate boards.</p></div></div>
+    <div class="section-head"><div><h2 class="section-title">Choose a Leaderboard</h2><p class="section-sub">Jump between games without scrolling through separate boards.</p></div></div>
     <div class="selector-wrap"><div class="game-selector" id="gameSelector"></div></div>
 
     <div class="board-shell">
@@ -159,7 +159,8 @@ const GAMES=[
   {id:"geometry",label:"Geometry Builder",icon:"📐",note:"Geometry Builder high scores"},
   {id:"math_maze",label:"Math Maze",icon:"🧩",note:"Math Maze high scores"},
   {id:"fraction",label:"Fraction Builder",icon:"🍕",note:"Fraction Builder high scores"},
-  {id:"detective",label:"Math Detective",icon:"🔎",note:"Math Detective high scores"}
+  {id:"detective",label:"Math Detective",icon:"🔎",note:"Math Detective high scores"},
+  {id:"length",label:"Length Lab",icon:"📏",note:"Length Lab high scores"}
 ];
 let activeGame="overall";
 let dailyView="today";
@@ -292,7 +293,7 @@ function historyRowHtml(x){
 function scoreMetaOverall(x){
   const parts=[
     ["💵",x.money],["🕒",x.time],["✖️",x.multiplication],["➗",x.division],["🔢",x.place_value],
-    ["⚔️",x.number_battle],["📐",x.geometry],["🧩",x.math_maze],["📝",x.daily_challenge],["🍕",x.fraction],["🔎",x.detective]
+    ["⚔️",x.number_battle],["📐",x.geometry],["🧩",x.math_maze],["📝",x.daily_challenge],["🍕",x.fraction],["🔎",x.detective],["📏",x.length]
   ].filter(x=>Number(x[1])>0);
   return parts.length?parts.map(x=>x[0]+" "+x[1]).join("  •  "):"No game scores yet";
 }
