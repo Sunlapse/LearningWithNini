@@ -161,7 +161,8 @@ const GAMES=[
   {id:"fraction",label:"Fraction Builder",icon:"🍕",note:"Fraction Builder high scores"},
   {id:"detective",label:"Math Detective",icon:"🔎",note:"Math Detective high scores"},
   {id:"length",label:"Length Lab",icon:"📏",note:"Length Lab high scores"},
-  {id:"capacity",label:"Capacity Lab",icon:"🥤",note:"Capacity Lab high scores"}
+  {id:"capacity",label:"Capacity Lab",icon:"🥤",note:"Capacity Lab high scores"},
+  {id:"weight_mass",label:"Weight & Mass Lab",icon:"⚖️",note:"Weight & Mass Lab high scores"}
 ];
 let activeGame="overall";
 let dailyView="today";
@@ -294,7 +295,7 @@ function historyRowHtml(x){
 function scoreMetaOverall(x){
   const parts=[
     ["💵",x.money],["🕒",x.time],["✖️",x.multiplication],["➗",x.division],["🔢",x.place_value],
-    ["⚔️",x.number_battle],["📐",x.geometry],["🧩",x.math_maze],["📝",x.daily_challenge],["🍕",x.fraction],["🔎",x.detective],["📏",x.length],["🥤",x.capacity]
+    ["⚔️",x.number_battle],["📐",x.geometry],["🧩",x.math_maze],["📝",x.daily_challenge],["🍕",x.fraction],["🔎",x.detective],["📏",x.length],["🥤",x.capacity],["⚖️",x.weight_mass]
   ].filter(x=>Number(x[1])>0);
   return parts.length?parts.map(x=>x[0]+" "+x[1]).join("  •  "):"No game scores yet";
 }
