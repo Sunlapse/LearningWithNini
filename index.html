@@ -480,6 +480,7 @@
     .feature-card.mathmaze { background: linear-gradient(180deg, #eef9ff, #efe6ff); }
     .feature-card.length { background: linear-gradient(180deg, #eafbf6, #e8f2ff); }
     .feature-card.capacity { background: linear-gradient(180deg, #e7fbff, #eef0ff); }
+    .feature-card.weightmass { background: linear-gradient(180deg, #eef4ff, #f3eaff); }
     .new-game-badge{
       position:absolute;
       top:12px;
@@ -558,6 +559,7 @@
     .mathmaze .card-btn { background: linear-gradient(135deg, #4fa9e9, #7a48dc); }
     .length .card-btn { background: linear-gradient(135deg, #35aee8, #6547d6); box-shadow: 0 9px 20px rgba(71,102,214,.18); }
     .capacity .card-btn { background: linear-gradient(135deg, #22b8c8, #5570dc); box-shadow: 0 9px 20px rgba(47,132,192,.18); }
+    .weightmass .card-btn { background: linear-gradient(135deg, #4d8de4, #7347d8); box-shadow: 0 9px 20px rgba(84,72,190,.18); }
     .leader .card-btn { background: linear-gradient(135deg, #ffbd24, #f3a400); }
 
     .why {
@@ -927,6 +929,14 @@
             <a class="card-btn" href="capacity-lab.html?v=20260930-1">Start Capacity Lab <span>→</span></a>
           </article>
 
+          <article class="feature-card weightmass">
+            <div class="new-game-badge" id="weightMassNewBadge">✨ NEW GAME</div>
+            <div class="card-icon">⚖️</div>
+            <h3>Weight &amp; Mass Lab</h3>
+            <p>Practice ounces, pounds, scales, grams, kilograms, estimation, and real-life problems!</p>
+            <a class="card-btn" href="weight-mass-lab.html?v=20260930-1">Start Weighing <span>→</span></a>
+          </article>
+
           <article class="feature-card leader">
             <div class="card-icon">🏆</div>
             <h3>Leaderboard</h3>
@@ -996,6 +1006,7 @@
             <a href="math-detective.html">Math Detective</a>
             <a href="length-lab.html?v=20260930-4">Length Lab</a>
             <a href="capacity-lab.html?v=20260930-1">Capacity Lab</a>
+            <a href="weight-mass-lab.html?v=20260930-1">Weight &amp; Mass Lab</a>
             <a href="leaderboard.html">Leaderboard</a>
           </div>
           <div>LearnWithNini.com ♡ Learn, play, and grow.</div>
@@ -1008,7 +1019,7 @@
     (() => {
       const expires = new Date("2026-10-15T00:00:00-10:00");
       if (new Date() < expires) return;
-      ["lengthNewBadge","capacityNewBadge"].forEach(id => {
+      ["lengthNewBadge","capacityNewBadge","weightMassNewBadge"].forEach(id => {
         const badge = document.getElementById(id);
         if (badge) badge.remove();
       });
