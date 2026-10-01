@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#f8fbff">
+<title>Weight &amp; Mass Lab | Learn With Nini</title>
+<meta name="description" content="Practice ounces, pounds, grams, kilograms, scales, estimation, and real-life weight and mass problems with Nini.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#282061;--muted:#746e94;--purple:#7040df;--pink:#f64b9a;--blue:#428de8;--green:#23b978;--yellow:#ffbf27;--line:rgba(83,59,160,.12);--shadow:0 18px 46px rgba(74,50,137,.13)}
+html,body{margin:0;min-height:100%}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 5% 6%,rgba(236,245,255,.95),transparent 24%),radial-gradient(circle at 96% 6%,rgba(241,226,255,.95),transparent 24%),linear-gradient(180deg,#fbfcff,#fff 46%,#fffafd)}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;min-height:72px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:10px max(16px,calc((100vw - 1440px)/2));background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.home,.profile-btn,.score-pill{min-height:44px;border:0;border-radius:999px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900}.home{background:#edf3ff;color:#425da8;text-decoration:none}.score-wrap{display:flex;justify-content:center}.score-pill{background:linear-gradient(135deg,#edf5ff,#f2eaff);color:#473f91}.profile-btn{background:linear-gradient(135deg,#fff3c6,#ffe09b);color:#654b12;cursor:pointer}
+.wrap{width:min(1440px,calc(100% - 28px));margin:0 auto;padding:20px 0 40px}.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:22px;align-items:start}
+.nini{position:sticky;top:94px;min-height:660px;border-radius:34px;overflow:hidden;background:#e8dcff;box-shadow:var(--shadow)}.nini img{width:100%;height:660px;object-fit:cover;object-position:center 28%}.nini:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(64,34,125,.2));pointer-events:none}.bubble{position:absolute;z-index:2;left:16px;right:16px;top:18px;background:#fff;border-radius:26px 26px 26px 8px;padding:15px 17px;font-family:"Fredoka",sans-serif;font-size:1.3rem;color:#4d2ab6;line-height:1.08;box-shadow:0 12px 28px rgba(66,38,130,.15);transform:rotate(-1.5deg)}.bubble small{display:block;margin-top:8px;color:#ee4a94;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
+.main{min-width:0}.panel,.progress,.challenge,.workspace,.levels,.extras,.leader{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.96);box-shadow:var(--shadow)}
+.hero{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-bottom:14px;padding:18px 20px;border-radius:28px;background:linear-gradient(135deg,#eef5ff,#f2eaff);border:1px solid var(--line);box-shadow:var(--shadow)}.hero h1{font-family:"Fredoka",sans-serif;margin:0;color:#4f43aa;font-size:clamp(2rem,4vw,3rem)}.hero p{margin:5px 0 0;color:#73698e;font-weight:900}.review-btn{border:0;border-radius:18px;padding:12px 15px;background:#fff;color:#604bc0;font-weight:1000;cursor:pointer;box-shadow:0 7px 17px rgba(80,55,150,.1)}
+.fact-panel{display:none;margin-bottom:14px;padding:15px 18px}.fact-panel.show{display:block}.fact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.fact{padding:12px;border-radius:18px;background:#f7f8ff;text-align:center;font-weight:900}.fact strong{display:block;font-family:"Fredoka",sans-serif;color:#5547aa;font-size:1.16rem}.fact small{color:#756d8d}
+.levels{padding:16px;margin-bottom:14px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4f43aa}.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.level-card{border:2px solid transparent;border-radius:21px;padding:13px 11px;text-align:center;cursor:pointer;color:var(--ink);min-height:150px;background:#f6f8ff}.level-card:nth-child(1){background:#edf7ff}.level-card:nth-child(2){background:#f2edff}.level-card:nth-child(3){background:#fff5df}.level-card:nth-child(4){background:#e9fbf4}.level-card:nth-child(5){background:#fff0f6}.level-card:nth-child(6){background:#edf8ff}.level-card:nth-child(7){background:#f1f8e9}.level-card.active{border-color:#6548d9;box-shadow:0 0 0 4px rgba(101,72,217,.09);transform:translateY(-1px)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#6548d9;color:#fff;font-weight:1000}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif;font-size:1rem}.level-card p{margin:0;color:#68617f;line-height:1.23;font-size:.79rem;font-weight:800}
+.progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}.qtext{font-weight:1000;white-space:nowrap}.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}.fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#438ee8,#6e48d9);transition:.25s}.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
+.challenge{padding:20px;text-align:center;background:linear-gradient(135deg,#f3f8ff,#f7f0ff);margin-bottom:14px}.level-pill{display:inline-flex;padding:7px 12px;border-radius:999px;background:#fff;color:#5a4eb2;font-weight:900}.prompt{font-family:"Fredoka",sans-serif;font-size:clamp(1.7rem,3.6vw,2.7rem);line-height:1.18;color:#403b88;margin:13px auto 5px}.subprompt{color:#73698e;font-weight:900}
+.workspace{padding:17px}.play-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px}.visual{min-height:430px;border-radius:24px;background:linear-gradient(180deg,#fcfdff,#f8f7ff);border:1px solid #e6e8f6;padding:18px;display:grid;place-items:center}.side{display:grid;gap:10px}.status{min-height:116px;border-radius:22px;background:linear-gradient(135deg,#f7fbff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#eef4ff;color:#4f65b5}.check,.hint,.next{border:0;border-radius:20px;min-height:64px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#428fe9,#6848da);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.hint{background:linear-gradient(135deg,#ff75b5,#ef4897);color:#fff}.notebook{border-radius:20px;background:#fff8dc;border:1px solid #f4df94;padding:13px;color:#725b18;font-weight:900;line-height:1.35}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:17px;padding:10px;text-align:center}.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.25rem}
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;width:min(650px,100%)}.choice{border:2px solid #dde1f2;border-radius:22px;background:#fff;min-height:84px;padding:14px;color:#4c459d;font-family:"Fredoka",sans-serif;font-size:1.18rem;cursor:pointer;box-shadow:0 8px 18px rgba(70,48,130,.05)}.choice:hover,.choice.selected{border-color:#6548d9;background:#f0edff}.choice.correct{border-color:#25b778;background:#e8f9ef;color:#178258}
+.scene{width:min(650px,100%);text-align:center}.scene-emoji{font-size:6.2rem;line-height:1;margin-bottom:10px}.scene-title{font-family:"Fredoka",sans-serif;font-size:1.65rem;color:#49409c}.scene-note{color:#766d90;font-weight:900;margin:8px 0 18px}
+.relation-wrap{width:min(650px,100%);text-align:center}.weight-row{display:flex;justify-content:center;align-items:flex-end;gap:12px;min-height:150px;margin-bottom:12px}.weight-block{display:grid;place-items:center;border:4px solid #5c62aa;background:linear-gradient(180deg,#eef3ff,#dfe8ff);border-radius:18px;color:#44488c;font-family:"Fredoka",sans-serif;font-weight:700;box-shadow:0 8px 14px rgba(75,65,145,.08)}.weight-block.lb{width:116px;height:116px}.weight-block.oz{width:68px;height:68px}.weight-block.kg{width:118px;height:118px;background:linear-gradient(180deg,#eafaf3,#d6f4e7);border-color:#389879;color:#26775c}.weight-block.g{width:70px;height:70px;background:linear-gradient(180deg,#eafaf3,#d6f4e7);border-color:#389879;color:#26775c}.relation{font-family:"Fredoka",sans-serif;font-size:1.55rem;color:#4a439b;margin:5px 0 17px}
+.scale-wrap{width:min(610px,100%);text-align:center}.scale-object{font-size:4.6rem;line-height:1;margin-bottom:-12px;position:relative;z-index:2}.dial{width:min(520px,100%);margin:auto}.dial svg{width:100%;height:auto;display:block}.scale-caption{font-weight:900;color:#6b6487;margin:3px 0 17px}
+.balance-wrap{width:min(650px,100%);text-align:center}.balance{position:relative;height:245px;margin-bottom:14px}.balance-base{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:110px;height:20px;background:#61599a;border-radius:999px}.balance-post{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);width:18px;height:135px;background:#7b72b2;border-radius:10px}.balance-beam{position:absolute;left:50%;top:72px;width:72%;height:10px;background:#51498a;border-radius:999px;transform:translateX(-50%) rotate(0deg);transform-origin:center;transition:.4s}.balance.neutral .balance-beam{transform:translateX(-50%) rotate(0deg)}.balance.left .balance-beam{transform:translateX(-50%) rotate(-7deg)}.balance.right .balance-beam{transform:translateX(-50%) rotate(7deg)}.pan{position:absolute;top:79px;width:30%;height:105px}.pan.left{left:5%}.pan.right{right:5%}.pan:before{content:"";position:absolute;left:50%;top:0;width:2px;height:54px;background:#77709f}.pan:after{content:"";position:absolute;left:8%;right:8%;bottom:8px;height:12px;background:#9790bb;border-radius:0 0 30px 30px}.pan-content{position:absolute;left:0;right:0;bottom:24px;display:grid;place-items:center;font-family:"Fredoka",sans-serif;color:#49408e}.pan-emoji{font-size:3.8rem;line-height:1}.pan-label{margin-top:5px;font-size:1rem}.vs{position:absolute;left:50%;top:42px;transform:translateX(-50%);font-family:"Fredoka",sans-serif;color:#8179a3}
+.builder{width:min(680px,100%)}.builder-title{text-align:center;font-weight:1000;color:#5e559b;margin-bottom:10px}.drop-zone{min-height:150px;border:3px dashed #9d8ce2;border-radius:25px;background:#f8f5ff;padding:14px;display:flex;align-items:center;justify-content:center;align-content:center;gap:9px;flex-wrap:wrap;transition:.18s}.drop-zone.over{background:#eee8ff;border-color:#6548d9}.drop-empty{color:#8a83a3;font-weight:900;text-align:center}.placed{border:0;border-radius:15px;padding:10px 12px;background:#e6efff;color:#44539a;font-weight:1000;cursor:pointer}.builder-total{text-align:center;margin:10px 0 13px;font-family:"Fredoka",sans-serif;font-size:1.35rem;color:#4d4699}.weight-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}.drag-weight{border:2px solid #dcd5f4;border-radius:17px;background:#fff;min-width:82px;min-height:58px;padding:10px;color:#51469f;font-family:"Fredoka",sans-serif;font-size:1.02rem;cursor:grab;touch-action:manipulation}.drag-weight:active{cursor:grabbing}.builder-help{text-align:center;color:#766f91;font-weight:800;font-size:.88rem;margin-top:8px}
+.round-card{display:none;margin-top:14px;padding:18px;text-align:center;border-radius:28px;background:linear-gradient(135deg,#fff5d7,#edf4ff);border:1px solid var(--line);box-shadow:var(--shadow)}.round-card.show{display:block}.round-card h2{font-family:"Fredoka",sans-serif;color:#5149a5;margin:0 0 8px}.round-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:12px}.round-actions button{border:0;border-radius:16px;padding:12px 16px;font-weight:1000;cursor:pointer}.keep{background:#5a55cf;color:#fff}.advance{background:#22b778;color:#fff}
+.extras,.leader{margin-top:14px;padding:13px 15px}.pill{border:0;border-radius:999px;padding:10px 13px;background:#edf1ff;color:#4d55a2;font-weight:900;cursor:pointer;text-decoration:none}.board{display:grid;gap:7px;margin-top:10px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#e8efff;color:#4f60b2}.empty{padding:10px;color:#8d86a3}details summary{cursor:pointer;font-weight:1000;color:#4d55a2}
+.modal-bg{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}.modal-bg.show{display:flex}.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;box-shadow:0 25px 60px rgba(50,30,100,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}.close{border:0;width:40px;height:40px;border-radius:50%;background:#edf2ff;font-size:1.25rem;cursor:pointer}.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #dce4f4;border-radius:14px;padding:12px;font-weight:900}.avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #e5eaf7;background:#fafcff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#6548d9;background:#f0edff}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#edf2ff;color:#4b5486}
+@media(max-width:1180px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.level-grid{grid-template-columns:repeat(3,1fr)}.play-grid{grid-template-columns:1fr 310px}}
+@media(max-width:800px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:205px;right:auto}.hero{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr 1fr}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.play-grid{grid-template-columns:1fr}.fact-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.hero{padding:15px}.level-grid{grid-template-columns:1fr}.progress{padding:11px}.stars{font-size:1.35rem}.challenge{padding:15px}.workspace{padding:10px}.visual{min-height:360px;padding:10px}.choice-grid{grid-template-columns:1fr}.fact-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.balance{height:220px}.weight-row{min-height:125px}}
+</style>
+<link rel="stylesheet" href="mobile-touch.css?v=20260930-2">
+</head>
+<body>
+<header class="topbar">
+<a class="home" href="index.html">🏠 Back to Home</a>
+<div class="score-wrap"><div class="score-pill" id="topScore">⭐ Points: 0</div></div>
+<button class="profile-btn" id="profileButton"><span id="avatarTop">⭐</span><span class="profile-name" id="nameTop">Nini</span></button>
+</header>
+
+<div class="wrap"><div class="shell">
+<aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Weight &amp; Mass Lab! ⚖️<small>Estimate it. Weigh it. Compare it.</small></div></aside>
+<main class="main">
+
+<section class="hero">
+<div><h1>⚖️ Weight &amp; Mass Lab</h1><p>Learn ounces, pounds, grams, kilograms, scales, estimation, and real-life measurement.</p></div>
+<button class="review-btn" id="reviewBtn">⚖️ Weight &amp; Mass Cheat Sheet</button>
+</section>
+
+<section class="panel fact-panel" id="factPanel">
+<div style="text-align:center;margin:0 0 12px"><strong style="font-family:Fredoka,sans-serif;font-size:1.25rem;color:#5547aa">The relationships worth remembering</strong><div style="color:#756d8d;font-weight:800;margin-top:3px">Learn each measurement system clearly. We will not convert directly between pounds and kilograms.</div></div>
+<div class="fact-grid">
+<div class="fact"><strong>16 oz = 1 lb</strong><small>customary weight</small></div>
+<div class="fact"><strong>2,000 lb = 1 ton</strong><small>very heavy objects</small></div>
+<div class="fact"><strong>1,000 g = 1 kg</strong><small>metric mass</small></div>
+<div class="fact"><strong>lb × 16 + oz</strong><small>find total ounces</small></div>
+</div>
+</section>
+
+<section class="levels">
+<h2>Choose a Weight &amp; Mass Skill</h2>
+<div class="level-grid">
+<button class="level-card active" data-level="0"><div class="level-num">1</div><h3>Choose the Unit</h3><p>Decide whether ounces, pounds, tons, grams, or kilograms make sense.</p></button>
+<button class="level-card" data-level="1"><div class="level-num">2</div><h3>Ounces &amp; Pounds</h3><p>Use 16 oz = 1 lb in both directions and with mixed measurements.</p></button>
+<button class="level-card" data-level="2"><div class="level-num">3</div><h3>Read the Scale</h3><p>Read an illustrated scale from whole pounds to smaller marks.</p></button>
+<button class="level-card" data-level="3"><div class="level-num">4</div><h3>Grams &amp; Kilograms</h3><p>Use 1,000 g = 1 kg and work with half kilograms later.</p></button>
+<button class="level-card" data-level="4"><div class="level-num">5</div><h3>Compare &amp; Estimate</h3><p>Use balance scales and choose reasonable real-life weights and masses.</p></button>
+<button class="level-card" data-level="5"><div class="level-num">6</div><h3>Real-Life Problems</h3><p>Solve grocery, pet, luggage, package, and sports-equipment problems.</p></button>
+<button class="level-card" data-level="6"><div class="level-num">7</div><h3>Weight &amp; Mass Challenge</h3><p>Mix conversions, ordering, tons, multi-step problems, and build weights on a scale.</p></button>
+</div>
+</section>
+
+<section class="progress"><div class="qtext" id="questionText">Question 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"></div></section>
+<section class="challenge"><div class="level-pill" id="levelName">Choose the Unit</div><div class="prompt" id="prompt"></div><div class="subprompt" id="subprompt"></div></section>
+
+<section class="workspace">
+<div class="play-grid">
+<div class="visual" id="visual"></div>
+<div class="side">
+<div class="status" id="status">Choose an answer, then check it.</div>
+<button class="check" id="checkBtn">Check Answer →</button>
+<button class="hint" id="hintBtn">Hint − 1 Star</button>
+<div class="notebook" id="notebook"><strong>Weight &amp; Mass Tip:</strong><br>16 ounces make 1 pound.</div>
+<div class="stats"><div class="stat"><small>Points</small><strong id="score">0</strong></div><div class="stat"><small>Streak</small><strong id="streak">0</strong></div><div class="stat"><small>Round</small><strong id="roundStat">1</strong></div></div>
+</div>
+</div>
+</section>
+
+<section class="round-card" id="roundCard">
+<h2 id="roundTitle">Round complete!</h2>
+<div id="roundMessage"></div>
+<div class="round-actions">
+<button class="keep" id="keepLevelBtn">Keep Practicing This Skill</button>
+<button class="advance" id="advanceBtn">Try Next Skill →</button>
+</div>
+</section>
+
+<section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
+<section class="leader"><details><summary>🏆 Weight &amp; Mass Lab global leaderboard</summary><div id="board" class="board"></div></details></section>
+</main>
+</div></div>
+
+<div class="modal-bg" id="profileModal"><div class="modal"><div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close" id="closeProfile">×</button></div><div class="profile-form"><input id="profileName" maxlength="16" placeholder="Player nickname"><div style="font-weight:900;color:#756b91">Choose an avatar</div><div class="avatars" id="avatars"></div></div><div class="modal-actions"><button class="cancel" id="cancelProfile">Cancel</button><button class="save" id="saveProfile">Save</button></div></div></div>
+
+<script src="leaderboard-api.js"></script>
+<script>
+const el=id=>document.getElementById(id);
+const PROFILE="learningWithNiniProfileV1",STATE="weightMassLabStateV1",AV=["⭐","🐱","🐰","🌈","❤️"];
+const LEVELS=[
+  {name:"Choose the Unit",tip:"Pick a unit that matches the size of the object. Tiny objects use ounces or grams; everyday heavy objects use pounds or kilograms; extremely heavy objects can use tons."},
+  {name:"Ounces & Pounds",tip:"16 ounces = 1 pound. Multiply pounds by 16 to get ounces. For mixed weights, add the leftover ounces."},
+  {name:"Read the Scale",tip:"Read the numbered pounds first, then count the smaller marks. Half a pound is 8 oz; a quarter pound is 4 oz."},
+  {name:"Grams & Kilograms",tip:"1 kilogram = 1,000 grams. Multiply kilograms by 1,000 to get grams."},
+  {name:"Compare & Estimate",tip:"Convert to the same unit before comparing. For estimates, ask whether the number feels realistic for the object."},
+  {name:"Real-Life Problems",tip:"Keep every amount in the same unit before adding or subtracting."},
+  {name:"Weight & Mass Challenge",tip:"Choose the useful relationship first, convert when needed, and solve one step at a time."}
+];
+const CUSTOMARY=[
+  {name:"strawberry",emoji:"🍓",unit:"ounces",why:"A strawberry is light enough to measure in ounces."},
+  {name:"backpack",emoji:"🎒",unit:"pounds",why:"A loaded backpack is usually measured in pounds."},
+  {name:"bowling ball",emoji:"🎳",unit:"pounds",why:"A bowling ball is reasonably measured in pounds."},
+  {name:"watermelon",emoji:"🍉",unit:"pounds",why:"A watermelon is usually several pounds."},
+  {name:"delivery truck",emoji:"🚚",unit:"tons",why:"A truck is extremely heavy, so tons are reasonable."},
+  {name:"elephant",emoji:"🐘",unit:"tons",why:"An elephant is heavy enough for tons to make sense."}
+];
+const METRIC=[
+  {name:"paper clip",emoji:"📎",unit:"grams",why:"A paper clip has a very small mass, so grams make sense."},
+  {name:"apple",emoji:"🍎",unit:"grams",why:"An apple is usually measured in hundreds of grams, not kilograms."},
+  {name:"textbook",emoji:"📘",unit:"kilograms",why:"A textbook can reasonably be described in kilograms."},
+  {name:"small dog",emoji:"🐕",unit:"kilograms",why:"A dog's mass is reasonably measured in kilograms."}
+];
+const ESTIMATES=[
+  {name:"watermelon",emoji:"🍉",answer:"10 lb",options:["10 lb","10 oz","10 tons"],explain:"A watermelon can reasonably weigh around 10 pounds."},
+  {name:"strawberry",emoji:"🍓",answer:"1 oz",options:["1 oz","1 lb","1 ton"],explain:"A strawberry is light, so about an ounce is reasonable."},
+  {name:"school backpack",emoji:"🎒",answer:"8 lb",options:["8 lb","8 oz","8 tons"],explain:"A loaded school backpack can reasonably weigh several pounds."},
+  {name:"paper clip",emoji:"📎",answer:"1 g",options:["1 g","1 kg","1,000 kg"],explain:"A paper clip has a mass of only about a gram."},
+  {name:"bag of rice",emoji:"🍚",answer:"5 lb",options:["5 lb","5 oz","5 tons"],explain:"A grocery-size bag of rice can reasonably weigh several pounds."},
+  {name:"adult cat",emoji:"🐈",answer:"4 kg",options:["4 kg","4 g","4,000 kg"],explain:"A cat can reasonably have a mass of a few kilograms."}
+];
+function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function commas(n){return Number(n).toLocaleString("en-US")}
+function mixedLabel(totalOz){
+  const lb=Math.floor(totalOz/16),oz=totalOz%16;
+  if(lb&&oz)return lb+" lb "+oz+" oz";
+  if(lb)return lb+" lb";
+  return oz+" oz";
+}
+function choiceQuestion(prompt,sub,answer,options,explain,tip,visual){
+  return {kind:"choice",prompt,sub,answer:String(answer),options:shuffle([...new Set(options.map(String))]),explain,tip,visual};
+}
+let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),pickedAvatar=profile.avatar||"⭐";
+let saved=safe(STATE,{score:0,level:0,round:1});
+let level=Math.min(6,Math.max(0,Number(saved.level)||0)),round=Math.max(1,Number(saved.round)||1),score=Math.max(0,Number(saved.score)||0);
+let q=1,streak=0,stars=3,solved=false,selected=null,masteryThisRound=0,lastKey="",current=null,builderTotal=0,builderPlaced=[];
+
+function makeLevel0(){
+  const metric=Math.random()<.35;
+  const s=pick(metric?METRIC:CUSTOMARY);
+  const options=metric?["grams","kilograms"]:["ounces","pounds","tons"];
+  return choiceQuestion(
+    "Which unit makes the most sense for a "+s.name+"?",
+    metric?"Use metric mass units.":"Use U.S. customary weight units.",
+    s.unit,options,s.why,
+    "Think about how heavy the object feels before doing any math.",
+    {type:"scene",emoji:s.emoji,title:s.name,note:"No measurement is shown — estimate from real life."}
+  );
+}
+function makeLevel1(){
+  const mode=round>=2?rnd(0,3):rnd(0,1);
+  if(mode===0){
+    const lb=rnd(1,Math.min(8,3+round)),ans=lb*16;
+    return choiceQuestion(lb+" lb equals how many ounces?","Use 16 oz for every pound.",ans+" oz",[ans+" oz",(ans+16)+" oz",Math.max(16,ans-16)+" oz",lb+" oz"],lb+" × 16 = "+ans+" oz.","16 oz = 1 lb.",{type:"relation",system:"customary",text:"16 oz = 1 lb"});
+  }
+  if(mode===1){
+    const lb=rnd(1,Math.min(8,3+round)),oz=lb*16;
+    return choiceQuestion(oz+" oz equals how many pounds?","Make groups of 16 ounces.",lb+" lb",[lb+" lb",(lb+1)+" lb",Math.max(1,lb-1)+" lb",oz+" lb"],oz+" ÷ 16 = "+lb+" lb.","16 ounces make one pound.",{type:"relation",system:"customary",text:"16 oz = 1 lb"});
+  }
+  if(mode===2){
+    const lb=rnd(1,5),extra=pick([2,4,5,6,8,10,12]),ans=lb*16+extra;
+    return choiceQuestion(lb+" lb "+extra+" oz equals how many total ounces?","Convert the pounds, then add the extra ounces.",ans+" oz",[ans+" oz",(ans+16)+" oz",lb+extra+" oz",Math.max(1,ans-extra)+" oz"],lb+" × 16 + "+extra+" = "+ans+" oz.","Pounds × 16 + leftover ounces.",{type:"relation",system:"customary",text:"16 oz = 1 lb"});
+  }
+  const lb=rnd(1,5),extra=pick([4,8,12]),total=lb*16+extra;
+  return choiceQuestion(total+" oz equals which mixed weight?","Make groups of 16 ounces, then keep the remainder.",mixedLabel(total),[mixedLabel(total),mixedLabel(total+4),mixedLabel(Math.max(4,total-4)),(lb+extra)+" lb"],total+" oz = "+mixedLabel(total)+".","Divide by 16. The quotient is pounds and the remainder is ounces.",{type:"relation",system:"customary",text:"16 oz = 1 lb"});
+}
+function scaleValue(){
+  const parts=round===1?1:round===2?2:round>=3?4:1;
+  const whole=rnd(0,7);
+  const frac=parts===1?0:parts===2?pick([0,.5]):pick([0,.25,.5,.75]);
+  const val=Math.min(7.75,whole+frac);
+  return Math.max(.25,val);
+}
+function scaleLabel(lbValue){
+  const totalOz=Math.round(lbValue*16);
+  return mixedLabel(totalOz);
+}
+function makeLevel2(){
+  const val=scaleValue(),answer=scaleLabel(val);
+  const totalOz=Math.round(val*16);
+  const opts=[answer,scaleLabel(Math.min(8,totalOz/16+.5)),scaleLabel(Math.max(.25,totalOz/16-.5)),scaleLabel(Math.min(8,totalOz/16+.25))];
+  return choiceQuestion(
+    "What does the scale read?",
+    round===1?"Start with the whole-pound marks.":round===2?"Whole pounds and half-pounds are shown.":"Read the quarter-pound marks too.",
+    answer,opts,answer+" is the scale reading.","½ lb = 8 oz and ¼ lb = 4 oz.",{type:"scale",value:val,subdiv:round===1?1:round===2?2:4,emoji:pick(["🍎","📦","🥔","🎒"])}
+  );
+}
+function makeLevel3(){
+  const harder=round>=2;
+  if(harder&&Math.random()<.45){
+    const kg=pick([0.5,1.5,2.5,3.5,4.5]),g=kg*1000;
+    if(Math.random()<.5){
+      return choiceQuestion(kg+" kg equals how many grams?","Use 1 kg = 1,000 g.",commas(g)+" g",[commas(g)+" g",commas(g+500)+" g",commas(Math.max(250,g-500))+" g",commas(kg*100)+" g"],kg+" × 1,000 = "+commas(g)+" g.","Half a kilogram is 500 grams.",{type:"relation",system:"metric",text:"1,000 g = 1 kg"});
+    }
+    return choiceQuestion(commas(g)+" g equals how many kilograms?","Make groups of 1,000 grams.",kg+" kg",[kg+" kg",(kg+.5)+" kg",Math.max(.5,kg-.5)+" kg",(g/100)+" kg"],commas(g)+" ÷ 1,000 = "+kg+" kg.","1,000 g = 1 kg.",{type:"relation",system:"metric",text:"1,000 g = 1 kg"});
+  }
+  const kg=rnd(1,Math.min(7,3+round)),g=kg*1000;
+  if(Math.random()<.5){
+    return choiceQuestion(kg+" kg equals how many grams?","Multiply kilograms by 1,000.",commas(g)+" g",[commas(g)+" g",commas(g+1000)+" g",commas(Math.max(1000,g-1000))+" g",commas(kg*100)+" g"],kg+" × 1,000 = "+commas(g)+" g.","1 kg = 1,000 g.",{type:"relation",system:"metric",text:"1,000 g = 1 kg"});
+  }
+  return choiceQuestion(commas(g)+" g equals how many kilograms?","Make groups of 1,000 grams.",kg+" kg",[kg+" kg",(kg+1)+" kg",Math.max(1,kg-1)+" kg",(g/100)+" kg"],commas(g)+" ÷ 1,000 = "+kg+" kg.","1,000 g = 1 kg.",{type:"relation",system:"metric",text:"1,000 g = 1 kg"});
+}
+function makeLevel4(){
+  if(Math.random()<.5){
+    const e=pick(ESTIMATES);
+    return choiceQuestion("Which is the most reasonable estimate for a "+e.name+"?","Choose the amount that makes sense in real life.",e.answer,e.options,e.explain,"Reject choices that are obviously far too light or far too heavy.",{type:"scene",emoji:e.emoji,title:e.name,note:"Estimate first. No answer is shown in the picture."});
+  }
+  const leftLb=rnd(1,4),leftOz=pick([0,4,8,12]),left=leftLb*16+leftOz;
+  const delta=pick([-12,-8,-4,0,4,8,12]),right=Math.max(8,left+delta);
+  const answer=left>right?"Left side":right>left?"Right side":"They are equal";
+  const explain=mixedLabel(left)+" is "+(left>right?"heavier than":right>left?"lighter than":"equal to")+" "+mixedLabel(right)+".";
+  return choiceQuestion("Which side would make the balance tip down?","Compare the two weights. The balance stays level until you answer.",answer,["Left side","Right side","They are equal"],explain,"Convert both amounts to total ounces if needed.",{type:"balance",left:{emoji:pick(["📦","🍚","🎒"]),label:mixedLabel(left),oz:left},right:{emoji:pick(["🏀","📚","🥔"]),label:mixedLabel(right),oz:right}});
+}
+function makeLevel5(){
+  const mode=rnd(0,4);
+  if(mode===0){
+    const a=rnd(2,6),bLb=rnd(1,4),bOz=pick([0,4,8,12]),total=a*16+bLb*16+bOz;
+    return choiceQuestion("One grocery bag weighs "+a+" lb. Another weighs "+bLb+" lb "+bOz+" oz. What is their total weight?","Convert both to ounces or add pounds and ounces carefully.",mixedLabel(total),[mixedLabel(total),mixedLabel(total+8),mixedLabel(Math.max(8,total-8)),(a+bLb+bOz)+" lb"],a+" lb plus "+bLb+" lb "+bOz+" oz = "+mixedLabel(total)+".","Keep pounds with pounds and ounces with ounces. Regroup at 16 oz.",{type:"scene",emoji:"🛍️",title:"Grocery bags",note:"Two bags. Find their combined weight."});
+  }
+  if(mode===1){
+    const start=rnd(3,8)*16,removed=pick([8,16,24,32]),ans=start-removed;
+    return choiceQuestion("A package weighs "+mixedLabel(start)+". After removing packing material weighing "+mixedLabel(removed)+", what does it weigh?","Subtract using the same unit.",mixedLabel(ans),[mixedLabel(ans),mixedLabel(ans+8),mixedLabel(Math.max(8,ans-8)),mixedLabel(start+removed)],mixedLabel(start)+" − "+mixedLabel(removed)+" = "+mixedLabel(ans)+".","Convert both to ounces before subtracting if that helps.",{type:"scene",emoji:"📦",title:"Shipping package",note:"Remove the packing material."});
+  }
+  if(mode===2){
+    const pet=rnd(3,8),food=pick([500,1000,1500]),ans=pet*1000+food;
+    return choiceQuestion("A pet has a mass of "+pet+" kg. A bag of food has a mass of "+commas(food)+" g. What is their combined mass in grams?","Convert kilograms to grams, then add.",commas(ans)+" g",[commas(ans)+" g",commas(ans+500)+" g",commas(Math.max(500,ans-500))+" g",commas(pet*100+food)+" g"],pet+" kg = "+commas(pet*1000)+" g. Add "+commas(food)+" g to get "+commas(ans)+" g.","1 kg = 1,000 g.",{type:"scene",emoji:"🐕",title:"Pet and food",note:"Use grams for both amounts."});
+  }
+  if(mode===3){
+    const balls=rnd(2,5),each=pick([8,12,16]),ans=balls*each;
+    return choiceQuestion("There are "+balls+" sports balls. Each weighs "+each+" oz. What is the total weight?","Multiply the number of balls by the ounces per ball.",mixedLabel(ans),[mixedLabel(ans),mixedLabel(ans+8),mixedLabel(Math.max(4,ans-8)),balls+each+" oz"],balls+" × "+each+" oz = "+ans+" oz = "+mixedLabel(ans)+".","Multiply first, then regroup every 16 ounces into a pound.",{type:"scene",emoji:"🏀",title:"Sports equipment",note:"Each ball weighs the same amount."});
+  }
+  const bag=rnd(2,5),limit=bag+rnd(1,4),difference=(limit-bag)*16;
+  return choiceQuestion("A suitcase weighs "+bag+" lb. The limit is "+limit+" lb. How much more weight can be added?","Subtract the current weight from the limit.",mixedLabel(difference),[mixedLabel(difference),mixedLabel(difference+16),mixedLabel(Math.max(16,difference-16)),(bag+limit)+" lb"],limit+" lb − "+bag+" lb = "+mixedLabel(difference)+".","This is a difference problem.",{type:"scene",emoji:"🧳",title:"Luggage",note:"Stay under the weight limit."});
+}
+function makeBuilder(){
+  const targetLb=rnd(1,4),targetExtra=pick([0,4,8,12]),target=targetLb*16+targetExtra;
+  return {kind:"builder",prompt:"Build exactly "+mixedLabel(target)+" on the scale.",sub:"Drag or tap the weights onto the scale. Tap a placed weight to remove it.",answerTotal:target,explain:"You built "+mixedLabel(target)+" exactly.",tip:"Use 1 lb = 16 oz. Start with the pound weights, then add ounces.",visual:{type:"builder"}};
+}
+function makeLevel6(){
+  const mode=rnd(0,5);
+  if(mode===0)return makeBuilder();
+  if(mode===1){
+    const tons=rnd(1,3),ans=tons*2000;
+    return choiceQuestion(tons+" ton"+(tons===1?"":"s")+" equals how many pounds?","Use 2,000 lb for every ton.",commas(ans)+" lb",[commas(ans)+" lb",commas(ans+2000)+" lb",commas(Math.max(2000,ans-2000))+" lb",tons*200+" lb"],tons+" × 2,000 = "+commas(ans)+" lb.","2,000 lb = 1 ton.",{type:"relation",system:"customary",text:"2,000 lb = 1 ton"});
+  }
+  if(mode===2){
+    const vals=[rnd(1,3)*16+pick([0,4,8,12]),rnd(2,4)*16+pick([0,4,8,12]),rnd(1,5)*16+pick([0,4,8,12])];
+    const sorted=[...vals].sort((a,b)=>a-b);
+    const correct=sorted.map(mixedLabel).join(" < ");
+    const rev=[...sorted].reverse().map(mixedLabel).join(" < ");
+    const swap=[sorted[1],sorted[0],sorted[2]].map(mixedLabel).join(" < ");
+    return choiceQuestion("Which order goes from lightest to heaviest?","Compare all three weights.",correct,[correct,rev,swap],[...sorted].map(mixedLabel).join(", ")+" is the correct increasing order.","Convert each weight to total ounces before ordering.",{type:"scene",emoji:"📦",title:"Three packages",note:"Order by weight, not by the way the numbers look."});
+  }
+  if(mode===3){
+    const kg=rnd(2,5),used=pick([500,1000,1500]),ans=kg*1000-used;
+    return choiceQuestion(kg+" kg − "+commas(used)+" g = ?","Convert kilograms to grams before subtracting.",commas(ans)+" g",[commas(ans)+" g",commas(ans+1000)+" g",commas(Math.max(500,ans-1000))+" g",commas(kg*1000+used)+" g"],commas(kg*1000)+" − "+commas(used)+" = "+commas(ans)+" g.","1 kg = 1,000 g.",{type:"relation",system:"metric",text:"1,000 g = 1 kg"});
+  }
+  if(mode===4){
+    const lb=rnd(2,5),extra=pick([4,8,12]),used=pick([8,12,16]),start=lb*16+extra,ans=start-used;
+    return choiceQuestion(mixedLabel(start)+" − "+mixedLabel(used)+" = ?","Convert both weights to ounces, subtract, then regroup.",mixedLabel(ans),[mixedLabel(ans),mixedLabel(ans+8),mixedLabel(Math.max(4,ans-8)),mixedLabel(start+used)],mixedLabel(start)+" − "+mixedLabel(used)+" = "+mixedLabel(ans)+".","Total ounces can make mixed subtraction easier.",{type:"relation",system:"customary",text:"16 oz = 1 lb"});
+  }
+  const a=rnd(1,3),b=pick([4,8,12]),c=rnd(1,2),total=(a+c)*16+b;
+  return choiceQuestion("A box weighs "+a+" lb "+b+" oz. You add an item weighing "+c+" lb. What is the new total?","Add the pound amount, then keep the ounces.",mixedLabel(total),[mixedLabel(total),mixedLabel(total+8),mixedLabel(Math.max(8,total-8)),(a+b+c)+" lb"],a+" lb "+b+" oz + "+c+" lb = "+mixedLabel(total)+".","Add pounds to pounds and keep the ounces.",{type:"scene",emoji:"📦",title:"Packing a box",note:"Add one more item."});
+}
+function makeQuestion(){
+  let x,tries=0;
+  do{x=[makeLevel0,makeLevel1,makeLevel2,makeLevel3,makeLevel4,makeLevel5,makeLevel6][level]();tries++}
+  while((x.prompt+"|"+(x.answer||x.answerTotal))===lastKey&&tries<12);
+  lastKey=x.prompt+"|"+(x.answer||x.answerTotal);
+  return x;
+}
+function renderScene(v){
+  el("visual").innerHTML='<div class="scene"><div class="scene-emoji">'+v.emoji+'</div><div class="scene-title">'+v.title+'</div><div class="scene-note">'+v.note+'</div><div id="choiceArea" class="choice-grid"></div></div>';
+}
+function renderRelation(v){
+  const metric=v.system==="metric";
+  const small=metric?'<div class="weight-block g">g</div>':'<div class="weight-block oz">oz</div>';
+  const large=metric?'<div class="weight-block kg">kg</div>':'<div class="weight-block lb">lb</div>';
+  el("visual").innerHTML='<div class="relation-wrap"><div class="weight-row">'+small+large+'</div><div class="relation">'+v.text+'</div><div id="choiceArea" class="choice-grid" style="margin:0 auto"></div></div>';
+}
+function polar(cx,cy,r,deg){const rad=(deg-90)*Math.PI/180;return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}}
+function renderScale(v){
+  const max=8,cx=220,cy=200,r=148,start=-120,end=120;
+  const steps=max*v.subdiv;
+  let ticks="",labels="";
+  for(let i=0;i<=steps;i++){
+    const val=i/v.subdiv,ang=start+(end-start)*(val/max);
+    const outer=polar(cx,cy,r,ang),inner=polar(cx,cy,r-(i%v.subdiv===0?24:13),ang);
+    ticks+='<line x1="'+inner.x.toFixed(1)+'" y1="'+inner.y.toFixed(1)+'" x2="'+outer.x.toFixed(1)+'" y2="'+outer.y.toFixed(1)+'" stroke="#554b82" stroke-width="'+(i%v.subdiv===0?4:2)+'"/>';
+    if(i%v.subdiv===0){
+      const p=polar(cx,cy,r-45,ang);
+      labels+='<text x="'+p.x.toFixed(1)+'" y="'+(p.y+5).toFixed(1)+'" text-anchor="middle" font-size="15" font-weight="900" fill="#514879">'+val+'</text>';
+    }
+  }
+  const needleAng=start+(end-start)*(v.value/max),tip=polar(cx,cy,r-55,needleAng);
+  const svg='<svg viewBox="0 0 440 295" aria-label="Illustrated pound scale"><path d="M55 215 A165 165 0 0 1 385 215" fill="#fff8dd" stroke="#665ca0" stroke-width="5"/>'+ticks+labels+'<line x1="'+cx+'" y1="'+cy+'" x2="'+tip.x.toFixed(1)+'" y2="'+tip.y.toFixed(1)+'" stroke="#ec4f96" stroke-width="7" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="12" fill="#665ca0"/><rect x="90" y="211" width="260" height="60" rx="24" fill="#dfe8ff" stroke="#665ca0" stroke-width="5"/><text x="220" y="250" text-anchor="middle" font-size="18" font-weight="900" fill="#514879">pounds (lb)</text></svg>';
+  el("visual").innerHTML='<div class="scale-wrap"><div class="scale-object">'+v.emoji+'</div><div class="dial">'+svg+'</div><div class="scale-caption">Read the needle. The picture is a diagram, not actual physical size.</div><div id="choiceArea" class="choice-grid" style="margin:0 auto"></div></div>';
+}
+function renderBalance(v){
+  current.balanceVisual=v;
+  el("visual").innerHTML='<div class="balance-wrap"><div class="balance neutral" id="balanceGraphic"><div class="vs">COMPARE</div><div class="balance-base"></div><div class="balance-post"></div><div class="balance-beam"></div><div class="pan left"><div class="pan-content"><div class="pan-emoji">'+v.left.emoji+'</div><div class="pan-label">'+v.left.label+'</div></div></div><div class="pan right"><div class="pan-content"><div class="pan-emoji">'+v.right.emoji+'</div><div class="pan-label">'+v.right.label+'</div></div></div></div><div id="choiceArea" class="choice-grid" style="margin:0 auto"></div></div>';
+}
+function revealBalance(){
+  if(!current||!current.balanceVisual)return;
+  const b=el("balanceGraphic"),v=current.balanceVisual;
+  if(!b)return;
+  b.classList.remove("neutral");
+  b.classList.add(v.left.oz>v.right.oz?"left":v.right.oz>v.left.oz?"right":"neutral");
+}
+function renderBuilder(){
+  builderTotal=0;builderPlaced=[];
+  el("visual").innerHTML='<div class="builder"><div class="builder-title">Build the target weight</div><div class="drop-zone" id="dropZone"><div class="drop-empty" id="dropEmpty">Drag or tap weights here</div></div><div class="builder-total" id="builderTotal">Built: 0 oz</div><div class="weight-tray" id="weightTray"></div><div class="builder-help">You can drag a weight into the box or simply tap it. Tap a placed weight to remove it.</div></div>';
+  const weights=[{label:"1 lb",oz:16},{label:"8 oz",oz:8},{label:"4 oz",oz:4},{label:"2 oz",oz:2},{label:"1 oz",oz:1}];
+  const tray=el("weightTray"),zone=el("dropZone");
+  weights.forEach(w=>{
+    const b=document.createElement("button");b.className="drag-weight";b.type="button";b.textContent=w.label;b.draggable=true;b.dataset.oz=w.oz;b.dataset.label=w.label;
+    b.addEventListener("click",()=>addWeight(w));
+    b.addEventListener("dragstart",e=>{e.dataTransfer.setData("text/plain",JSON.stringify(w));e.dataTransfer.effectAllowed="copy"});
+    tray.appendChild(b);
+  });
+  zone.addEventListener("dragover",e=>{e.preventDefault();zone.classList.add("over")});
+  zone.addEventListener("dragleave",()=>zone.classList.remove("over"));
+  zone.addEventListener("drop",e=>{e.preventDefault();zone.classList.remove("over");try{addWeight(JSON.parse(e.dataTransfer.getData("text/plain")))}catch{}});
+}
+function addWeight(w){builderPlaced.push({label:w.label,oz:Number(w.oz)});builderTotal+=Number(w.oz);renderPlaced()}
+function removeWeight(i){const w=builderPlaced[i];if(!w)return;builderTotal-=w.oz;builderPlaced.splice(i,1);renderPlaced()}
+function renderPlaced(){
+  const z=el("dropZone");if(!z)return;
+  z.innerHTML="";
+  if(!builderPlaced.length){z.innerHTML='<div class="drop-empty">Drag or tap weights here</div>'}
+  else builderPlaced.forEach((w,i)=>{const b=document.createElement("button");b.type="button";b.className="placed";b.textContent=w.label+" ×";b.title="Remove "+w.label;b.onclick=()=>removeWeight(i);z.appendChild(b)});
+  el("builderTotal").textContent="Built: "+mixedLabel(builderTotal)+" ("+builderTotal+" oz)";
+}
+function renderVisual(v){
+  if(current.kind==="builder"){renderBuilder();return}
+  if(v.type==="scene"){renderScene(v);return}
+  if(v.type==="relation"){renderRelation(v);return}
+  if(v.type==="scale"){renderScale(v);return}
+  if(v.type==="balance"){renderBalance(v);return}
+  el("visual").innerHTML='<div id="choiceArea" class="choice-grid"></div>';
+}
+function renderChoices(){
+  if(current.kind==="builder")return;
+  const box=el("choiceArea");box.innerHTML="";
+  current.options.forEach(v=>{const b=document.createElement("button");b.className="choice";b.textContent=v;b.onclick=()=>{if(solved)return;selected=String(v);box.querySelectorAll(".choice").forEach(x=>x.classList.toggle("selected",x===b))};box.appendChild(b)});
+}
+function updateUI(){
+  el("questionText").textContent="Round "+round+" · Question "+q+" of 10";
+  el("progressFill").style.width=(q*10)+"%";
+  el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");
+  el("score").textContent=score;el("topScore").textContent="⭐ Points: "+score;el("streak").textContent=streak;el("roundStat").textContent=round;
+  document.querySelectorAll(".level-card").forEach(b=>b.classList.toggle("active",Number(b.dataset.level)===level));
+}
+function newQuestion(){
+  solved=false;selected=null;stars=3;builderTotal=0;builderPlaced=[];current=makeQuestion();
+  el("levelName").textContent="Level "+(level+1)+" · "+LEVELS[level].name;
+  el("prompt").textContent=current.prompt;el("subprompt").textContent=current.sub||"";
+  el("status").textContent=current.kind==="builder"?"Build the target weight, then check it.":"Choose an answer, then check it.";el("status").className="status";
+  el("notebook").innerHTML="<strong>Weight & Mass Tip:</strong><br>"+LEVELS[level].tip;
+  el("checkBtn").textContent="Check Answer →";el("checkBtn").className="check";el("hintBtn").disabled=false;
+  renderVisual(current.visual||{});renderChoices();updateUI();
+}
+function checkAnswer(){
+  if(solved){nextQuestion();return}
+  let ok=false;
+  if(current.kind==="builder"){
+    ok=builderTotal===current.answerTotal;
+  }else{
+    if(selected===null){el("status").textContent="Choose an answer first.";el("status").className="status info";return}
+    ok=selected===String(current.answer);
+  }
+  if(ok){
+    solved=true;score+=stars;streak++;if(stars===3)masteryThisRound++;
+    el("status").textContent="✅ Correct! "+current.explain+" You earned "+stars+" star"+(stars===1?"":"s")+".";
+    el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Question →";el("checkBtn").className="next";el("hintBtn").disabled=true;
+    if(current.kind!=="builder")el("visual").querySelectorAll(".choice").forEach(b=>{if(b.textContent===String(current.answer))b.classList.add("correct")});
+    revealBalance();persist();saveGlobal(false);updateUI();
+  }else{
+    stars=Math.max(1,stars-1);streak=0;
+    el("status").textContent=current.kind==="builder"?(builderTotal<current.answerTotal?"Not enough yet. Add more weight and try again.":"Too much. Remove a weight and try again."):"Not quite. Try again — you still have a chance to solve it.";
+    el("status").className="status bad";updateUI();
+  }
+}
+function hint(){
+  if(solved)return;stars=Math.max(1,stars-1);
+  el("notebook").innerHTML="<strong>Hint:</strong><br>"+(current.tip||LEVELS[level].tip);
+  el("status").textContent="Hint revealed. Use it, then try the question again.";el("status").className="status info";updateUI();
+}
+function nextQuestion(){if(!solved)return;if(q<10){q++;newQuestion();return}finishRound()}
+function finishRound(){
+  el("roundTitle").textContent="🎉 Round "+round+" complete!";
+  el("roundMessage").innerHTML="<strong>"+masteryThisRound+"/10 mastered on the first try with no hint</strong> in "+LEVELS[level].name+". Your "+score+" points carry forward.";
+  el("roundCard").classList.add("show");el("advanceBtn").style.display=level<6?"inline-block":"none";el("advanceBtn").textContent=level<6?"Try Level "+(level+2)+": "+LEVELS[level+1].name+" →":"";
+  el("roundCard").scrollIntoView({behavior:"smooth",block:"center"});saveGlobal(true);persist();
+}
+function beginNext(nextLevel){if(nextLevel&&level<6)level++;round++;q=1;masteryThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();window.scrollTo({top:0,behavior:"smooth"})}
+function chooseLevel(n){level=Math.max(0,Math.min(6,n));q=1;masteryThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion()}
+function persist(){store(STATE,{score,level,round})}
+async function saveGlobal(show){
+  if(!window.LWNLeaderboard)return;
+  try{await LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"weight_mass",score,level:"level-"+(level+1),best_streak:streak});if(show)await renderBoard()}catch{}
+}
+async function renderBoard(){
+  const box=el("board");box.innerHTML="";
+  if(!window.LWNLeaderboard){box.innerHTML='<div class="empty">Leaderboard is unavailable.</div>';return}
+  try{
+    const rows=await LWNLeaderboard.top("weight_mass",10);
+    if(!rows.length){box.innerHTML='<div class="empty">No global scores yet.</div>';return}
+    rows.forEach((x,i)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<div class="rank">'+(i+1)+'</div><div>'+x.avatar+" "+esc(x.name)+'</div><div>⭐ '+x.score+'</div>';box.appendChild(r)})
+  }catch{box.innerHTML='<div class="empty">Could not load global scores.</div>'}
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function updateProfile(){el("avatarTop").textContent=profile.avatar||"⭐";el("nameTop").textContent=profile.name||"Nini"}
+function buildAvatars(){const b=el("avatars");b.innerHTML="";AV.forEach(v=>{const x=document.createElement("button");x.className="avatar"+(v===pickedAvatar?" active":"");x.textContent=v;x.onclick=()=>{pickedAvatar=v;buildAvatars()};b.appendChild(x)})}
+function openProfile(){pickedAvatar=profile.avatar||"⭐";el("profileName").value=profile.name||"Nini";buildAvatars();el("profileModal").classList.add("show")}
+function closeProfile(){el("profileModal").classList.remove("show")}
+function saveProfile(){profile={name:(el("profileName").value||"Nini").trim().slice(0,16)||"Nini",avatar:pickedAvatar||"⭐"};store(PROFILE,profile);localStorage.setItem("niniPlayerName",profile.name);localStorage.setItem("niniAvatar",profile.avatar);updateProfile();closeProfile()}
+el("reviewBtn").onclick=()=>el("factPanel").classList.toggle("show");
+document.querySelectorAll(".level-card").forEach(b=>b.onclick=()=>chooseLevel(Number(b.dataset.level)));
+el("checkBtn").onclick=checkAnswer;el("hintBtn").onclick=hint;el("keepLevelBtn").onclick=()=>beginNext(false);el("advanceBtn").onclick=()=>beginNext(true);
+el("saveScore").onclick=async()=>{await saveGlobal(true);el("status").textContent="Global score saved for "+(profile.name||"Nini")+".";el("status").className="status good"};
+el("profileButton").onclick=openProfile;el("closeProfile").onclick=closeProfile;el("cancelProfile").onclick=closeProfile;el("saveProfile").onclick=saveProfile;el("profileModal").onclick=e=>{if(e.target===el("profileModal"))closeProfile()};
+window.addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer()});
+updateProfile();renderBoard();newQuestion();
+</script>
+</body>
+</html>
