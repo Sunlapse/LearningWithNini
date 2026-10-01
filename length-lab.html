@@ -185,7 +185,8 @@ function makeLevel0(){
     );
   }
   const o=pick(OBJECTS.filter(x=>x.name!=="school field"));
-  let correct=o.approx;
+  const cleanEstimate=String(o.approx).replace(/^about\s+/i,"").trim();
+  let correct=cleanEstimate;
   let opts;
   if(o.unit==="inches") opts=[correct,"7 feet","7 yards"];
   else if(o.unit==="feet") opts=[correct,"7 inches","30 yards"];
@@ -195,7 +196,7 @@ function makeLevel0(){
     "Which measurement is most reasonable for a "+o.name+"?",
     "Estimate first. Do not calculate.",
     correct,opts,
-    o.name.charAt(0).toUpperCase()+o.name.slice(1)+" is "+o.approx+".",
+    o.name.charAt(0).toUpperCase()+o.name.slice(1)+" is "+estimateLabel(o.approx).toLowerCase()+".",
     "A good estimate should match the size you see in everyday life.",
     {emoji:o.emoji,name:o.name,note:"Use a benchmark you already know."}
   );
