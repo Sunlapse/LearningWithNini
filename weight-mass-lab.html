@@ -273,7 +273,7 @@ function makeLevel6(){
   if(mode===0)return makeBuilder();
   if(mode===1){
     const tons=rnd(1,3),ans=tons*2000;
-    return choiceQuestion(tons+" ton"+(tons===1?"":"s")+" equals how many pounds?","Use 2,000 lb for every ton.",commas(ans)+" lb",[commas(ans)+" lb",commas(ans+2000)+" lb",commas(Math.max(2000,ans-2000))+" lb",tons*200+" lb"],tons+" × 2,000 = "+commas(ans)+" lb.","2,000 lb = 1 ton.",{type:"relation",system:"customary",text:"2,000 lb = 1 ton"});
+    return choiceQuestion(tons+" ton"+(tons===1?"":"s")+" equals how many pounds?","Recall the ton-to-pound relationship.",commas(ans)+" lb",[commas(ans)+" lb",commas(ans+2000)+" lb",commas(Math.max(2000,ans-2000))+" lb",tons*200+" lb"],tons+" × 2,000 = "+commas(ans)+" lb.","2,000 lb = 1 ton.",{type:"scene",emoji:"🚚",title:"Tons ↔ pounds",note:"Use what you remember. The conversion is not shown here."});
   }
   if(mode===2){
     const vals=[rnd(1,3)*16+pick([0,4,8,12]),rnd(2,4)*16+pick([0,4,8,12]),rnd(1,5)*16+pick([0,4,8,12])];
@@ -285,11 +285,11 @@ function makeLevel6(){
   }
   if(mode===3){
     const kg=rnd(2,5),used=pick([500,1000,1500]),ans=kg*1000-used;
-    return choiceQuestion(kg+" kg − "+commas(used)+" g = ?","Convert kilograms to grams before subtracting.",commas(ans)+" g",[commas(ans)+" g",commas(ans+1000)+" g",commas(Math.max(500,ans-1000))+" g",commas(kg*1000+used)+" g"],commas(kg*1000)+" − "+commas(used)+" = "+commas(ans)+" g.","1 kg = 1,000 g.",{type:"relation",system:"metric",text:"1,000 g = 1 kg"});
+    return choiceQuestion(kg+" kg − "+commas(used)+" g = ?","Convert to one unit before subtracting.",commas(ans)+" g",[commas(ans)+" g",commas(ans+1000)+" g",commas(Math.max(500,ans-1000))+" g",commas(kg*1000+used)+" g"],commas(kg*1000)+" − "+commas(used)+" = "+commas(ans)+" g.","1 kg = 1,000 g.",{type:"relation",system:"metric",text:"1,000 g = 1 kg"});
   }
   if(mode===4){
     const lb=rnd(2,5),extra=pick([4,8,12]),used=pick([8,12,16]),start=lb*16+extra,ans=start-used;
-    return choiceQuestion(mixedLabel(start)+" − "+mixedLabel(used)+" = ?","Convert both weights to ounces, subtract, then regroup.",mixedLabel(ans),[mixedLabel(ans),mixedLabel(ans+8),mixedLabel(Math.max(4,ans-8)),mixedLabel(start+used)],mixedLabel(start)+" − "+mixedLabel(used)+" = "+mixedLabel(ans)+".","Total ounces can make mixed subtraction easier.",{type:"relation",system:"customary",text:"16 oz = 1 lb"});
+    return choiceQuestion(mixedLabel(start)+" − "+mixedLabel(used)+" = ?","Use one unit to make the subtraction easier.",mixedLabel(ans),[mixedLabel(ans),mixedLabel(ans+8),mixedLabel(Math.max(4,ans-8)),mixedLabel(start+used)],mixedLabel(start)+" − "+mixedLabel(used)+" = "+mixedLabel(ans)+".","Total ounces can make mixed subtraction easier.",{type:"relation",system:"customary",text:"16 oz = 1 lb"});
   }
   const a=rnd(1,3),b=pick([4,8,12]),c=rnd(1,2),total=(a+c)*16+b;
   return choiceQuestion("A box weighs "+a+" lb "+b+" oz. You add an item weighing "+c+" lb. What is the new total?","Add the pound amount, then keep the ounces.",mixedLabel(total),[mixedLabel(total),mixedLabel(total+8),mixedLabel(Math.max(8,total-8)),(a+b+c)+" lb"],a+" lb "+b+" oz + "+c+" lb = "+mixedLabel(total)+".","Add pounds to pounds and keep the ounces.",{type:"scene",emoji:"📦",title:"Packing a box",note:"Add one more item."});
@@ -308,7 +308,8 @@ function renderRelation(v){
   const metric=v.system==="metric";
   const small=metric?'<div class="weight-block g">g</div>':'<div class="weight-block oz">oz</div>';
   const large=metric?'<div class="weight-block kg">kg</div>':'<div class="weight-block lb">lb</div>';
-  el("visual").innerHTML='<div class="relation-wrap"><div class="weight-row">'+small+large+'</div><div class="relation">'+v.text+'</div><div id="choiceArea" class="choice-grid" style="margin:0 auto"></div></div>';
+  const relationText=v.showRule===false?(metric?"grams ↔ kilograms":"ounces ↔ pounds"):v.text;
+  el("visual").innerHTML='<div class="relation-wrap"><div class="weight-row">'+small+large+'</div><div class="relation">'+relationText+'</div><div id="choiceArea" class="choice-grid" style="margin:0 auto"></div></div>';
 }
 function polar(cx,cy,r,deg){const rad=(deg-90)*Math.PI/180;return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}}
 function renderScale(v){
