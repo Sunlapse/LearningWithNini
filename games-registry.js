@@ -11,5 +11,6 @@ window.LEARN_WITH_NINI_GAMES = [
   { title: 'Math Maze', icon: '🧩', url: 'math-maze.html' },
   { title: 'Fraction Builder', icon: '🍕', url: 'fraction-builder.html' },
   { title: 'Math Detective', icon: '🔎', url: 'math-detective.html' },
-  { title: 'Length Lab', icon: '📏', url: 'length-lab.html?v=20260930-4' }
+  { title: 'Length Lab', icon: '📏', url: 'length-lab.html?v=20260930-4' },
+  { title: 'Capacity Lab', icon: '🥤', url: 'capacity-lab.html?v=20260930-1' }
 ];
