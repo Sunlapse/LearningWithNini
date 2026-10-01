@@ -1,7 +1,7 @@
 window.LWNLeaderboard = (() => {
   const URL = "https://wvcdihtphcjuegdkadsb.supabase.co";
   const KEY = "sb_publishable_Uso8SKT30uVsIDPxTzroIQ_kMCWOoaN";
-  const GAMES = ["money","time","multiplication","division","place_value","number_battle","geometry","math_maze","daily_challenge","fraction","detective"];
+  const GAMES = ["money","time","multiplication","division","place_value","number_battle","geometry","math_maze","daily_challenge","fraction","detective","length"];
   const HIDDEN_NAMES = new Set(["nini"]);
 
   function getDeviceId(){
@@ -332,7 +332,7 @@ window.LWNLeaderboard = (() => {
     const map=new Map();
     for(const r of rows){
       const key=String(r.player_name||"Nini").trim().toLowerCase();
-      if(!map.has(key)) map.set(key,{name:r.player_name||"Nini",avatar:r.avatar||"⭐",latest:"",money:0,time:0,multiplication:0,division:0,place_value:0,number_battle:0,geometry:0,math_maze:0,daily_challenge:0,fraction:0,detective:0,total:0});
+      if(!map.has(key)) map.set(key,{name:r.player_name||"Nini",avatar:r.avatar||"⭐",latest:"",money:0,time:0,multiplication:0,division:0,place_value:0,number_battle:0,geometry:0,math_maze:0,daily_challenge:0,fraction:0,detective:0,length:0,total:0});
       const p=map.get(key);
       if(!p.latest || String(r.updated_at||"")>p.latest){p.avatar=r.avatar||"⭐";p.name=r.player_name||"Nini";p.latest=String(r.updated_at||"")}
       if(GAMES.includes(r.game)) p[r.game]=Math.max(p[r.game]||0,Number(r.score)||0);
