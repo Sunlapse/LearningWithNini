@@ -33,3 +33,72 @@ label,
     font-size: 16px !important;
   }
 }
+
+
+/* Keep game intro messages off Nini's face.
+   Side layouts place the note low on the photo; stacked phone layouts
+   turn it into a separate caption card below the photo. */
+.nini .bubble,
+.nini-panel .speech,
+.nini-card .nini-tip {
+  top: auto !important;
+  bottom: 18px !important;
+  transform: none !important;
+}
+
+@media (max-width: 800px) {
+  .nini,
+  .nini-panel,
+  .nini-card {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .nini::after,
+  .nini-panel::after,
+  .nini-card::after {
+    display: none !important;
+  }
+
+  .nini > img,
+  .nini-panel > img,
+  .nini-card > img {
+    display: block !important;
+    width: 100% !important;
+    height: 240px !important;
+    min-height: 240px !important;
+    object-fit: cover !important;
+    object-position: center 26% !important;
+    border-radius: 30px !important;
+    box-shadow: 0 12px 28px rgba(68, 48, 126, .10) !important;
+  }
+
+  .nini .bubble,
+  .nini-panel .speech,
+  .nini-card .nini-tip {
+    position: static !important;
+    inset: auto !important;
+    width: calc(100% - 24px) !important;
+    max-width: none !important;
+    margin: 10px auto 2px !important;
+    padding: 11px 14px !important;
+    border-radius: 18px !important;
+    transform: none !important;
+    text-align: center !important;
+    font-size: 1.05rem !important;
+    line-height: 1.18 !important;
+    box-shadow: 0 8px 20px rgba(68, 48, 126, .09) !important;
+  }
+
+  .nini .bubble small,
+  .nini-panel .speech small,
+  .nini-card .nini-tip small {
+    margin-top: 4px !important;
+    font-size: .82rem !important;
+    line-height: 1.25 !important;
+  }
+}
