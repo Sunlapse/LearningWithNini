@@ -21,6 +21,7 @@
   <meta name="twitter:description" content="Fun math videos, games, and Nini's Daily 20-Minute Math Challenge for kids." />
   <meta name="twitter:image" content="https://learnwithnini.com/social-preview.png?v=2" />
   <title>Learn With Nini | Math Made Fun</title>
+  <link rel="canonical" href="https://learnwithnini.com/" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -615,6 +616,32 @@
       font-size: .94rem;
     }
 
+    .about-story {
+      margin: 2px 0 22px;
+      padding: 26px 28px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, #fff4fa, #f1ecff 58%, #eef8ff);
+      border: 1px solid rgba(83,59,160,.10);
+      box-shadow: 0 12px 30px rgba(74,50,137,.08);
+      text-align: center;
+    }
+
+    .about-story h2 {
+      margin: 0 0 10px;
+      font-family: "Fredoka", sans-serif;
+      font-size: clamp(2rem, 3vw, 2.7rem);
+      color: #6c32d9;
+    }
+
+    .about-story p {
+      max-width: 820px;
+      margin: 0 auto;
+      color: #555f80;
+      font-size: 1.04rem;
+      line-height: 1.6;
+      font-weight: 700;
+    }
+
     .adventure {
       margin: 8px 0 26px;
       border-radius: 30px;
@@ -690,7 +717,19 @@
       justify-content: center;
       gap: 18px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .footer-meta {
+      display: flex;
+      justify-content: center;
+      gap: 14px 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .footer-meta a {
+      color: #5f36c7;
     }
 
     @media (max-width: 980px) {
@@ -918,7 +957,7 @@
             <div class="card-icon">📏</div>
             <h3>Length Lab</h3>
             <p>Practice rulers, inches, feet, yards, conversions, and real-world measurement!</p>
-            <a class="card-btn" href="length-lab.html?v=20260930-4">Start Measuring <span>→</span></a>
+            <a class="card-btn" href="length-lab.html">Start Measuring <span>→</span></a>
           </article>
 
           <article class="feature-card capacity">
@@ -926,7 +965,7 @@
             <div class="card-icon">🥤</div>
             <h3>Capacity Lab</h3>
             <p>Practice cups, pints, quarts, gallons, liters, milliliters, and real-life capacity!</p>
-            <a class="card-btn" href="capacity-lab.html?v=20260930-1">Start Capacity Lab <span>→</span></a>
+            <a class="card-btn" href="capacity-lab.html">Start Capacity Lab <span>→</span></a>
           </article>
 
           <article class="feature-card weightmass">
@@ -934,7 +973,7 @@
             <div class="card-icon">⚖️</div>
             <h3>Weight &amp; Mass Lab</h3>
             <p>Practice ounces, pounds, scales, grams, kilograms, estimation, and real-life problems!</p>
-            <a class="card-btn" href="weight-mass-lab.html?v=20260930-2">Start Weighing <span>→</span></a>
+            <a class="card-btn" href="weight-mass-lab.html">Start Weighing <span>→</span></a>
           </article>
 
           <article class="feature-card leader">
@@ -945,7 +984,7 @@
           </article>
         </div>
 
-        <section class="why" id="about">
+        <section class="why">
           <h2 class="section-title">Why Learn With Nini? ♡</h2>
           <div class="benefits">
             <div class="benefit">
@@ -982,6 +1021,11 @@
           </div>
         </section>
 
+        <section class="about-story" id="about">
+          <h2>About Nini ♡</h2>
+          <p>Nini is a 3rd grader who loves math and likes seeing how much she can improve with practice. We started LearnWithNini.com as a family project so she could do a daily 20-minute challenge, turn the skills she was practicing into games, and let classmates and other kids practice alongside her. The goal is simple: make math feel fun, challenging, and worth coming back to every day.</p>
+        </section>
+
         <section class="adventure">
           <div class="adventure-copy">
             <img class="mini-nini" src="nini-mini.webp" alt="Nini" />
@@ -993,23 +1037,16 @@
         <footer class="footer">
           <div class="footer-links">
             <a href="index.html">Home</a>
-            <a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Math Videos</a>
-            <a href="money-match.html">Money Match</a>
-            <a href="time-match.html">Time Match</a>
-            <a href="multiplication-sprint.html">Multiplication Sprint</a>
-            <a href="division-dash.html">Division Dash</a>
-            <a href="place-value-challenge.html">Place Value Challenge</a>
-            <a href="number-battle.html">Number Battle</a>
-            <a href="geometry-builder.html">Geometry Builder</a>
-            <a href="math-maze.html">Math Maze</a>
-            <a href="fraction-builder.html">Fraction Builder</a>
-            <a href="math-detective.html">Math Detective</a>
-            <a href="length-lab.html?v=20260930-4">Length Lab</a>
-            <a href="capacity-lab.html?v=20260930-1">Capacity Lab</a>
-            <a href="weight-mass-lab.html?v=20260930-2">Weight &amp; Mass Lab</a>
+            <a href="#games">Games</a>
+            <a href="daily-challenge.html">Daily Challenge</a>
             <a href="leaderboard.html">Leaderboard</a>
+            <a href="#about">About</a>
           </div>
-          <div>LearnWithNini.com ♡ Learn, play, and grow.</div>
+          <div class="footer-meta">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="mailto:hello@learnwithnini.com">hello@learnwithnini.com</a>
+            <span>© 2026 Learn With Nini</span>
+          </div>
         </footer>
       </div>
     </section>
