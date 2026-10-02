@@ -183,9 +183,12 @@ button:disabled{opacity:.28;cursor:default}
 .daily-video-head p{margin:3px 0 0;color:#6e6888;font-weight:800;font-size:.92rem}
 .daily-video-embed{position:relative;width:100%;aspect-ratio:16/9;min-height:220px;border-radius:18px;overflow:hidden;background:#1d1737}
 .daily-video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.daily-video-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:11px;padding:9px 10px;border-radius:15px;background:#ffffffd9}
+.daily-video-actions{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px 12px;margin-top:11px;padding:12px;border-radius:15px;background:#ffffffdf}
 .daily-video-actions strong{color:#4f2cb1}
-.daily-video-link{font-weight:1000;color:#6336c7;text-decoration:none}
+.daily-video-subscribe{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 13px;border-radius:11px;background:#ff0000;color:#fff;text-decoration:none;font-weight:1000}
+.daily-video-signin{grid-column:2;color:#7a7191;font-size:11px;font-weight:900;text-align:center;margin-top:-3px}
+.daily-video-link{grid-column:1 / -1;font-weight:1000;color:#6336c7;text-decoration:none;width:max-content}
+@media(max-width:560px){.daily-video-actions{grid-template-columns:1fr}.daily-video-signin{grid-column:1;text-align:left}.daily-video-link{grid-column:1}}
 .done-video{margin:18px 0 8px;text-align:left}
 .done-video h2{margin:0 0 4px;font-family:"Fredoka",sans-serif;color:#5b31c2}
 .done-video p{margin:0 0 11px;color:#686180;font-weight:800}
@@ -253,9 +256,10 @@ button:disabled{opacity:.28;cursor:default}
           allowfullscreen></iframe>
       </div>
       <div class="daily-video-actions">
-        <div><strong>New challenge videos</strong><br><span>Subscribe so you can find the next one.</span></div>
-        <div class="g-ytsubscribe" data-channelid="UCrZMHA7Ky5kTJd3a-X2iUag" data-layout="default" data-count="hidden"></div>
-        <a class="daily-video-link" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener">YouTube channel →</a>
+        <div><strong>New challenge videos</strong><br><span>Subscribe to see the next one.</span></div>
+        <a class="daily-video-subscribe" href="https://www.youtube.com/channel/UCrZMHA7Ky5kTJd3a-X2iUag?sub_confirmation=1" target="_blank" rel="noopener">▶ Subscribe on YouTube</a>
+        <div class="daily-video-signin">YouTube may ask you to sign in.</div>
+        <a class="daily-video-link" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener">View Learn With Nini on YouTube ↗</a>
       </div>
     </section>
     <div class="hist"><h2>Recent days</h2><ul id="histList"></ul></div>
@@ -318,8 +322,10 @@ button:disabled{opacity:.28;cursor:default}
           allowfullscreen></iframe>
       </div>
       <div class="daily-video-actions">
-        <div class="g-ytsubscribe" data-channelid="UCrZMHA7Ky5kTJd3a-X2iUag" data-layout="default" data-count="hidden"></div>
-        <a class="daily-video-link" id="doneVideoLink" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener">Find this day on YouTube →</a>
+        <div><strong>Want the next challenge?</strong><br><span>Subscribe on YouTube.</span></div>
+        <a class="daily-video-subscribe" href="https://www.youtube.com/channel/UCrZMHA7Ky5kTJd3a-X2iUag?sub_confirmation=1" target="_blank" rel="noopener">▶ Subscribe on YouTube</a>
+        <div class="daily-video-signin">YouTube may ask you to sign in.</div>
+        <a class="daily-video-link" id="doneVideoLink" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener">Find this day on YouTube ↗</a>
       </div>
     </section>
     <button class="go" id="homeBtn">Done</button>
