@@ -120,7 +120,7 @@ button,input{font:inherit}
 const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 const ROUTE=[20,15,10,11,12,7,2,3,8,9,4];
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
-let level="addsub",q=1,round=1,score=0,streak=0,bestStreak=0,stars=3,gateSolved=false,selected=null,current={text:"",answer:0,hint:""},lastEquationText="";
+let level="addsub",q=1,round=1,score=0,streak=0,bestStreak=0,stars=3,gateSolved=false,selected=null,current={text:"",answer:0,hint:""},lastEquationText="",wrongChoices=new Set();
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
@@ -164,7 +164,7 @@ function renderMaze(position=q-1){
   }
 }
 function newGate(){
-  stars=3;gateSolved=false;selected=null;
+  stars=3;gateSolved=false;selected=null;wrongChoices=new Set();
   let tries=0;
   do{current=makeEquation(level);tries++;}while(current.text===lastEquationText&&tries<20);
   lastEquationText=current.text;
@@ -188,9 +188,17 @@ function check(){
     el("checkBtn").textContent=q===10?"Start New Maze →":"Next Gate →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateScoreOnly();
     LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"math_maze",score,level,best_streak:bestStreak}).then(renderBoard).catch(()=>{});
   }else{
-    stars=Math.max(1,stars-1);streak=0;
-    el("doors").querySelectorAll(".door").forEach(b=>b.classList.toggle("wrong",Number(b.dataset.answer)===selected));
-    el("status").textContent="That door is blocked. Recheck the math and try another path.";el("status").className="status bad";updateScoreOnly()
+    const buttons=[...el("doors").querySelectorAll(".door")];
+    wrongChoices.add(String(selected));
+    buttons.forEach(b=>{if(Number(b.dataset.answer)===selected){b.classList.add("wrong");b.classList.remove("selected");b.disabled=true}});
+    stars=Math.min(stars,Math.max(1,3-wrongChoices.size));streak=0;
+    if(wrongChoices.size>=buttons.length-1){
+      gateSolved=true;selected=null;
+      buttons.forEach(b=>{if(Number(b.dataset.answer)===current.answer)b.classList.add("correct")});
+      el("status").textContent="Recorded wrong — every incorrect door was tried. The correct door is shown.";
+      el("status").className="status bad";el("checkBtn").textContent=q===10?"Start New Maze →":"Next Gate →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateScoreOnly();return;
+    }
+    selected=null;el("status").textContent="That door is marked wrong. Try a different door.";el("status").className="status bad";updateScoreOnly()
   }
 }
 function updateScoreOnly(){el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streak").textContent=streak}
