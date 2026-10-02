@@ -272,7 +272,7 @@ function newCase(){
   el("answerTitle").textContent=level==="two"?"3. Final answer":level==="one"?"Solve the clue":"2. What is the answer?";
   el("checkBtn").textContent=level==="operation"?"Check Operation →":level==="two"?"Solve Both Steps →":"Check Answer →";
   el("checkBtn").className="check";el("hintBtn").disabled=false;
-  document.querySelectorAll(".op-btn").forEach(b=>b.classList.remove("selected","correct","wrong"));
+  document.querySelectorAll(".op-btn").forEach(b=>{b.classList.remove("selected","correct","wrong");b.disabled=false});
   if(level==="one"){setStatus("Read the story and enter the answer.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>No operation choices are shown. Decide what math the story needs.";}
   else if(level==="operation"){setStatus("Choose the operation that matches the story.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>Get the operation right first. Then the equation unlocks.";}
   else{setStatus("Choose two operations, solve step 1, then finish step 2.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>Use the intermediate result from step 1 in step 2.";}
