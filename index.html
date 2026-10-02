@@ -250,16 +250,38 @@
       font-weight: 700;
     }
 
+    .hero-actions {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:24px;
+    }
+
     .primary-btn {
-      margin-top: 24px;
+      margin-top: 0;
       align-self: flex-start;
       color: white;
       font-family: "Fredoka", sans-serif;
       font-size: 1.3rem;
       padding: 15px 28px;
       min-width: 260px;
-      background: linear-gradient(135deg, #7b3cec, #6a2dd4);
+      background: linear-gradient(135deg, #ef559d, #743cdf);
       box-shadow: 0 14px 28px rgba(108,45,214,.24);
+    }
+
+    .hero-secondary-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 20px;
+      border-radius:999px;
+      border:2px solid #d9cdf6;
+      background:rgba(255,255,255,.88);
+      color:#6334c7;
+      font-family:"Fredoka",sans-serif;
+      font-weight:700;
+      font-size:1.05rem;
     }
 
     .hero-art {
@@ -565,99 +587,124 @@
 
     .start-here {
       scroll-margin-top: 94px;
-      margin: 8px 0 28px;
-      padding: 26px;
-      border-radius: 30px;
+      margin: 8px 0 22px;
+      padding: 20px 22px;
+      border-radius: 26px;
       background: linear-gradient(135deg, #fff3fa, #f1ebff 55%, #edf8ff);
       border: 1px solid rgba(83,59,160,.10);
-      box-shadow: 0 14px 34px rgba(74,50,137,.09);
+      box-shadow: 0 12px 28px rgba(74,50,137,.08);
     }
 
     .start-kicker {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      padding: 7px 12px;
+      padding: 6px 10px;
       border-radius: 999px;
       background: #fff;
       color: #6b38d8;
       font-weight: 900;
-      font-size: .85rem;
+      font-size: .78rem;
       box-shadow: 0 7px 18px rgba(80,55,150,.08);
     }
 
     .start-here h2 {
-      margin: 10px 0 4px;
+      margin: 8px 0 2px;
       font-family: "Fredoka", sans-serif;
       color: #6331ce;
-      font-size: clamp(2rem, 3vw, 2.8rem);
+      font-size: clamp(1.75rem, 3vw, 2.35rem);
       letter-spacing: -.025em;
     }
 
     .start-intro {
-      margin: 0 0 18px;
+      margin: 0 0 13px;
       color: #596181;
       font-weight: 700;
-      font-size: 1.02rem;
+      font-size: .94rem;
     }
 
-    .start-steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+    .start-path {
+      display:grid;
+      grid-template-columns:minmax(0,1.25fr) auto minmax(0,1fr) auto minmax(0,1fr);
+      gap:10px;
+      align-items:center;
+      padding:12px;
+      border-radius:20px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(83,59,160,.08);
     }
 
-    .start-step {
-      background: rgba(255,255,255,.9);
-      border: 1px solid rgba(83,59,160,.09);
-      border-radius: 22px;
-      padding: 18px;
-      min-height: 190px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 8px 20px rgba(74,50,137,.06);
+    .path-step {
+      min-width:0;
     }
 
-    .step-number {
-      width: 36px;
-      height: 36px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #7544df, #ef579e);
-      color: #fff;
-      font-family: "Fredoka", sans-serif;
-      font-weight: 700;
-      margin-bottom: 9px;
+    .path-step strong {
+      display:block;
+      font-family:"Fredoka",sans-serif;
+      color:#4f2bad;
+      font-size:1rem;
+      margin-bottom:3px;
     }
 
-    .start-step h3 {
-      margin: 0 0 5px;
-      font-family: "Fredoka", sans-serif;
-      color: #4e2aad;
-      font-size: 1.35rem;
+    .path-step span {
+      color:#6b6684;
+      font-weight:700;
+      font-size:.82rem;
+      line-height:1.25;
     }
 
-    .start-step p {
-      margin: 0 0 14px;
-      color: #626988;
-      font-weight: 700;
-      line-height: 1.4;
+    .path-num {
+      display:inline-grid;
+      place-items:center;
+      width:24px;
+      height:24px;
+      margin-right:5px;
+      border-radius:50%;
+      background:#efe7ff;
+      color:#6336c9;
+      font-family:"Fredoka",sans-serif;
+      font-weight:700;
+      font-size:.78rem;
+      vertical-align:middle;
     }
 
-    .start-step a {
-      margin-top: auto;
-      color: #6a36cf;
-      font-weight: 900;
+    .path-arrow {
+      color:#a28fcf;
+      font-size:1.2rem;
+      font-weight:900;
+    }
+
+    .start-challenge-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#ef559d,#743cdf);
+      color:#fff;
+      font-family:"Fredoka",sans-serif;
+      font-weight:700;
+      font-size:.9rem;
+      box-shadow:0 7px 16px rgba(105,55,200,.15);
+    }
+
+    .path-link {
+      display:inline-block;
+      margin-top:6px;
+      color:#6336c9;
+      font-weight:900;
+      font-size:.84rem;
     }
 
     .start-video-link {
-      margin-top: 15px;
+      margin-top: 10px;
       display: flex;
       justify-content: center;
       text-align: center;
       color: #6841b9;
       font-weight: 900;
+      font-size:.84rem;
     }
 
     .games-organized {
@@ -678,11 +725,19 @@
     }
 
     .category-nav {
+      position: sticky;
+      top: 78px;
+      z-index: 12;
       display: flex;
       justify-content: center;
       gap: 8px;
       flex-wrap: wrap;
       margin: 0 0 24px;
+      padding:8px 10px;
+      background:rgba(255,255,255,.94);
+      backdrop-filter:blur(12px);
+      border-top:1px solid rgba(83,59,160,.05);
+      border-bottom:1px solid rgba(83,59,160,.08);
     }
 
     .category-nav a {
@@ -903,8 +958,43 @@
       margin: 0 auto;
       color: #555f80;
       font-size: 1.04rem;
-      line-height: 1.6;
+      line-height: 1.55;
       font-weight: 700;
+    }
+
+    .about-benefits {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      max-width:900px;
+      margin:18px auto 0;
+    }
+
+    .about-benefit {
+      padding:12px 10px;
+      border-radius:16px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(83,59,160,.08);
+      color:#5c5877;
+      font-weight:800;
+      font-size:.84rem;
+      line-height:1.25;
+    }
+
+    .about-benefit strong {
+      display:block;
+      color:#5931bd;
+      font-family:"Fredoka",sans-serif;
+      font-size:.95rem;
+      margin-bottom:2px;
+    }
+
+    .about-more {
+      display:inline-block;
+      margin-top:14px;
+      color:#6335c8;
+      font-weight:900;
+      font-size:.9rem;
     }
 
     .adventure {
@@ -1032,7 +1122,8 @@
 
       .cards { grid-template-columns: repeat(2, 1fr); }
       .topic-cards { grid-template-columns: repeat(2, 1fr); }
-      .start-steps { grid-template-columns: 1fr; }
+      .start-path { grid-template-columns:1fr; }
+      .path-arrow { display:none; }
       .youtube-growth-head { align-items:flex-start; flex-direction:column; }
       .youtube-actions { grid-template-columns:1fr; }
       .youtube-signin-note { grid-column:1; text-align:left; margin-top:-2px; }
@@ -1054,7 +1145,9 @@
       .hero-copy { padding: 24px 12px 26px; }
       h1 { font-size: clamp(3rem, 15vw, 4.6rem); }
       .hero-copy p { font-size: 1.05rem; }
+      .hero-actions { gap:8px; }
       .primary-btn { width: 100%; min-width: 0; }
+      .hero-secondary-btn { width:100%; }
 
       .hero-art {
         min-height: 400px;
@@ -1078,9 +1171,7 @@
       .games-subtitle { font-size: .9rem; margin-bottom: 10px; }
 
       .category-nav {
-        position: sticky;
         top: 66px;
-        z-index: 12;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 6px;
@@ -1156,7 +1247,21 @@
         font-size: .56rem;
       }
 
-      .start-here { padding: 20px 16px; }
+      .start-here { padding: 17px 14px; margin-bottom:18px; }
+      .start-here h2 { font-size:1.6rem; }
+      .start-intro { font-size:.86rem; margin-bottom:10px; }
+      .start-path { gap:7px; padding:9px 10px; }
+      .path-step { padding:2px 0; }
+      .path-step strong { font-size:.93rem; }
+      .path-step span { font-size:.76rem; }
+      .start-challenge-btn { width:100%; padding:9px 12px; }
+      .about-story { padding:20px 16px; text-align:left; }
+      .about-story h2 { text-align:center; font-size:1.8rem; }
+      .about-story p { font-size:.92rem; line-height:1.45; }
+      .about-benefits { grid-template-columns:repeat(2,1fr); gap:8px; margin-top:13px; }
+      .about-benefit { padding:10px 8px; font-size:.75rem; }
+      .about-benefit strong { font-size:.84rem; }
+      .about-more { width:100%; text-align:center; margin-top:12px; }
       .youtube-growth { padding:20px 16px; }
       .youtube-embed { min-height:210px; }
       .benefits { grid-template-columns: 1fr; gap: 14px; }
@@ -1202,7 +1307,10 @@
           <div class="hello">Hi, I’m Nini! ♡</div>
           <h1>Learn Math<br><span class="pink">in a Fun Way!</span></h1>
           <p>Follow Nini's daily 20-minute math challenges, play fun games, and practice along to build confidence in math.</p>
-          <a class="primary-btn" href="#start-here">Start Here! <span>→</span></a>
+          <div class="hero-actions">
+            <a class="primary-btn" href="daily-challenge.html">Do Today’s Challenge <span>→</span></a>
+            <a class="hero-secondary-btn" href="#start-here">Start Here</a>
+          </div>
         </div>
 
         <div class="hero-art" aria-label="Nini with fun math graphics">
@@ -1227,28 +1335,27 @@
         <section class="start-here" id="start-here">
           <div class="start-kicker">✨ NEW HERE?</div>
           <h2>Start Here</h2>
-          <p class="start-intro">Not sure what to do first? Try this simple 3-step path.</p>
-          <div class="start-steps">
-            <article class="start-step">
-              <div class="step-number">1</div>
-              <h3>Do Today’s Challenge</h3>
-              <p>Start with Nini’s daily 20-minute mix of math practice.</p>
-              <a href="daily-challenge.html">Start Daily Challenge →</a>
-            </article>
-            <article class="start-step">
-              <div class="step-number">2</div>
-              <h3>Practice One Skill</h3>
-              <p>Pick one game below based on what you want to get better at today.</p>
-              <a href="#skill-games">Choose a Skill Game →</a>
-            </article>
-            <article class="start-step">
-              <div class="step-number">3</div>
-              <h3>Check Your Progress</h3>
-              <p>See your scores and compare your progress on the leaderboard.</p>
-              <a href="leaderboard.html">View Leaderboard →</a>
-            </article>
+          <p class="start-intro">A simple routine for getting the most out of Learn With Nini.</p>
+          <div class="start-path">
+            <div class="path-step">
+              <strong><span class="path-num">1</span>Do Today’s Challenge</strong>
+              <span>Start with the daily 20-minute mix.</span>
+              <a class="start-challenge-btn" href="daily-challenge.html">Start Daily Challenge →</a>
+            </div>
+            <div class="path-arrow">→</div>
+            <div class="path-step">
+              <strong><span class="path-num">2</span>Practice One Skill</strong>
+              <span>Work on one thing that felt tricky.</span>
+              <a class="path-link" href="#skill-games">Choose a Skill Game →</a>
+            </div>
+            <div class="path-arrow">→</div>
+            <div class="path-step">
+              <strong><span class="path-num">3</span>Check Progress</strong>
+              <span>See scores and progress over time.</span>
+              <a class="path-link" href="leaderboard.html">View Leaderboard →</a>
+            </div>
           </div>
-          <a class="start-video-link" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">▶ Want to watch Nini do the challenge? See the 20-Minute Challenge videos →</a>
+          <a class="start-video-link" href="#latest-video">▶ Then compare with Nini’s latest challenge video</a>
         </section>
 
         <section class="games-organized" id="skill-games">
@@ -1450,46 +1557,16 @@
           </div>
         </section>
 
-        <section class="why">
-          <h2 class="section-title">Why Learn With Nini? ♡</h2>
-          <div class="benefits">
-            <div class="benefit">
-              <div class="benefit-icon">💗</div>
-              <div>
-                <h4>Builds Confidence</h4>
-                <p>See progress and feel proud of what you can do!</p>
-              </div>
-            </div>
-
-            <div class="benefit">
-              <div class="benefit-icon">⭐</div>
-              <div>
-                <h4>Makes Math Fun</h4>
-                <p>Games, challenges, and real-life examples.</p>
-              </div>
-            </div>
-
-            <div class="benefit">
-              <div class="benefit-icon">📈</div>
-              <div>
-                <h4>Improves Skills</h4>
-                <p>Practice at your own pace and get better every day.</p>
-              </div>
-            </div>
-
-            <div class="benefit">
-              <div class="benefit-icon">🧠</div>
-              <div>
-                <h4>Growth Mindset</h4>
-                <p>Mistakes are part of learning and growing.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section class="about-story" id="about">
           <h2>About Nini ♡</h2>
-          <p>Nini is a 3rd grader who loves math and likes seeing how much she can improve with practice. We started LearnWithNini.com as a family project so she could do a daily 20-minute challenge, turn the skills she was practicing into games, and let classmates and other kids practice alongside her. The goal is simple: make math feel fun, challenging, and worth coming back to every day.</p>
+          <p>Nini is a 3rd grader who loves math and likes seeing how much she can improve with practice. Learn With Nini started as a family project built around her daily math routine — a 20-minute challenge, focused skill games, and a simple way for other kids to practice alongside her.</p>
+          <div class="about-benefits">
+            <div class="about-benefit"><strong>💗 Builds Confidence</strong>See progress and feel proud of improvement.</div>
+            <div class="about-benefit"><strong>⭐ Makes Math Fun</strong>Games, challenges, and real-life practice.</div>
+            <div class="about-benefit"><strong>📈 Builds Skills</strong>Practice one topic at a time and keep growing.</div>
+            <div class="about-benefit"><strong>🧠 Growth Mindset</strong>Mistakes are part of learning.</div>
+          </div>
+          <a class="about-more" href="parents-teachers.html">Parents &amp; Teachers guide →</a>
         </section>
 
         <section class="adventure">
