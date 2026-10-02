@@ -1102,6 +1102,8 @@
         text-align:center;
         white-space: normal;
       }
+      .category-nav a span { display:block; }
+      .category-nav a[href="#fractions-place-value"] { flex-direction:column; }
 
       .topic-group { margin-bottom: 20px; }
       .topic-heading { align-items: flex-start; margin: 0 2px 8px; padding-bottom: 6px; }
@@ -1255,7 +1257,7 @@
 
           <nav class="category-nav" aria-label="Game topics">
             <a href="#operations">Operations</a>
-            <a href="#fractions-place-value">Fractions &amp; Place Value</a>
+            <a href="#fractions-place-value"><span>Fractions &amp;</span><span>Place Value</span></a>
             <a href="#measurement">Measurement</a>
             <a href="#geometry">Geometry</a>
             <a href="#time-money">Time &amp; Money</a>
