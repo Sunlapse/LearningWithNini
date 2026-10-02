@@ -133,7 +133,7 @@ button:disabled{opacity:.28;cursor:default}
 .key{background:var(--key);border-radius:14px;font-family:"Fredoka",system-ui,sans-serif;font-weight:600;font-size:30px;min-height:46px}
 .key:active{filter:brightness(.9)}
 .cmp{display:none;grid-template-columns:repeat(3,1fr);gap:10px;flex:1}
-.cmp button{background:var(--key);border-radius:18px;font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:56px;min-height:90px}
+.cmp button{background:var(--key);border-radius:18px;font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:56px;min-height:90px}.cmp button.wrong{background:var(--bad-bg);outline:3px solid var(--red);opacity:.72}.cmp button.correct{background:var(--good-bg);outline:3px solid var(--green)}
 .right.is-cmp .keys{display:none}.right.is-cmp .cmp{display:grid}.right.is-cmp .ans{display:none}
 .acts{display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
 .check{background:linear-gradient(135deg,#F05A9F,#7546DE);color:var(--sun-ink);border-radius:16px;font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:26px;padding:14px;box-shadow:0 4px 0 #5B2FC4}
@@ -270,7 +270,7 @@ button:disabled{opacity:.28;cursor:default}
   <div class="bar">
     <div class="who" id="who"></div>
     <div class="game-hawaii-time" id="gameHawaiiTime">Hawaiʻi time</div>
-    <div class="score" aria-label="Correct answers">✓ <b id="score">0</b></div>
+    <div class="score" aria-label="Points">⭐ <b id="score">0</b></div>
     <div class="timer" id="timer">20:00</div>
     <button class="icon" id="pauseBtn" aria-label="Pause">❚❚</button>
   </div>
@@ -383,13 +383,13 @@ async function flushPendingGlobal(){
 function queueTodayLocalResultIfNeeded(){
   const todays=log.filter(x=>x&&x.date===today());
   if(!todays.length)return;
-  const best=[...todays].sort((a,b)=>(Number(b.correct)||0)-(Number(a.correct)||0))[0];
+  const best=[...todays].sort((a,b)=>(Number(b.points)||Number(b.correct)||0)-(Number(a.points)||Number(a.correct)||0))[0];
   const mins=Number(best.mins)||Number(settings.mins)||20;
   queueGlobalScore({
     name:globalName(),
     avatar:sharedProfile.avatar||'⭐',
     game:'daily_challenge',
-    score:Number(best.correct)||0,
+    score:Number(best.points)||Number(best.correct)||0,
     level:String(best.grade||settings.grade)+'|'+mins+'min|'+best.date,
     best_streak:streak()
   });
@@ -699,7 +699,7 @@ function renderStart(){
   const recent=log.slice(-7).reverse();
   if(!recent.length){ul.innerHTML='<li class="empty">No sessions yet. Your first one shows up here.</li>'}
   recent.forEach(x=>{const li=document.createElement('li');
-    li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)}</span><span><b>${x.correct}</b> / ${x.attempted} correct</span>`;ul.appendChild(li)});
+    li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)}</span><span><b>${Number(x.points)||Number(x.correct)||0}</b> pts · ${x.correct}/${x.attempted} correct</span>`;ul.appendChild(li)});
 }
 $('#gradeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.grade=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
 $('#minSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.mins=+b.dataset.v;LS.set('dm-settings',settings);renderStart()});
@@ -712,7 +712,7 @@ function startSession(){
   updateHawaiiClock();
   R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+salt));
   lastType='';recentTypes=[];phaseQueues={};usedQuestionText=new Set();usedFactKeys=new Set();
-  S={items:[],correct:0,idx:0,cur:null,input:'',tries:0,revealed:false,locked:false,msLeft:settings.mins*60000,end:0,paused:false,started:Date.now()};
+  S={items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,msLeft:settings.mins*60000,end:0,paused:false,started:Date.now()};
   $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)}</small>`;
   $('#score').textContent='0';
   show('game');requestAnimationFrame(()=>{sizeCanvas();nextProblem();resume()});
@@ -723,7 +723,8 @@ function pauseS(){if(!S||S.paused)return;S.msLeft=Math.max(0,S.end-Date.now());S
 function updTimer(){const ms=Math.max(0,S.end-Date.now());S.msLeft=ms;const s=Math.ceil(ms/1000);
   $('#timer').textContent=Math.floor(s/60)+':'+pad2(s%60);$('#timer').classList.toggle('low',s<=60);if(ms<=0)finish()}
 function nextProblem(){
-  S.cur=genProblem(S.idx+1);S.idx++;S.input='';S.tries=0;S.revealed=false;S.locked=false;
+  S.cur=genProblem(S.idx+1);S.idx++;S.input='';S.tries=0;S.wrongChoices=new Set();S.revealed=false;S.locked=false;
+  $('#cmp button').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct')});
   const q=$('#q');q.innerHTML=S.cur.html;q.classList.toggle('long',S.cur.text.length>34);
   $('#qnum').textContent='#'+S.idx+' · '+PHASE_LABEL[S.cur.phase];
   $('#right').classList.toggle('is-cmp',S.cur.k==='cmp');
@@ -745,13 +746,30 @@ function submit(val){
   if(S.revealed){nextProblem();return}
   const given=val!==undefined?val:S.input;if(!given)return;
   if(isRight(S.cur,given)){
-    S.correct++;$('#score').textContent=S.correct;S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:S.tries?'ok2':'ok'});
-    $('#ans').classList.add('good');setFb(S.tries?'Got it!':['Correct!','Nice!','Yes!','Great job!'][Math.floor(Math.random()*4)],'good');
+    const earned=Math.max(1,3-S.tries);
+    S.correct++;S.points+=earned;$('#score').textContent=S.points;
+    S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:S.tries?'ok2':'ok',points:earned});
+    if(S.cur.k==='cmp')$$('#cmp button').forEach(b=>{if(isRight(S.cur,b.dataset.c))b.classList.add('correct');b.disabled=true});
+    $('#ans').classList.add('good');setFb((S.tries?'Got it!':'Correct!')+' +'+earned+' point'+(earned===1?'':'s'),'good');
     S.locked=true;const fl=$('#flash');fl.classList.add('on');setTimeout(()=>{fl.classList.remove('on');nextProblem()},750);
   }else{
-    S.tries++;const a=$('#ans');a.classList.remove('bad');void a.offsetWidth;a.classList.add('bad');
+    const a=$('#ans');a.classList.remove('bad');void a.offsetWidth;a.classList.add('bad');
+    if(S.cur.k==='cmp'){
+      S.wrongChoices.add(String(given));S.tries=S.wrongChoices.size;
+      $$('#cmp button').forEach(b=>{if(b.dataset.c===String(given)){b.classList.add('wrong');b.disabled=true}});
+      const buttons=$$('#cmp button');
+      if(S.wrongChoices.size>=buttons.length-1){
+        S.revealed=true;S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:'no',points:0});
+        buttons.forEach(b=>{b.disabled=true;if(isRight(S.cur,b.dataset.c))b.classList.add('correct')});
+        setFb('Recorded wrong — all incorrect choices were tried. Answer: '+showAns(S.cur),'bad');$('#checkBtn').textContent='Next';
+      }else{
+        setFb('That choice is wrong. Try a different answer.','bad');
+      }
+      return;
+    }
+    S.tries++;
     if(S.tries<2){setFb('Not quite. Try once more.','bad');setTimeout(()=>{S.input='';updAns()},500)}
-    else{S.revealed=true;S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:'no'});
+    else{S.revealed=true;S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:'no',points:0});
       setFb('Answer: '+showAns(S.cur),'bad');$('#checkBtn').textContent='Next';}
   }
 }
@@ -760,11 +778,11 @@ function finish(){
   if(!S)return;clearInterval(tick);const done=S;S=null;
   const attempted=done.items.filter(x=>x.r!=='skip').length;
   const secs=Math.round(settings.mins*60-done.msLeft/1000);
-  if(attempted>0){log.push({date:today(),grade:settings.grade,mins:settings.mins,correct:done.correct,attempted,secs});LS.set('dm-log',log)}
+  if(attempted>0){log.push({date:today(),grade:settings.grade,mins:settings.mins,correct:done.correct,points:done.points,attempted,secs});LS.set('dm-log',log)}
   renderDeviceProgress();
   const globalStatus=$('#globalSaveStatus');
   if(attempted>0&&window.LWNLeaderboard){
-    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:done.correct,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()};
+    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:done.points,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()};
     queueGlobalScore(payload);
     globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
     flushPendingGlobal().then(saved=>{
@@ -776,9 +794,9 @@ function finish(){
   const finishedDay=dayNumber();
   $('#doneVideoDay').textContent=finishedDay;
   $('#doneVideoLink').href='https://www.youtube.com/@LearnWithNiniMath/search?query='+encodeURIComponent('Day '+finishedDay+' 20 Minute Math Challenge');
-  $('#bigScore').innerHTML=`${done.correct}<small> correct</small>`;
+  $('#bigScore').innerHTML=`${done.points}<small> points</small>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
-  $('#stats').innerHTML=`<div><b>${attempted}</b>answered</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${deviceProgress().current}</b>day streak</div>`;
+  $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${deviceProgress().current}</b>day streak</div>`;
   const ul=$('#review');ul.innerHTML='';
   done.items.forEach((x,i)=>{const li=document.createElement('li');
     const mark=x.r==='skip'?'<span class="sk">–</span>':x.r==='no'?'<span class="no">✗</span>':'<span class="ok">✓</span>';
