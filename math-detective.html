@@ -24,7 +24,47 @@ button,input{font:inherit}
 .bubble{position:absolute;z-index:2;left:16px;right:16px;top:18px;background:#fff;border-radius:26px 26px 26px 8px;padding:15px 17px;font-family:"Fredoka",sans-serif;font-size:1.3rem;color:#4d2ab6;line-height:1.08;box-shadow:0 12px 28px rgba(66,38,130,.15);transform:rotate(-1.5deg)}.bubble small{display:block;margin-top:8px;color:#ee4a94;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:900}
 .main{min-width:0}.progress,.case-card,.answer-card,.levels,.extras,.leader{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.95);box-shadow:var(--shadow)}
 .progress{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:14px 18px;margin-bottom:14px}.qtext{font-weight:1000;white-space:nowrap}.track{height:14px;background:#e9e4f1;border-radius:999px;overflow:hidden}.fill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,#a86ef2,#6f40df);transition:.25s}.stars{display:flex;gap:4px;font-size:1.8rem;color:#cbc8d6}.stars .on{color:#ffbd16;text-shadow:0 2px 0 #ee9900}
-.case-card{padding:20px;margin-bottom:14px;background:linear-gradient(135deg,#f6f0ff,#efe7ff)}.case-top{display:flex;justify-content:space-between;gap:14px;align-items:center}.case-label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:#fff;color:#7040d3;font-weight:900}.case-num{font-weight:1000;color:#8c7aaf}.story{font-family:"Fredoka",sans-serif;font-size:clamp(1.65rem,3vw,2.45rem);line-height:1.2;color:#493080;margin:18px 0 8px}.question{font-size:1.08rem;color:#655b83;font-weight:900}
+.case-card{position:relative;overflow:hidden;padding:20px;margin-bottom:14px;background:linear-gradient(135deg,#f6f0ff,#efe7ff);transition:background .25s ease,border-color .25s ease}.case-card>*{position:relative;z-index:2}.case-top{display:flex;justify-content:space-between;gap:14px;align-items:center}.case-label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:#fff;color:#7040d3;font-weight:900;transition:background .25s ease,color .25s ease}.case-num{font-weight:1000;color:#8c7aaf}.story{font-family:"Fredoka",sans-serif;font-size:clamp(1.65rem,3vw,2.45rem);line-height:1.2;color:#493080;margin:18px 0 8px;transition:color .25s ease}.question{font-size:1.08rem;color:#655b83;font-weight:900;transition:color .25s ease}
+
+/* Math Detective level themes */
+body.theme-one .case-card{background:linear-gradient(135deg,#fff9e9,#fffdf7 48%,#f2ead8);border-color:#ead9b4}
+body.theme-one .case-card:before{content:"🗂️";position:absolute;right:22px;bottom:-16px;font-size:7.4rem;opacity:.10;transform:rotate(-8deg);z-index:1}
+body.theme-one .case-card:after{content:"";position:absolute;inset:10px;border:2px dashed rgba(148,112,52,.12);border-radius:20px;pointer-events:none}
+body.theme-one .case-label{background:#fff3c9;color:#7b5c22}
+body.theme-one .case-num{color:#9c8252}
+body.theme-one .story{color:#684d2c}
+body.theme-one .question{color:#756244}
+body.theme-one .answer-card{background:linear-gradient(145deg,#fffdf8,#fff8e7);border-color:#eadfca}
+body.theme-one .clue-board{background:#fffaf0;border-color:#eadcc2}
+body.theme-one .notebook{background:#fff5c9;border-color:#e7cf75}
+
+body.theme-operation .case-card{background:linear-gradient(135deg,#edf6ff,#f7fbff 52%,#e8f1fb);border-color:#c8dff2}
+body.theme-operation .case-card:before{content:"🔎";position:absolute;right:24px;bottom:-12px;font-size:7rem;opacity:.11;transform:rotate(12deg);z-index:1}
+body.theme-operation .case-card:after{content:"";position:absolute;left:5%;right:5%;top:22%;height:2px;background:linear-gradient(90deg,transparent,#8fb8dd 15%,#8fb8dd 35%,transparent 35% 50%,#8fb8dd 50% 75%,transparent 75%);opacity:.25;transform:rotate(-4deg);z-index:1}
+body.theme-operation .case-label{background:#dff1ff;color:#286a9a}
+body.theme-operation .case-num{color:#6e99b8}
+body.theme-operation .story{color:#285f86}
+body.theme-operation .question{color:#57748b}
+body.theme-operation .answer-card{background:linear-gradient(145deg,#f8fcff,#edf6ff);border-color:#cadeef}
+body.theme-operation .clue-board{background:#f4faff;border-color:#cfe3f3}
+body.theme-operation .clue-title{color:#286a9a}
+body.theme-operation .equation-reveal{background:#dff1ff;color:#286a9a}
+body.theme-operation .notebook{background:#eef8ff;border-color:#bddbef;color:#3f6d88}
+body.theme-operation .notebook strong{color:#285f86}
+
+body.theme-two .case-card{background:linear-gradient(135deg,#efe9ff,#f7f3ff 50%,#e9e3f7);border-color:#d4c8ee}
+body.theme-two .case-card:before{content:"🕵️";position:absolute;right:20px;bottom:-10px;font-size:7rem;opacity:.10;transform:rotate(-5deg);z-index:1}
+body.theme-two .case-card:after{content:"••  •••  ••";position:absolute;right:23%;top:15px;font-size:1.4rem;letter-spacing:.38em;color:#8068b0;opacity:.18;transform:rotate(7deg);z-index:1}
+body.theme-two .case-label{background:#e6dcff;color:#6041a5}
+body.theme-two .case-num{color:#8c79ad}
+body.theme-two .story{color:#47366f}
+body.theme-two .question{color:#66577e}
+body.theme-two .answer-card{background:linear-gradient(145deg,#fbf9ff,#f1ecfb);border-color:#ded5ef}
+body.theme-two .clue-board{background:#faf7ff;border-color:#dfd5f0}
+body.theme-two #twoStepBoard{background:linear-gradient(135deg,#f7f2ff,#eee8fb);box-shadow:inset 0 0 0 2px rgba(112,64,223,.05)}
+body.theme-two .clue-title{color:#6848aa}
+body.theme-two .notebook{background:#f7f0ff;border-color:#d9c5ee;color:#68517f}
+body.theme-two .notebook strong{color:#51366f}
 .workspace{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px}.answer-card{padding:17px}.clue-board{border-radius:22px;background:#fbf9ff;border:1px solid #eee8f8;padding:15px;margin-bottom:12px}.clue-title{font-family:"Fredoka",sans-serif;color:#5634b3;font-size:1.15rem;margin-bottom:9px}.stage-hidden{display:none!important}.two-step-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.step-input{width:100%;border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-size:1.25rem;font-weight:1000;color:#493184;text-align:center}.equation-reveal{margin-top:10px;padding:11px;border-radius:15px;background:#eee8ff;color:#5a39b7;font-family:"Fredoka",sans-serif;font-size:1.2rem;text-align:center}.operation-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.op-btn{border:2px solid #e5ddf5;border-radius:16px;background:#fff;color:#5b3bb2;min-height:54px;font-size:1.35rem;font-weight:1000;cursor:pointer}.op-btn.selected{border-color:#7040df;background:#eee6ff;box-shadow:0 0 0 4px rgba(112,64,223,.08)}.op-btn.correct{background:#e8f9ef;border-color:#25b778;color:#178258}.op-btn.wrong{background:#fff0e6;border-color:#ed9660}
 .answer-display{min-height:98px;border-radius:22px;background:#fff;border:2px solid #eee8f8;display:flex;align-items:center;justify-content:center;font-family:"Fredoka",sans-serif;font-size:3.4rem;color:#452b90}.answer-display.placeholder{font-family:"Nunito",sans-serif;font-size:1.05rem;color:#aaa2bd;font-weight:900}.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.key{border:0;border-radius:16px;min-height:58px;background:#f0ebff;color:#5332ae;font-size:1.35rem;font-weight:1000;cursor:pointer}.key.clear{background:#fff0f6;color:#c53979}.key.back{background:#fff5dc;color:#9a6a00}
 .side{display:grid;gap:10px}.status{min-height:126px;border-radius:22px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}
@@ -214,8 +254,13 @@ function twoStep(){
   return {op:"-",secondOp:"+",intermediate:start-spent,answer:ans,story:name+" had "+start+" points, spent "+spent+" points on a prize, then earned "+more+" more points.",question:"How many points does "+name+" have now?",equation:start+" − "+spent+" + "+more+" = "+ans,hint:"First subtract what was spent. Then add the new points earned."};
 }
 function generate(){return level==="two"?twoStep():level==="operation"?operationCase():oneStep()}
+function applyDetectiveTheme(){
+  document.body.classList.remove("theme-one","theme-operation","theme-two");
+  document.body.classList.add("theme-"+level);
+}
 function newCase(){
   stars=3;solved=false;answer="";selectedOp=null;selectedOp2=null;operationConfirmed=false;current=generate();
+  applyDetectiveTheme();
   el("caseType").textContent=level==="one"?"Solve the Clue":level==="operation"?"Operation Detective":"Two-Step Mystery";
   el("caseNumber").textContent="Case #"+String(caseIndex).padStart(3,"0");
   el("story").textContent=current.story;el("questionPrompt").textContent=current.question;
