@@ -563,6 +563,190 @@
     .weightmass .card-btn { background: linear-gradient(135deg, #4d8de4, #7347d8); box-shadow: 0 9px 20px rgba(84,72,190,.18); }
     .leader .card-btn { background: linear-gradient(135deg, #ffbd24, #f3a400); }
 
+    .start-here {
+      scroll-margin-top: 94px;
+      margin: 8px 0 28px;
+      padding: 26px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #fff3fa, #f1ebff 55%, #edf8ff);
+      border: 1px solid rgba(83,59,160,.10);
+      box-shadow: 0 14px 34px rgba(74,50,137,.09);
+    }
+
+    .start-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #fff;
+      color: #6b38d8;
+      font-weight: 900;
+      font-size: .85rem;
+      box-shadow: 0 7px 18px rgba(80,55,150,.08);
+    }
+
+    .start-here h2 {
+      margin: 10px 0 4px;
+      font-family: "Fredoka", sans-serif;
+      color: #6331ce;
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      letter-spacing: -.025em;
+    }
+
+    .start-intro {
+      margin: 0 0 18px;
+      color: #596181;
+      font-weight: 700;
+      font-size: 1.02rem;
+    }
+
+    .start-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .start-step {
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(83,59,160,.09);
+      border-radius: 22px;
+      padding: 18px;
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 20px rgba(74,50,137,.06);
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7544df, #ef579e);
+      color: #fff;
+      font-family: "Fredoka", sans-serif;
+      font-weight: 700;
+      margin-bottom: 9px;
+    }
+
+    .start-step h3 {
+      margin: 0 0 5px;
+      font-family: "Fredoka", sans-serif;
+      color: #4e2aad;
+      font-size: 1.35rem;
+    }
+
+    .start-step p {
+      margin: 0 0 14px;
+      color: #626988;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .start-step a {
+      margin-top: auto;
+      color: #6a36cf;
+      font-weight: 900;
+    }
+
+    .start-video-link {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      color: #6841b9;
+      font-weight: 900;
+    }
+
+    .games-organized {
+      scroll-margin-top: 92px;
+      padding: 4px 0 12px;
+    }
+
+    .games-organized > .section-title {
+      margin-bottom: 5px;
+    }
+
+    .games-subtitle {
+      text-align: center;
+      margin: 0 auto 16px;
+      color: #65708f;
+      font-weight: 700;
+      max-width: 680px;
+    }
+
+    .category-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 0 0 24px;
+    }
+
+    .category-nav a {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #f3edff;
+      color: #5d33bf;
+      font-weight: 900;
+      font-size: .88rem;
+    }
+
+    .topic-group {
+      scroll-margin-top: 96px;
+      margin: 0 0 28px;
+    }
+
+    .topic-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 0 2px 10px;
+      border-bottom: 1px solid rgba(83,59,160,.10);
+      padding-bottom: 8px;
+    }
+
+    .topic-heading h3 {
+      margin: 0;
+      font-family: "Fredoka", sans-serif;
+      font-size: clamp(1.55rem, 2.5vw, 2rem);
+      color: #5530bd;
+    }
+
+    .topic-heading p {
+      margin: 2px 0 0;
+      color: #757c98;
+      font-weight: 700;
+      font-size: .92rem;
+    }
+
+    .topic-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .grade-tag {
+      display: inline-flex;
+      align-items: center;
+      align-self: center;
+      margin: 2px 0 9px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(83,59,160,.10);
+      color: #655e84;
+      font-size: .78rem;
+      font-weight: 900;
+    }
+
+    .topic-cards .feature-card {
+      min-height: 270px;
+    }
+
     .why {
       padding: 4px 0 18px;
     }
@@ -766,6 +950,8 @@
       .hero-heart { right: 7%; bottom: 10%; font-size: 2.2rem; }
 
       .cards { grid-template-columns: repeat(2, 1fr); }
+      .topic-cards { grid-template-columns: repeat(2, 1fr); }
+      .start-steps { grid-template-columns: 1fr; }
       .benefits { grid-template-columns: repeat(2, 1fr); }
     }
 
@@ -800,7 +986,11 @@
       .hero-heart { right: 6%; bottom: 9%; font-size: 2rem; }
 
       .cards { grid-template-columns: 1fr; }
+      .topic-cards { grid-template-columns: 1fr; }
       .feature-card { min-height: 230px; }
+      .topic-cards .feature-card { min-height: 238px; }
+      .start-here { padding: 20px 16px; }
+      .topic-heading { align-items: flex-start; }
       .benefits { grid-template-columns: 1fr; gap: 14px; }
       .adventure { grid-template-columns: 1fr; text-align: center; }
       .adventure-copy { flex-direction: column; }
@@ -819,7 +1009,7 @@
         <a class="active" href="index.html">Home</a>
         <a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Math Videos</a>
             <a href="daily-challenge.html">Daily Challenge</a>
-        <a href="#games">Games</a>
+        <a href="#skill-games">Games</a>
         <a href="leaderboard.html">Leaderboard</a>
         <a href="#about">About</a>
       </nav>
@@ -843,7 +1033,7 @@
           <div class="hello">Hi, I’m Nini! ♡</div>
           <h1>Learn Math<br><span class="pink">in a Fun Way!</span></h1>
           <p>Follow Nini's daily 20-minute math challenges, play fun games, and practice along to build confidence in math.</p>
-          <a class="primary-btn" href="#games">Start Learning! <span>→</span></a>
+          <a class="primary-btn" href="#start-here">Start Here! <span>→</span></a>
         </div>
 
         <div class="hero-art" aria-label="Nini with fun math graphics">
@@ -865,124 +1055,204 @@
 
     <section class="content" id="games">
       <div class="shell">
-        <div class="cards">
-          <article class="feature-card video" id="videos">
-            <div class="card-icon">▶️</div>
-            <h3>20-Minute Challenge Videos</h3>
-            <p>Watch Nini complete each daily math challenge. Follow along, compare answers, and see how you did!</p>
-            <a class="card-btn" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini's Challenges <span>→</span></a>
-          </article>
+        <section class="start-here" id="start-here">
+          <div class="start-kicker">✨ NEW HERE?</div>
+          <h2>Start Here</h2>
+          <p class="start-intro">Not sure what to do first? Try this simple 3-step path.</p>
+          <div class="start-steps">
+            <article class="start-step">
+              <div class="step-number">1</div>
+              <h3>Do Today’s Challenge</h3>
+              <p>Start with Nini’s daily 20-minute mix of math practice.</p>
+              <a href="daily-challenge.html">Start Daily Challenge →</a>
+            </article>
+            <article class="start-step">
+              <div class="step-number">2</div>
+              <h3>Practice One Skill</h3>
+              <p>Pick one game below based on what you want to get better at today.</p>
+              <a href="#skill-games">Choose a Skill Game →</a>
+            </article>
+            <article class="start-step">
+              <div class="step-number">3</div>
+              <h3>Check Your Progress</h3>
+              <p>See your scores and compare your progress on the leaderboard.</p>
+              <a href="leaderboard.html">View Leaderboard →</a>
+            </article>
+          </div>
+          <a class="start-video-link" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">▶ Want to watch Nini do the challenge? See the 20-Minute Challenge videos →</a>
+        </section>
 
-          <article class="feature-card daily">
-            <div class="card-icon">📝</div>
-            <h3>Daily 20-Minute Challenge</h3>
-            <p>Do the same dated math challenge Nini does in her videos!</p>
-            <a class="card-btn" href="daily-challenge.html">Start Challenge <span>→</span></a>
-          </article>
+        <section class="games-organized" id="skill-games">
+          <h2 class="section-title">Choose a Math Skill</h2>
+          <p class="games-subtitle">Pick a topic, choose a game, and practice at your own pace.</p>
 
-          <article class="feature-card money">
-            <div class="card-icon">🪙</div>
-            <h3>Money Match</h3>
-            <p>Fun games to practice counting money!</p>
-            <a class="card-btn" href="money-match.html">Play Game <span>→</span></a>
-          </article>
+          <nav class="category-nav" aria-label="Game topics">
+            <a href="#operations">Operations</a>
+            <a href="#fractions-place-value">Fractions &amp; Place Value</a>
+            <a href="#measurement">Measurement</a>
+            <a href="#geometry">Geometry</a>
+            <a href="#time-money">Time &amp; Money</a>
+          </nav>
 
-          <article class="feature-card time">
-            <div class="card-icon">⏰</div>
-            <h3>Time Match</h3>
-            <p>Learn to tell time with fun challenges!</p>
-            <a class="card-btn" href="time-match.html">Play Game <span>→</span></a>
-          </article>
+          <section class="topic-group" id="operations">
+            <div class="topic-heading">
+              <div>
+                <h3>➕ Operations</h3>
+                <p>Multiplication, division, mixed operations, and word problems.</p>
+              </div>
+            </div>
+            <div class="topic-cards">
+              <article class="feature-card multiply" role="link" tabindex="0"
+                onclick="window.location.href='multiplication-sprint.html'"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='multiplication-sprint.html';}">
+                <div class="card-icon">✖️</div>
+                <h3>Multiplication Sprint</h3>
+                <div class="grade-tag">Grades 3–4</div>
+                <p>Build speed and confidence with multiplication facts!</p>
+                <a class="card-btn" href="multiplication-sprint.html" onclick="event.stopPropagation()">Play Game <span>→</span></a>
+              </article>
 
-          <article class="feature-card multiply" role="link" tabindex="0"
-            onclick="window.location.href='multiplication-sprint.html'"
-            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='multiplication-sprint.html';}">
-            <div class="card-icon">✖️</div>
-            <h3>Multiplication Sprint</h3>
-            <p>Build speed and confidence with multiplication facts!</p>
-            <a class="card-btn" href="multiplication-sprint.html" onclick="event.stopPropagation()">Play Game <span>→</span></a>
-          </article>
+              <article class="feature-card division">
+                <div class="card-icon">➗</div>
+                <h3>Division Dash</h3>
+                <div class="grade-tag">Grades 3–4</div>
+                <p>Master division facts, fact families, and remainders!</p>
+                <a class="card-btn" href="division-dash.html">Play Game <span>→</span></a>
+              </article>
 
-          <article class="feature-card division">
-            <div class="card-icon">➗</div>
-            <h3>Division Dash</h3>
-            <p>Master division facts, fact families, and remainders!</p>
-            <a class="card-btn" href="division-dash.html">Play Game <span>→</span></a>
-          </article>
+              <article class="feature-card detective">
+                <div class="card-icon">🔎</div>
+                <h3>Math Detective</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Solve word-problem mysteries and choose the right operation!</p>
+                <a class="card-btn" href="math-detective.html">Solve Cases <span>→</span></a>
+              </article>
 
-          <article class="feature-card placevalue">
-            <div class="card-icon">🔢</div>
-            <h3>Place Value Challenge</h3>
-            <p>Master digit values, expanded form, and rounding!</p>
-            <a class="card-btn" href="place-value-challenge.html">Play Game <span>→</span></a>
-          </article>
+              <article class="feature-card mathmaze">
+                <div class="card-icon">🧩</div>
+                <h3>Math Maze</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Solve math gates and guide Nini through the maze to the exit!</p>
+                <a class="card-btn" href="math-maze.html">Enter Maze <span>→</span></a>
+              </article>
+            </div>
+          </section>
 
-          <article class="feature-card numberbattle">
-            <div class="card-icon">⚔️</div>
-            <h3>Number Battle</h3>
-            <p>Compare, build, and battle numbers using strong number sense!</p>
-            <a class="card-btn" href="number-battle.html">Battle Now <span>→</span></a>
-          </article>
+          <section class="topic-group" id="fractions-place-value">
+            <div class="topic-heading">
+              <div>
+                <h3>🍕 Fractions &amp; Place Value</h3>
+                <p>Fractions, number sense, expanded form, comparison, and rounding.</p>
+              </div>
+            </div>
+            <div class="topic-cards">
+              <article class="feature-card fraction">
+                <div class="card-icon">🍕</div>
+                <h3>Fraction Builder</h3>
+                <div class="grade-tag">Grades 3–4</div>
+                <p>Build, match, and compare fractions visually!</p>
+                <a class="card-btn" href="fraction-builder.html">Play Game <span>→</span></a>
+              </article>
 
-          <article class="feature-card geometry">
-            <div class="card-icon">📐</div>
-            <h3>Geometry Builder</h3>
-            <p>Build polygons, perimeter, and area with interactive shapes!</p>
-            <a class="card-btn" href="geometry-builder.html">Start Building <span>→</span></a>
-          </article>
+              <article class="feature-card placevalue">
+                <div class="card-icon">🔢</div>
+                <h3>Place Value Challenge</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Master digit values, expanded form, and rounding!</p>
+                <a class="card-btn" href="place-value-challenge.html">Play Game <span>→</span></a>
+              </article>
 
-          <article class="feature-card mathmaze">
-            <div class="card-icon">🧩</div>
-            <h3>Math Maze</h3>
-            <p>Solve math gates and guide Nini through the maze to the exit!</p>
-            <a class="card-btn" href="math-maze.html">Enter Maze <span>→</span></a>
-          </article>
+              <article class="feature-card numberbattle">
+                <div class="card-icon">⚔️</div>
+                <h3>Number Battle</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Compare, build, and battle numbers using strong number sense!</p>
+                <a class="card-btn" href="number-battle.html">Battle Now <span>→</span></a>
+              </article>
+            </div>
+          </section>
 
-          <article class="feature-card fraction">
-            <div class="card-icon">🍕</div>
-            <h3>Fraction Builder</h3>
-            <p>Build, match, and compare fractions visually!</p>
-            <a class="card-btn" href="fraction-builder.html">Play Game <span>→</span></a>
-          </article>
+          <section class="topic-group" id="measurement">
+            <div class="topic-heading">
+              <div>
+                <h3>📏 Measurement</h3>
+                <p>Length, capacity, weight, mass, estimation, and conversions.</p>
+              </div>
+            </div>
+            <div class="topic-cards">
+              <article class="feature-card length">
+                <div class="new-game-badge" id="lengthNewBadge">✨ NEW GAME</div>
+                <div class="card-icon">📏</div>
+                <h3>Length Lab</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Practice rulers, inches, feet, yards, conversions, and real-world measurement!</p>
+                <a class="card-btn" href="length-lab.html">Start Measuring <span>→</span></a>
+              </article>
 
-          <article class="feature-card detective">
-            <div class="card-icon">🔎</div>
-            <h3>Math Detective</h3>
-            <p>Solve word-problem mysteries and choose the right operation!</p>
-            <a class="card-btn" href="math-detective.html">Solve Cases <span>→</span></a>
-          </article>
+              <article class="feature-card capacity">
+                <div class="new-game-badge" id="capacityNewBadge">✨ NEW GAME</div>
+                <div class="card-icon">🥤</div>
+                <h3>Capacity Lab</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Practice cups, pints, quarts, gallons, liters, milliliters, and real-life capacity!</p>
+                <a class="card-btn" href="capacity-lab.html">Start Capacity Lab <span>→</span></a>
+              </article>
 
-          <article class="feature-card length">
-            <div class="new-game-badge" id="lengthNewBadge">✨ NEW GAME</div>
-            <div class="card-icon">📏</div>
-            <h3>Length Lab</h3>
-            <p>Practice rulers, inches, feet, yards, conversions, and real-world measurement!</p>
-            <a class="card-btn" href="length-lab.html">Start Measuring <span>→</span></a>
-          </article>
+              <article class="feature-card weightmass">
+                <div class="new-game-badge" id="weightMassNewBadge">✨ NEW GAME</div>
+                <div class="card-icon">⚖️</div>
+                <h3>Weight &amp; Mass Lab</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Practice ounces, pounds, scales, grams, kilograms, estimation, and real-life problems!</p>
+                <a class="card-btn" href="weight-mass-lab.html">Start Weighing <span>→</span></a>
+              </article>
+            </div>
+          </section>
 
-          <article class="feature-card capacity">
-            <div class="new-game-badge" id="capacityNewBadge">✨ NEW GAME</div>
-            <div class="card-icon">🥤</div>
-            <h3>Capacity Lab</h3>
-            <p>Practice cups, pints, quarts, gallons, liters, milliliters, and real-life capacity!</p>
-            <a class="card-btn" href="capacity-lab.html">Start Capacity Lab <span>→</span></a>
-          </article>
+          <section class="topic-group" id="geometry">
+            <div class="topic-heading">
+              <div>
+                <h3>📐 Geometry</h3>
+                <p>Shapes, polygons, perimeter, and area.</p>
+              </div>
+            </div>
+            <div class="topic-cards">
+              <article class="feature-card geometry">
+                <div class="card-icon">📐</div>
+                <h3>Geometry Builder</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Build polygons, perimeter, and area with interactive shapes!</p>
+                <a class="card-btn" href="geometry-builder.html">Start Building <span>→</span></a>
+              </article>
+            </div>
+          </section>
 
-          <article class="feature-card weightmass">
-            <div class="new-game-badge" id="weightMassNewBadge">✨ NEW GAME</div>
-            <div class="card-icon">⚖️</div>
-            <h3>Weight &amp; Mass Lab</h3>
-            <p>Practice ounces, pounds, scales, grams, kilograms, estimation, and real-life problems!</p>
-            <a class="card-btn" href="weight-mass-lab.html">Start Weighing <span>→</span></a>
-          </article>
+          <section class="topic-group" id="time-money">
+            <div class="topic-heading">
+              <div>
+                <h3>⏰ Time &amp; Money</h3>
+                <p>Reading clocks, counting coins and bills, and real-life math.</p>
+              </div>
+            </div>
+            <div class="topic-cards">
+              <article class="feature-card time">
+                <div class="card-icon">⏰</div>
+                <h3>Time Match</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Learn to tell time with fun challenges!</p>
+                <a class="card-btn" href="time-match.html">Play Game <span>→</span></a>
+              </article>
 
-          <article class="feature-card leader">
-            <div class="card-icon">🏆</div>
-            <h3>Leaderboard</h3>
-            <p>Complete challenges and see your progress!</p>
-            <a class="card-btn" href="leaderboard.html">View Leaderboard <span>→</span></a>
-          </article>
-        </div>
+              <article class="feature-card money">
+                <div class="card-icon">🪙</div>
+                <h3>Money Match</h3>
+                <div class="grade-tag">Grades 2–4</div>
+                <p>Practice counting coins and bills with real-world money challenges!</p>
+                <a class="card-btn" href="money-match.html">Play Game <span>→</span></a>
+              </article>
+            </div>
+          </section>
+        </section>
 
         <section class="why">
           <h2 class="section-title">Why Learn With Nini? ♡</h2>
@@ -1037,7 +1307,7 @@
         <footer class="footer">
           <div class="footer-links">
             <a href="index.html">Home</a>
-            <a href="#games">Games</a>
+            <a href="#skill-games">Games</a>
             <a href="daily-challenge.html">Daily Challenge</a>
             <a href="leaderboard.html">Leaderboard</a>
             <a href="#about">About</a>
