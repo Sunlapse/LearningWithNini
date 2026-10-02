@@ -1071,11 +1071,90 @@
       .hero-heart { right: 6%; bottom: 9%; font-size: 2rem; }
 
       .cards { grid-template-columns: 1fr; }
-      .topic-cards { grid-template-columns: 1fr; }
-      .feature-card { min-height: 230px; }
-      .topic-cards .feature-card { min-height: 238px; }
+
+      /* Compact mobile game browser */
+      .games-organized { padding-top: 0; }
+      .games-organized > .section-title { font-size: 1.9rem; margin-bottom: 3px; }
+      .games-subtitle { font-size: .9rem; margin-bottom: 10px; }
+
+      .category-nav {
+        position: sticky;
+        top: 66px;
+        z-index: 12;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 6px;
+        margin: 0 -10px 18px;
+        padding: 9px 10px;
+        background: rgba(255,255,255,.94);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid rgba(83,59,160,.06);
+        border-bottom: 1px solid rgba(83,59,160,.08);
+      }
+      .category-nav::-webkit-scrollbar { display: none; }
+      .category-nav a {
+        flex: 0 0 auto;
+        padding: 7px 10px;
+        font-size: .76rem;
+        white-space: nowrap;
+      }
+
+      .topic-group { margin-bottom: 20px; }
+      .topic-heading { align-items: flex-start; margin: 0 2px 8px; padding-bottom: 6px; }
+      .topic-heading h3 { font-size: 1.32rem; }
+      .topic-heading p { font-size: .78rem; line-height: 1.25; }
+
+      .topic-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .topic-cards .feature-card {
+        min-height: 205px;
+        padding: 12px 9px 10px;
+        border-radius: 18px;
+      }
+      .topic-cards .card-icon {
+        width: 50px;
+        height: 42px;
+        margin-bottom: 1px;
+        font-size: 2rem;
+      }
+      .topic-cards .feature-card h3 {
+        font-size: 1.03rem;
+        line-height: 1.08;
+        margin: 4px 0 3px;
+      }
+      .topic-cards .grade-tag {
+        margin: 1px 0 6px;
+        padding: 3px 7px;
+        font-size: .64rem;
+      }
+      .topic-cards .feature-card p {
+        min-height: 48px;
+        font-size: .76rem;
+        line-height: 1.23;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .topic-cards .card-btn {
+        padding: 8px 6px;
+        font-size: .80rem;
+        gap: 4px;
+      }
+      .topic-cards .new-game-badge {
+        top: 7px;
+        right: 7px;
+        padding: 4px 6px;
+        font-size: .56rem;
+      }
+
       .start-here { padding: 20px 16px; }
-      .topic-heading { align-items: flex-start; }
       .youtube-growth { padding:20px 16px; }
       .youtube-embed { min-height:210px; }
       .benefits { grid-template-columns: 1fr; gap: 14px; }
