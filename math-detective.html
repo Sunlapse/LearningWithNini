@@ -203,7 +203,7 @@ body.theme-two .notebook strong{color:#51366f}
 const KEY_PROFILE="learningWithNiniProfileV1",KEY_BOARD="mathDetectiveLeaderboardV1";
 const AVATARS=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(KEY_PROFILE,{name:"Nini",avatar:"⭐"}),selectedAvatar=profile.avatar||"⭐";
-let level="one",caseIndex=1,round=1,score=0,streak=0,casesSolved=0,stars=3,solved=false,answer="",selectedOp=null,selectedOp2=null,operationConfirmed=false,current=null;
+let level="one",caseIndex=1,round=1,score=0,streak=0,casesSolved=0,stars=3,solved=false,answer="",selectedOp=null,selectedOp2=null,operationConfirmed=false,current=null,wrongOps1=new Set(),wrongOps2=new Set();
 let board=safe(KEY_BOARD,[]);
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
@@ -259,7 +259,7 @@ function applyDetectiveTheme(){
   document.body.classList.add("theme-"+level);
 }
 function newCase(){
-  stars=3;solved=false;answer="";selectedOp=null;selectedOp2=null;operationConfirmed=false;current=generate();
+  stars=3;solved=false;answer="";selectedOp=null;selectedOp2=null;operationConfirmed=false;wrongOps1=new Set();wrongOps2=new Set();current=generate();
   applyDetectiveTheme();
   el("caseType").textContent=level==="one"?"Solve the Clue":level==="operation"?"Operation Detective":"Two-Step Mystery";
   el("caseNumber").textContent="Case #"+String(caseIndex).padStart(3,"0");
@@ -289,6 +289,24 @@ function selectSecondOperation(btn){if(solved)return;selectedOp2=btn.dataset.op2
 function typeDigit(n){if(solved||answer.length>=4)return;answer=(answer==="0"?"":answer)+n;el("answerDisplay").textContent=answer;el("answerDisplay").classList.remove("placeholder")}
 function clearAnswer(){if(solved)return;answer="";el("answerDisplay").textContent="Enter your answer";el("answerDisplay").classList.add("placeholder")}
 function backspace(){if(solved)return;answer=answer.slice(0,-1);if(answer){el("answerDisplay").textContent=answer}else clearAnswer()}
+function recordWrongOperation(which,value,correctValue){
+  const set=which===1?wrongOps1:wrongOps2;
+  const attr=which===1?(level==="operation"?"data-op":"data-op1"):"data-op2";
+  set.add(String(value));
+  document.querySelectorAll("["+attr+"]").forEach(b=>{if(b.getAttribute(attr)===String(value)){b.classList.add("wrong");b.classList.remove("selected");b.disabled=true}});
+  stars=Math.min(stars,Math.max(1,3-set.size));streak=0;
+  if(set.size>=3){
+    solved=true;
+    document.querySelectorAll("["+attr+"]").forEach(b=>{if(b.getAttribute(attr)===String(correctValue))b.classList.add("correct")});
+    if(level==="two"){
+      document.querySelectorAll("[data-op1]").forEach(b=>{if(b.dataset.op1===current.op)b.classList.add("correct")});
+      document.querySelectorAll("[data-op2]").forEach(b=>{if(b.dataset.op2===current.secondOp)b.classList.add("correct")});
+    }
+    setStatus("Recorded wrong — every incorrect operation choice was tried. The correct operation is shown.","bad");
+    el("checkBtn").textContent=caseIndex===10?"Finish Case File →":"Next Case →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();return true;
+  }
+  return false;
+}
 function check(){
   if(solved){nextCase();return}
 
@@ -301,7 +319,11 @@ function check(){
   if(level==="operation"){
     if(!operationConfirmed){
       if(!selectedOp){setStatus("Choose an operation first.","info");return}
-      if(selectedOp!==current.op){stars=Math.max(1,stars-1);streak=0;setStatus("That operation does not match the story. Try another.","bad");updateUI();return}
+      if(selectedOp!==current.op){
+        const failed=recordWrongOperation(1,selectedOp,current.op);selectedOp=null;
+        if(!failed){setStatus("That operation is marked wrong. Try a different operation.","bad");updateUI()}
+        return;
+      }
       operationConfirmed=true;
       document.querySelectorAll("[data-op]").forEach(b=>{if(b.dataset.op===current.op)b.classList.add("correct")});
       el("equationReveal").textContent=current.equation.replace(/ = [^=]+$/," = ?");
@@ -319,10 +341,18 @@ function check(){
   if(selectedOp===current.op && Number(el("intermediateAnswer").value)===current.intermediate && selectedOp2===current.secondOp && Number(answer)===current.answer){
     finishCase();return;
   }
+  if(selectedOp!==current.op){
+    const failed=recordWrongOperation(1,selectedOp,current.op);selectedOp=null;
+    if(!failed){setStatus("The first operation is marked wrong. Try a different operation.","bad");updateUI()}
+    return;
+  }
+  if(selectedOp2!==current.secondOp){
+    const failed=recordWrongOperation(2,selectedOp2,current.secondOp);selectedOp2=null;
+    if(!failed){setStatus("The second operation is marked wrong. Try a different operation.","bad");updateUI()}
+    return;
+  }
   stars=Math.max(1,stars-1);streak=0;
-  if(selectedOp!==current.op)setStatus("The first operation needs another look.","bad");
-  else if(Number(el("intermediateAnswer").value)!==current.intermediate)setStatus("The first operation is right, but the intermediate result is not.","bad");
-  else if(selectedOp2!==current.secondOp)setStatus("Step 1 is correct. Reconsider the second operation.","bad");
+  if(Number(el("intermediateAnswer").value)!==current.intermediate)setStatus("Both operations are right, but the intermediate result is not.","bad");
   else setStatus("Both operations are right. Recheck the final arithmetic.","bad");
   updateUI();
 }
