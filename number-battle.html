@@ -26,6 +26,42 @@ button,input{font:inherit}
 .vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}.fighter{border:3px solid transparent;border-radius:25px;background:#fff;min-height:180px;padding:20px;display:grid;place-items:center;cursor:pointer;box-shadow:0 12px 28px rgba(75,50,135,.08)}.fighter:hover{transform:translateY(-2px)}.fighter.selected{border-color:#7040df;background:#f2edff}.fighter.correct{border-color:#27b879;background:#eafaf0}.fighter.wrong{border-color:#e68d52;background:#fff2e7}.fighter-number{font-family:"Fredoka",sans-serif;font-size:clamp(2.8rem,7vw,5.2rem);color:#4930a6}.vs{font-family:"Fredoka",sans-serif;font-size:2rem;color:#ef579c;background:#fff;border-radius:50%;width:66px;height:66px;display:grid;place-items:center;box-shadow:0 8px 20px rgba(82,48,140,.1)}
 .build-wrap{text-align:center}.digit-bank{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:12px 0 18px}.digit{width:74px;height:82px;border:0;border-radius:20px;background:#fff;color:#5234a8;font-family:"Fredoka",sans-serif;font-size:2.4rem;cursor:pointer;box-shadow:0 10px 22px rgba(76,49,140,.11)}.digit.used{opacity:.28;pointer-events:none}.slots{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0 14px}.slot{width:76px;height:88px;border-radius:20px;border:3px dashed #d8cdf0;background:rgba(255,255,255,.72);display:grid;place-items:center;font-family:"Fredoka",sans-serif;font-size:2.6rem;color:#4c339a}.reset-build{border:0;border-radius:999px;padding:9px 14px;background:#eee9ff;color:#5d43aa;font-weight:900;cursor:pointer}
 .target-title{text-align:center;font-weight:900;color:#766a92}.target-number{text-align:center;font-family:"Fredoka",sans-serif;font-size:clamp(3rem,8vw,5rem);color:#ef579c;margin-bottom:14px}.distance-note{text-align:center;margin-top:12px;color:#72688b;font-weight:900}
+
+/* Number Battle level themes */
+body.theme-compare .battle-card{background:linear-gradient(135deg,#eef8ff,#f7fbff 52%,#eef1ff);border-color:#cfe0f2}
+body.theme-compare .level-pill{background:#dff1ff;color:#286a9a}
+body.theme-compare .prompt{color:#285f86}
+body.theme-compare .arena{position:relative;overflow:hidden;background:linear-gradient(180deg,#eaf6ff 0 62%,#d9e7f3 62% 100%);border-color:#c9dcea}
+body.theme-compare .arena:before{content:"";position:absolute;left:7%;right:7%;bottom:16%;height:22%;border:5px solid rgba(69,105,145,.15);border-top:0;border-radius:0 0 40px 40px}
+body.theme-compare .arena:after{content:"⚔️";position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:3.2rem;opacity:.12}
+body.theme-compare .vs-grid{position:relative;z-index:2}
+body.theme-compare .fighter{background:linear-gradient(145deg,#fff,#f8fbff);border-color:#d7e5f1}
+body.theme-compare .fighter-number{color:#245f8f}
+body.theme-compare .vs{color:#e15757;background:#fff7ef;box-shadow:0 8px 20px rgba(73,104,142,.13)}
+
+body.theme-build .battle-card{background:linear-gradient(135deg,#fff8e9,#fffdf4 52%,#f6efe0);border-color:#ead9b7}
+body.theme-build .level-pill{background:#fff1c7;color:#825c17}
+body.theme-build .prompt{color:#735326}
+body.theme-build .arena{position:relative;overflow:hidden;background:linear-gradient(135deg,#fff8df,#f3ead5);border-color:#e7d3aa}
+body.theme-build .arena:before{content:"🔧";position:absolute;right:24px;bottom:-12px;font-size:6.6rem;opacity:.09;transform:rotate(-12deg)}
+body.theme-build .arena:after{content:"";position:absolute;inset:18px;background-image:linear-gradient(rgba(138,104,47,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(138,104,47,.07) 1px,transparent 1px);background-size:28px 28px;border-radius:18px;pointer-events:none}
+body.theme-build .build-wrap{position:relative;z-index:2}
+body.theme-build .digit{background:#fffdf8;color:#77501d;box-shadow:0 10px 22px rgba(115,78,30,.10)}
+body.theme-build .slot{background:#fffaf0;border-color:#d9be8d;color:#755224}
+body.theme-build .reset-build{background:#f4e5c8;color:#735326}
+
+body.theme-target .battle-card{background:linear-gradient(135deg,#f3edff,#f8f5ff 50%,#eef4ff);border-color:#d9cdf3}
+body.theme-target .level-pill{background:#e9ddff;color:#6540b2}
+body.theme-target .prompt{color:#58408e}
+body.theme-target .arena{position:relative;overflow:hidden;background:radial-gradient(circle at 50% 24%,#fff 0 7%,#f6e8ff 7% 13%,#fff 13% 20%,#e7f1ff 20% 28%,#f8f5ff 28% 100%);border-color:#d9ccf0}
+body.theme-target .arena:before{content:"◎";position:absolute;left:50%;top:10px;transform:translateX(-50%);font-size:8rem;line-height:1;color:#8257df;opacity:.10}
+body.theme-target .arena:after{content:"";position:absolute;left:50%;top:20px;width:2px;height:72%;background:linear-gradient(#895ee4,transparent);opacity:.12}
+body.theme-target .target-title,body.theme-target .target-number,body.theme-target .vs-grid,body.theme-target .distance-note{position:relative;z-index:2}
+body.theme-target .target-title{color:#7155a3}
+body.theme-target .target-number{color:#7d4fe0;text-shadow:0 5px 0 rgba(125,79,224,.08)}
+body.theme-target .fighter{background:rgba(255,255,255,.94);border-color:#dfd5f2}
+body.theme-target .fighter-number{color:#563a9a}
+body.theme-target .distance-note{color:#6d5c8f}
 .side-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;margin-top:14px}.status{min-height:126px;border-radius:22px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}.actions{display:grid;gap:10px}.check,.hint,.next{border:0;border-radius:20px;min-height:66px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#f28c4e,#7a4ce0);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.25rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.hint{background:linear-gradient(135deg,#ff75b5,#ef4897);color:#fff}.notebook{border-radius:20px;background:#fff8dc;border:1px solid #f4df94;padding:13px;color:#725b18;font-weight:900;line-height:1.35}.notebook strong{color:#57420e}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:17px;padding:11px;text-align:center}.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.3rem}
 .levels{margin-top:16px;padding:16px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.level-card{border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;color:var(--ink);min-height:160px}.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#fff1df}.level-card:nth-child(3){background:#f0e9ff}.level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}.level-card:nth-child(2) .level-num{background:#ee934b}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}.level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
 .extras{margin-top:14px;padding:13px 15px}.pill{border:0;border-radius:999px;padding:10px 13px;background:#eee9ff;color:#5941a4;font-weight:900;cursor:pointer;text-decoration:none}.leader{margin-top:14px;padding:13px 15px}details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}.board{display:grid;gap:7px;margin-top:10px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eee8ff;color:#6341c4}.empty{padding:10px;color:#8d86a3}
@@ -83,8 +119,13 @@ function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function fmt(n){return Number(n).toLocaleString("en-US")}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function applyBattleTheme(){
+  document.body.classList.remove("theme-compare","theme-build","theme-target");
+  document.body.classList.add("theme-"+level);
+}
 function newBattle(){
   stars=3;solved=false;selected=null;built=[];wrongChoices=new Set();
+  applyBattleTheme();
   if(level==="compare")makeCompare();else if(level==="build")makeBuild();else makeTarget();
   el("checkBtn").textContent="Check Battle →";el("checkBtn").className="check";el("hintBtn").disabled=false;updateUI()
 }
