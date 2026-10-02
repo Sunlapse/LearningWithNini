@@ -684,7 +684,7 @@ function renderStart(){
   updateHawaiiClock();
   renderDeviceProgress();
   $('#dayTitle').textContent='Day '+dayNumber();
-  const s=streak();$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow for day 2.':"Let's warm up that brain.";
+  const s=deviceProgress().current;$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow to keep it going.':"Let's warm up that brain.";
   $('#name').value=settings.name;
   $$('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
   $$('#minSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+settings.mins));
@@ -772,7 +772,7 @@ function finish(){
   $('#doneVideoLink').href='https://www.youtube.com/@LearnWithNiniMath/search?query='+encodeURIComponent('Day '+finishedDay+' 20 Minute Math Challenge');
   $('#bigScore').innerHTML=`${done.correct}<small> correct</small>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
-  $('#stats').innerHTML=`<div><b>${attempted}</b>answered</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
+  $('#stats').innerHTML=`<div><b>${attempted}</b>answered</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${deviceProgress().current}</b>day streak</div>`;
   const ul=$('#review');ul.innerHTML='';
   done.items.forEach((x,i)=>{const li=document.createElement('li');
     const mark=x.r==='skip'?'<span class="sk">–</span>':x.r==='no'?'<span class="no">✗</span>':'<span class="ok">✓</span>';
