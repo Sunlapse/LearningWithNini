@@ -791,20 +791,41 @@
       border:0;
     }
     .youtube-actions {
-      display:flex;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px 16px;
       align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
       margin-top:14px;
-      padding:12px 14px;
+      padding:16px;
       border-radius:18px;
-      background:rgba(255,255,255,.86);
+      background:rgba(255,255,255,.90);
     }
     .youtube-actions strong { color:#4e2bad; }
+    .youtube-subscribe-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:11px 16px;
+      border-radius:12px;
+      background:#ff0000;
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 7px 16px rgba(255,0,0,.16);
+    }
+    .youtube-signin-note {
+      grid-column:2;
+      color:#7a7191;
+      font-size:.78rem;
+      font-weight:800;
+      text-align:center;
+      margin-top:-4px;
+    }
     .youtube-channel-link {
+      grid-column:1 / -1;
       color:#6635ca;
       font-weight:900;
+      width:max-content;
     }
 
     .why {
@@ -1013,6 +1034,9 @@
       .topic-cards { grid-template-columns: repeat(2, 1fr); }
       .start-steps { grid-template-columns: 1fr; }
       .youtube-growth-head { align-items:flex-start; flex-direction:column; }
+      .youtube-actions { grid-template-columns:1fr; }
+      .youtube-signin-note { grid-column:1; text-align:left; margin-top:-2px; }
+      .youtube-channel-link { grid-column:1; }
       .benefits { grid-template-columns: repeat(2, 1fr); }
     }
 
@@ -1337,10 +1361,11 @@
           <div class="youtube-actions">
             <div>
               <strong>Like the challenges?</strong><br>
-              <span>Subscribe for the next one.</span>
+              <span>Subscribe to see the next one.</span>
             </div>
-            <div class="g-ytsubscribe" data-channelid="UCrZMHA7Ky5kTJd3a-X2iUag" data-layout="default" data-count="hidden"></div>
-            <a class="youtube-channel-link" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Open YouTube channel →</a>
+            <a class="youtube-subscribe-btn" href="https://www.youtube.com/channel/UCrZMHA7Ky5kTJd3a-X2iUag?sub_confirmation=1" target="_blank" rel="noopener noreferrer">▶ Subscribe on YouTube</a>
+            <div class="youtube-signin-note">YouTube may ask you to sign in.</div>
+            <a class="youtube-channel-link" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">View Learn With Nini on YouTube ↗</a>
           </div>
         </section>
 
@@ -1423,6 +1448,5 @@
       });
     })();
   </script>
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
 </body>
 </html>
