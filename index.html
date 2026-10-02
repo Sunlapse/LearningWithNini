@@ -195,7 +195,7 @@
         radial-gradient(circle at 90% 8%, rgba(255,233,248,.95) 0 85px, transparent 86px),
         linear-gradient(90deg, #fffafc 0%, #ffffff 45%, #f8f4ff 100%);
       overflow: hidden;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 0;
     }
 
     .hero {
@@ -253,8 +253,6 @@
     .hero-actions {
       display:flex;
       align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
       margin-top:24px;
     }
 
@@ -270,19 +268,6 @@
       box-shadow: 0 14px 28px rgba(108,45,214,.24);
     }
 
-    .hero-secondary-btn {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:14px 20px;
-      border-radius:999px;
-      border:2px solid #d9cdf6;
-      background:rgba(255,255,255,.88);
-      color:#6334c7;
-      font-family:"Fredoka",sans-serif;
-      font-weight:700;
-      font-size:1.05rem;
-    }
 
     .hero-art {
       position: relative;
@@ -462,7 +447,7 @@
     }
 
     .content {
-      padding: 18px 0 0;
+      padding: 6px 0 0;
       background:
         radial-gradient(circle at 0% 30%, rgba(238,231,255,.55), transparent 26%),
         radial-gradient(circle at 100% 78%, rgba(226,246,255,.6), transparent 26%),
@@ -587,124 +572,104 @@
 
     .start-here {
       scroll-margin-top: 94px;
-      margin: 8px 0 22px;
-      padding: 20px 22px;
+      margin: 4px 0 20px;
+      padding: 18px 22px;
       border-radius: 26px;
       background: linear-gradient(135deg, #fff3fa, #f1ebff 55%, #edf8ff);
       border: 1px solid rgba(83,59,160,.10);
       box-shadow: 0 12px 28px rgba(74,50,137,.08);
     }
 
-    .start-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #fff;
-      color: #6b38d8;
-      font-weight: 900;
-      font-size: .78rem;
-      box-shadow: 0 7px 18px rgba(80,55,150,.08);
-    }
-
     .start-here h2 {
-      margin: 8px 0 2px;
+      margin: 0 0 3px;
       font-family: "Fredoka", sans-serif;
       color: #6331ce;
-      font-size: clamp(1.75rem, 3vw, 2.35rem);
+      font-size: clamp(2rem, 3vw, 2.8rem);
       letter-spacing: -.025em;
     }
 
     .start-intro {
-      margin: 0 0 13px;
+      margin: 0 0 16px;
       color: #596181;
       font-weight: 700;
       font-size: .94rem;
     }
 
     .start-path {
-      display:grid;
-      grid-template-columns:minmax(0,1.25fr) auto minmax(0,1fr) auto minmax(0,1fr);
-      gap:10px;
-      align-items:center;
-      padding:12px;
-      border-radius:20px;
-      background:rgba(255,255,255,.78);
-      border:1px solid rgba(83,59,160,.08);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      align-items: start;
     }
 
     .path-step {
-      min-width:0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     .path-step strong {
-      display:block;
-      font-family:"Fredoka",sans-serif;
-      color:#4f2bad;
-      font-size:1rem;
-      margin-bottom:3px;
+      display: block;
+      font-family: "Fredoka", sans-serif;
+      color: #4f2bad;
+      font-size: 1rem;
+      margin-bottom: 4px;
     }
 
-    .path-step span {
-      color:#6b6684;
-      font-weight:700;
-      font-size:.82rem;
-      line-height:1.25;
+    .path-step > span:not(.path-num) {
+      color: #6b6684;
+      font-weight: 700;
+      font-size: .82rem;
+      line-height: 1.3;
     }
 
     .path-num {
-      display:inline-grid;
-      place-items:center;
-      width:24px;
-      height:24px;
-      margin-right:5px;
-      border-radius:50%;
-      background:#efe7ff;
-      color:#6336c9;
-      font-family:"Fredoka",sans-serif;
-      font-weight:700;
-      font-size:.78rem;
-      vertical-align:middle;
-    }
-
-    .path-arrow {
-      color:#a28fcf;
-      font-size:1.2rem;
-      font-weight:900;
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: #efe7ff;
+      color: #6336c9;
+      font-family: "Fredoka", sans-serif;
+      font-weight: 700;
+      font-size: .78rem;
+      vertical-align: middle;
     }
 
     .start-challenge-btn {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      margin-top:8px;
-      padding:10px 14px;
-      border-radius:999px;
-      background:linear-gradient(135deg,#ef559d,#743cdf);
-      color:#fff;
-      font-family:"Fredoka",sans-serif;
-      font-weight:700;
-      font-size:.9rem;
-      box-shadow:0 7px 16px rgba(105,55,200,.15);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 9px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg,#ef559d,#743cdf);
+      color: #fff;
+      font-family: "Fredoka", sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      box-shadow: 0 7px 16px rgba(105,55,200,.15);
+    }
+
+    .path-link,
+    .step-video-link {
+      display: inline-block;
+      color: #6336c9;
+      font-weight: 900;
+      font-size: .82rem;
+      line-height: 1.3;
     }
 
     .path-link {
-      display:inline-block;
-      margin-top:6px;
-      color:#6336c9;
-      font-weight:900;
-      font-size:.84rem;
+      margin-top: 8px;
     }
 
-    .start-video-link {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      text-align: center;
-      color: #6841b9;
-      font-weight: 900;
-      font-size:.84rem;
+    .step-video-link {
+      margin-top: 7px;
+      font-size: .76rem;
     }
 
     .games-organized {
@@ -1122,8 +1087,7 @@
 
       .cards { grid-template-columns: repeat(2, 1fr); }
       .topic-cards { grid-template-columns: repeat(2, 1fr); }
-      .start-path { grid-template-columns:1fr; }
-      .path-arrow { display:none; }
+      .start-path { grid-template-columns:1fr; gap:12px; }
       .youtube-growth-head { align-items:flex-start; flex-direction:column; }
       .youtube-actions { grid-template-columns:1fr; }
       .youtube-signin-note { grid-column:1; text-align:left; margin-top:-2px; }
@@ -1145,9 +1109,8 @@
       .hero-copy { padding: 24px 12px 26px; }
       h1 { font-size: clamp(3rem, 15vw, 4.6rem); }
       .hero-copy p { font-size: 1.05rem; }
-      .hero-actions { gap:8px; }
+      .hero-actions { margin-top:20px; }
       .primary-btn { width: 100%; min-width: 0; }
-      .hero-secondary-btn { width:100%; }
 
       .hero-art {
         min-height: 400px;
@@ -1247,14 +1210,16 @@
         font-size: .56rem;
       }
 
-      .start-here { padding: 17px 14px; margin-bottom:18px; }
-      .start-here h2 { font-size:1.6rem; }
-      .start-intro { font-size:.86rem; margin-bottom:10px; }
-      .start-path { gap:7px; padding:9px 10px; }
-      .path-step { padding:2px 0; }
+      .start-here { padding: 16px 14px; margin-top:2px; margin-bottom:18px; }
+      .start-here h2 { font-size:1.9rem; }
+      .start-intro { font-size:.86rem; margin-bottom:12px; }
+      .start-path { gap:12px; }
+      .path-step { padding:0; }
+      .path-step + .path-step { margin-top:0; }
       .path-step strong { font-size:.93rem; }
-      .path-step span { font-size:.76rem; }
+      .path-step > span:not(.path-num) { font-size:.76rem; }
       .start-challenge-btn { width:100%; padding:9px 12px; }
+      .step-video-link { font-size:.72rem; }
       .about-story { padding:20px 16px; text-align:left; }
       .about-story h2 { text-align:center; font-size:1.8rem; }
       .about-story p { font-size:.92rem; line-height:1.45; }
@@ -1308,8 +1273,7 @@
           <h1>Learn Math<br><span class="pink">in a Fun Way!</span></h1>
           <p>Follow Nini's daily 20-minute math challenges, play fun games, and practice along to build confidence in math.</p>
           <div class="hero-actions">
-            <a class="primary-btn" href="daily-challenge.html">Do Today’s Challenge <span>→</span></a>
-            <a class="hero-secondary-btn" href="#start-here">Start Here</a>
+            <a class="primary-btn" href="daily-challenge.html">Start Today’s Challenge <span>→</span></a>
           </div>
         </div>
 
@@ -1333,29 +1297,26 @@
     <section class="content" id="games">
       <div class="shell">
         <section class="start-here" id="start-here">
-          <div class="start-kicker">✨ NEW HERE?</div>
-          <h2>Start Here</h2>
+          <h2>How It Works</h2>
           <p class="start-intro">A simple routine for getting the most out of Learn With Nini.</p>
           <div class="start-path">
             <div class="path-step">
               <strong><span class="path-num">1</span>Do Today’s Challenge</strong>
               <span>Start with the daily 20-minute mix.</span>
               <a class="start-challenge-btn" href="daily-challenge.html">Start Daily Challenge →</a>
+              <a class="step-video-link" href="#latest-video">▶ Then compare with Nini’s latest challenge video</a>
             </div>
-            <div class="path-arrow">→</div>
             <div class="path-step">
               <strong><span class="path-num">2</span>Practice One Skill</strong>
               <span>Work on one thing that felt tricky.</span>
               <a class="path-link" href="#skill-games">Choose a Skill Game →</a>
             </div>
-            <div class="path-arrow">→</div>
             <div class="path-step">
               <strong><span class="path-num">3</span>Check Progress</strong>
               <span>See scores and progress over time.</span>
               <a class="path-link" href="leaderboard.html">View Leaderboard →</a>
             </div>
           </div>
-          <a class="start-video-link" href="#latest-video">▶ Then compare with Nini’s latest challenge video</a>
         </section>
 
         <section class="games-organized" id="skill-games">
