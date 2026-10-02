@@ -73,6 +73,23 @@ button:disabled{opacity:.28;cursor:default}
 .hawaii-clock .clock-dot{width:8px;height:8px;border-radius:50%;background:#24B879;box-shadow:0 0 0 4px rgba(36,184,121,.12)}
 .game-hawaii-time{font-size:12px;font-weight:900;color:var(--muted);white-space:nowrap}
 .global-save{border-radius:14px;padding:11px 13px;background:#F1ECFF;color:#5B3EAE;font-weight:800;text-align:center}
+.progress-panel{background:linear-gradient(135deg,#FFF7D7,#FFF0F7 52%,#F2ECFF);border:2px solid #EFE3C2;border-radius:20px;padding:14px}
+.progress-top{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+.streak-fire{width:62px;height:62px;border-radius:18px;display:grid;place-items:center;background:#fff;font-size:32px;box-shadow:0 7px 18px rgba(95,64,130,.10)}
+.progress-title{font-family:"Fredoka",sans-serif;font-weight:700;color:#5932BD;font-size:22px;line-height:1.05}
+.progress-sub{margin-top:4px;color:#6E6688;font-weight:800;font-size:13px}
+.progress-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.progress-stat{background:#ffffffd9;border-radius:14px;padding:9px 7px;text-align:center;border:1px solid #eee6f5}
+.progress-stat b{display:block;font-family:"Fredoka",sans-serif;color:#382879;font-size:21px}
+.progress-stat span{display:block;color:#7A718D;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.025em}
+.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+.week-day{text-align:center}
+.week-day small{display:block;color:#8A8199;font-size:10px;font-weight:900;margin-bottom:4px}
+.week-dot{height:34px;border-radius:11px;display:grid;place-items:center;background:#fff;border:2px solid #E8E0EF;color:#B4AABC;font-weight:1000;font-size:15px}
+.week-day.done .week-dot{background:#5CCB91;border-color:#5CCB91;color:#fff}
+.week-day.today .week-dot{box-shadow:0 0 0 3px rgba(117,70,222,.12);border-color:#7546DE}
+.week-day.today.done .week-dot{border-color:#5CCB91}
+@media(max-width:480px){.progress-stats{gap:5px}.progress-stat b{font-size:18px}.week-strip{gap:4px}.week-dot{height:31px}}
 
 /* game */
 #game{gap:10px;padding:10px 0}
@@ -189,6 +206,23 @@ button:disabled{opacity:.28;cursor:default}
       <p style="margin:8px 0 0">Do the same dated problem set Nini uses in her videos. Work it out on the scratch pad and race the clock if you want.</p>
       <p id="streakLine">Let's warm up that brain.</p>
     </div>
+
+    <section class="progress-panel" aria-label="Daily Challenge progress saved on this device">
+      <div class="progress-top">
+        <div class="streak-fire">🔥</div>
+        <div>
+          <div class="progress-title"><span id="deviceStreak">0</span>-day streak</div>
+          <div class="progress-sub" id="progressMessage">Finish today’s challenge to start your streak.</div>
+        </div>
+      </div>
+      <div class="progress-stats">
+        <div class="progress-stat"><b id="deviceCompleted">0</b><span>Days done</span></div>
+        <div class="progress-stat"><b id="deviceBest">0</b><span>Best streak</span></div>
+        <div class="progress-stat"><b id="deviceTotalCorrect">0</b><span>Correct</span></div>
+      </div>
+      <div class="week-strip" id="weekStrip" aria-label="Last seven days"></div>
+    </section>
+
     <label class="field"><span>Player nickname</span>
       <input id="name" maxlength="24" placeholder="Nickname for the leaderboard (optional)" autocomplete="off"></label>
     <div class="field"><span>Level</span>
@@ -579,8 +613,57 @@ function updateHawaiiClock(){
 setInterval(updateHawaiiClock,30000);
 
 /* ---------- start screen ---------- */
+function localDailyDates(){
+  return new Set(log.map(x=>x&&x.date).filter(Boolean));
+}
+function deviceProgress(){
+  const dates=[...localDailyDates()].sort();
+  const ds=new Set(dates);
+  const now=dayDate();
+  let probe=new Date(now);
+  if(!ds.has(fmtUTC(probe)))probe.setUTCDate(probe.getUTCDate()-1);
+  let current=0;
+  while(ds.has(fmtUTC(probe))){current++;probe.setUTCDate(probe.getUTCDate()-1)}
+
+  let best=0,run=0,prev=null;
+  dates.forEach(date=>{
+    const d=new Date(date+'T12:00:00Z');
+    if(prev){
+      const diff=Math.round((d-prev)/86400000);
+      run=diff===1?run+1:1;
+    }else run=1;
+    best=Math.max(best,run);
+    prev=d;
+  });
+
+  const totalCorrect=log.reduce((sum,x)=>sum+(Number(x&&x.correct)||0),0);
+  return {current,best,completed:dates.length,totalCorrect,dates:ds};
+}
+function renderDeviceProgress(){
+  const p=deviceProgress();
+  $('#deviceStreak').textContent=p.current;
+  $('#deviceCompleted').textContent=p.completed;
+  $('#deviceBest').textContent=p.best;
+  $('#deviceTotalCorrect').textContent=p.totalCorrect;
+  const doneToday=p.dates.has(today());
+  $('#progressMessage').textContent=p.current
+    ?(doneToday?'Today is done — keep it going tomorrow!':'Your streak is alive. Finish today to keep it going!')
+    :'Finish today’s challenge to start your streak.';
+
+  const strip=$('#weekStrip');strip.innerHTML='';
+  const end=dayDate();
+  for(let i=6;i>=0;i--){
+    const d=new Date(end);d.setUTCDate(d.getUTCDate()-i);
+    const key=fmtUTC(d);
+    const el=document.createElement('div');
+    el.className='week-day'+(p.dates.has(key)?' done':'')+(key===today()?' today':'');
+    const label=new Intl.DateTimeFormat('en-US',{weekday:'short',timeZone:'UTC'}).format(d).slice(0,1);
+    el.innerHTML='<small>'+label+'</small><div class="week-dot">'+(p.dates.has(key)?'✓':'·')+'</div>';
+    strip.appendChild(el);
+  }
+}
 function knownDailyDates(){
-  const ds=new Set(log.map(x=>x&&x.date).filter(Boolean));
+  const ds=localDailyDates();
   remoteDailyDates.forEach(d=>ds.add(d));
   return ds;
 }
@@ -599,6 +682,7 @@ async function syncGlobalDailyDates(){
 const gradeLabel=g=>g==='mix'?'Grades 3–4':'Grade '+g;
 function renderStart(){
   updateHawaiiClock();
+  renderDeviceProgress();
   $('#dayTitle').textContent='Day '+dayNumber();
   const s=streak();$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow for day 2.':"Let's warm up that brain.";
   $('#name').value=settings.name;
@@ -671,6 +755,7 @@ function finish(){
   const attempted=done.items.filter(x=>x.r!=='skip').length;
   const secs=Math.round(settings.mins*60-done.msLeft/1000);
   if(attempted>0){log.push({date:today(),grade:settings.grade,mins:settings.mins,correct:done.correct,attempted,secs});LS.set('dm-log',log)}
+  renderDeviceProgress();
   const globalStatus=$('#globalSaveStatus');
   if(attempted>0&&window.LWNLeaderboard){
     const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:done.correct,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()};
