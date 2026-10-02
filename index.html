@@ -791,9 +791,14 @@
     }
 
     @media (min-width: 981px) {
-      #operations .mathmaze,
-      #geometry .geometry {
-        grid-column: 2;
+      .topic-cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .topic-cards .feature-card {
+        flex: 0 0 calc((100% - 32px) / 3);
       }
     }
 
