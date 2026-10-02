@@ -125,7 +125,7 @@ window.LWNLeaderboard = (() => {
           <h2 id="lwnNicknameTitle">Join the leaderboard!</h2>
           <p>Use a fun nickname only. <strong>Do not use your real name or email address.</strong></p>
           <label>Leaderboard nickname
-            <input id="lwnNicknameInput" maxlength="24" autocomplete="off" placeholder="Example: Eric or Math Dragon">
+            <input id="lwnNicknameInput" maxlength="24" autocomplete="off" placeholder="Example: Math Dragon">
           </label>
           <div class="lwn-avatar-label">Choose an avatar</div>
           <div class="lwn-avatar-row">
