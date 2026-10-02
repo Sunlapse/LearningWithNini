@@ -11,7 +11,7 @@ window.LEARN_WITH_NINI_GAMES = [
   { title: 'Math Maze', icon: '🧩', url: 'math-maze.html' },
   { title: 'Fraction Builder', icon: '🍕', url: 'fraction-builder.html' },
   { title: 'Math Detective', icon: '🔎', url: 'math-detective.html' },
-  { title: 'Length Lab', icon: '📏', url: 'length-lab.html?v=20260930-4' },
-  { title: 'Capacity Lab', icon: '🥤', url: 'capacity-lab.html?v=20260930-1' },
-  { title: 'Weight & Mass Lab', icon: '⚖️', url: 'weight-mass-lab.html?v=20260930-2' }
+  { title: 'Length Lab', icon: '📏', url: 'length-lab.html' },
+  { title: 'Capacity Lab', icon: '🥤', url: 'capacity-lab.html' },
+  { title: 'Weight & Mass Lab', icon: '⚖️', url: 'weight-mass-lab.html' }
 ];
