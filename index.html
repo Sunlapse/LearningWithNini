@@ -80,19 +80,20 @@
     }
 
     .nav {
-      min-height: 78px;
+      min-height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
+      gap: 14px;
     }
 
     .brand {
       font-family: "Fredoka", sans-serif;
-      font-size: clamp(1.5rem, 2vw, 2rem);
+      font-size: clamp(1.35rem, 1.6vw, 1.65rem);
       font-weight: 700;
       letter-spacing: -.03em;
       white-space: nowrap;
+      flex: 0 0 auto;
     }
 
     .brand .learn { color: #6b36df; }
@@ -103,14 +104,19 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 22px;
+      justify-content: center;
+      gap: 13px;
       font-weight: 800;
-      font-size: .98rem;
+      font-size: .86rem;
+      white-space: nowrap;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
     .nav-links a {
-      padding: 10px 4px;
+      padding: 10px 2px;
       position: relative;
+      white-space: nowrap;
     }
 
     .nav-links a.active::after {
@@ -172,14 +178,15 @@
     .youtube-btn {
       background: linear-gradient(135deg, #7435e9, #9346ea);
       color: #fff;
-      padding: 13px 20px;
+      padding: 11px 16px;
+      font-size: .92rem;
       box-shadow: 0 10px 24px rgba(112,54,224,.22);
       white-space: nowrap;
     }
 
     .play-dot {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       background: #fff;
       color: var(--purple);
