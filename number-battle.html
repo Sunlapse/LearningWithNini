@@ -77,14 +77,14 @@ button,input{font:inherit}
 <script>
 const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
-let level="compare",q=1,round=1,score=0,streak=0,stars=3,solved=false,selected=null,correct=null,left=0,right=0,target=0,digits=[],built=[],buildGoal="greatest";
+let level="compare",q=1,round=1,score=0,streak=0,stars=3,solved=false,selected=null,correct=null,left=0,right=0,target=0,digits=[],built=[],buildGoal="greatest",wrongChoices=new Set();
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function fmt(n){return Number(n).toLocaleString("en-US")}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 function newBattle(){
-  stars=3;solved=false;selected=null;built=[];
+  stars=3;solved=false;selected=null;built=[];wrongChoices=new Set();
   if(level==="compare")makeCompare();else if(level==="build")makeBuild();else makeTarget();
   el("checkBtn").textContent="Check Battle →";el("checkBtn").className="check";el("hintBtn").disabled=false;updateUI()
 }
@@ -184,10 +184,21 @@ function check(){
     el("status").textContent="Battle won! "+explain+" You earned "+stars+" star"+(stars===1?"":"s")+"!";el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Battle →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();
     LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"number_battle",score,level,best_streak:streak}).then(renderBoard).catch(()=>{});
   }else{
+    if(level!=="build"){
+      const buttons=[...el("arena").querySelectorAll("[data-side]")];
+      wrongChoices.add(String(selected));
+      buttons.forEach(b=>{if(b.dataset.side===String(selected)){b.classList.add("wrong");b.classList.remove("selected");b.disabled=true}});
+      stars=Math.min(stars,Math.max(1,3-wrongChoices.size));streak=0;
+      if(wrongChoices.size>=buttons.length-1){
+        solved=true;selected=null;
+        buttons.forEach(b=>{if(b.dataset.side===correct)b.classList.add("correct")});
+        el("status").textContent="Recorded wrong — the remaining answer was reached only by elimination.";
+        el("status").className="status bad";el("checkBtn").textContent=q===10?"Finish Round →":"Next Battle →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();return;
+      }
+      selected=null;el("status").textContent="That choice is marked wrong. Try another answer.";el("status").className="status bad";updateUI();return;
+    }
     stars=Math.max(1,stars-1);streak=0;
-    if(level==="compare")el("status").textContent="Not this time. Compare the highest place where the digits are different.";
-    else if(level==="build")el("status").textContent="Close! Think about which digit should control the thousands place first.";
-    else el("status").textContent="Not quite. Compare how far each number is from "+fmt(target)+".";
+    el("status").textContent="Close! Think about which digit should control the thousands place first.";
     el("status").className="status bad";updateUI()
   }
 }
