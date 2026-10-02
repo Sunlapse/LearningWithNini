@@ -123,7 +123,7 @@ window.LWNLeaderboard = (() => {
           <button class="lwn-nickname-close" type="button" aria-label="Close">×</button>
           <div class="lwn-nickname-emoji">🏆</div>
           <h2 id="lwnNicknameTitle">Join the leaderboard!</h2>
-          <p>Choose a nickname so your scores show up as <strong>you</strong>.</p>
+          <p>Use a fun nickname only. <strong>Do not use your real name or email address.</strong></p>
           <label>Leaderboard nickname
             <input id="lwnNicknameInput" maxlength="24" autocomplete="off" placeholder="Example: Eric or Math Dragon">
           </label>
@@ -147,7 +147,7 @@ window.LWNLeaderboard = (() => {
         .lwn-nickname-card p{color:#6e6688;font-weight:800;line-height:1.4;margin:0 0 16px}
         .lwn-nickname-card label{display:block;text-align:left;font-weight:900;color:#3f3475}
         .lwn-nickname-card input{width:100%;margin-top:6px;border:2px solid #ddd4f3;border-radius:15px;padding:13px 14px;font:inherit;font-weight:800;outline:none}
-        .lwn-nickname-card input:focus{border-color:#7448dd;box-shadow:0 0 0 4px rgba(116,72,221,.10)}
+        .lwn-nickname-card input:focus{border-color:#7448dd;box-shadow:0 0 0 4px rgba(116,72,221,.10)}\n        .lwn-nickname-help{text-align:left;margin-top:7px;color:#7a7191;font-size:12px;font-weight:800;line-height:1.35}.lwn-nickname-help.bad{color:#b23b67}
         .lwn-avatar-label{text-align:left;font-weight:900;margin:14px 0 7px;color:#3f3475}.lwn-avatar-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
         .lwn-avatar-row button{border:2px solid #e8e1f6;border-radius:14px;background:#faf9ff;min-height:50px;font-size:23px}.lwn-avatar-row button.selected{border-color:#7040df;background:#eee8ff}
         .lwn-nickname-save,.lwn-nickname-skip{width:100%;border:0;border-radius:16px;font-weight:1000;cursor:pointer}
@@ -176,7 +176,15 @@ window.LWNLeaderboard = (() => {
       }
       overlay.querySelector(".lwn-nickname-save").addEventListener("click",()=>{
         const entered=String(input.value||"").trim().replace(/\s+/g," ").slice(0,24);
+        const help=overlay.querySelector("#lwnNicknameHelp");
+        const looksLikeEmail=/@|\.(com|org|net|edu|gov)\b/i.test(entered);
+        const looksLikePhone=(entered.match(/\d/g)||[]).length>=7;
         if(!entered){input.focus();return}
+        if(looksLikeEmail||looksLikePhone){
+          if(help){help.textContent="Please use a fun nickname only — no email address or phone number.";help.classList.add("bad")}
+          input.focus();return;
+        }
+        if(help)help.classList.remove("bad");
         finish({name:entered,avatar:selectedAvatar});
       });
       overlay.querySelector(".lwn-nickname-skip").addEventListener("click",()=>{
