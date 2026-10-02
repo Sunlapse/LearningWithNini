@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://learnwithnini.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://learnwithnini.com/daily-challenge.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://learnwithnini.com/leaderboard.html</loc><changefreq>daily</changefreq><priority>0.5</priority></url>
+  <url><loc>https://learnwithnini.com/money-match.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/time-match.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/multiplication-sprint.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/division-dash.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/place-value-challenge.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/number-battle.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/geometry-builder.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/math-maze.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/fraction-builder.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/math-detective.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/length-lab.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/capacity-lab.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://learnwithnini.com/weight-mass-lab.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+</urlset>
