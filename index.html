@@ -1330,7 +1330,7 @@
               <strong><span class="path-num">1</span>Do Today’s Challenge</strong>
               <span>Start with the daily 20-minute mix.</span>
               <a class="start-challenge-btn" href="daily-challenge.html">Start Daily Challenge →</a>
-              <a class="step-video-link" href="#latest-video">▶ Watch Nini’s latest challenge →</a>
+              <a class="step-video-link" id="challengeVideoLink" href="#latest-video">▶ Watch Nini’s latest challenge →</a>
             </div>
             <div class="path-step">
               <strong><span class="path-num">2</span>Practice One Skill</strong>
@@ -1520,12 +1520,13 @@
         <section class="youtube-growth" id="latest-video">
           <div class="youtube-growth-head">
             <div>
-              <h2>Watch Nini’s Latest Challenge ▶</h2>
+              <h2 id="latestChallengeHeading">Watch Nini’s Latest Challenge ▶</h2>
               <p>Play the newest Learn With Nini math video without leaving the site.</p>
             </div>
           </div>
           <div class="youtube-embed">
             <iframe
+              id="latestChallengeFrame"
               src="https://www.youtube-nocookie.com/embed/videoseries?list=UUrZMHA7Ky5kTJd3a-X2iUag&playsinline=1&rel=0"
               title="Latest Learn With Nini math challenge on YouTube"
               loading="lazy"
@@ -1584,12 +1585,64 @@
   <script src="leaderboard-api.js"></script>
   <script>
     (() => {
+      const hawaiiDateKey = (value) => {
+        const parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Pacific/Honolulu',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }).formatToParts(value);
+        const get = type => parts.find(p => p.type === type)?.value || '';
+        return `${get('year')}-${get('month')}-${get('day')}`;
+      };
+
+      const dayDiff = (newerKey, olderKey) => {
+        const toUtc = key => {
+          const [y,m,d] = key.split('-').map(Number);
+          return Date.UTC(y, m - 1, d);
+        };
+        return Math.round((toUtc(newerKey) - toUtc(olderKey)) / 86400000);
+      };
+
+      fetch('latest-challenge.json?ts=' + Date.now(), { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : null)
+        .then(video => {
+          if (!video || !video.videoId || !video.published) return;
+
+          const frame = document.getElementById('latestChallengeFrame');
+          if (frame) {
+            frame.src = 'https://www.youtube-nocookie.com/embed/' +
+              encodeURIComponent(video.videoId) +
+              '?playsinline=1&rel=0';
+          }
+
+          const today = hawaiiDateKey(new Date());
+          const published = hawaiiDateKey(new Date(video.published));
+          const diff = dayDiff(today, published);
+          const link = document.getElementById('challengeVideoLink');
+          const heading = document.getElementById('latestChallengeHeading');
+
+          if (diff === 0) {
+            if (link) link.textContent = '▶ Watch Nini do today’s challenge →';
+            if (heading) heading.textContent = 'Watch Today’s Challenge ▶';
+          } else if (diff === 1) {
+            if (link) link.textContent = '▶ Watch Nini do yesterday’s challenge →';
+            if (heading) heading.textContent = 'Watch Yesterday’s Challenge ▶';
+          } else {
+            if (link) link.textContent = '▶ Watch Nini’s latest challenge →';
+            if (heading) heading.textContent = 'Watch Nini’s Latest Challenge ▶';
+          }
+        })
+        .catch(() => {});
+
+      (() => {
       const expires = new Date("2026-10-15T00:00:00-10:00");
       if (new Date() < expires) return;
       ["lengthNewBadge","capacityNewBadge","weightMassNewBadge"].forEach(id => {
         const badge = document.getElementById(id);
         if (badge) badge.remove();
       });
+      })();
     })();
   </script>
 </body>
