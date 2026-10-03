@@ -1,0 +1,82 @@
+name: Update latest math challenge
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/update-latest-challenge.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-latest-challenge
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read latest full challenge from YouTube
+        run: |
+          curl --fail --location --retry 3 \
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCrZMHA7Ky5kTJd3a-X2iUag" \
+            -o /tmp/youtube-feed.xml
+
+          python3 - <<'PY'
+          import json
+          import re
+          import xml.etree.ElementTree as ET
+
+          root = ET.parse("/tmp/youtube-feed.xml").getroot()
+          atom = "{http://www.w3.org/2005/Atom}"
+          yt = "{http://www.youtube.com/xml/schemas/2015}"
+
+          challenge = None
+          pattern = re.compile(r"20[\s-]*minute\s+math\s+challenge", re.I)
+
+          for entry in root.findall(atom + "entry"):
+              title = (entry.findtext(atom + "title") or "").strip()
+              if not pattern.search(title):
+                  continue
+              video_id = (entry.findtext(yt + "videoId") or "").strip()
+              published = (entry.findtext(atom + "published") or "").strip()
+              if video_id and published:
+                  challenge = {
+                      "videoId": video_id,
+                      "title": title,
+                      "published": published
+                  }
+                  break
+
+          if challenge is None:
+              print("No full 20-minute math challenge found in the current YouTube feed.")
+              raise SystemExit(0)
+
+          with open("latest-challenge.json", "w", encoding="utf-8") as f:
+              json.dump(challenge, f, ensure_ascii=False, indent=2)
+              f.write("\n")
+
+          print(json.dumps(challenge, ensure_ascii=False))
+          PY
+
+      - name: Commit latest challenge metadata
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add latest-challenge.json
+          if git diff --cached --quiet; then
+            echo "Latest challenge is already up to date."
+            exit 0
+          fi
+          git commit -m "Update latest YouTube challenge"
+          git pull --rebase origin main
+          git push origin HEAD:main
