@@ -1604,36 +1604,53 @@
         return Math.round((toUtc(newerKey) - toUtc(olderKey)) / 86400000);
       };
 
-      fetch('latest-challenge.json?ts=' + Date.now(), { cache: 'no-store' })
-        .then(r => r.ok ? r.json() : null)
-        .then(video => {
-          if (!video || !video.videoId || !video.published) return;
+      const applyLatestChallenge = video => {
+        if (!video || !video.videoId || !video.published) return false;
 
-          const frame = document.getElementById('latestChallengeFrame');
-          if (frame) {
-            frame.src = 'https://www.youtube-nocookie.com/embed/' +
-              encodeURIComponent(video.videoId) +
-              '?playsinline=1&rel=0';
-          }
+        const frame = document.getElementById('latestChallengeFrame');
+        if (frame) {
+          frame.src = 'https://www.youtube-nocookie.com/embed/' +
+            encodeURIComponent(video.videoId) +
+            '?playsinline=1&rel=0';
+        }
 
-          const today = hawaiiDateKey(new Date());
-          const published = hawaiiDateKey(new Date(video.published));
-          const diff = dayDiff(today, published);
-          const link = document.getElementById('challengeVideoLink');
-          const heading = document.getElementById('latestChallengeHeading');
+        const today = hawaiiDateKey(new Date());
+        const published = hawaiiDateKey(new Date(video.published));
+        const diff = dayDiff(today, published);
+        const link = document.getElementById('challengeVideoLink');
+        const heading = document.getElementById('latestChallengeHeading');
 
-          if (diff === 0) {
-            if (link) link.textContent = '▶ Watch Nini do today’s challenge →';
-            if (heading) heading.textContent = 'Watch Today’s Challenge ▶';
-          } else if (diff === 1) {
-            if (link) link.textContent = '▶ Watch Nini do yesterday’s challenge →';
-            if (heading) heading.textContent = 'Watch Yesterday’s Challenge ▶';
-          } else {
-            if (link) link.textContent = '▶ Watch Nini’s latest challenge →';
-            if (heading) heading.textContent = 'Watch Nini’s Latest Challenge ▶';
-          }
-        })
-        .catch(() => {});
+        if (diff === 0) {
+          if (link) link.textContent = '▶ Watch Nini do today’s challenge →';
+          if (heading) heading.textContent = 'Watch Today’s Challenge ▶';
+        } else if (diff === 1) {
+          if (link) link.textContent = '▶ Watch Nini do yesterday’s challenge →';
+          if (heading) heading.textContent = 'Watch Yesterday’s Challenge ▶';
+        } else {
+          if (link) link.textContent = '▶ Watch Nini’s latest challenge →';
+          if (heading) heading.textContent = 'Watch Nini’s Latest Challenge ▶';
+        }
+        return true;
+      };
+
+      (async () => {
+        const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2Y2RpaHRwaGNqdWVnZGthZHNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0ODM4MjgsImV4cCI6MjEwNjA1OTgyOH0.1pUA7thwIacUv1xcoRLtID6TpyD-iEPbzMrFafD_ATw';
+        try {
+          const res = await fetch('https://wvcdihtphcjuegdkadsb.supabase.co/functions/v1/latest-youtube-challenge', {
+            cache: 'no-store',
+            headers: {
+              apikey: anonKey,
+              Authorization: 'Bearer ' + anonKey
+            }
+          });
+          if (res.ok && applyLatestChallenge(await res.json())) return;
+        } catch (e) {}
+
+        try {
+          const fallback = await fetch('latest-challenge.json?ts=' + Date.now(), { cache: 'no-store' });
+          if (fallback.ok) applyLatestChallenge(await fallback.json());
+        } catch (e) {}
+      })();
 
       (() => {
       const expires = new Date("2026-10-15T00:00:00-10:00");
