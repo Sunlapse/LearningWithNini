@@ -623,7 +623,7 @@ function localDailyDates(){
   return new Set(log.map(x=>x&&x.date).filter(Boolean));
 }
 function deviceProgress(){
-  const dates=[...localDailyDates()].sort();
+  const dates=[...knownDailyDates()].sort();
   const ds=new Set(dates);
   const now=dayDate();
   let probe=new Date(now);
@@ -796,7 +796,7 @@ function finish(){
   $('#doneVideoLink').href='https://www.youtube.com/@LearnWithNiniMath/search?query='+encodeURIComponent('Day '+finishedDay+' 20 Minute Math Challenge');
   const maxPoints=done.items.length*3;\n  $('#bigScore').innerHTML=`${done.points}<small> points</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
-  $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${deviceProgress().current}</b>day streak</div>`;
+  $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
   const ul=$('#review');ul.innerHTML='';
   done.items.forEach((x,i)=>{const li=document.createElement('li');
     const mark=x.r==='skip'?'<span class="sk">–</span>':x.r==='no'?'<span class="no">✗</span>':'<span class="ok">✓</span>';
