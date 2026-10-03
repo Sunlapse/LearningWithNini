@@ -350,6 +350,37 @@ let settings=Object.assign({name:'',grade:'3',mins:20},LS.get('dm-settings',{}))
 if(sharedProfile.name&&sharedProfile.name.trim())settings.name=sharedProfile.name.trim();
 let log=LS.get('dm-log',[]);if(!Array.isArray(log))log=[];
 let pendingGlobal=LS.get('dm-pending-global-v1',[]);if(!Array.isArray(pendingGlobal))pendingGlobal=[];
+
+// Convert the brief 3/2/1 Daily Challenge scoring experiment back to the
+// smaller 1/.75/.5 scale. Older results that already used one-point scoring
+// are left untouched.
+let migratedDailyScores=false;
+log=log.map(x=>{
+  if(!x||x.points==null)return x;
+  const points=Number(x.points)||0;
+  const correct=Number(x.correct)||0;
+  const attempted=Number(x.attempted)||0;
+  if(correct>0&&points>Math.max(correct,attempted)){
+    const secondTryEquivalents=Math.max(0,Math.min(correct,3*correct-points));
+    x=Object.assign({},x,{points:Math.round(correct-(secondTryEquivalents*.25))});
+    migratedDailyScores=true;
+  }
+  return x;
+});
+if(migratedDailyScores)LS.set('dm-log',log);
+
+// Make any queued Daily Challenge upload agree with the migrated local result
+// so an old oversized score cannot be re-submitted after this update.
+pendingGlobal=pendingGlobal.map(p=>{
+  if(!p||p.game!=='daily_challenge'||!p.level)return p;
+  const parts=String(p.level).split('|');
+  const grade=parts[0],mins=parseInt(parts[1],10)||20,date=parts[2];
+  const matches=log.filter(x=>x&&x.date===date&&String(x.grade)===grade&&Number(x.mins)===mins);
+  if(!matches.length)return p;
+  const best=[...matches].sort((a,b)=>(Number(b.points)||Number(b.correct)||0)-(Number(a.points)||Number(a.correct)||0))[0];
+  return Object.assign({},p,{score:Number(best.points)||Number(best.correct)||0});
+});
+LS.set('dm-pending-global-v1',pendingGlobal);
 let remoteDailyDates=new Set();
 let salt=0;
 function globalName(){
@@ -746,8 +777,8 @@ function submit(val){
   if(S.revealed){nextProblem();return}
   const given=val!==undefined?val:S.input;if(!given)return;
   if(isRight(S.cur,given)){
-    const earned=Math.max(1,3-S.tries);
-    S.correct++;S.points+=earned;$('#score').textContent=S.points;
+    const earned=S.tries===0?1:S.tries===1?.75:.5;
+    S.correct++;S.points+=earned;$('#score').textContent=Number.isInteger(S.points)?S.points:Math.round(S.points*100)/100;
     S.items.push({t:S.cur.text,given,ans:showAns(S.cur),r:S.tries?'ok2':'ok',points:earned});
     if(S.cur.k==='cmp')$$('#cmp button').forEach(b=>{if(isRight(S.cur,b.dataset.c))b.classList.add('correct');b.disabled=true});
     $('#ans').classList.add('good');setFb((S.tries?'Got it!':'Correct!')+' +'+earned+' point'+(earned===1?'':'s'),'good');
@@ -778,11 +809,12 @@ function finish(){
   if(!S)return;clearInterval(tick);const done=S;S=null;
   const attempted=done.items.filter(x=>x.r!=='skip').length;
   const secs=Math.round(settings.mins*60-done.msLeft/1000);
-  if(attempted>0){log.push({date:today(),grade:settings.grade,mins:settings.mins,correct:done.correct,points:done.points,attempted,secs});LS.set('dm-log',log)}
+  const finalPoints=Math.round(done.points);
+  if(attempted>0){log.push({date:today(),grade:settings.grade,mins:settings.mins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}
   renderDeviceProgress();
   const globalStatus=$('#globalSaveStatus');
   if(attempted>0&&window.LWNLeaderboard){
-    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:done.points,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()};
+    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()};
     queueGlobalScore(payload);
     globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
     flushPendingGlobal().then(saved=>{
@@ -794,7 +826,8 @@ function finish(){
   const finishedDay=dayNumber();
   $('#doneVideoDay').textContent=finishedDay;
   $('#doneVideoLink').href='https://www.youtube.com/@LearnWithNiniMath/search?query='+encodeURIComponent('Day '+finishedDay+' 20 Minute Math Challenge');
-  const maxPoints=done.items.length*3;\n  $('#bigScore').innerHTML=`${done.points}<small> points</small><span class="score-context">of ${maxPoints} possible</span>`;
+  const maxPoints=done.items.length;
+  $('#bigScore').innerHTML=`${finalPoints}<small> points</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
   $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
   const ul=$('#review');ul.innerHTML='';
