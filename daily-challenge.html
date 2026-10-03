@@ -152,7 +152,7 @@ button:disabled{opacity:.28;cursor:default}
 #done{overflow-y:auto;align-items:center;padding:28px 0}
 .done{width:100%;max-width:620px;display:flex;flex-direction:column;gap:20px}
 .big{font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:clamp(64px,12vw,110px);line-height:.9}
-.big small{font-size:.35em;color:var(--muted);font-weight:600}
+.big small{font-size:.35em;color:var(--muted);font-weight:600}\n.big .score-context{display:block;margin-top:12px;font-family:"Nunito",system-ui,sans-serif;font-size:18px;line-height:1.2;color:var(--muted);font-weight:800}
 .stats{display:flex;gap:26px;flex-wrap:wrap;font-size:18px;color:var(--muted)}
 .stats b{display:block;font-family:"Fredoka",system-ui,sans-serif;font-size:32px;color:var(--ink)}
 .list{list-style:none;margin:0;padding:0;border-top:2px solid var(--line)}
@@ -794,7 +794,7 @@ function finish(){
   const finishedDay=dayNumber();
   $('#doneVideoDay').textContent=finishedDay;
   $('#doneVideoLink').href='https://www.youtube.com/@LearnWithNiniMath/search?query='+encodeURIComponent('Day '+finishedDay+' 20 Minute Math Challenge');
-  $('#bigScore').innerHTML=`${done.points}<small> points</small>`;
+  const maxPoints=done.items.length*3;\n  $('#bigScore').innerHTML=`${done.points}<small> points</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
   $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${deviceProgress().current}</b>day streak</div>`;
   const ul=$('#review');ul.innerHTML='';
