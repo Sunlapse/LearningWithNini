@@ -1,4 +1,5 @@
 name: Update latest math challenge
+# Polls YouTube for the newest full Daily Challenge video.
 
 on:
   schedule:
