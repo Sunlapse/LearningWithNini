@@ -1605,10 +1605,10 @@
       };
 
       const applyLatestChallenge = video => {
-        if (!video || !video.videoId || !video.published) return false;
+        if (!video || !video.published) return false;
 
         const frame = document.getElementById('latestChallengeFrame');
-        if (frame) {
+        if (frame && video.videoId) {
           frame.src = 'https://www.youtube-nocookie.com/embed/' +
             encodeURIComponent(video.videoId) +
             '?playsinline=1&rel=0';
