@@ -724,7 +724,7 @@ function updTimer(){const ms=Math.max(0,S.end-Date.now());S.msLeft=ms;const s=Ma
   $('#timer').textContent=Math.floor(s/60)+':'+pad2(s%60);$('#timer').classList.toggle('low',s<=60);if(ms<=0)finish()}
 function nextProblem(){
   S.cur=genProblem(S.idx+1);S.idx++;S.input='';S.tries=0;S.wrongChoices=new Set();S.revealed=false;S.locked=false;
-  $('#cmp button').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct')});
+  $$('#cmp button').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct')});
   const q=$('#q');q.innerHTML=S.cur.html;q.classList.toggle('long',S.cur.text.length>34);
   $('#qnum').textContent='#'+S.idx+' · '+PHASE_LABEL[S.cur.phase];
   $('#right').classList.toggle('is-cmp',S.cur.k==='cmp');
