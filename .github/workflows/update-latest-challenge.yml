@@ -28,16 +28,24 @@ jobs:
 
       - name: Read latest full challenge from YouTube
         run: |
-          curl --fail --location --retry 3 \
+          if ! curl --fail --location --retry 3 \
             "https://www.youtube.com/feeds/videos.xml?channel_id=UCrZMHA7Ky5kTJd3a-X2iUag" \
-            -o /tmp/youtube-feed.xml
+            -o /tmp/youtube-feed.xml; then
+            echo "::warning::YouTube feed is temporarily unavailable. Keeping the existing latest challenge and trying again on the next scheduled run."
+            exit 0
+          fi
 
           python3 - <<'PY'
           import json
           import re
           import xml.etree.ElementTree as ET
 
-          root = ET.parse("/tmp/youtube-feed.xml").getroot()
+          try:
+              root = ET.parse("/tmp/youtube-feed.xml").getroot()
+          except (ET.ParseError, OSError) as exc:
+              print(f"::warning::Could not read the YouTube feed ({exc}). Keeping the existing latest challenge and trying again on the next scheduled run.")
+              raise SystemExit(0)
+
           atom = "{http://www.w3.org/2005/Atom}"
           yt = "{http://www.youtube.com/xml/schemas/2015}"
 
@@ -59,7 +67,7 @@ jobs:
                   break
 
           if challenge is None:
-              print("No full 20-minute math challenge found in the current YouTube feed.")
+              print("No full 20-minute math challenge found in the current YouTube feed. Keeping the existing latest challenge.")
               raise SystemExit(0)
 
           with open("latest-challenge.json", "w", encoding="utf-8") as f:
