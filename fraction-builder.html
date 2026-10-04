@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Fraction Builder | Learn With Nini</title>
+<title>Fraction Builder – Free Fractions Game for Grades 3–5 | Learn With Nini</title>
+  <meta name="description" content="Free fractions game for grades 3–5. Build visual fractions, recognize equivalent fractions, and compare fraction values through interactive practice." />
 <link rel="canonical" href="https://learnwithnini.com/fraction-builder.html">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -36,11 +37,13 @@ a{text-decoration:none;color:inherit}button,input{font:inherit}
 @media(max-width:1080px){.level-jump{display:flex}}
 @media(max-width:520px){.level-jump{font-size:.92rem;padding:10px 12px;margin-top:10px}}
 
+
+.parent-game-intro{margin:18px 0 4px;font-size:.95rem;line-height:1.55}.parent-game-intro p{margin:0 0 8px}.parent-game-intro a{font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px}
 </style>
   <link rel="stylesheet" href="mobile-touch.css?v=20260930-2">
 </head>
 <body>
-<header class="top"><a class="home" href="index.html">🏠 Back to Home</a><div class="scorewrap"><div class="scorepill" id="topScore">⭐ Score: 0</div></div><button class="profile" id="profileBtn"><span id="avatarTop">⭐</span><span id="nameTop">Nini</span></button></header>
+<header class="top"><a class="home" href="/">🏠 Back to Home</a><div class="scorewrap"><div class="scorepill" id="topScore">⭐ Score: 0</div></div><button class="profile" id="profileBtn"><span id="avatarTop">⭐</span><span id="nameTop">Nini</span></button></header>
 <div class="wrap"><div class="shell">
 <aside class="nini"><img src="nini-hero.webp" alt="Nini"><div class="bubble">Fraction Builder! 🍕<small>Build it, match it, compare it ♡</small></div></aside>
 <main>
@@ -52,6 +55,11 @@ a{text-decoration:none;color:inherit}button,input{font:inherit}
 
 <section class="card extras"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></section>
 <section class="card leader"><details><summary><strong>🏆 Fraction Builder leaderboard</strong></summary><div id="board" class="board"></div></details></section>
+
+<section class="parent-game-intro" aria-label="For parents">
+  <p><strong>For parents:</strong> Fraction Builder practices visual fractions, equivalent fractions, and fraction comparison for students in grades 3–5. Interactive models help kids connect fraction symbols to equal parts of a whole.</p>
+  <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
+</section>
 </main></div></div>
 <div class="modalbg" id="modal"><div class="modal"><div class="mhead"><h2>Edit Profile</h2><button class="close" id="close">×</button></div><input class="pname" id="pname" maxlength="16"><div class="avatars" id="avatars"></div><div class="mactions"><button id="cancel">Cancel</button><button id="saveProfile" style="background:#25b97b;color:white">Save</button></div></div></div>
 <script src="leaderboard-api.js"></script>
