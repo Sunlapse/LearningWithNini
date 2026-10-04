@@ -26,32 +26,30 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install YouTube fallback reader
+        run: python3 -m pip install --disable-pip-version-check --quiet --upgrade yt-dlp
+
       - name: Read latest full challenge from YouTube
         run: |
-          if ! curl --fail --location --retry 3 \
+          set +e
+          curl --fail --location --retry 2 \
             "https://www.youtube.com/feeds/videos.xml?channel_id=UCrZMHA7Ky5kTJd3a-X2iUag" \
-            -o /tmp/youtube-feed.xml; then
-            echo "::warning::YouTube feed is temporarily unavailable. Keeping the existing latest challenge and trying again on the next scheduled run."
-            exit 0
-          fi
+            -o /tmp/youtube-feed.xml
+          RSS_STATUS=$?
+          set -e
 
-          python3 - <<'PY'
+          if [ "$RSS_STATUS" -eq 0 ]; then
+            python3 - <<'PY'
           import json
           import re
           import xml.etree.ElementTree as ET
 
-          try:
-              root = ET.parse("/tmp/youtube-feed.xml").getroot()
-          except (ET.ParseError, OSError) as exc:
-              print(f"::warning::Could not read the YouTube feed ({exc}). Keeping the existing latest challenge and trying again on the next scheduled run.")
-              raise SystemExit(0)
-
+          root = ET.parse("/tmp/youtube-feed.xml").getroot()
           atom = "{http://www.w3.org/2005/Atom}"
           yt = "{http://www.youtube.com/xml/schemas/2015}"
-
-          challenge = None
           pattern = re.compile(r"20[\s-]*minute\s+math\s+challenge", re.I)
 
+          challenge = None
           for entry in root.findall(atom + "entry"):
               title = (entry.findtext(atom + "title") or "").strip()
               if not pattern.search(title):
@@ -59,23 +57,91 @@ jobs:
               video_id = (entry.findtext(yt + "videoId") or "").strip()
               published = (entry.findtext(atom + "published") or "").strip()
               if video_id and published:
-                  challenge = {
-                      "videoId": video_id,
-                      "title": title,
-                      "published": published
-                  }
+                  challenge = {"videoId": video_id, "title": title, "published": published}
                   break
 
-          if challenge is None:
-              print("No full 20-minute math challenge found in the current YouTube feed. Keeping the existing latest challenge.")
+          if challenge:
+              with open("latest-challenge.json", "w", encoding="utf-8") as f:
+                  json.dump(challenge, f, ensure_ascii=False, indent=2)
+                  f.write("\n")
+              print("Found challenge via YouTube RSS:", json.dumps(challenge, ensure_ascii=False))
+          else:
+              raise SystemExit(3)
+          PY
+            RSS_PARSE_STATUS=$?
+          else
+            RSS_PARSE_STATUS=1
+          fi
+
+          if [ "$RSS_STATUS" -ne 0 ] || [ "$RSS_PARSE_STATUS" -ne 0 ]; then
+            echo "::notice::YouTube RSS feed unavailable. Falling back to the channel videos page."
+
+            python3 -m yt_dlp \
+              --flat-playlist \
+              --playlist-end 20 \
+              --dump-json \
+              "https://www.youtube.com/@learnwithninimath/videos" \
+              > /tmp/youtube-videos.jsonl
+
+            python3 - <<'PY'
+          import datetime as dt
+          import json
+          import re
+          import subprocess
+
+          pattern = re.compile(r"20[\s-]*minute\s+math\s+challenge", re.I)
+          match = None
+
+          with open("/tmp/youtube-videos.jsonl", "r", encoding="utf-8") as f:
+              for line in f:
+                  if not line.strip():
+                      continue
+                  item = json.loads(line)
+                  title = (item.get("title") or "").strip()
+                  video_id = (item.get("id") or "").strip()
+                  if video_id and pattern.search(title):
+                      match = {"videoId": video_id, "title": title}
+                      break
+
+          if not match:
+              print("::warning::No full 20-minute math challenge found on the channel. Keeping the existing video.")
               raise SystemExit(0)
+
+          video_url = "https://www.youtube.com/watch?v=" + match["videoId"]
+          result = subprocess.run(
+              ["python3", "-m", "yt_dlp", "--skip-download", "--dump-single-json", video_url],
+              check=False,
+              capture_output=True,
+              text=True,
+          )
+
+          published = None
+          if result.returncode == 0:
+              meta = json.loads(result.stdout)
+              timestamp = meta.get("timestamp") or meta.get("release_timestamp")
+              if timestamp:
+                  published = dt.datetime.fromtimestamp(timestamp, dt.timezone.utc).isoformat()
+              else:
+                  upload_date = meta.get("upload_date")
+                  if upload_date and len(upload_date) == 8:
+                      published = dt.datetime.strptime(upload_date, "%Y%m%d").replace(tzinfo=dt.timezone.utc).isoformat()
+
+          if not published:
+              published = dt.datetime.now(dt.timezone.utc).isoformat()
+
+          challenge = {
+              "videoId": match["videoId"],
+              "title": match["title"],
+              "published": published,
+          }
 
           with open("latest-challenge.json", "w", encoding="utf-8") as f:
               json.dump(challenge, f, ensure_ascii=False, indent=2)
               f.write("\n")
 
-          print(json.dumps(challenge, ensure_ascii=False))
+          print("Found challenge via yt-dlp fallback:", json.dumps(challenge, ensure_ascii=False))
           PY
+          fi
 
       - name: Commit latest challenge metadata
         run: |
