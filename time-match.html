@@ -4,9 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <meta name="theme-color" content="#fbf9ff" />
-<title>Time Match | Learn With Nini</title>
+<title>Time Match – Free Telling Time Game for Grades 2–4 | Learn With Nini</title>
 <link rel="canonical" href="https://learnwithnini.com/time-match.html">
-<meta name="description" content="Practice reading and setting analog clocks with Nini in fun 10-question time challenges." />
+<meta name="description" content="Free telling-time game for grades 2–4. Practice reading and setting analog clocks, matching times, and building time fluency through interactive rounds." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -155,13 +155,15 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
 @media(max-width:1080px){.level-jump{display:flex}}
 @media(max-width:520px){.level-jump{font-size:.92rem;padding:10px 12px;margin-top:10px}}
 
+
+.parent-game-intro{margin:18px 0 4px;font-size:.95rem;line-height:1.55}.parent-game-intro p{margin:0 0 8px}.parent-game-intro a{font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px}
 </style>
   <link rel="stylesheet" href="mobile-touch.css?v=20260930-2">
 </head>
 <body>
 
 <div class="appbar">
-  <a class="appbar-home" href="#" id="homeBtn" onclick="goHome(event)">🏠 Back to Home</a>
+  <a class="appbar-home" href="/" id="homeBtn" onclick="goHome(event)">🏠 Back to Home</a>
   <div class="appbar-score"><div class="appbar-score-pill" id="appbarScore">⭐ Score: 0</div></div>
   <button class="appbar-avatar" id="appbarAvatarBtn" type="button">
     <span class="appbar-avatar-emoji" id="appbarAvatarEmoji">⭐</span>
@@ -314,7 +316,12 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
           <div id="leaderboardList" class="leaderboard-list"></div>
         </details>
       </section>
-    </main>
+    
+<section class="parent-game-intro" aria-label="For parents">
+  <p><strong>For parents:</strong> Time Match practices reading and setting analog clocks for students in grades 2–4. Interactive clock challenges help kids recognize times accurately and build everyday time fluency.</p>
+  <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
+</section>
+</main>
   </div>
 </div>
 
@@ -554,7 +561,7 @@ function goHome(event) {
   event.preventDefault();
   if (soundOn) clickSound(520, 0.03, 0.04);
   setTimeout(() => {
-    window.location.href = "index.html";
+    window.location.href = "/";
   }, 180);
 }
     function randomChoice(arr) {
