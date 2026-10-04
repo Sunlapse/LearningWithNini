@@ -4,9 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#faf8ff" />
-<title>Money Match | Learn With Nini</title>
+<title>Money Match – Free Money Math Game for Grades 2–4 | Learn With Nini</title>
 <link rel="canonical" href="https://learnwithnini.com/money-match.html">
-<meta name="description" content="Practice counting coins and bills with Nini in a fun 10-question money challenge." />
+<meta name="description" content="Free money math game for grades 2–4. Practice identifying, counting, and combining U.S. coins and bills through interactive real-world money challenges." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -254,13 +254,15 @@
 @media(max-width:1080px){.level-jump{display:flex}}
 @media(max-width:520px){.level-jump{font-size:.92rem;padding:10px 12px;margin-top:10px}}
 
+
+.parent-game-intro{margin:18px 0 4px;font-size:.95rem;line-height:1.55}.parent-game-intro p{margin:0 0 8px}.parent-game-intro a{font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px}
 </style>
   <link rel="stylesheet" href="mobile-touch.css?v=20260930-2">
 </head>
 <body>
 
 <div class="game-topbar">
-  <a class="home-button" href="#" onclick="goHome(event)">🏠 Back to Home</a>
+  <a class="home-button" href="/" onclick="goHome(event)">🏠 Back to Home</a>
   <div class="topbar-center"><div class="score-pill" id="topScoreDisplay">⭐ Level Points: 0</div></div>
   <button class="avatar-pill" id="topAvatarButton" type="button" onclick="playClickSound(); openProfileModal();">
     <span id="topAvatarEmoji">⭐</span><span id="topAvatarName">Nini</span>
@@ -379,7 +381,12 @@
           <div id="moneyLeaderboardList" class="mini-leaderboard"></div>
         </details>
       </section>
-    </main>
+    
+<section class="parent-game-intro" aria-label="For parents">
+  <p><strong>For parents:</strong> Money Match practices identifying, counting, and combining U.S. coins and bills for students in grades 2–4. Real-world money challenges build fluency with values, totals, and efficient combinations.</p>
+  <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
+</section>
+</main>
   </div>
 </div>
 
@@ -1585,7 +1592,7 @@ function goHome(event) {
   event.preventDefault();
   playClickSound();
   setTimeout(() => {
-    window.location.href = "index.html";
+    window.location.href = "/";
   }, 180);
 }
 
