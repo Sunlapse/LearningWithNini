@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#fbf9ff">
-<title>Place Value Challenge | Learn With Nini</title>
+<title>Place Value Challenge – Free Place Value Game for Grades 2–5 | Learn With Nini</title>
 <link rel="canonical" href="https://learnwithnini.com/place-value-challenge.html">
-<meta name="description" content="Practice place value, expanded form, and rounding with Nini in fun 10-question challenges.">
+<meta name="description" content="Free place value game for grades 2–5. Practice digit values, expanded form, comparing numbers, and rounding through interactive challenges with Nini." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -43,12 +43,14 @@ button,input{font:inherit}
 @media(max-width:1080px){.level-jump{display:flex}}
 @media(max-width:520px){.level-jump{font-size:.92rem;padding:10px 12px;margin-top:10px}}
 
+
+.parent-game-intro{margin:18px 0 4px;font-size:.95rem;line-height:1.55}.parent-game-intro p{margin:0 0 8px}.parent-game-intro a{font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px}
 </style>
   <link rel="stylesheet" href="mobile-touch.css?v=20260930-2">
 </head>
 <body>
 <header class="topbar">
-<a class="home" href="index.html">🏠 Back to Home</a>
+<a class="home" href="/">🏠 Back to Home</a>
 <div class="score-wrap"><div class="score-pill" id="topScore">⭐ Score: 0</div></div>
 <button class="profile-btn" id="profileButton"><span id="avatarTop">⭐</span><span class="profile-name" id="nameTop">Nini</span></button>
 </header>
@@ -84,6 +86,11 @@ button,input{font:inherit}
 
 <section class="extras"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill" id="saveScore">🏆 Save Score</button><a class="pill" href="leaderboard.html">View Leaderboard</a></div></section>
 <section class="leader"><details><summary>🏆 Place Value Challenge global leaderboard</summary><div id="board" class="board"></div></details></section>
+
+<section class="parent-game-intro" aria-label="For parents">
+  <p><strong>For parents:</strong> Place Value Challenge practices digit values, expanded form, number comparison, and rounding for students in grades 2–5. Kids strengthen number sense by working with place values in interactive rounds.</p>
+  <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
+</section>
 </main>
 </div></div>
 <div class="modal-bg" id="profileModal"><div class="modal"><div class="modal-head"><div class="modal-title">Edit Profile</div><button class="close" id="closeProfile">×</button></div><div class="profile-form"><input id="profileName" maxlength="16" placeholder="Player nickname"><div style="font-weight:900;color:#756b91">Choose an avatar</div><div class="avatars" id="avatars"></div></div><div class="modal-actions"><button class="cancel" id="cancelProfile">Cancel</button><button class="save" id="saveProfile">Save</button></div></div></div>
