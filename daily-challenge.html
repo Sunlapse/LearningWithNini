@@ -590,6 +590,33 @@ const GEN={
   time(){const h=ri(1,11),m=ri(0,11)*5,dur=ri(3,11)*5,t=h*60+m+dur;let eh=Math.floor(t/60),em=t%60;while(eh>12)eh-=12;
     return{q:`A show starts at ${h}:${pad2(m)}. It lasts ${dur} minutes. What time does it end?`,a:`${eh}:${pad2(em)}`,k:'time'}},
 
+  /* Grade 3 Topic 1: multiplication properties, patterns, and unit-rate stories */
+  commutative3(){
+    const a=ri(2,9),b=ri(2,9);
+    return{q:`${a} × ${b} = ${b} × <span class="blank">?</span>`,a:a,k:'num',factKey:`comm:${Math.min(a,b)}x${Math.max(a,b)}`,hint:'The commutative property lets you switch the order of the factors.'}
+  },
+  associative3(){
+    const a=ri(2,4),b=ri(2,4),d=ri(2,5);
+    return{q:`(${a} × ${b}) × ${d} = ${a} × (${b} × <span class="blank">?</span>)`,a:d,k:'num',factKey:`assoc:${a}x${b}x${d}`,hint:'The associative property changes the grouping, not the factors.'}
+  },
+  skipCount3(){
+    const step=pick([2,3,4,5,6,9,10]),start=step*ri(1,3);
+    return{q:`Skip count by ${step}: ${start}, ${start+step}, ${start+2*step}, ${start+3*step}, <span class="blank">?</span>`,a:start+4*step,k:'num',hint:'Add '+step+' each time.'}
+  },
+  unitPrice3(){
+    const price=pick([3,4,5,6,7,8,9]),qty=ri(3,8);
+    return{q:`Tickets cost ${price} each. A family buys ${qty} tickets. What is the total cost in dollars?`,a:price*qty,k:'num',factKey:`unit:${Math.min(price,qty)}x${Math.max(price,qty)}`,hint:'Price per ticket × number of tickets.'}
+  },
+  ninePattern3(){
+    const n=ri(0,10),hideFactor=R()<.5;
+    if(hideFactor)return{q:`9 × <span class="blank">?</span> = ${9*n}`,a:n,k:'num',factKey:`mul:${Math.min(9,n)}x${Math.max(9,n)}`,hint:'Use the 9s pattern: 9, 18, 27, 36, 45...'};
+    return{q:`9 × ${n} = <span class="blank">?</span>`,a:9*n,k:'num',factKey:`mul:${Math.min(9,n)}x${Math.max(9,n)}`,hint:n===0?'Any number times 0 is 0.':n===1?'Any number times 1 stays the same.':'Use the 9s pattern or skip count by 9.'}
+  },
+  equalGroupEquation3(){
+    const groups=ri(2,7),each=ri(2,9),total=groups*each;
+    return{q:`${total} objects are arranged in ${groups} equal groups. How many objects are in each group?`,a:each,k:'num',factKey:`mul:${Math.min(groups,each)}x${Math.max(groups,each)}`,hint:'Think: '+groups+' × ? = '+total+'.'}
+  },
+
   /* Grade 4 foundations and reasoning */
   add4(){const a=ri(1200,8999),b=ri(1100,7999);return{q:`${fmt(a)} + ${fmt(b)} = <span class="blank">?</span>`,a:a+b,k:'num'}},
   sub4(){const a=ri(5000,9999),b=ri(1000,a-500);return{q:`${fmt(a)} − ${fmt(b)} = <span class="blank">?</span>`,a:a-b,k:'num'}},
@@ -974,9 +1001,9 @@ const PHASE_POOLS={
     challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','quarterTime2','elapsedTime2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002']
   },
   '3':{
-    warmup:['mult','div','missing','missingDiv3','breakApart3','add','sub','round','place3','pattern3','money3'],
-    core:['wordMult','wordDiv','wordAddSub3','breakApart3','combineFacts3','splitArray3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
-    stretch:['twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','fracOf3','expanded3','measure3','time','fraccmp','area','perim','missingDividend3','add4','sub4','equivfrac','angle','factorPair4'],
+    warmup:['mult','div','missing','missingDiv3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','add','sub','round','place3','pattern3','money3'],
+    core:['wordMult','wordDiv','wordAddSub3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
+    stretch:['twoStep3','wordUnknown3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','fracOf3','expanded3','measure3','time','fraccmp','area','perim','missingDividend3','add4','sub4','equivfrac','angle','factorPair4'],
     challenge:['twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
   },
   '4':{
@@ -1025,7 +1052,7 @@ function nextType(phase){
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
   const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',9:'clockRead2',10:'multStory2',11:'money2',12:'olderWord2',14:'decomposeAdd2',16:'billsNeeded2',18:'quarterTime2',20:'elapsedTime2',22:'startUnknown2',24:'placeRegroup2',26:'digitSwap2',28:'identifyPattern2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'coinCombo2',38:'dataTable2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2',46:'breakApartAdd2',48:'hundredChart2',50:'openNumberLine2',52:'placeClue2',54:'expandedToStandard2',56:'wordToStandard2',58:'placeWays2',60:'carnivalBudget2',62:'add3Digit2',64:'exactNeed2',66:'stickerPacks2',68:'startUnknown3Digit2',70:'sub3Digit2',72:'lessBy10or1002',74:'teamScoreDifference2',76:'openNumberLineSub3Digit2'};
-  const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
+  const grade3PropertySlots={3:'skipCount3',5:'commutative3',7:'ninePattern3',10:'unitPrice3',14:'splitArray3',18:'associative3',24:'combineFacts3',30:'equalGroupEquation3',36:'breakApart3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
   const forcedType=settings.grade==='2'
     ?grade2FocusSlots[questionNumber]
@@ -1082,7 +1109,7 @@ const PRACTICE_GAMES={
   geometry:{title:'Geometry Builder',href:'geometry-builder.html',icon:'📐',desc:'Area, perimeter, and angle reasoning.'}
 };
 const PRACTICE_TYPE_GROUPS=[
-  {game:'multiplication',types:['mult','missing','wordMult','breakApart3','combineFacts3','splitArray3','partialProduct4','missingPartial4','areaModel4','mult2x2','mult4x1','factorPair4','array2','arrayEquation2','multStory2','rowsStory2','pairs2']},
+  {game:'multiplication',types:['mult','missing','wordMult','commutative3','associative3','skipCount3','unitPrice3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','partialProduct4','missingPartial4','areaModel4','mult2x2','mult4x1','factorPair4','array2','arrayEquation2','multStory2','rowsStory2','pairs2']},
   {game:'division',types:['div','wordDiv','missingDiv3','missingDividend3','longdiv']},
   {game:'detective',types:['olderWord2','takeAwayStory2','compareMore2','twoDigitAddStory2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','dataTable2','word2','twoStep2','exactNeed2','startUnknown3Digit2','teamScoreDifference2','wordAddSub3','twoStep3','wordUnknown3','wordMulti','multiStep4','wordUnknown4']},
   {game:'maze',types:['makeTen2','doubles2','add2','sub2','missingAdd2','decomposeAdd2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','partialDifferences2','sumPlace2','add3Digit2','sub3Digit2','openNumberLineSub3Digit2','add','sub','add4','sub4']},
