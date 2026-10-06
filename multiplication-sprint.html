@@ -120,15 +120,15 @@ button,input{font:inherit}
 .stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.4rem}
 .levels{margin-top:16px;padding:16px}
 .levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}
-.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}
+.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
 .level-card{
   border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;
   color:var(--ink);min-height:155px
 }
-.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}.level-card:nth-child(4){background:#fff3df}.level-card:nth-child(5){background:#ffeaf3}
+.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#fff7d9}.level-card:nth-child(4){background:#f0e9ff}.level-card:nth-child(5){background:#fff3df}.level-card:nth-child(6){background:#ffeaf3}
 .level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}
 .level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}
-.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card:nth-child(4) .level-num{background:#e89536}.level-card:nth-child(5) .level-num{background:#e84f91}
+.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#d5a51b}.level-card:nth-child(4) .level-num{background:#8051e7}.level-card:nth-child(5) .level-num{background:#e89536}.level-card:nth-child(6) .level-num{background:#e84f91}
 .level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}
 .level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
 .stats{margin-top:14px;padding:14px}
@@ -189,16 +189,20 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
             <div class="level-num">2</div><h3>Build Up</h3>
             <p>Practice ×2 through ×5 and build strong multiplication foundations.</p>
           </button>
+          <button class="level-card" data-level="properties">
+            <div class="level-num">3</div><h3>Properties & Patterns</h3>
+            <p>Practice skip counting, 9s patterns, missing factors, and the commutative and associative properties.</p>
+          </button>
           <button class="level-card" data-level="power">
-            <div class="level-num">3</div><h3>Power Facts</h3>
+            <div class="level-num">4</div><h3>Power Facts</h3>
             <p>Practice ×6 through ×9 — the facts that usually need the most repetition.</p>
           </button>
           <button class="level-card" data-level="master">
-            <div class="level-num">4</div><h3>Mixed Master</h3>
+            <div class="level-num">5</div><h3>Mixed Master</h3>
             <p>Mix multiplication facts from ×2 through ×12 for a full challenge.</p>
           </button>
           <button class="level-card" data-level="break">
-            <div class="level-num">5</div><h3>Break Apart</h3>
+            <div class="level-num">6</div><h3>Break Apart</h3>
             <p>Split a multiplication fact into two easier facts using arrays and the distributive property.</p>
           </button>
         </div>
@@ -261,7 +265,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
       </section>
     
 <section class="parent-game-intro" aria-label="For parents">
-  <p><strong>For parents:</strong> Multiplication Sprint now starts with an introductory Grade 2 Arrays & Equal Groups level that connects simple story problems, rows, groups, and multiplication equations. Later levels build fact fluency through ×12, while Break Apart teaches the distributive property and Grade 3 multiplication reasoning.</p>
+  <p><strong>For parents:</strong> Multiplication Sprint starts with a Grade 2 Arrays & Equal Groups level, then adds a Grade 3 Properties & Patterns level with skip counting, 9s patterns, missing factors, commutative property, and associative property. Later levels build fact fluency through ×12, while Break Apart teaches the distributive property.</p>
   <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
 </section>
 </main>
@@ -295,6 +299,7 @@ let question=1,round=1,score=0,streak=0,bestStreak=0,stars=3;
 let a=3,b=4,answer="",solved=false;
 let splitA=2,splitB=2,missingSplit="right";
 let introKind="array";
+let propertyKind="commutative",propertyAnswer=0,propertyC=2;
 let questionPool=[];
 let timerOn=true,startTime=Date.now(),timerHandle=null;
 let board=safe(KEYS.board,[]);
@@ -306,6 +311,7 @@ function currentRange(){
   const boost=Math.min(round-1,5);
   if(level==="intro")return {min:2,max:Math.min(6,4+Math.floor(boost/2)),name:"Arrays & Equal Groups"};
   if(level==="build")return {min:2,max:Math.min(10,5+boost),name:"Build Up"};
+  if(level==="properties")return {min:2,max:Math.min(10,6+boost),name:"Properties & Patterns"};
   if(level==="power")return {min:Math.max(4,6-Math.floor(boost/2)),max:Math.min(12,9+boost),name:"Power Facts"};
   if(level==="break")return {min:3,max:Math.min(10,8+Math.floor(boost/2)),name:"Break Apart"};
   return {min:Math.min(7,2+boost),max:12,name:"Mixed Master"};
@@ -338,6 +344,14 @@ function resetQuestionPool(){
         if(!seen.has(key)){seen.add(key);facts.push([rows,each])}
       }
     }
+  }else if(level==="properties"){
+    const r=currentRange();
+    for(let x=2;x<=r.max;x++){
+      for(let y=2;y<=9;y++){
+        const key=x+"x"+y;
+        if(!seen.has(key)){seen.add(key);facts.push([x,y])}
+      }
+    }
   }else if(level==="break"){
     const r=currentRange();
     for(let rows=r.min;rows<=r.max;rows++){
@@ -366,7 +380,7 @@ function makeQuestion(){
 
   // Randomize the visual order for fact-fluency levels. Intro and Break Apart
   // keep the first factor as the group/row count so the visual model stays clear.
-  if(level!=="break"&&level!=="intro"&&Math.random()<.5){const t=a;a=b;b=t}
+  if(level!=="break"&&level!=="intro"&&level!=="properties"&&Math.random()<.5){const t=a;a=b;b=t}
 
   answer="";stars=3;solved=false;
   if(level==="intro"){
@@ -385,6 +399,28 @@ function makeQuestion(){
       const s=stories[rnd(0,stories.length-1)];
       el("equation").innerHTML='There are '+a+' '+s.groups+'. Each '+s.singular+' has '+b+' '+s.items+'. How many '+s.items+' are there in all?';
     }
+  }else if(level==="properties"){
+    propertyKind=["commutative","associative","skip","nine","missing","unit"][rnd(0,5)];
+    if(propertyKind==="commutative"){
+      propertyAnswer=a;
+      el("equation").innerHTML=a+' × '+b+' = '+b+' × ?';
+    }else if(propertyKind==="associative"){
+      propertyC=rnd(2,5);propertyAnswer=propertyC;
+      el("equation").innerHTML='('+a+' × '+b+') × '+propertyC+' = '+a+' × ('+b+' × ?)';
+    }else if(propertyKind==="skip"){
+      const step=[2,3,4,5,6,9,10][rnd(0,6)],start=step*rnd(1,3);
+      a=step;b=start;propertyAnswer=start+step*4;
+      el("equation").innerHTML='Skip count by '+step+': '+start+', '+(start+step)+', '+(start+2*step)+', '+(start+3*step)+', ?';
+    }else if(propertyKind==="nine"){
+      a=9;b=rnd(0,10);propertyAnswer=9*b;
+      el("equation").innerHTML='9 × '+b+' = ?';
+    }else if(propertyKind==="missing"){
+      propertyAnswer=a;
+      el("equation").innerHTML='? × '+b+' = '+(a*b);
+    }else{
+      const price=rnd(3,9),qty=rnd(3,8);a=price;b=qty;propertyAnswer=price*qty;
+      el("equation").innerHTML='Tickets cost $'+price+' each. '+qty+' tickets cost $ ?';
+    }
   }else if(level==="break"){
     const preferred={
       3:[[1,2]],4:[[2,2],[1,3]],5:[[2,3],[1,4]],
@@ -401,15 +437,17 @@ function makeQuestion(){
     el("equation").innerHTML='<span id="factorA">'+a+'</span> <span class="times">×</span> <span id="factorB">'+b+'</span> = ?';
   }
   el("equation").classList.toggle("break-apart",level==="break");
-  el("equation").classList.toggle("intro",level==="intro");
+  el("equation").classList.toggle("intro",level==="intro"||level==="properties");
   el("levelName").textContent=r.name+" · Round "+round;
   el("answerDisplay").textContent="Type your answer";
   el("answerDisplay").classList.add("placeholder");
   el("status").textContent=level==="intro"
     ?"Count the equal groups or rows. Enter how many there are altogether."
-    :level==="break"
-      ?"What number belongs in the ? so the two smaller facts equal the whole array?"
-      :"Enter the product, then check your answer.";
+    :level==="properties"
+      ?"Use the multiplication property or pattern to find the missing number."
+      :level==="break"
+        ?"What number belongs in the ? so the two smaller facts equal the whole array?"
+        :"Enter the product, then check your answer.";
   el("status").className="status";
   el("checkBtn").textContent="Check Answer →";
   el("checkBtn").className="check";
@@ -442,7 +480,7 @@ function typeDigit(n){
 }
 function clearAnswer(){if(solved)return;answer="";el("answerDisplay").textContent="Type your answer";el("answerDisplay").classList.add("placeholder")}
 function backspace(){if(solved)return;answer=answer.slice(0,-1);if(answer){el("answerDisplay").textContent=answer}else clearAnswer()}
-function correctAnswer(){return level==="break"?(missingSplit==="left"?splitA:splitB):a*b}
+function correctAnswer(){return level==="properties"?propertyAnswer:level==="break"?(missingSplit==="left"?splitA:splitB):a*b}
 function check(){
   if(solved){next();return}
   if(answer===""){el("status").textContent="Type an answer first.";el("status").className="status info";return}
@@ -451,6 +489,8 @@ function check(){
     LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"multiplication",score,level,best_streak:bestStreak}).then(renderBoard).catch(()=>{});
     el("status").textContent=level==="intro"
       ?"Exactly! "+a+" equal groups of "+b+" make "+(a*b)+". That is "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!"
+      :level==="properties"
+        ?"Correct! You used a multiplication property or pattern. You earned "+stars+" star"+(stars===1?"":"s")+"!"
       :level==="break"
         ?"Exactly! "+a+" × "+b+" = ("+splitA+" × "+b+") + ("+splitB+" × "+b+"). You earned "+stars+" star"+(stars===1?"":"s")+"!"
         :"Great job! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
@@ -464,6 +504,8 @@ function check(){
     const diff=correctAnswer()-Number(answer);
     el("status").textContent=level==="intro"
       ?"Not quite. Count "+b+" in each of the "+a+" equal groups. You can also think "+a+" × "+b+"."
+      :level==="properties"
+        ?"Not quite. Look at what stays the same: the factors, their order/grouping, or the skip-counting pattern."
       :level==="break"
         ?"Not quite. The two row groups must add back to "+a+". Look at how many rows are already shown."
         :(diff>0?"Not quite — your answer is too small. Try again.":"Not quite — your answer is too large. Try again.");
@@ -490,6 +532,21 @@ function showHint(){
   if(level==="intro"){
     el("status").textContent="The array is already shown: "+a+" equal groups of "+b+". Count all the dots.";
     el("status").className="status info";
+    return;
+  }
+  if(level==="properties"){
+    stars=Math.max(1,stars-1);
+    const hints={
+      commutative:"Commutative means you can switch the factor order: a × b = b × a.",
+      associative:"Associative means you can change the grouping, but keep the same three factors.",
+      skip:"Skip count by adding the same number each time.",
+      nine:"Use the 9s pattern: 9, 18, 27, 36, 45... Remember 9 × 0 = 0 and 9 × 1 = 9.",
+      missing:"Think of the related multiplication fact that makes the product.",
+      unit:"Multiply the price for one item by how many items are bought."
+    };
+    el("status").textContent=hints[propertyKind];
+    el("status").className="status info";
+    updateUI();
     return;
   }
   stars=Math.max(1,stars-1);
