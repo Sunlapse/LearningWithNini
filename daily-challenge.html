@@ -14,7 +14,7 @@
   color-scheme:light;
   --bg:#FBF9FF;--panel:#FFFFFF;--ink:#1F2456;--muted:#5F6688;--line:#DED7F0;
   --paper:#FFFFFF;--grid:#EAE5F5;--sun:#EF4D9A;--sun-ink:#FFFFFF;--teal:#14B8A6;
-  --blue:#2F9DF5;--red:#E5484D;--green:#1E9E58;--good-bg:#E5F8EE;--bad-bg:#FDE6E6;--key:#F0EBFF;
+  --blue:#2F9DF5;--purple:#7546DE;--red:#E5484D;--green:#1E9E58;--good-bg:#E5F8EE;--bad-bg:#FDE6E6;--key:#F0EBFF;
 }
 /* Keep this page in its designed light palette. Automatic browser/OS dark mode
    caused low-contrast text on the light challenge and results backgrounds. */
@@ -111,6 +111,12 @@ button:disabled{opacity:.28;cursor:default}
 .mini-array-dot{width:12px;height:12px;border-radius:50%;background:var(--purple)}
 .mini-array-dot.second{background:var(--blue)}
 .array-copy{display:block;font-family:"Nunito",system-ui,sans-serif;font-weight:800;font-size:clamp(18px,2.2vw,26px);line-height:1.3}
+.ten-frame-wrap{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:wrap}
+.ten-frame{display:grid;grid-template-columns:repeat(5,20px);grid-template-rows:repeat(2,20px);gap:2px;padding:3px;border:2px solid var(--ink);border-radius:6px;background:#fff}
+.ten-cell{width:20px;height:20px;border:1px solid #cfc8df;border-radius:3px;background:#fff}
+.ten-cell.first{background:var(--purple);border-color:var(--purple)}
+.ten-cell.moved,.ten-cell.second{background:var(--blue);border-color:var(--blue)}
+.ten-note{font-family:"Nunito",system-ui,sans-serif;font-weight:900;font-size:13px;color:var(--muted);text-align:center}
 .area-model4{display:grid;min-width:190px;border:3px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--panel)}
 .area-part{display:grid;place-items:center;min-height:78px;padding:8px;font-family:"Nunito",system-ui,sans-serif;font-size:15px;font-weight:900;line-height:1.2}
 .area-part+ .area-part{border-left:3px solid var(--ink)}
@@ -121,6 +127,8 @@ button:disabled{opacity:.28;cursor:default}
   .mini-array{grid-template-columns:repeat(var(--array-cols),9px);gap:3px}
   .mini-array-dot{width:9px;height:9px}
   .array-copy{font-size:17px}
+  .ten-frame{grid-template-columns:repeat(5,16px);grid-template-rows:repeat(2,16px)}
+  .ten-cell{width:16px;height:16px}
   .area-model4{min-width:170px;max-width:100%}
   .area-part{min-height:64px;font-size:13px;padding:6px}.area-part b{font-size:17px}
 }
@@ -648,6 +656,39 @@ Object.assign(GEN,{
     return{q:`A shape is divided into ${d} equal parts. One part is what fraction of the whole?`,a:[1,d],k:'frac',hint:'One equal part out of '+d+' total equal parts is 1/'+d+'.'}
   },
 
+  makeTen2(){
+    const first=ri(6,9),need=10-first;
+    let second=ri(need+1,9);while(first+second>18)second=ri(need+1,9);
+    const leftover=second-need,total=first+second;
+    let frame1='',frame2='';
+    for(let i=0;i<10;i++){
+      const cls=i<first?'first':i<10?'moved':'';
+      frame1+='<span class="ten-cell '+cls+'" aria-hidden="true"></span>';
+    }
+    for(let i=0;i<10;i++)frame2+='<span class="ten-cell '+(i<leftover?'second':'')+'" aria-hidden="true"></span>';
+    const visual='<span class="ten-frame-wrap"><span><span class="ten-frame">'+frame1+'</span><span class="ten-note">make 10</span></span><span><span class="ten-frame">'+frame2+'</span><span class="ten-note">left over</span></span></span>';
+    return{q:'<span class="array-problem">'+visual+'<span class="array-copy">Make a 10 to solve '+first+' + '+second+'. Complete: '+first+' + '+second+' = 10 + <span class="blank">?</span></span></span>',a:leftover,k:'num',hint:'Move '+need+' from '+second+' to '+first+' to make 10. Then see what is left.',factKey:'make10:'+first+'+'+second};
+  },
+  doubles2(){
+    const start=ri(2,5);
+    const a=start,b=start+1,d=start+2,e=start+3,next=start+4;
+    return{q:'Look at the doubles: '+a+' + '+a+' = '+(a*2)+', '+b+' + '+b+' = '+(b*2)+', '+d+' + '+d+' = '+(d*2)+', '+e+' + '+e+' = '+(e*2)+'. What comes next? '+next+' + '+next+' = <span class="blank">?</span>',a:next*2,k:'num',hint:'Each addend goes up by 1, so each total goes up by 2.'};
+  },
+  olderWord2(){
+    const younger=ri(5,12),olderBy=ri(2,9),a=pick(['Matthew','Mia','Kai','Lani']),b=pick(['Daniel','Zoe','Leo','Ava']);
+    return{q:a+' is '+younger+' years old. '+b+' is '+olderBy+' years older than '+a+'. How old is '+b+'?',a:younger+olderBy,k:'num',hint:'Older means add: '+younger+' + '+olderBy+'.'};
+  },
+  takeAwayStory2(){
+    const start=ri(7,18),give=ri(1,Math.min(7,start-2)),n=pick(NAMES);
+    return{q:n+' has '+start+' baseball caps and gives '+give+' away. How many caps are left?',a:start-give,k:'num',hint:'Write a subtraction sentence: '+start+' − '+give+' = ?'};
+  },
+  arrayEquation2(){
+    const rows=ri(2,5),cols=ri(2,6),array=simpleArrayHTML(rows,cols),hideRows=R()<.5;
+    const q=hideRows
+      ?'<span class="array-problem">'+array+'<span class="array-copy">Complete the array equation: <span class="blank">?</span> × '+cols+' = '+(rows*cols)+'</span></span>'
+      :'<span class="array-problem">'+array+'<span class="array-copy">Complete the array equation: '+rows+' × <span class="blank">?</span> = '+(rows*cols)+'</span></span>';
+    return{q,a:hideRows?rows:cols,k:'num',factKey:'arrayeq2:'+rows+'x'+cols,hint:hideRows?'Count the rows.':'Count how many counters are in each row.'};
+  },
   mult(){const a=ri(2,10),b=ri(2,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a} × ${b} = <span class='blank'>?</span>`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
   div(){const b=ri(2,10),q=ri(2,10),lo=Math.min(b,q),hi=Math.max(b,q);return{q:`${b*q} ÷ ${b} = <span class='blank'>?</span>`,a:q,k:'num',factKey:`mul:${lo}x${hi}`}},
   missing(){const a=ri(2,9),b=ri(3,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`<span class='blank'>?</span> × ${a} = ${a*b}`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
@@ -700,10 +741,10 @@ Object.assign(GEN,{
 
 const PHASE_POOLS={
   '2':{
-    warmup:['add2','sub2','missingAdd2','place2','compare2','pattern2'],
-    core:['add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','array2','pairs2','word2'],
-    stretch:['add2Big','sub2Big','twoStep2','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
-    challenge:['add2Big','sub2Big','twoStep2','array2','pairs2','equalShares2','money2','time2','place2','compare2']
+    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','add2','sub2','missingAdd2','pattern2'],
+    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2'],
+    stretch:['makeTen2','doubles2','arrayEquation2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
+    challenge:['makeTen2','arrayEquation2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2']
   },
   '3':{
     warmup:['mult','div','missing','missingDiv3','breakApart3','add','sub','round','place3','pattern3','money3'],
@@ -756,7 +797,7 @@ function nextType(phase){
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
-  const grade2FocusSlots={5:'array2',12:'money2',20:'equalShares2'};
+  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',12:'olderWord2',20:'equalShares2'};
   const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
   const forcedType=settings.grade==='2'
