@@ -111,11 +111,18 @@ button:disabled{opacity:.28;cursor:default}
 .mini-array-dot{width:12px;height:12px;border-radius:50%;background:var(--purple)}
 .mini-array-dot.second{background:var(--blue)}
 .array-copy{display:block;font-family:"Nunito",system-ui,sans-serif;font-weight:800;font-size:clamp(18px,2.2vw,26px);line-height:1.3}
+.area-model4{display:grid;min-width:190px;border:3px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--panel)}
+.area-part{display:grid;place-items:center;min-height:78px;padding:8px;font-family:"Nunito",system-ui,sans-serif;font-size:15px;font-weight:900;line-height:1.2}
+.area-part+ .area-part{border-left:3px solid var(--ink)}
+.area-part:first-child{background:#f0ebff}.area-part:last-child{background:#e9f5ff}
+.area-part b{font-family:"Fredoka",system-ui,sans-serif;font-size:20px}
 @media(max-width:640px){
   .array-problem{grid-template-columns:1fr;justify-items:center;text-align:center;gap:10px}
   .mini-array{grid-template-columns:repeat(var(--array-cols),9px);gap:3px}
   .mini-array-dot{width:9px;height:9px}
   .array-copy{font-size:17px}
+  .area-model4{min-width:170px;max-width:100%}
+  .area-part{min-height:64px;font-size:13px;padding:6px}.area-part b{font-size:17px}
 }
 .mobile-pad-toggle{display:none}
 .padwrap{flex:1;min-height:0;position:relative;border-radius:20px;border:2px solid var(--line);background-color:var(--paper);
@@ -594,7 +601,23 @@ Object.assign(GEN,{
   pattern4(){const start=ri(120,950),step=pick([25,40,50,75,100,125]);return{q:`Find the rule and continue: ${fmt(start)}, ${fmt(start+step)}, ${fmt(start+2*step)}, ${fmt(start+3*step)}, <span class='blank'>?</span>`,a:start+4*step,k:'num'}},
   fracOf4(){const d=pick([3,4,5,6,8,10,12]),n=ri(2,Math.min(4,d-1)),unit=ri(3,18),whole=d*unit;return{q:`What is {${n}/${d}} of ${whole}?`,a:n*unit,k:'num'}},
   money4(){const dollars=ri(10,45),cents=pick([0,25,50,75]),spendD=ri(2,dollars-2),spendC=pick([0,25,50,75]),left=(dollars*100+cents-spendD*100-spendC)/100;return{q:`You have ${(dollars+cents/100).toFixed(2)} dollars and spend ${(spendD+spendC/100).toFixed(2)} dollars. How many dollars are left?`,a:left,k:'num'}},
-  measure4(){const ft=ri(3,15);return{q:`${ft} feet = <span class='blank'>?</span> inches`,a:ft*12,k:'num'}}
+  measure4(){const ft=ri(3,15);return{q:`${ft} feet = <span class='blank'>?</span> inches`,a:ft*12,k:'num'}},
+  partialProduct4(){
+    let n=ri(12,98);while(n%10===0)n=ri(12,98);
+    const m=ri(3,9),tens=Math.floor(n/10)*10,ones=n%10,p1=tens*m,p2=ones*m;
+    return{q:`${n} × ${m} = (${tens} × ${m}) + (${ones} × ${m}) = ${p1} + ${p2} = <span class="blank">?</span>`,a:n*m,k:'num',factKey:`partial:${n}x${m}`,hint:`Add the two partial products: ${p1} + ${p2}.`}
+  },
+  missingPartial4(){
+    let n=ri(12,98);while(n%10===0)n=ri(12,98);
+    const m=ri(3,9),tens=Math.floor(n/10)*10,ones=n%10;
+    return{q:`Complete the decomposition: ${n} × ${m} = (${tens} × ${m}) + (<span class="blank">?</span> × ${m})`,a:ones,k:'num',factKey:`missingpartial:${n}x${m}`,hint:`${n} is ${tens} + ${ones}. Keep × ${m} on both parts.`}
+  },
+  areaModel4(){
+    let n=ri(12,49);while(n%10===0)n=ri(12,49);
+    const m=ri(3,9),tens=Math.floor(n/10)*10,ones=n%10,p1=tens*m,p2=ones*m;
+    const model=`<span class="area-model4" style="grid-template-columns:${tens}fr ${ones}fr"><span class="area-part">${tens} × ${m}<br><b>${p1}</b></span><span class="area-part">${ones} × ${m}<br><b>${p2}</b></span></span>`;
+    return{q:`<span class="array-problem">${model}<span class="array-copy">A ${n} × ${m} rectangle is split into ${tens} × ${m} and ${ones} × ${m}. What is the total area?</span></span>`,a:n*m,k:'num',factKey:`areamodel:${n}x${m}`,hint:`Add the two partial areas: ${p1} + ${p2}.`}
+  }
 });
 
 const PHASE_POOLS={
@@ -605,10 +628,10 @@ const PHASE_POOLS={
     challenge:['twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
   },
   '4':{
-    warmup:['mult','factorPair4','add4','sub4','placeMillion','roundBig','deccmp','pattern4','money4','measure4'],
-    core:['mult2x2','mult4x1','longdiv','equivfrac','addfrac','subfrac','fraccompare4','angle','placeMillion','roundBig','factorPair4','wordMulti','areaBig','pattern4','fracOf4','money4','measure4'],
-    stretch:['multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','factorPair4','wordMulti','fracOf4','money4','pattern4','measure4'],
-    challenge:['multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','wordMulti','fracOf4','money4','pattern4']
+    warmup:['mult','factorPair4','missingPartial4','add4','sub4','placeMillion','roundBig','deccmp','pattern4','money4','measure4'],
+    core:['partialProduct4','missingPartial4','areaModel4','mult2x2','mult4x1','longdiv','equivfrac','addfrac','subfrac','fraccompare4','angle','placeMillion','roundBig','factorPair4','wordMulti','areaBig','pattern4','fracOf4','money4','measure4'],
+    stretch:['partialProduct4','missingPartial4','areaModel4','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','factorPair4','wordMulti','fracOf4','money4','pattern4','measure4'],
+    challenge:['partialProduct4','missingPartial4','areaModel4','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','wordMulti','fracOf4','money4','pattern4']
   }
 };
 const mergePools=(a,b)=>[...new Set(a.concat(b))];
@@ -650,7 +673,12 @@ function nextType(phase){
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
   const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
-  const forcedType=settings.grade==='3'?grade3PropertySlots[questionNumber]:null;
+  const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
+  const forcedType=settings.grade==='3'
+    ?grade3PropertySlots[questionNumber]
+    :settings.grade==='4'
+      ?grade4PropertySlots[questionNumber]
+      :null;
   let p,t,tries=0,duplicate=false;
   do{
     t=forcedType||nextType(phase);
