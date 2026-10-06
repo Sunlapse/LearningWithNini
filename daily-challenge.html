@@ -858,6 +858,32 @@ Object.assign(GEN,{
     const food=ri(1,4),drink=ri(1,4),game=ri(1,3),pass=pick([10,15,20]),scrip=1,total=food+drink+game+pass;
     return{q:'At a school carnival, 1 scrip = $'+scrip+'. Food costs '+food+' scrip, a drink costs '+drink+' scrip, a game costs '+game+' scrip, and a ride pass costs $'+pass+'. How many dollars are spent altogether?',a:total,k:'num',hint:'Because 1 scrip = $1, add '+food+' + '+drink+' + '+game+' + '+pass+'.'};
   },
+  add3Digit2(){
+    let a=ri(120,599),b=ri(120,399);while(a+b>999)b=ri(120,399);
+    return{q:'Solve. Regroup if needed: '+a+' + '+b+' = <span class="blank">?</span>',a:a+b,k:'num',hint:'Add ones, then tens, then hundreds. Regroup 10 ones as 1 ten and 10 tens as 1 hundred when needed.'};
+  },
+  sub3Digit2(){
+    const b=ri(120,499),a=ri(b+80,999);
+    return{q:'Solve. Regroup if needed: '+a+' − '+b+' = <span class="blank">?</span>',a:a-b,k:'num',hint:'Subtract ones, tens, then hundreds. Regroup when the top digit is too small.'};
+  },
+  exactNeed2(){
+    const supply=pick([600,700,800,900]),adults=ri(220,390),children=ri(250,490),total=adults+children;
+    if(total>supply)return{q:'A school has '+supply+' water bottles. '+adults+' adults and '+children+' children are attending, and each person needs 1 bottle. Exactly how many more bottles are needed?',a:total-supply,k:'num',hint:'This needs an exact answer. First find '+adults+' + '+children+', then compare with '+supply+'.'};
+    return{q:'A school has '+supply+' water bottles. '+adults+' adults and '+children+' children are attending, and each person needs 1 bottle. How many bottles will be left after everyone gets one?',a:supply-total,k:'num',hint:'Use an exact sum: '+adults+' + '+children+'. Then subtract from '+supply+'.'};
+  },
+  stickerPacks2(){
+    const current=pick([320,410,420,530,640]),need=pick([20,30,40,50]),goal=current+need;
+    const pack=need%10===0?10:1;
+    return{q:'You have '+current+' stickers and need exactly '+goal+'. Sticker packs come in 1, 10, and 100. How many '+pack+'-sticker packs should you buy?',a:need/pack,k:'num',hint:'Find the difference: '+goal+' − '+current+' = '+need+'. Then make '+need+' using '+pack+'-sticker packs.'};
+  },
+  startUnknown3Digit2(){
+    const spent=ri(120,349),left=ri(50,199);
+    return{q:'After spending '+spent+' tokens, a student had '+left+' tokens left. How many tokens did the student have before spending any?',a:spent+left,k:'num',hint:'Work backward: starting amount = spent + left.'};
+  },
+  lessBy10or1002(){
+    const n=ri(210,890),amount=pick([10,100]);
+    return{q:amount+' less than '+n+' is <span class="blank">?</span>',a:n-amount,k:'num',hint:'Subtract '+amount+'. Watch which place value changes.'};
+  },
   mult(){const a=ri(2,10),b=ri(2,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a} × ${b} = <span class='blank'>?</span>`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
   div(){const b=ri(2,10),q=ri(2,10),lo=Math.min(b,q),hi=Math.max(b,q);return{q:`${b*q} ÷ ${b} = <span class='blank'>?</span>`,a:q,k:'num',factKey:`mul:${lo}x${hi}`}},
   missing(){const a=ri(2,9),b=ri(3,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`<span class='blank'>?</span> × ${a} = ${a*b}`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
@@ -910,10 +936,10 @@ Object.assign(GEN,{
 
 const PHASE_POOLS={
   '2':{
-    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','identifyPattern2','placeClue2','expandedToStandard2','decomposeAdd2','add2','sub2','missingAdd2','pattern2'],
-    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2'],
-    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
-    challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','quarterTime2','elapsedTime2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2']
+    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','identifyPattern2','placeClue2','expandedToStandard2','decomposeAdd2','add3Digit2','sub3Digit2','lessBy10or1002','add2','sub2','missingAdd2','pattern2'],
+    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002'],
+    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002'],
+    challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','quarterTime2','elapsedTime2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002']
   },
   '3':{
     warmup:['mult','div','missing','missingDiv3','breakApart3','add','sub','round','place3','pattern3','money3'],
@@ -966,7 +992,7 @@ function nextType(phase){
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
-  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',9:'clockRead2',10:'multStory2',11:'money2',12:'olderWord2',14:'decomposeAdd2',16:'billsNeeded2',18:'quarterTime2',20:'elapsedTime2',22:'startUnknown2',24:'placeRegroup2',26:'digitSwap2',28:'identifyPattern2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'coinCombo2',38:'dataTable2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2',46:'breakApartAdd2',48:'hundredChart2',50:'openNumberLine2',52:'placeClue2',54:'expandedToStandard2',56:'wordToStandard2',58:'placeWays2',60:'carnivalBudget2'};
+  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',9:'clockRead2',10:'multStory2',11:'money2',12:'olderWord2',14:'decomposeAdd2',16:'billsNeeded2',18:'quarterTime2',20:'elapsedTime2',22:'startUnknown2',24:'placeRegroup2',26:'digitSwap2',28:'identifyPattern2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'coinCombo2',38:'dataTable2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2',46:'breakApartAdd2',48:'hundredChart2',50:'openNumberLine2',52:'placeClue2',54:'expandedToStandard2',56:'wordToStandard2',58:'placeWays2',60:'carnivalBudget2',62:'add3Digit2',64:'exactNeed2',66:'stickerPacks2',68:'startUnknown3Digit2',70:'sub3Digit2',72:'lessBy10or1002'};
   const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
   const forcedType=settings.grade==='2'
