@@ -702,8 +702,8 @@ Object.assign(GEN,{
     return{q,a:hideRows?rows:cols,k:'num',factKey:'arrayeq2:'+rows+'x'+cols,hint:hideRows?'Count the rows.':'Count how many counters are in each row.'};
   },
   multStory2(){
-    const groups=ri(2,5),each=ri(2,5),thing=pick([['vases','flowers'],['boxes','crayons'],['plates','cookies']]);
-    return{q:'There are '+groups+' '+thing[0]+'. Each '+thing[0].slice(0,-1)+' has '+each+' '+thing[1]+'. How many '+thing[1]+' are there in all?',a:groups*each,k:'num',factKey:'mulstory2:'+groups+'x'+each,hint:'Write a multiplication sentence: '+groups+' × '+each+' = ?'};
+    const groups=ri(2,5),each=ri(2,5),thing=pick([['vases','vase','flowers'],['boxes','box','crayons'],['plates','plate','cookies']]);
+    return{q:'There are '+groups+' '+thing[0]+'. Each '+thing[1]+' has '+each+' '+thing[2]+'. How many '+thing[2]+' are there in all?',a:groups*each,k:'num',factKey:'mulstory2:'+groups+'x'+each,hint:'Write a multiplication sentence: '+groups+' × '+each+' = ?'};
   },
   rowsStory2(){
     const rows=ri(2,5),each=ri(2,6);
@@ -733,13 +733,14 @@ Object.assign(GEN,{
   },
   hundredChart2(){
     const a=ri(21,59),b=ri(11,Math.min(40,100-a)),total=a+b;
-    let chart='';for(let n=1;n<=100;n++)chart+='<span class="'+(n===a?'start':n===total?'end':'')+'">'+n+'</span>';
+    let chart='';for(let n=1;n<=100;n++)chart+='<span class="'+(n===a?'start':'')+'">'+n+'</span>';
     const visual='<span class="hundred-chart2">'+chart+'</span>';
-    return{q:'<span class="array-problem">'+visual+'<span class="array-copy">Use the hundred chart to solve '+a+' + '+b+'. What is the sum?</span></span>',a:total,k:'num',hint:'Move down one row for +10 and move right for +1.'};
+    return{q:'<span class="array-problem">'+visual+'<span class="array-copy">Use the hundred chart to solve '+a+' + '+b+'. What is the sum?</span></span>',a:total,k:'num',hint:'Start on '+a+'. Move down one row for +10 and move right for +1.'};
   },
   dataTable2(){
-    const vals=[ri(15,45),ri(15,45),ri(10,35),ri(20,49),ri(30,80)],i=ri(0,3),j=ri(i+1,4);
-    const names=['Animal','Mystery','Joke','Poetry','Chapter'];
+    const vals=[ri(12,45),ri(12,45),ri(10,35),ri(15,45),ri(20,49)],names=['Animal','Mystery','Joke','Poetry','Chapter'];
+    let i=ri(0,3),j=ri(i+1,4),tries=0;
+    while(vals[i]+vals[j]>99&&tries<20){i=ri(0,3);j=ri(i+1,4);tries++}
     const table='<table class="data-table2"><tr>'+names.map(x=>'<th>'+x+'</th>').join('')+'</tr><tr>'+vals.map(x=>'<td>'+x+'</td>').join('')+'</tr></table>';
     return{q:'<span class="array-problem">'+table+'<span class="array-copy">How many '+names[i].toLowerCase()+' books and '+names[j].toLowerCase()+' books are there in all?</span></span>',a:vals[i]+vals[j],k:'num',hint:'Use the table: '+vals[i]+' + '+vals[j]+'.'};
   },
