@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Daily 20-Minute Challenge | Learn With Nini</title>
-<meta name="description" content="Nini's daily 20-minute math challenge for grades 3 and 4. Work it out on the scratch pad, just like in the videos.">
+<meta name="description" content="Nini's daily 20-minute math challenge for grades 2–4. Work it out on the scratch pad, just like in the videos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -280,7 +280,7 @@ button:disabled{opacity:.28;cursor:default}
       <input id="name" maxlength="24" placeholder="Nickname for the leaderboard (optional)" autocomplete="off"></label>
     <div class="field"><span>Level</span>
       <div class="seg" id="gradeSeg">
-        <button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="mix">Mixed</button>
+        <button data-v="2">Grade 2</button><button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="mix">Mixed</button>
       </div></div>
     <div class="field"><span>Minutes</span>
       <div class="seg" id="minSeg">
@@ -479,6 +479,13 @@ function miniArrayHTML(rows,cols,split){
   }
   return `<span class="mini-array" style="--array-cols:${cols}" aria-label="${rows} rows of ${cols} counters, split after row ${split}">${dots}</span>`;
 }
+function simpleArrayHTML(rows,cols){
+  let dots='';
+  for(let r=0;r<rows;r++){
+    for(let col=0;col<cols;col++)dots+='<span class="mini-array-dot" aria-hidden="true"></span>';
+  }
+  return `<span class="mini-array" style="--array-cols:${cols}" aria-label="${rows} rows of ${cols} counters">${dots}</span>`;
+}
 
 /* ---------- problem generators ---------- */
 const GEN={
@@ -570,6 +577,76 @@ const GEN={
 /* Extra variety + fact-family tracking. Related multiplication/division facts share a factKey
    so a player does not see 7×8, 56÷7, and ?×8=56 in the same daily run. */
 Object.assign(GEN,{
+  /* Grade 2 foundations */
+  add2(){
+    const a=ri(10,79),b=ri(5,Math.min(40,100-a));
+    return{q:`${a} + ${b} = <span class="blank">?</span>`,a:a+b,k:'num'}
+  },
+  sub2(){
+    const a=ri(25,100),b=ri(5,a-5);
+    return{q:`${a} − ${b} = <span class="blank">?</span>`,a:a-b,k:'num'}
+  },
+  add2Big(){
+    const a=ri(120,699),b=ri(100,Math.min(299,999-a));
+    return{q:`${a} + ${b} = <span class="blank">?</span>`,a:a+b,k:'num'}
+  },
+  sub2Big(){
+    const a=ri(300,999),b=ri(100,a-100);
+    return{q:`${a} − ${b} = <span class="blank">?</span>`,a:a-b,k:'num'}
+  },
+  missingAdd2(){
+    const total=ri(20,100),part=ri(5,total-5);
+    return{q:`${part} + <span class="blank">?</span> = ${total}`,a:total-part,k:'num',hint:'Think: what number added to '+part+' makes '+total+'?'}
+  },
+  place2(){
+    const n=ri(100,999),place=pick([['hundreds',100],['tens',10],['ones',1]]);
+    const digit=Math.floor(n/place[1])%10;
+    return{q:`In ${n}, what value does the ${digit} in the ${place[0]} place represent?`,a:digit*place[1],k:'num'}
+  },
+  compare2(){
+    let a=ri(100,999),b=ri(100,999);while(a===b)b=ri(100,999);
+    return{q:`${a} <span class="blank">?</span> ${b}`,a:a>b?'>':'<',k:'cmp',hint:'Compare the hundreds first. If they match, compare the tens, then ones.'}
+  },
+  pattern2(){
+    const step=pick([2,5,10,100]),start=step===100?ri(1,5)*100:ri(1,12)*step;
+    return{q:`What comes next? ${start}, ${start+step}, ${start+2*step}, ${start+3*step}, <span class="blank">?</span>`,a:start+4*step,k:'num',hint:'Find how much the number changes each time.'}
+  },
+  money2(){
+    const quarters=ri(0,3),dimes=ri(0,5),nickels=ri(0,4),pennies=ri(0,9);
+    return{q:`${quarters} quarters + ${dimes} dimes + ${nickels} nickels + ${pennies} pennies = how many cents?`,a:quarters*25+dimes*10+nickels*5+pennies,k:'num',hint:'Quarter = 25¢, dime = 10¢, nickel = 5¢, penny = 1¢.'}
+  },
+  measure2(){
+    const start=ri(25,90),cut=ri(5,start-10);
+    return{q:`A ribbon is ${start} cm long. ${cut} cm is cut off. How many centimeters remain?`,a:start-cut,k:'num'}
+  },
+  time2(){
+    const h=ri(1,11),m=pick([0,5,10,15,20,25,30,35,40]),add=pick([5,10,15,20]);
+    let t=h*60+m+add,eh=Math.floor(t/60),em=t%60;while(eh>12)eh-=12;
+    return{q:`What time is ${add} minutes after ${h}:${pad2(m)}?`,a:`${eh}:${pad2(em)}`,k:'time',hint:'Count forward by 5-minute jumps.'}
+  },
+  array2(){
+    const rows=ri(2,5),cols=ri(2,5),array=simpleArrayHTML(rows,cols);
+    return{q:`<span class="array-problem">${array}<span class="array-copy">There are ${rows} equal rows with ${cols} counters in each row. How many counters are there altogether?</span></span>`,a:rows*cols,k:'num',factKey:`array2:${rows}x${cols}`,hint:`Add ${cols} once for each of the ${rows} rows.`}
+  },
+  pairs2(){
+    const pairs=ri(2,10),total=pairs*2;
+    return{q:`${total} socks are put into pairs of 2. How many pairs are there?`,a:pairs,k:'num',hint:'Make equal groups of 2.'}
+  },
+  word2(){
+    const start=ri(20,70),change=ri(5,25),add=R()<.5,n=pick(NAMES);
+    return add
+      ?{q:`${n} has ${start} stickers and gets ${change} more. How many stickers are there now?`,a:start+change,k:'num'}
+      :{q:`${n} has ${start} stickers and gives away ${change}. How many stickers are left?`,a:start-change,k:'num'}
+  },
+  twoStep2(){
+    const start=ri(30,70),more=ri(5,20),give=ri(5,Math.min(20,start+more-10)),n=pick(NAMES);
+    return{q:`${n} had ${start} points, earned ${more} more, then used ${give}. How many points are left?`,a:start+more-give,k:'num',hint:'First add the points earned. Then subtract the points used.'}
+  },
+  equalShares2(){
+    const d=pick([2,3,4]);
+    return{q:`A shape is divided into ${d} equal parts. One part is what fraction of the whole?`,a:[1,d],k:'frac',hint:'One equal part out of '+d+' total equal parts is 1/'+d+'.'}
+  },
+
   mult(){const a=ri(2,10),b=ri(2,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a} × ${b} = <span class='blank'>?</span>`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
   div(){const b=ri(2,10),q=ri(2,10),lo=Math.min(b,q),hi=Math.max(b,q);return{q:`${b*q} ÷ ${b} = <span class='blank'>?</span>`,a:q,k:'num',factKey:`mul:${lo}x${hi}`}},
   missing(){const a=ri(2,9),b=ri(3,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`<span class='blank'>?</span> × ${a} = ${a*b}`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
@@ -621,6 +698,12 @@ Object.assign(GEN,{
 });
 
 const PHASE_POOLS={
+  '2':{
+    warmup:['add2','sub2','missingAdd2','place2','compare2','pattern2'],
+    core:['add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','array2','pairs2','word2'],
+    stretch:['add2Big','sub2Big','twoStep2','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
+    challenge:['add2Big','sub2Big','twoStep2','array2','pairs2','equalShares2','money2','time2','place2','compare2']
+  },
   '3':{
     warmup:['mult','div','missing','missingDiv3','breakApart3','add','sub','round','place3','pattern3','money3'],
     core:['wordMult','wordDiv','wordAddSub3','breakApart3','combineFacts3','splitArray3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
@@ -636,10 +719,10 @@ const PHASE_POOLS={
 };
 const mergePools=(a,b)=>[...new Set(a.concat(b))];
 PHASE_POOLS.mix={
-  warmup:mergePools(PHASE_POOLS['3'].warmup,PHASE_POOLS['4'].warmup),
-  core:mergePools(PHASE_POOLS['3'].core,PHASE_POOLS['4'].core),
-  stretch:mergePools(PHASE_POOLS['3'].stretch,PHASE_POOLS['4'].stretch),
-  challenge:mergePools(PHASE_POOLS['3'].challenge,PHASE_POOLS['4'].challenge)
+  warmup:mergePools(PHASE_POOLS['2'].warmup,mergePools(PHASE_POOLS['3'].warmup,PHASE_POOLS['4'].warmup)),
+  core:mergePools(PHASE_POOLS['2'].core,mergePools(PHASE_POOLS['3'].core,PHASE_POOLS['4'].core)),
+  stretch:mergePools(PHASE_POOLS['2'].stretch,mergePools(PHASE_POOLS['3'].stretch,PHASE_POOLS['4'].stretch)),
+  challenge:mergePools(PHASE_POOLS['2'].challenge,mergePools(PHASE_POOLS['3'].challenge,PHASE_POOLS['4'].challenge))
 };
 
 const PHASE_LABEL={warmup:'Warm-up',core:'Core Practice',stretch:'Stretch',challenge:'Challenge'};
@@ -672,13 +755,16 @@ function nextType(phase){
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
+  const grade2FocusSlots={5:'array2',12:'money2',20:'equalShares2'};
   const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
-  const forcedType=settings.grade==='3'
-    ?grade3PropertySlots[questionNumber]
-    :settings.grade==='4'
-      ?grade4PropertySlots[questionNumber]
-      :null;
+  const forcedType=settings.grade==='2'
+    ?grade2FocusSlots[questionNumber]
+    :settings.grade==='3'
+      ?grade3PropertySlots[questionNumber]
+      :settings.grade==='4'
+        ?grade4PropertySlots[questionNumber]
+        :null;
   let p,t,tries=0,duplicate=false;
   do{
     t=forcedType||nextType(phase);
@@ -804,7 +890,7 @@ async function syncGlobalDailyDates(){
     if($('#start').classList.contains('on'))renderStart();
   }catch(e){}
 }
-const gradeLabel=g=>g==='mix'?'Grades 3–4':'Grade '+g;
+const gradeLabel=g=>g==='mix'?'Grades 2–4':'Grade '+g;
 function renderStart(){
   updateHawaiiClock();
   renderDeviceProgress();
