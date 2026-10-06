@@ -242,8 +242,8 @@ button:disabled{opacity:.28;cursor:default}
     <section class="daily-video-card" id="daily-video" aria-label="Latest Learn With Nini video">
       <div class="daily-video-head">
         <div>
-          <h2>Watch Nini’s Latest Full Challenge ▶</h2>
-          <p>See how Nini works through the full 20-minute challenge and compare approaches.</p>
+          <h2 id="dailyChallengeVideoHeading">Latest Challenge ▶</h2>
+          <p id="dailyChallengeVideoMeta">Newest full 20-minute challenge from Nini.</p>
         </div>
       </div>
       <div class="daily-video-embed">
@@ -891,6 +891,58 @@ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{re
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseS()});
 
 renderStart();
+})();
+</script>
+<script>
+(() => {
+
+      const hawaiiDateKey = value => {
+        const parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Pacific/Honolulu',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }).formatToParts(value);
+        const get = type => parts.find(p => p.type === type)?.value || '';
+        return `${get('year')}-${get('month')}-${get('day')}`;
+      };
+      const dateDiffDays = (newerKey, olderKey) => {
+        const toUtc = key => {
+          const [y,m,d] = key.split('-').map(Number);
+          return Date.UTC(y, m - 1, d);
+        };
+        return Math.round((toUtc(newerKey) - toUtc(olderKey)) / 86400000);
+      };
+      const formatHawaiiDate = value => new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Pacific/Honolulu',
+        month: 'long',
+        day: 'numeric'
+      }).format(value);
+
+      fetch('latest-challenge.json?ts=' + Date.now(), { cache: 'no-store' })
+        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(video => {
+          if (!video || !video.published) return;
+          const published = new Date(video.published);
+          const diff = dateDiffDays(hawaiiDateKey(new Date()), hawaiiDateKey(published));
+          const heading = document.getElementById('dailyChallengeVideoHeading');
+          const meta = document.getElementById('dailyChallengeVideoMeta');
+          const dayMatch = String(video.title || '').match(/\bDay\s*(\d+)\b/i);
+          const dayText = dayMatch ? ' • Day ' + dayMatch[1] : '';
+          if (heading) {
+            heading.textContent = diff === 0
+              ? 'Today’s Challenge ▶'
+              : diff === 1
+                ? 'Yesterday’s Challenge ▶'
+                : 'Latest Challenge ▶';
+          }
+          if (meta) {
+            meta.textContent = formatHawaiiDate(published) + dayText + ' • Full 20-Minute Math Challenge';
+          }
+          
+        })
+        .catch(() => {});
+
 })();
 </script>
 </body>
