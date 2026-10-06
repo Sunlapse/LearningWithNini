@@ -884,6 +884,22 @@ Object.assign(GEN,{
     const n=ri(210,890),amount=pick([10,100]);
     return{q:amount+' less than '+n+' is <span class="blank">?</span>',a:n-amount,k:'num',hint:'Subtract '+amount+'. Watch which place value changes.'};
   },
+  teamScoreDifference2(){
+    const aNames=['Marco','Elena','Dekembi','Linda'],bNames=['Jackie','Kalisha','Dante','Akmad'];
+    const aScores=[ri(650,950),ri(650,950),ri(650,950),ri(650,950)],bScores=[ri(250,600),ri(250,600),ri(250,600),ri(250,600)];
+    const ai=ri(0,3),bi=ri(0,3),hi=aScores[ai],lo=bScores[bi],diff=hi-lo;
+    const table='<div class="strategy-visual"><table class="data-table2"><tr><th>A Team</th><th>Score</th></tr>'+aNames.map((n,i)=>'<tr><td>'+n+'</td><td>'+aScores[i]+'</td></tr>').join('')+'</table><table class="data-table2"><tr><th>B Team</th><th>Score</th></tr>'+bNames.map((n,i)=>'<tr><td>'+n+'</td><td>'+bScores[i]+'</td></tr>').join('')+'</table></div>';
+    return{q:'<span class="array-problem">'+table+'<span class="array-copy">How many more points did '+aNames[ai]+' score than '+bNames[bi]+'?</span></span>',a:diff,k:'num',hint:'Subtract the smaller score from the larger score: '+hi+' − '+lo+'.'};
+  },
+  openNumberLineSub3Digit2(){
+    const b=ri(120,499),a=ri(b+80,999),hund=Math.floor(b/100)*100,rem=b-hund,tens=Math.floor(rem/10)*10,ones=rem%10;
+    let current=a,visual='<span class="number-line2"><span class="node">'+a+'</span>';
+    if(hund){current-=hund;visual+='<span class="jump">−'+hund+' →</span><span class="node">'+current+'</span>';}
+    if(tens){current-=tens;visual+='<span class="jump">−'+tens+' →</span><span class="node">'+current+'</span>';}
+    if(ones){visual+='<span class="jump">−'+ones+' →</span><span class="node">?</span>';}
+    visual+='</span>';
+    return{q:'<span class="array-problem">'+visual+'<span class="array-copy">Use the open number line to solve '+a+' − '+b+'. What is the difference?</span></span>',a:a-b,k:'num',hint:'Break '+b+' into '+hund+(tens?' + '+tens:'')+(ones?' + '+ones:'')+' and subtract each part.'};
+  },
   mult(){const a=ri(2,10),b=ri(2,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a} × ${b} = <span class='blank'>?</span>`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
   div(){const b=ri(2,10),q=ri(2,10),lo=Math.min(b,q),hi=Math.max(b,q);return{q:`${b*q} ÷ ${b} = <span class='blank'>?</span>`,a:q,k:'num',factKey:`mul:${lo}x${hi}`}},
   missing(){const a=ri(2,9),b=ri(3,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`<span class='blank'>?</span> × ${a} = ${a*b}`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
@@ -937,8 +953,8 @@ Object.assign(GEN,{
 const PHASE_POOLS={
   '2':{
     warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','identifyPattern2','placeClue2','expandedToStandard2','decomposeAdd2','add3Digit2','sub3Digit2','lessBy10or1002','add2','sub2','missingAdd2','pattern2'],
-    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002'],
-    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002'],
+    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002','teamScoreDifference2','openNumberLineSub3Digit2'],
+    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002','teamScoreDifference2','openNumberLineSub3Digit2'],
     challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','quarterTime2','elapsedTime2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002']
   },
   '3':{
@@ -992,7 +1008,7 @@ function nextType(phase){
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
-  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',9:'clockRead2',10:'multStory2',11:'money2',12:'olderWord2',14:'decomposeAdd2',16:'billsNeeded2',18:'quarterTime2',20:'elapsedTime2',22:'startUnknown2',24:'placeRegroup2',26:'digitSwap2',28:'identifyPattern2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'coinCombo2',38:'dataTable2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2',46:'breakApartAdd2',48:'hundredChart2',50:'openNumberLine2',52:'placeClue2',54:'expandedToStandard2',56:'wordToStandard2',58:'placeWays2',60:'carnivalBudget2',62:'add3Digit2',64:'exactNeed2',66:'stickerPacks2',68:'startUnknown3Digit2',70:'sub3Digit2',72:'lessBy10or1002'};
+  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',9:'clockRead2',10:'multStory2',11:'money2',12:'olderWord2',14:'decomposeAdd2',16:'billsNeeded2',18:'quarterTime2',20:'elapsedTime2',22:'startUnknown2',24:'placeRegroup2',26:'digitSwap2',28:'identifyPattern2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'coinCombo2',38:'dataTable2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2',46:'breakApartAdd2',48:'hundredChart2',50:'openNumberLine2',52:'placeClue2',54:'expandedToStandard2',56:'wordToStandard2',58:'placeWays2',60:'carnivalBudget2',62:'add3Digit2',64:'exactNeed2',66:'stickerPacks2',68:'startUnknown3Digit2',70:'sub3Digit2',72:'lessBy10or1002',74:'teamScoreDifference2',76:'openNumberLineSub3Digit2'};
   const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
   const forcedType=settings.grade==='2'
