@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Daily 20-Minute Challenge | Learn With Nini</title>
-<meta name="description" content="Nini's daily 20-minute math challenge for grades 2–4. Work it out on the scratch pad, just like in the videos.">
+<meta name="description" content="Nini's daily 20-minute math challenge for grades 2–5. Work it out on the scratch pad, then get game recommendations for skills to practice next.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -311,7 +311,7 @@ button:disabled{opacity:.28;cursor:default}
       <input id="name" maxlength="24" placeholder="Nickname for the leaderboard (optional)" autocomplete="off"></label>
     <div class="field"><span>Level</span>
       <div class="seg" id="gradeSeg">
-        <button data-v="2">Grade 2</button><button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="mix">Mixed</button>
+        <button data-v="2">Grade 2</button><button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="5">Grade 5</button><button data-v="mix">Mixed</button>
       </div></div>
     <div class="field"><span>Minutes</span>
       <div class="seg" id="minSeg">
@@ -993,6 +993,60 @@ Object.assign(GEN,{
   }
 });
 
+Object.assign(GEN,{
+  /* Grade 5 foundations */
+  mult3x2_5(){
+    const a=ri(101,999),b=ri(11,49);
+    return{q:`${fmt(a)} × ${b} = <span class="blank">?</span>`,a:a*b,k:'num'}
+  },
+  longDiv2_5(){
+    const d=ri(11,25),q=ri(20,99),r=R()<.35?0:ri(1,d-1),n=d*q+r;
+    return{q:`${fmt(n)} ÷ ${d} = <span class="blank">?</span>`,a:r?`${q}R${r}`:`${q}`,k:'rem'}
+  },
+  decAdd5(){
+    const A=ri(25,899),B=ri(10,699);
+    return{q:`${(A/100).toFixed(2)} + ${(B/100).toFixed(2)} = <span class="blank">?</span>`,a:(A+B)/100,k:'num'}
+  },
+  decSub5(){
+    let A=ri(125,999),B=ri(10,899);if(B>A)[A,B]=[B,A];
+    return{q:`${(A/100).toFixed(2)} − ${(B/100).toFixed(2)} = <span class="blank">?</span>`,a:(A-B)/100,k:'num'}
+  },
+  decMultPow10_5(){
+    const N=ri(101,999),x=N/100,pow=pick([10,100,1000]);
+    return{q:`${x.toFixed(2)} × ${pow} = <span class="blank">?</span>`,a:Number((x*pow).toFixed(2)),k:'num',hint:'Multiplying by 10, 100, or 1,000 shifts the digits left in place value.'}
+  },
+  decPlace5(){
+    const ones=ri(1,9),tenths=ri(0,9),hundredths=ri(0,9),thousandths=ri(0,9);
+    const value=Number(`${ones}.${tenths}${hundredths}${thousandths}`);
+    const places=[['tenths',tenths],['hundredths',hundredths],['thousandths',thousandths]],p=pick(places);
+    return{q:`What digit is in the ${p[0]} place of ${value.toFixed(3)}?`,a:p[1],k:'num'}
+  },
+  addFracUnlike5(){
+    const pairs=[[2,3],[3,4],[4,5],[5,6],[6,8],[8,10]],ds=pick(pairs),d1=ds[0],d2=ds[1];
+    const n1=ri(1,d1-1),n2=ri(1,d2-1),den=d1*d2,num=n1*d2+n2*d1;
+    return{q:`{${n1}/${d1}} + {${n2}/${d2}} = <span class="blank">?</span>`,a:[num,den],k:'frac',hint:'Use a common denominator before adding.'}
+  },
+  subFracUnlike5(){
+    const pairs=[[2,3],[3,4],[4,5],[5,6],[6,8],[8,10]],ds=pick(pairs),d1=ds[0],d2=ds[1];
+    let n1=ri(1,d1-1),n2=ri(1,d2-1);
+    if(n1/d1<n2/d2){const tn=n1,td=d1;n1=n2;ds[0]=d2;n2=tn;ds[1]=td}
+    const A=ds[0],B=ds[1],den=A*B,num=n1*B-n2*A;
+    return{q:`{${n1}/${A}} − {${n2}/${B}} = <span class="blank">?</span>`,a:[num,den],k:'frac',hint:'Use a common denominator before subtracting.'}
+  },
+  fracWhole5(){
+    const d=pick([3,4,5,6,8]),n=ri(1,d-1),whole=ri(2,8);
+    return{q:`${whole} × {${n}/${d}} = <span class="blank">?</span>`,a:[whole*n,d],k:'frac',hint:'Multiply the whole number by the numerator.'}
+  },
+  volume5(){
+    const l=ri(3,12),w=ri(2,9),h=ri(2,8);
+    return{q:`A rectangular prism is ${l} cm long, ${w} cm wide, and ${h} cm high. What is its volume in cubic centimeters?`,a:l*w*h,k:'num',hint:'Volume = length × width × height.'}
+  },
+  multiStep5(){
+    const boxes=ri(4,12),each=ri(18,45),used=ri(20,Math.min(120,boxes*each-10));
+    return{q:`A school has ${boxes} boxes with ${each} markers in each box. After ${used} markers are used, how many remain?`,a:boxes*each-used,k:'num'}
+  }
+});
+
 const PHASE_POOLS={
   '2':{
     warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','identifyPattern2','placeClue2','expandedToStandard2','decomposeAdd2','add3Digit2','sub3Digit2','lessBy10or1002','add2','sub2','missingAdd2','pattern2'],
@@ -1011,14 +1065,20 @@ const PHASE_POOLS={
     core:['partialProduct4','missingPartial4','areaModel4','mult2x2','mult4x1','longdiv','equivfrac','addfrac','subfrac','fraccompare4','angle','placeMillion','roundBig','factorPair4','wordMulti','areaBig','pattern4','fracOf4','money4','measure4'],
     stretch:['partialProduct4','missingPartial4','areaModel4','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','factorPair4','wordMulti','fracOf4','money4','pattern4','measure4'],
     challenge:['partialProduct4','missingPartial4','areaModel4','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','wordMulti','fracOf4','money4','pattern4']
+  },
+  '5':{
+    warmup:['mult2x2','mult3x2_5','longdiv','longDiv2_5','placeMillion','roundBig','deccmp','decPlace5','decAdd5','decSub5','equivfrac','fraccompare4'],
+    core:['mult3x2_5','longDiv2_5','decAdd5','decSub5','decMultPow10_5','decPlace5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','wordMulti','areaBig','placeMillion','roundBig','fraccompare4','equivfrac'],
+    stretch:['mult3x2_5','longDiv2_5','decAdd5','decSub5','decMultPow10_5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','multiStep4','wordUnknown4','fraccompare4','areaBig','roundBig'],
+    challenge:['mult3x2_5','longDiv2_5','decMultPow10_5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','multiStep4','wordUnknown4','fraccompare4','areaBig','roundBig']
   }
 };
 const mergePools=(a,b)=>[...new Set(a.concat(b))];
 PHASE_POOLS.mix={
-  warmup:mergePools(PHASE_POOLS['2'].warmup,mergePools(PHASE_POOLS['3'].warmup,PHASE_POOLS['4'].warmup)),
-  core:mergePools(PHASE_POOLS['2'].core,mergePools(PHASE_POOLS['3'].core,PHASE_POOLS['4'].core)),
-  stretch:mergePools(PHASE_POOLS['2'].stretch,mergePools(PHASE_POOLS['3'].stretch,PHASE_POOLS['4'].stretch)),
-  challenge:mergePools(PHASE_POOLS['2'].challenge,mergePools(PHASE_POOLS['3'].challenge,PHASE_POOLS['4'].challenge))
+  warmup:mergePools(PHASE_POOLS['2'].warmup,mergePools(PHASE_POOLS['3'].warmup,mergePools(PHASE_POOLS['4'].warmup,PHASE_POOLS['5'].warmup))),
+  core:mergePools(PHASE_POOLS['2'].core,mergePools(PHASE_POOLS['3'].core,mergePools(PHASE_POOLS['4'].core,PHASE_POOLS['5'].core))),
+  stretch:mergePools(PHASE_POOLS['2'].stretch,mergePools(PHASE_POOLS['3'].stretch,mergePools(PHASE_POOLS['4'].stretch,PHASE_POOLS['5'].stretch))),
+  challenge:mergePools(PHASE_POOLS['2'].challenge,mergePools(PHASE_POOLS['3'].challenge,mergePools(PHASE_POOLS['4'].challenge,PHASE_POOLS['5'].challenge)))
 };
 
 const PHASE_LABEL={warmup:'Warm-up',core:'Core Practice',stretch:'Stretch',challenge:'Challenge'};
@@ -1054,13 +1114,16 @@ function genProblem(questionNumber){
   const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',9:'clockRead2',10:'multStory2',11:'money2',12:'olderWord2',14:'decomposeAdd2',16:'billsNeeded2',18:'quarterTime2',20:'elapsedTime2',22:'startUnknown2',24:'placeRegroup2',26:'digitSwap2',28:'identifyPattern2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'coinCombo2',38:'dataTable2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2',46:'breakApartAdd2',48:'hundredChart2',50:'openNumberLine2',52:'placeClue2',54:'expandedToStandard2',56:'wordToStandard2',58:'placeWays2',60:'carnivalBudget2',62:'add3Digit2',64:'exactNeed2',66:'stickerPacks2',68:'startUnknown3Digit2',70:'sub3Digit2',72:'lessBy10or1002',74:'teamScoreDifference2',76:'openNumberLineSub3Digit2'};
   const grade3PropertySlots={3:'skipCount3',5:'commutative3',7:'ninePattern3',10:'unitPrice3',14:'splitArray3',18:'associative3',24:'combineFacts3',30:'equalGroupEquation3',36:'breakApart3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
+  const grade5FocusSlots={4:'decPlace5',8:'mult3x2_5',12:'longDiv2_5',16:'decAdd5',20:'decSub5',24:'decMultPow10_5',28:'addFracUnlike5',32:'subFracUnlike5',36:'fracWhole5',40:'volume5',44:'multiStep5'};
   const forcedType=settings.grade==='2'
     ?grade2FocusSlots[questionNumber]
     :settings.grade==='3'
       ?grade3PropertySlots[questionNumber]
       :settings.grade==='4'
         ?grade4PropertySlots[questionNumber]
-        :null;
+        :settings.grade==='5'
+          ?grade5FocusSlots[questionNumber]
+          :null;
   let p,t,tries=0,duplicate=false;
   do{
     t=forcedType||nextType(phase);
@@ -1109,17 +1172,17 @@ const PRACTICE_GAMES={
   geometry:{title:'Geometry Builder',href:'geometry-builder.html',icon:'📐',desc:'Area, perimeter, and angle reasoning.'}
 };
 const PRACTICE_TYPE_GROUPS=[
-  {game:'multiplication',types:['mult','missing','wordMult','commutative3','associative3','skipCount3','unitPrice3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','partialProduct4','missingPartial4','areaModel4','mult2x2','mult4x1','factorPair4','array2','arrayEquation2','multStory2','rowsStory2','pairs2']},
-  {game:'division',types:['div','wordDiv','missingDiv3','missingDividend3','longdiv']},
-  {game:'detective',types:['olderWord2','takeAwayStory2','compareMore2','twoDigitAddStory2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','dataTable2','word2','twoStep2','exactNeed2','startUnknown3Digit2','teamScoreDifference2','wordAddSub3','twoStep3','wordUnknown3','wordMulti','multiStep4','wordUnknown4']},
-  {game:'maze',types:['makeTen2','doubles2','add2','sub2','missingAdd2','decomposeAdd2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','partialDifferences2','sumPlace2','add3Digit2','sub3Digit2','openNumberLineSub3Digit2','add','sub','add4','sub4']},
-  {game:'place',types:['place2','place3','placeMillion','round','roundBig','expanded3','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','lessBy10or1002']},
+  {game:'multiplication',types:['mult','missing','wordMult','commutative3','associative3','skipCount3','unitPrice3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','partialProduct4','missingPartial4','areaModel4','mult2x2','mult4x1','mult3x2_5','factorPair4','array2','arrayEquation2','multStory2','rowsStory2','pairs2']},
+  {game:'division',types:['div','wordDiv','missingDiv3','missingDividend3','longdiv','longDiv2_5']},
+  {game:'detective',types:['olderWord2','takeAwayStory2','compareMore2','twoDigitAddStory2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','dataTable2','word2','twoStep2','exactNeed2','startUnknown3Digit2','teamScoreDifference2','wordAddSub3','twoStep3','wordUnknown3','wordMulti','multiStep4','wordUnknown4','multiStep5']},
+  {game:'maze',types:['makeTen2','doubles2','add2','sub2','missingAdd2','decomposeAdd2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','partialDifferences2','sumPlace2','add3Digit2','sub3Digit2','openNumberLineSub3Digit2','add','sub','add4','sub4','decAdd5','decSub5']},
+  {game:'place',types:['place2','place3','placeMillion','round','roundBig','expanded3','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','lessBy10or1002','decPlace5','decMultPow10_5']},
   {game:'number',types:['compare2','pattern2','identifyPattern2','pattern3','pattern4','deccmp']},
   {game:'money',types:['money2','money3','money4','billsNeeded2','coinCombo2','carnivalBudget2','stickerPacks2']},
   {game:'time',types:['clockRead2','quarterTime2','elapsedTime2','time2','time']},
-  {game:'fractions',types:['equalShares2','fraccmp','equivfrac','addfrac','subfrac','fraccompare4','fracOf3','fracOf4']},
+  {game:'fractions',types:['equalShares2','fraccmp','equivfrac','addfrac','subfrac','fraccompare4','fracOf3','fracOf4','addFracUnlike5','subFracUnlike5','fracWhole5']},
   {game:'measure',types:['measure2','measure3','measure4']},
-  {game:'geometry',types:['area','perim','angle','areaBig']}
+  {game:'geometry',types:['area','perim','angle','areaBig','volume5']}
 ];
 function practiceGameForType(type){
   const group=PRACTICE_TYPE_GROUPS.find(g=>g.types.includes(type));
@@ -1245,7 +1308,7 @@ async function syncGlobalDailyDates(){
     if($('#start').classList.contains('on'))renderStart();
   }catch(e){}
 }
-const gradeLabel=g=>g==='mix'?'Grades 2–4':'Grade '+g;
+const gradeLabel=g=>g==='mix'?'Grades 2–5':'Grade '+g;
 function renderStart(){
   updateHawaiiClock();
   renderDeviceProgress();
