@@ -1355,11 +1355,11 @@ function renderStart(){
   $('#dayTitle').textContent='Day '+challengeDay;
   const s=deviceProgress().current;$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow to keep it going.':"Let's warm up that brain.";
   $('#name').value=settings.name;
-  $('#avatarPick button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.av===(sharedProfile.avatar||'⭐')));
-  $('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
-  $('#modeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.mode));
+  document.querySelectorAll('#avatarPick button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.av===(sharedProfile.avatar||'⭐')));
+  document.querySelectorAll('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
+  document.querySelectorAll('#modeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.mode));
   $('#modeHelp').textContent=modeHelpText(settings.mode);
-  $('#minSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+settings.mins));
+  document.querySelectorAll('#minSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+settings.mins));
   $('#setLabel').textContent="Today's shared "+gradeLabel(settings.grade)+" · "+modeLabel(settings.mode)+" set · Hawaiʻi date";
   const ul=$('#histList');ul.innerHTML='';
   const recent=log.slice(-7).reverse();
