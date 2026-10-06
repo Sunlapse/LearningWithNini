@@ -182,9 +182,10 @@ function makeGrade2(){
     el("bigNumber").textContent=fmt(number);el("placeChart").innerHTML=chart3HTML(number,-1);el("expanded").textContent="Swap "+d[0]+" and "+d[2]+".";
     grade2Hint="The middle digit stays "+d[1]+".";grade2Explain=number+" becomes "+correct+".";
   }else{
-    const amount=Math.random()<.5?10:100,more=Math.random()<.5;
+    const amount=Math.random()<.5?10:100;let more=Math.random()<.5;
     correct=more?number+amount:number-amount;
-    if(correct<0){correct=number+amount;more=true}
+    if(correct<100){correct=number+amount;more=true}
+    if(correct>999){correct=number-amount;more=false}
     el("prompt").textContent="What is "+amount+" "+(more?"more":"less")+" than "+number+"?";
     el("bigNumber").textContent=fmt(number);el("placeChart").innerHTML=chart3HTML(number,amount===100?0:1);el("expanded").textContent=(more?"Add ":"Subtract ")+amount+".";
     grade2Hint=(amount===100?"Change the hundreds place.":"Change the tens place.")+" Keep the other places in mind.";grade2Explain=number+(more?" + ":" − ")+amount+" = "+correct+".";
