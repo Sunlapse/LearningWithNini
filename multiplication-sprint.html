@@ -110,6 +110,7 @@ button,input{font:inherit}
   display:grid;gap:4px;justify-content:center;margin:auto;max-width:300px
 }
 .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#8c59e8,#ef5aa3)}
+.dot.split-second{background:linear-gradient(135deg,#4b8ff7,#35b9c7)}
 .round-stats{
   display:grid;grid-template-columns:repeat(3,1fr);gap:9px
 }
@@ -117,15 +118,15 @@ button,input{font:inherit}
 .stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.4rem}
 .levels{margin-top:16px;padding:16px}
 .levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}
-.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
 .level-card{
   border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;
   color:var(--ink);min-height:155px
 }
-.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}
+.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}.level-card:nth-child(4){background:#fff3df}
 .level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}
 .level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}
-.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}
+.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card:nth-child(4) .level-num{background:#e89536}
 .level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}
 .level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
 .stats{margin-top:14px;padding:14px}
@@ -145,7 +146,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
 .profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}
 .avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#7040df;background:#f0e9ff}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#eee9ff;color:#56488b}
-@media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.answer-grid{grid-template-columns:1fr 310px}}
+@media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.answer-grid{grid-template-columns:1fr 310px}.level-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:780px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.answer-grid{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px;grid-template-columns:auto 1fr auto}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.question-card{padding:17px}.equation{font-size:4.2rem}.answer-card{padding:12px}.round-stats{grid-template-columns:1fr 1fr 1fr}.level-grid{grid-template-columns:1fr}}
 
@@ -190,6 +191,10 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
             <div class="level-num">3</div><h3>Mixed Master</h3>
             <p>Mix multiplication facts from ×2 through ×12 for a full challenge.</p>
           </button>
+          <button class="level-card" data-level="break">
+            <div class="level-num">4</div><h3>Break Apart</h3>
+            <p>Split a multiplication fact into two easier facts using arrays and the distributive property.</p>
+          </button>
         </div>
       </section>
 
@@ -201,7 +206,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
 
       <section class="question-card">
         <div class="level-pill" id="levelName">Build Up</div>
-        <div class="equation"><span id="factorA">4</span> <span class="times">×</span> <span id="factorB">6</span> = ?</div>
+        <div class="equation" id="equation"><span id="factorA">4</span> <span class="times">×</span> <span id="factorB">6</span> = ?</div>
         <div class="streak" id="streakText">🔥 Streak: 0</div>
       </section>
 
@@ -250,7 +255,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
       </section>
     
 <section class="parent-game-intro" aria-label="For parents">
-  <p><strong>For parents:</strong> Multiplication Sprint practices multiplication facts, fact fluency, speed, and accuracy for students in grades 3–5. Short rounds help kids build confidence while reinforcing times-table recall.</p>
+  <p><strong>For parents:</strong> Multiplication Sprint practices multiplication facts, fact fluency, speed, accuracy, arrays, and the distributive property for students in grades 3–5. The Break Apart level teaches kids to decompose a multiplication fact into two easier facts, matching the kind of multiplication-property reasoning used in Grade 3.</p>
   <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
 </section>
 </main>
@@ -282,6 +287,7 @@ let selectedAvatar=profile.avatar||"⭐";
 let level="build";
 let question=1,round=1,score=0,streak=0,bestStreak=0,stars=3;
 let a=4,b=6,answer="",solved=false;
+let splitA=2,splitB=2,missingSplit="right";
 let questionPool=[];
 let timerOn=true,startTime=Date.now(),timerHandle=null;
 let board=safe(KEYS.board,[]);
@@ -293,6 +299,7 @@ function currentRange(){
   const boost=Math.min(round-1,5);
   if(level==="build")return {min:2,max:Math.min(10,5+boost),name:"Build Up"};
   if(level==="power")return {min:Math.max(4,6-Math.floor(boost/2)),max:Math.min(12,9+boost),name:"Power Facts"};
+  if(level==="break")return {min:3,max:Math.min(10,8+Math.floor(boost/2)),name:"Break Apart"};
   return {min:Math.min(7,2+boost),max:12,name:"Mixed Master"};
 }
 function shuffleFacts(items){
@@ -315,6 +322,14 @@ function resetQuestionPool(){
         if(!seen.has(key)){seen.add(key);facts.push([x,y])}
       }
     }
+  }else if(level==="break"){
+    const r=currentRange();
+    for(let rows=r.min;rows<=r.max;rows++){
+      for(let cols=2;cols<=10;cols++){
+        const key=rows+"x"+cols;
+        if(!seen.has(key)){seen.add(key);facts.push([rows,cols])}
+      }
+    }
   }else{
     const r=currentRange();
     for(let focus=r.min;focus<=r.max;focus++){
@@ -333,16 +348,25 @@ function makeQuestion(){
   const pair=questionPool.pop();
   a=pair[0];b=pair[1];
 
-  // Randomize the visual order, but treat 3×8 and 8×3 as the same fact
-  // so a fact never repeats within a 10-question round.
-  if(Math.random()<.5){const t=a;a=b;b=t}
+  // Randomize the visual order for fact-fluency levels. Break Apart keeps
+  // the first factor as the row count so the array can be split cleanly.
+  if(level!=="break"&&Math.random()<.5){const t=a;a=b;b=t}
 
   answer="";stars=3;solved=false;
-  el("factorA").textContent=a;el("factorB").textContent=b;
+  if(level==="break"){
+    splitA=rnd(1,a-1);
+    splitB=a-splitA;
+    missingSplit=Math.random()<.5?"left":"right";
+    const left=missingSplit==="left"?"?":splitA;
+    const right=missingSplit==="right"?"?":splitB;
+    el("equation").innerHTML=a+' <span class="times">×</span> '+b+' = ('+left+' <span class="times">×</span> '+b+') + ('+right+' <span class="times">×</span> '+b+')';
+  }else{
+    el("equation").innerHTML='<span id="factorA">'+a+'</span> <span class="times">×</span> <span id="factorB">'+b+'</span> = ?';
+  }
   el("levelName").textContent=r.name+" · Round "+round;
   el("answerDisplay").textContent="Type your answer";
   el("answerDisplay").classList.add("placeholder");
-  el("status").textContent="Enter the product, then check your answer.";
+  el("status").textContent=level==="break"?"What number belongs in the ? so the two smaller facts equal the whole array?":"Enter the product, then check your answer.";
   el("status").className="status";
   el("checkBtn").textContent="Check Answer →";
   el("checkBtn").className="check";
@@ -368,13 +392,16 @@ function typeDigit(n){
 }
 function clearAnswer(){if(solved)return;answer="";el("answerDisplay").textContent="Type your answer";el("answerDisplay").classList.add("placeholder")}
 function backspace(){if(solved)return;answer=answer.slice(0,-1);if(answer){el("answerDisplay").textContent=answer}else clearAnswer()}
+function correctAnswer(){return level==="break"?(missingSplit==="left"?splitA:splitB):a*b}
 function check(){
   if(solved){next();return}
   if(answer===""){el("status").textContent="Type an answer first.";el("status").className="status info";return}
-  if(Number(answer)===a*b){
+  if(Number(answer)===correctAnswer()){
     solved=true;score+=stars;streak++;bestStreak=Math.max(bestStreak,streak);
     LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"multiplication",score,level,best_streak:bestStreak}).then(renderBoard).catch(()=>{});
-    el("status").textContent="Great job! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
+    el("status").textContent=level==="break"
+      ?"Exactly! "+a+" × "+b+" = ("+splitA+" × "+b+") + ("+splitB+" × "+b+"). You earned "+stars+" star"+(stars===1?"":"s")+"!"
+      :"Great job! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
     el("status").className="status good";
     el("checkBtn").textContent=question===10?"Finish Round →":"Next Question →";
     el("checkBtn").className="next";
@@ -382,8 +409,10 @@ function check(){
     updateUI();
   }else{
     stars=Math.max(1,stars-1);streak=0;
-    const diff=(a*b)-Number(answer);
-    el("status").textContent=diff>0?"Not quite — your answer is too small. Try again.":"Not quite — your answer is too large. Try again.";
+    const diff=correctAnswer()-Number(answer);
+    el("status").textContent=level==="break"
+      ?"Not quite. The two row groups must add back to "+a+". Look at how many rows are already shown."
+      :(diff>0?"Not quite — your answer is too small. Try again.":"Not quite — your answer is too large. Try again.");
     el("status").className="status bad";
     answer="";el("answerDisplay").textContent="Try again";el("answerDisplay").classList.add("placeholder");
     updateUI();
@@ -406,10 +435,20 @@ function showHint(){
   if(solved)return;
   stars=Math.max(1,stars-1);
   const arr=el("array");arr.innerHTML="";arr.style.gridTemplateColumns="repeat("+b+",12px)";
-  for(let i=0;i<a*b;i++){const d=document.createElement("span");d.className="dot";arr.appendChild(d)}
-  el("arrayLabel").textContent=a+" rows of "+b+" = "+a+" × "+b;
+  for(let i=0;i<a*b;i++){
+    const d=document.createElement("span");
+    const row=Math.floor(i/b);
+    d.className="dot"+(level==="break"&&row>=splitA?" split-second":"");
+    arr.appendChild(d);
+  }
+  if(level==="break"){
+    el("arrayLabel").textContent=a+" rows of "+b+" split into "+splitA+" rows + "+splitB+" rows";
+    el("status").textContent="Array hint: "+splitA+" + "+splitB+" = "+a+". Each group still has "+b+" counters in every row.";
+  }else{
+    el("arrayLabel").textContent=a+" rows of "+b+" = "+a+" × "+b;
+    el("status").textContent="Array hint: count "+a+" groups of "+b+".";
+  }
   el("arrayBox").classList.add("show");
-  el("status").textContent="Array hint: count "+a+" groups of "+b+".";
   el("status").className="status info";
   updateUI();
 }
