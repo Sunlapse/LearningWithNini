@@ -75,6 +75,7 @@ button,input{font:inherit}
   line-height:.95;color:#6337cf;letter-spacing:-.04em
 }
 .equation .times{color:#ee4d9a}
+.equation.break-apart{font-size:clamp(2rem,5vw,4rem);line-height:1.15;letter-spacing:-.025em}
 .streak{margin-top:12px;color:#695f88;font-weight:900}
 .answer-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px}
 .answer-card{padding:18px}
@@ -148,7 +149,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#eee9ff;color:#56488b}
 @media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.answer-grid{grid-template-columns:1fr 310px}.level-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:780px){.shell{grid-template-columns:1fr}.nini{position:relative;top:0;height:240px;min-height:240px}.nini img{height:240px;min-height:240px;object-position:center 26%}.bubble{max-width:190px;right:auto}.progress{grid-template-columns:1fr auto}.track{grid-column:1/-1;grid-row:2}.answer-grid{grid-template-columns:1fr}.level-grid{grid-template-columns:1fr}}
-@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px;grid-template-columns:auto 1fr auto}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.question-card{padding:17px}.equation{font-size:4.2rem}.answer-card{padding:12px}.round-stats{grid-template-columns:1fr 1fr 1fr}.level-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{width:min(100% - 16px,1440px);padding-top:10px}.topbar{padding:8px;grid-template-columns:auto 1fr auto}.home{font-size:0}.home:after{content:"🏠";font-size:1.15rem}.profile-name{display:none}.progress{padding:11px}.stars{font-size:1.4rem}.question-card{padding:17px}.equation{font-size:4.2rem}.equation.break-apart{font-size:clamp(1.55rem,7vw,2.2rem);line-height:1.22}.answer-card{padding:12px}.round-stats{grid-template-columns:1fr 1fr 1fr}.level-grid{grid-template-columns:1fr}}
 
 .level-jump{display:none;width:100%;margin:12px 0 0;border:1px solid rgba(112,64,223,.13);border-radius:18px;padding:11px 15px;background:linear-gradient(135deg,#f6f1ff,#eee8ff);color:#5c3bb0;font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(80,55,150,.08);align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}
 .level-jump strong{font-family:"Fredoka",sans-serif;color:#6a35cf}
@@ -354,8 +355,13 @@ function makeQuestion(){
 
   answer="";stars=3;solved=false;
   if(level==="break"){
-    splitA=rnd(1,a-1);
-    splitB=a-splitA;
+    const preferred={
+      3:[[1,2]],4:[[2,2],[1,3]],5:[[2,3],[1,4]],
+      6:[[2,4],[3,3],[1,5]],7:[[3,4],[2,5]],8:[[4,4],[3,5],[2,6]],
+      9:[[4,5],[3,6]],10:[[5,5],[4,6]]
+    };
+    const choices=preferred[a]||[[Math.max(1,Math.floor(a/2)),a-Math.max(1,Math.floor(a/2))]];
+    [splitA,splitB]=choices[rnd(0,choices.length-1)];
     missingSplit=Math.random()<.5?"left":"right";
     const left=missingSplit==="left"?"?":splitA;
     const right=missingSplit==="right"?"?":splitB;
@@ -363,6 +369,7 @@ function makeQuestion(){
   }else{
     el("equation").innerHTML='<span id="factorA">'+a+'</span> <span class="times">×</span> <span id="factorB">'+b+'</span> = ?';
   }
+  el("equation").classList.toggle("break-apart",level==="break");
   el("levelName").textContent=r.name+" · Round "+round;
   el("answerDisplay").textContent="Type your answer";
   el("answerDisplay").classList.add("placeholder");
