@@ -11,20 +11,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
+  color-scheme:light;
   --bg:#FBF9FF;--panel:#FFFFFF;--ink:#1F2456;--muted:#5F6688;--line:#DED7F0;
   --paper:#FFFFFF;--grid:#EAE5F5;--sun:#EF4D9A;--sun-ink:#FFFFFF;--teal:#14B8A6;
   --blue:#2F9DF5;--red:#E5484D;--green:#1E9E58;--good-bg:#E5F8EE;--bad-bg:#FDE6E6;--key:#F0EBFF;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#10161F;--panel:#18202C;--ink:#EEF3FA;--muted:#9AA8BF;--line:#2A3646;
-  --paper:#141B25;--grid:#1F2A38;--sun:#FFCB52;--sun-ink:#16213E;--teal:#3CC7C7;
-  --blue:#78A2FF;--red:#FF7074;--green:#43D486;--good-bg:#153223;--bad-bg:#3A1C1E;--key:#233042;
-}}
-:root[data-theme="dark"]{
-  --bg:#10161F;--panel:#18202C;--ink:#EEF3FA;--muted:#9AA8BF;--line:#2A3646;
-  --paper:#141B25;--grid:#1F2A38;--sun:#FFCB52;--sun-ink:#16213E;--teal:#3CC7C7;
-  --blue:#78A2FF;--red:#FF7074;--green:#43D486;--good-bg:#153223;--bad-bg:#3A1C1E;--key:#233042;
-}
+/* Keep this page in its designed light palette. Automatic browser/OS dark mode
+   caused low-contrast text on the light challenge and results backgrounds. */
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
