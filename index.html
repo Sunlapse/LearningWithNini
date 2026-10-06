@@ -1539,8 +1539,8 @@
         <section class="youtube-growth" id="latest-video">
           <div class="youtube-growth-head">
             <div>
-              <h2 id="latestChallengeHeading">Watch Nini’s Latest Full Challenge ▶</h2>
-              <p>Follow along with the newest full 20-minute challenge from Nini.</p>
+              <h2 id="latestChallengeHeading">Latest Challenge ▶</h2>
+              <p id="latestChallengeMeta">Newest full 20-minute challenge from Nini.</p>
             </div>
           </div>
           <div class="youtube-embed">
@@ -1604,6 +1604,59 @@
   <script src="leaderboard-api.js"></script>
   <script>
     (() => {
+
+      const hawaiiDateKey = value => {
+        const parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Pacific/Honolulu',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }).formatToParts(value);
+        const get = type => parts.find(p => p.type === type)?.value || '';
+        return `${get('year')}-${get('month')}-${get('day')}`;
+      };
+      const dateDiffDays = (newerKey, olderKey) => {
+        const toUtc = key => {
+          const [y,m,d] = key.split('-').map(Number);
+          return Date.UTC(y, m - 1, d);
+        };
+        return Math.round((toUtc(newerKey) - toUtc(olderKey)) / 86400000);
+      };
+      const formatHawaiiDate = value => new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Pacific/Honolulu',
+        month: 'long',
+        day: 'numeric'
+      }).format(value);
+
+      fetch('latest-challenge.json?ts=' + Date.now(), { cache: 'no-store' })
+        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(video => {
+          if (!video || !video.published) return;
+          const published = new Date(video.published);
+          const diff = dateDiffDays(hawaiiDateKey(new Date()), hawaiiDateKey(published));
+          const heading = document.getElementById('latestChallengeHeading');
+          const meta = document.getElementById('latestChallengeMeta');
+          const dayMatch = String(video.title || '').match(/\bDay\s*(\d+)\b/i);
+          const dayText = dayMatch ? ' • Day ' + dayMatch[1] : '';
+          if (heading) {
+            heading.textContent = diff === 0
+              ? 'Today’s Challenge ▶'
+              : diff === 1
+                ? 'Yesterday’s Challenge ▶'
+                : 'Latest Challenge ▶';
+          }
+          if (meta) {
+            meta.textContent = formatHawaiiDate(published) + dayText + ' • Full 20-Minute Math Challenge';
+          }
+          const quickLink = document.getElementById('challengeVideoLink');
+          if (quickLink) quickLink.textContent = diff === 0
+            ? '▶ Watch Nini do today’s challenge →'
+            : diff === 1
+              ? '▶ Watch Nini do yesterday’s challenge →'
+              : '▶ Watch Nini’s latest challenge →';
+        })
+        .catch(() => {});
+
       (() => {
       const expires = new Date("2026-10-15T00:00:00-10:00");
       if (new Date() < expires) return;
