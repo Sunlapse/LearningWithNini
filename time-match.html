@@ -125,12 +125,12 @@ svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 1
 .teacher-indicator{display:none;border-radius:999px;padding:9px 12px;background:#fff1d5;color:#9a6200;font-weight:900}.teacher-indicator.active{display:inline-flex}
 .levels-card{margin-top:16px;padding:16px}
 .levels-title{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}
-.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
 .difficulty-card{border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;color:var(--ink);min-height:150px}
-.difficulty-card:nth-child(1){background:#e8faef}.difficulty-card:nth-child(2){background:#e9f4ff}.difficulty-card:nth-child(3){background:#f0e9ff}
+.difficulty-card:nth-child(1){background:#e8faef}.difficulty-card:nth-child(2){background:#e9f4ff}.difficulty-card:nth-child(3){background:#f0e9ff}.difficulty-card:nth-child(4){background:#fff3df}
 .difficulty-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}
 .level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}
-.difficulty-card:nth-child(2) .level-num{background:#4c8ff1}.difficulty-card:nth-child(3) .level-num{background:#8051e7}
+.difficulty-card:nth-child(2) .level-num{background:#4c8ff1}.difficulty-card:nth-child(3) .level-num{background:#8051e7}.difficulty-card:nth-child(4) .level-num{background:#e89536}
 .difficulty-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}.difficulty-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
 .extras-card{margin-top:14px;padding:13px 15px}
 details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
@@ -193,6 +193,10 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
           <button class="difficulty-card" data-difficulty="hard" onclick="changeDifficulty('hard')">
             <div class="level-num">3</div><h3>Time Master</h3>
             <p>Read and set any time to the exact minute.</p>
+          </button>
+          <button class="difficulty-card" data-difficulty="elapsed" onclick="changeDifficulty('elapsed')">
+            <div class="level-num">4</div><h3>Elapsed Time</h3>
+            <p>Find how many minutes pass between a start time and an end time in real-life Grade 2 stories.</p>
           </button>
         </div>
       </section>
@@ -272,6 +276,13 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
               <select id="typedMinute"></select>
             </div>
           </div>
+          <div class="panel typed-mode" id="elapsedPanel">
+            <h3>Elapsed time</h3>
+            <div class="small-note" style="text-align:left;margin-bottom:8px;">How many minutes pass from the start time to the end time?</div>
+            <div class="typed-row">
+              <input type="number" id="elapsedMinutes" min="1" max="180" inputmode="numeric" placeholder="Minutes" />
+            </div>
+          </div>
 
           <div class="button-stack">
             <button class="big-btn check-btn" id="mainActionBtn">Check Answer →</button>
@@ -288,7 +299,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
 
           <div class="hidden-selects" style="display:none">
             <label>Difficulty<select class="hidden-select" id="difficultySelect">
-              <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option>
+              <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option><option value="elapsed">Elapsed</option>
             </select></label>
             <label>Mode<select class="hidden-select" id="modeSelect">
               <option value="set-clock">Set clock</option><option value="read-clock">Read clock</option>
@@ -318,7 +329,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
       </section>
     
 <section class="parent-game-intro" aria-label="For parents">
-  <p><strong>For parents:</strong> Time Match practices reading and setting analog clocks for students in grades 2–4. Interactive clock challenges help kids recognize times accurately and build everyday time fluency.</p>
+  <p><strong>For parents:</strong> Time Match practices reading and setting analog clocks, quarter past/half past/quarter to, exact-minute time, and a dedicated elapsed-time level with Grade 2 start/end-time stories.</p>
   <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
 </section>
 </main>
@@ -394,6 +405,9 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
 
     const setClockPanel = document.getElementById("setClockPanel");
     const readClockPanel = document.getElementById("readClockPanel");
+    const elapsedPanel = document.getElementById("elapsedPanel");
+    const elapsedMinutes = document.getElementById("elapsedMinutes");
+    const modeMini = document.querySelector(".mode-mini");
     const typedHour = document.getElementById("typedHour");
     const typedMinute = document.getElementById("typedMinute");
 
@@ -424,6 +438,7 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
     let targetPhrase = "3 o’clock";
     let readModeClockHour = 5;
     let readModeClockMinute = 0;
+    let elapsedStartHour = 4, elapsedStartMinute = 15, elapsedEndHour = 5, elapsedEndMinute = 15, elapsedAnswer = 60;
 
     let profile = { name: "Nini", avatar: "⭐" };
     let selectedAvatar = "⭐";
@@ -472,6 +487,7 @@ const appbarAvatarName = document.getElementById("appbarAvatarName");
       const diff = getCurrentDifficulty();
       if (diff === "easy") return "O’Clock Warm Up · Round " + roundNumber;
       if (diff === "medium") return "Quarter & Half · Round " + roundNumber;
+      if (diff === "elapsed") return "Elapsed Time · Round " + roundNumber;
       return "Time Master · Round " + roundNumber;
     }
 
@@ -708,7 +724,8 @@ function bounceAvatar() {
     }
 
     function applyCurrentDisplayTime() {
-      if (getCurrentMode() === "set-clock") updateClockHands(playerHour, playerMinute);
+      if (getCurrentDifficulty() === "elapsed") updateClockHands(elapsedStartHour, elapsedStartMinute);
+      else if (getCurrentMode() === "set-clock") updateClockHands(playerHour, playerMinute);
       else updateClockHands(readModeClockHour, readModeClockMinute);
     }
 
@@ -741,9 +758,28 @@ function bounceAvatar() {
       return { hour, minute };
     }
 
+    function generateElapsedProblem() {
+      const startHour = Math.floor(Math.random()*9)+1;
+      const startMinute = randomChoice([0,15,30,45]);
+      const duration = randomChoice(roundNumber===1?[30,45,60]:[15,30,45,60,75,90]);
+      const startTotal = startHour*60+startMinute;
+      const endTotal = startTotal+duration;
+      elapsedStartHour = startHour;
+      elapsedStartMinute = startMinute;
+      elapsedEndHour = normalizeHour(Math.floor(endTotal/60));
+      elapsedEndMinute = endTotal%60;
+      elapsedAnswer = duration;
+    }
+
     function setTargetDisplay() {
       const difficulty = getCurrentDifficulty();
       const mode = getCurrentMode();
+      if (difficulty === "elapsed") {
+        targetLabel.textContent = "How much time passes?";
+        targetPhrase = formatTime(elapsedStartHour,elapsedStartMinute)+" → "+formatTime(elapsedEndHour,elapsedEndMinute);
+        targetTimeEl.textContent = targetPhrase;
+        return;
+      }
       targetLabel.textContent = mode === "set-clock" ? "Match this time" : "Read this clock";
 
       if (difficulty === "easy") {
@@ -777,7 +813,14 @@ function bounceAvatar() {
 
     function updateModePanels() {
       const mode = getCurrentMode();
-      if (mode === "set-clock") {
+      const elapsed = getCurrentDifficulty()==="elapsed";
+      modeMini.style.display = elapsed ? "none" : "";
+      elapsedPanel.classList.toggle("active",elapsed);
+      if(elapsed){
+        setClockPanel.style.display="none";
+        readClockPanel.classList.remove("active");
+        helpText.textContent="The clock shows the start time. Use the two times above to find the elapsed minutes.";
+      }else if (mode === "set-clock") {
         setClockPanel.style.display = "block";
         readClockPanel.classList.remove("active");
         helpText.textContent = "Drag the hands, or use the buttons on the right.";
@@ -822,6 +865,7 @@ function bounceAvatar() {
       const diff = getCurrentDifficulty();
       const mode = getCurrentMode();
 
+      if(diff==="elapsed") return Number(elapsedMinutes.value)===elapsedAnswer;
       if (mode === "set-clock") {
         if (diff === "easy") return playerHour === targetHour && playerMinute === 0;
         return playerHour === targetHour && playerMinute === targetMinute;
@@ -842,11 +886,13 @@ function bounceAvatar() {
   updateScoreboard();
   bounceScore();
 
-  const phrase = getCurrentDifficulty() === "easy"
-    ? formatEasyPhrase(targetHour)
-    : getCurrentDifficulty() === "medium"
-      ? formatMediumPhrase(targetHour, targetMinute)
-      : formatTime(targetHour, targetMinute);
+  const phrase = getCurrentDifficulty() === "elapsed"
+    ? elapsedAnswer+" minutes"
+    : getCurrentDifficulty() === "easy"
+      ? formatEasyPhrase(targetHour)
+      : getCurrentDifficulty() === "medium"
+        ? formatMediumPhrase(targetHour, targetMinute)
+        : formatTime(targetHour, targetMinute);
 
   setStatus(`Great job! ${phrase}. You earned ${questionStars} star${questionStars === 1 ? "" : "s"}.`, "success");
   mainActionBtn.textContent = questionNumber === ROUND_LENGTH ? "Finish Round →" : "Next Question →";
@@ -862,7 +908,8 @@ function bounceAvatar() {
 
       const diff = getCurrentDifficulty();
       let clue = "";
-      if (diff === "easy") clue = " Look at where the short hour hand points.";
+      if (diff === "elapsed") clue = " Count forward from "+formatTime(elapsedStartHour,elapsedStartMinute)+" to "+formatTime(elapsedEndHour,elapsedEndMinute)+".";
+      else if (diff === "easy") clue = " Look at where the short hour hand points.";
       else if (diff === "medium") clue = " Remember: 15 = quarter past, 30 = half past, 45 = quarter to.";
       else clue = " Count the minute marks by 5s first, then the extra minutes.";
 
@@ -876,7 +923,9 @@ function bounceAvatar() {
       streak = 0;
       updateScoreboard();
 
-      if (getCurrentMode() === "set-clock") {
+      if(getCurrentDifficulty()==="elapsed"){
+        elapsedMinutes.value=elapsedAnswer;
+      }else if (getCurrentMode() === "set-clock") {
         const answerMinute = getCurrentDifficulty() === "easy" ? 0 : targetMinute;
         setPlayerTime(targetHour, answerMinute);
       } else {
@@ -884,12 +933,15 @@ function bounceAvatar() {
         typedMinute.value = String(getCurrentDifficulty() === "easy" ? 0 : targetMinute).padStart(2, "0");
       }
 
-      setStatus(`Answer shown: ${targetPhrase}`, "reveal");
+      setStatus(getCurrentDifficulty()==="elapsed"?"Answer shown: "+elapsedAnswer+" minutes":`Answer shown: ${targetPhrase}`, "reveal");
       if (soundOn) clickSound(640, 0.04, 0.05);
     }
 
     function resetRoundPosition() {
-      if (getCurrentMode() === "set-clock") {
+      if(getCurrentDifficulty()==="elapsed"){
+        elapsedMinutes.value="";
+        setStatus("Answer cleared. Count forward from the start time.");
+      }else if (getCurrentMode() === "set-clock") {
         setPlayerTime(12, 0);
         setStatus("Hands reset. Try again.");
       } else {
@@ -1124,12 +1176,22 @@ function bounceAvatar() {
       }
       questionStars = 3;
       levelSolved = false;
-      const newTime = generateTargetTime();
-      targetHour = newTime.hour;
-      targetMinute = newTime.minute;
-      setTargetDisplay();
+      if(getCurrentDifficulty()==="elapsed"){
+        generateElapsedProblem();
+        elapsedMinutes.value="";
+        setTargetDisplay();
+        applyCurrentDisplayTime();
+        setStatus("Find how many minutes pass from the start time to the end time.");
+      }else{
+        const newTime = generateTargetTime();
+        targetHour = newTime.hour;
+        targetMinute = newTime.minute;
+        setTargetDisplay();
+      }
 
-      if (getCurrentMode() === "set-clock") {
+      if (getCurrentDifficulty()==="elapsed") {
+        // Elapsed-time level uses the start clock plus a numeric minutes answer.
+      } else if (getCurrentMode() === "set-clock") {
         playerHour = 12;
         playerMinute = 0;
         applyCurrentDisplayTime();
