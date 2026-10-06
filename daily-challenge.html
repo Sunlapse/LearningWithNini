@@ -104,6 +104,7 @@ button:disabled{opacity:.28;cursor:default}
 .fr span:first-child{border-bottom:.08em solid currentColor;padding:0 .15em .06em}
 .fr span:last-child{padding:.06em .15em 0}
 .blank{display:inline-block;min-width:1.3em;text-align:center;border:.07em dashed var(--muted);border-radius:.2em;color:var(--muted);margin:0 .2em;padding:0 .1em}
+.mobile-pad-toggle{display:none}
 .padwrap{flex:1;min-height:0;position:relative;border-radius:20px;border:2px solid var(--line);background-color:var(--paper);
   background-image:linear-gradient(var(--grid) 1.5px,transparent 1.5px),linear-gradient(90deg,var(--grid) 1.5px,transparent 1.5px);background-size:32px 32px;overflow:hidden}
 #pad{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
@@ -164,10 +165,33 @@ button:disabled{opacity:.28;cursor:default}
   .cmp button{min-height:80px}
 }
 @media (max-width:640px) and (orientation:portrait){
-  .right{grid-template-columns:1fr;grid-template-areas:"ans" "fb" "keys" "acts"}
+  .body{grid-template-rows:auto auto;overflow-y:auto;overscroll-behavior:contain;padding-bottom:4px}
+  .left{flex:none;min-height:0}
+  .right{grid-template-columns:1fr;grid-template-areas:"ans" "fb" "keys" "acts";flex:none}
   .hint{display:none}
   .keys{grid-auto-rows:46px}
   .who small{display:none}
+
+  /* On phones the full scratch pad used to be squeezed so short that the
+     toolbar covered nearly all of the drawable area. Keep it optional and
+     give it a real canvas only when the player opens it. */
+  .mobile-pad-toggle{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;min-height:48px;padding:10px 14px;border-radius:15px;
+    background:var(--key);border:2px solid var(--line);color:var(--ink);
+    font-weight:900;font-size:16px
+  }
+  .mobile-pad-toggle[aria-expanded="true"]{border-color:var(--ink)}
+  .padwrap{display:none;flex:none;height:0;min-height:0}
+  .padwrap.mobile-open{display:block;height:230px;min-height:230px}
+  .padwrap.mobile-open #pad{inset:56px 0 0 0;width:100%;height:auto}
+  .padwrap .tools{
+    top:7px;bottom:auto;left:7px;right:7px;
+    flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+    padding-bottom:3px;-webkit-overflow-scrolling:touch
+  }
+  .padwrap .tool{height:42px;min-width:42px;padding:0 10px;font-size:13px;flex:0 0 auto}
+  .padwrap .dot{width:17px;height:17px}
 }
 
 .daily-video-card{margin:16px 0;background:linear-gradient(135deg,#fff5fa,#f2ecff 58%,#edf8ff);border:1px solid #e5dcf5;border-radius:24px;padding:16px;box-shadow:0 12px 28px rgba(74,50,137,.08)}
@@ -271,7 +295,8 @@ button:disabled{opacity:.28;cursor:default}
   <div class="body">
     <div class="left">
       <div class="qcard"><div class="qnum" id="qnum">#1</div><div class="q" id="q"></div></div>
-      <div class="padwrap">
+      <button class="mobile-pad-toggle" id="mobilePadToggle" type="button" aria-expanded="false" aria-controls="scratchPad">✏️ Open scratch pad</button>
+      <div class="padwrap" id="scratchPad">
         <canvas id="pad" aria-label="Scratch paper for working out the problem"></canvas>
         <div class="tools">
           <button class="tool" data-tool="ink" aria-pressed="true"><span class="dot" style="background:var(--ink)"></span></button>
@@ -743,6 +768,7 @@ let S=null,tick=null;
 function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
 function startSession(){
   updateHawaiiClock();
+  setMobilePad(false);
   R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+salt));
   lastType='';recentTypes=[];phaseQueues={};usedQuestionText=new Set();usedFactKeys=new Set();
   S={items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,msLeft:settings.mins*60000,end:0,paused:false,started:Date.now()};
@@ -864,7 +890,23 @@ setInterval(()=>{if(navigator.onLine){flushPendingGlobal();syncGlobalDailyDates(
 
 /* ---------- scratch pad ---------- */
 const cv=$('#pad'),cx=cv.getContext('2d');
+const padWrap=$('#scratchPad'),padToggle=$('#mobilePadToggle');
 let strokes=[],cur=null,tool='ink',allowFinger=true,pal={};
+function setMobilePad(open){
+  if(!padWrap||!padToggle)return;
+  const phone=matchMedia('(max-width:640px) and (orientation:portrait)').matches;
+  if(!phone){
+    padWrap.classList.remove('mobile-open');
+    padToggle.setAttribute('aria-expanded','false');
+    padToggle.textContent='✏️ Open scratch pad';
+    return;
+  }
+  padWrap.classList.toggle('mobile-open',!!open);
+  padToggle.setAttribute('aria-expanded',open?'true':'false');
+  padToggle.textContent=open?'✕ Hide scratch pad':'✏️ Open scratch pad';
+  if(open)requestAnimationFrame(()=>sizeCanvas());
+}
+if(padToggle)padToggle.addEventListener('click',()=>setMobilePad(padToggle.getAttribute('aria-expanded')!=='true'));
 function readPal(){const cs=getComputedStyle(document.documentElement);['ink','blue','red'].forEach(c=>pal[c]=cs.getPropertyValue('--'+c).trim())}
 function sizeCanvas(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;if(!r.width)return;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);cx.setTransform(d,0,0,d,0,0);readPal();redraw()}
 function seg(s,a,b){cx.globalCompositeOperation=s.erase?'destination-out':'source-over';cx.strokeStyle=s.erase?'#000':pal[s.color];
@@ -888,7 +930,7 @@ $('#undoBtn').addEventListener('click',()=>{strokes.pop();redraw()});
 $('#clearBtn').addEventListener('click',()=>{strokes=[];redraw()});
 function updFinger(){const b=$('#fingerBtn');b.textContent='Finger: '+(allowFinger?'on':'off');b.setAttribute('aria-pressed',allowFinger)}
 $('#fingerBtn').addEventListener('click',()=>{allowFinger=!allowFinger;updFinger()});
-let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(sizeCanvas,120)});
+let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{setMobilePad(false);sizeCanvas()},120)});
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{readPal();redraw()})}catch(e){}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseS()});
 
