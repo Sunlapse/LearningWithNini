@@ -4,9 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <meta name="theme-color" content="#fbf9ff" />
-<title>Multiplication Sprint – Free Times Tables Game for Grades 3–5 | Learn With Nini</title>
+<title>Multiplication Sprint – Arrays, Equal Groups & Times Tables for Grades 2–5 | Learn With Nini</title>
 <link rel="canonical" href="https://learnwithnini.com/multiplication-sprint.html">
-<meta name="description" content="Free multiplication game for grades 3–5. Practice times tables, fact fluency, speed, and accuracy through short interactive sprints with Nini." />
+<meta name="description" content="Free multiplication game for grades 2–5. Start with arrays and equal groups, then practice times tables, fact fluency, break-apart strategies, speed, and accuracy with Nini." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -76,6 +76,7 @@ button,input{font:inherit}
 }
 .equation .times{color:#ee4d9a}
 .equation.break-apart{font-size:clamp(2rem,5vw,4rem);line-height:1.15;letter-spacing:-.025em}
+.equation.intro{font-size:clamp(1.65rem,4.5vw,3.25rem);line-height:1.22;letter-spacing:-.018em;max-width:900px;margin:18px auto 8px}
 .streak{margin-top:12px;color:#695f88;font-weight:900}
 .answer-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px}
 .answer-card{padding:18px}
@@ -119,15 +120,15 @@ button,input{font:inherit}
 .stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.4rem}
 .levels{margin-top:16px;padding:16px}
 .levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}
-.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}
 .level-card{
   border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;
   color:var(--ink);min-height:155px
 }
-.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}.level-card:nth-child(4){background:#fff3df}
+.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}.level-card:nth-child(4){background:#fff3df}.level-card:nth-child(5){background:#ffeaf3}
 .level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}
 .level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}
-.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card:nth-child(4) .level-num{background:#e89536}
+.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card:nth-child(4) .level-num{background:#e89536}.level-card:nth-child(5) .level-num{background:#e84f91}
 .level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}
 .level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
 .stats{margin-top:14px;padding:14px}
@@ -180,20 +181,24 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
 <section id="challenge-options" class="levels challenge-options-anchor">
         <h2>✖️ Multiplication Sprint — Choose a Level</h2>
         <div class="level-grid">
-          <button class="level-card active" data-level="build">
-            <div class="level-num">1</div><h3>Build Up</h3>
+          <button class="level-card active" data-level="intro">
+            <div class="level-num">1</div><h3>Arrays & Equal Groups</h3>
+            <p>Learn what multiplication means with simple arrays, equal groups, and short Grade 2 story problems.</p>
+          </button>
+          <button class="level-card" data-level="build">
+            <div class="level-num">2</div><h3>Build Up</h3>
             <p>Practice ×2 through ×5 and build strong multiplication foundations.</p>
           </button>
           <button class="level-card" data-level="power">
-            <div class="level-num">2</div><h3>Power Facts</h3>
+            <div class="level-num">3</div><h3>Power Facts</h3>
             <p>Practice ×6 through ×9 — the facts that usually need the most repetition.</p>
           </button>
           <button class="level-card" data-level="master">
-            <div class="level-num">3</div><h3>Mixed Master</h3>
+            <div class="level-num">4</div><h3>Mixed Master</h3>
             <p>Mix multiplication facts from ×2 through ×12 for a full challenge.</p>
           </button>
           <button class="level-card" data-level="break">
-            <div class="level-num">4</div><h3>Break Apart</h3>
+            <div class="level-num">5</div><h3>Break Apart</h3>
             <p>Split a multiplication fact into two easier facts using arrays and the distributive property.</p>
           </button>
         </div>
@@ -256,7 +261,7 @@ details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}
       </section>
     
 <section class="parent-game-intro" aria-label="For parents">
-  <p><strong>For parents:</strong> Multiplication Sprint practices multiplication facts, fact fluency, speed, accuracy, arrays, and the distributive property for students in grades 3–5. The Break Apart level teaches kids to decompose a multiplication fact into two easier facts, matching the kind of multiplication-property reasoning used in Grade 3.</p>
+  <p><strong>For parents:</strong> Multiplication Sprint now starts with an introductory Grade 2 Arrays & Equal Groups level that connects simple story problems, rows, groups, and multiplication equations. Later levels build fact fluency through ×12, while Break Apart teaches the distributive property and Grade 3 multiplication reasoning.</p>
   <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
 </section>
 </main>
@@ -285,10 +290,11 @@ const AVATARS=["⭐","🐱","🐰","🌈","❤️"];
 const el=id=>document.getElementById(id);
 let profile=safe(KEYS.profile,{name:"Nini",avatar:"⭐"});
 let selectedAvatar=profile.avatar||"⭐";
-let level="build";
+let level="intro";
 let question=1,round=1,score=0,streak=0,bestStreak=0,stars=3;
-let a=4,b=6,answer="",solved=false;
+let a=3,b=4,answer="",solved=false;
 let splitA=2,splitB=2,missingSplit="right";
+let introKind="array";
 let questionPool=[];
 let timerOn=true,startTime=Date.now(),timerHandle=null;
 let board=safe(KEYS.board,[]);
@@ -298,6 +304,7 @@ function store(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch{
 function rnd(min,max){return Math.floor(Math.random()*(max-min+1))+min}
 function currentRange(){
   const boost=Math.min(round-1,5);
+  if(level==="intro")return {min:2,max:Math.min(6,4+Math.floor(boost/2)),name:"Arrays & Equal Groups"};
   if(level==="build")return {min:2,max:Math.min(10,5+boost),name:"Build Up"};
   if(level==="power")return {min:Math.max(4,6-Math.floor(boost/2)),max:Math.min(12,9+boost),name:"Power Facts"};
   if(level==="break")return {min:3,max:Math.min(10,8+Math.floor(boost/2)),name:"Break Apart"};
@@ -321,6 +328,14 @@ function resetQuestionPool(){
       for(let y=x;y<=12;y++){
         const key=x+"x"+y;
         if(!seen.has(key)){seen.add(key);facts.push([x,y])}
+      }
+    }
+  }else if(level==="intro"){
+    const r=currentRange();
+    for(let rows=2;rows<=r.max;rows++){
+      for(let each=2;each<=r.max;each++){
+        const key=rows+"x"+each;
+        if(!seen.has(key)){seen.add(key);facts.push([rows,each])}
       }
     }
   }else if(level==="break"){
@@ -349,12 +364,28 @@ function makeQuestion(){
   const pair=questionPool.pop();
   a=pair[0];b=pair[1];
 
-  // Randomize the visual order for fact-fluency levels. Break Apart keeps
-  // the first factor as the row count so the array can be split cleanly.
-  if(level!=="break"&&Math.random()<.5){const t=a;a=b;b=t}
+  // Randomize the visual order for fact-fluency levels. Intro and Break Apart
+  // keep the first factor as the group/row count so the visual model stays clear.
+  if(level!=="break"&&level!=="intro"&&Math.random()<.5){const t=a;a=b;b=t}
 
   answer="";stars=3;solved=false;
-  if(level==="break"){
+  if(level==="intro"){
+    introKind=["array","groups","story"][rnd(0,2)];
+    if(introKind==="array"){
+      el("equation").innerHTML=a+' rows of '+b+' = ?';
+    }else if(introKind==="groups"){
+      el("equation").innerHTML=a+' equal groups of '+b+' = ?';
+    }else{
+      const stories=[
+        {groups:"bags",singular:"bag",items:"beads"},
+        {groups:"vases",singular:"vase",items:"flowers"},
+        {groups:"rows",singular:"row",items:"coins"},
+        {groups:"plates",singular:"plate",items:"cookies"}
+      ];
+      const s=stories[rnd(0,stories.length-1)];
+      el("equation").innerHTML='There are '+a+' '+s.groups+'. Each '+s.singular+' has '+b+' '+s.items+'. How many '+s.items+' are there in all?';
+    }
+  }else if(level==="break"){
     const preferred={
       3:[[1,2]],4:[[2,2],[1,3]],5:[[2,3],[1,4]],
       6:[[2,4],[3,3],[1,5]],7:[[3,4],[2,5]],8:[[4,4],[3,5],[2,6]],
@@ -370,15 +401,27 @@ function makeQuestion(){
     el("equation").innerHTML='<span id="factorA">'+a+'</span> <span class="times">×</span> <span id="factorB">'+b+'</span> = ?';
   }
   el("equation").classList.toggle("break-apart",level==="break");
+  el("equation").classList.toggle("intro",level==="intro");
   el("levelName").textContent=r.name+" · Round "+round;
   el("answerDisplay").textContent="Type your answer";
   el("answerDisplay").classList.add("placeholder");
-  el("status").textContent=level==="break"?"What number belongs in the ? so the two smaller facts equal the whole array?":"Enter the product, then check your answer.";
+  el("status").textContent=level==="intro"
+    ?"Count the equal groups or rows. Enter how many there are altogether."
+    :level==="break"
+      ?"What number belongs in the ? so the two smaller facts equal the whole array?"
+      :"Enter the product, then check your answer.";
   el("status").className="status";
   el("checkBtn").textContent="Check Answer →";
   el("checkBtn").className="check";
   el("hintBtn").disabled=false;
+  el("hintBtn").style.display=level==="intro"?"none":"";
   el("arrayBox").classList.remove("show");
+  if(level==="intro"){
+    const arr=el("array");arr.innerHTML="";arr.style.gridTemplateColumns="repeat("+b+",12px)";
+    for(let i=0;i<a*b;i++){const d=document.createElement("span");d.className="dot";arr.appendChild(d)}
+    el("arrayLabel").textContent=a+" rows / groups of "+b+" = "+a+" × "+b;
+    el("arrayBox").classList.add("show");
+  }
   updateUI();
 }
 function updateUI(){
@@ -406,9 +449,11 @@ function check(){
   if(Number(answer)===correctAnswer()){
     solved=true;score+=stars;streak++;bestStreak=Math.max(bestStreak,streak);
     LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"multiplication",score,level,best_streak:bestStreak}).then(renderBoard).catch(()=>{});
-    el("status").textContent=level==="break"
-      ?"Exactly! "+a+" × "+b+" = ("+splitA+" × "+b+") + ("+splitB+" × "+b+"). You earned "+stars+" star"+(stars===1?"":"s")+"!"
-      :"Great job! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
+    el("status").textContent=level==="intro"
+      ?"Exactly! "+a+" equal groups of "+b+" make "+(a*b)+". That is "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!"
+      :level==="break"
+        ?"Exactly! "+a+" × "+b+" = ("+splitA+" × "+b+") + ("+splitB+" × "+b+"). You earned "+stars+" star"+(stars===1?"":"s")+"!"
+        :"Great job! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
     el("status").className="status good";
     el("checkBtn").textContent=question===10?"Finish Round →":"Next Question →";
     el("checkBtn").className="next";
@@ -417,9 +462,11 @@ function check(){
   }else{
     stars=Math.max(1,stars-1);streak=0;
     const diff=correctAnswer()-Number(answer);
-    el("status").textContent=level==="break"
-      ?"Not quite. The two row groups must add back to "+a+". Look at how many rows are already shown."
-      :(diff>0?"Not quite — your answer is too small. Try again.":"Not quite — your answer is too large. Try again.");
+    el("status").textContent=level==="intro"
+      ?"Not quite. Count "+b+" in each of the "+a+" equal groups. You can also think "+a+" × "+b+"."
+      :level==="break"
+        ?"Not quite. The two row groups must add back to "+a+". Look at how many rows are already shown."
+        :(diff>0?"Not quite — your answer is too small. Try again.":"Not quite — your answer is too large. Try again.");
     el("status").className="status bad";
     answer="";el("answerDisplay").textContent="Try again";el("answerDisplay").classList.add("placeholder");
     updateUI();
@@ -440,6 +487,11 @@ function next(){
 }
 function showHint(){
   if(solved)return;
+  if(level==="intro"){
+    el("status").textContent="The array is already shown: "+a+" equal groups of "+b+". Count all the dots.";
+    el("status").className="status info";
+    return;
+  }
   stars=Math.max(1,stars-1);
   const arr=el("array");arr.innerHTML="";arr.style.gridTemplateColumns="repeat("+b+",12px)";
   for(let i=0;i<a*b;i++){
