@@ -205,7 +205,20 @@ button:disabled{opacity:.28;cursor:default}
 .daily-video-subscribe{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 13px;border-radius:11px;background:#ff0000;color:#fff;text-decoration:none;font-weight:1000}
 .daily-video-signin{grid-column:2;color:#7a7191;font-size:11px;font-weight:900;text-align:center;margin-top:-3px}
 .daily-video-link{grid-column:1 / -1;font-weight:1000;color:#6336c7;text-decoration:none;width:max-content}
-@media(max-width:560px){.daily-video-actions{grid-template-columns:1fr}.daily-video-signin{grid-column:1;text-align:left}.daily-video-link{grid-column:1}}
+@media(max-width:560px){
+  .daily-video-card,.daily-video-head,.daily-video-actions{min-width:0;max-width:100%}
+  .daily-video-actions{grid-template-columns:minmax(0,1fr);padding:10px}
+  .daily-video-actions>div{min-width:0}
+  .daily-video-subscribe{
+    width:100%;max-width:100%;min-width:0;box-sizing:border-box;
+    padding:10px 8px;font-size:clamp(13px,4vw,16px);white-space:normal;text-align:center
+  }
+  .daily-video-signin{grid-column:1;text-align:left;min-width:0}
+  .daily-video-link{
+    grid-column:1;width:auto;max-width:100%;min-width:0;
+    overflow-wrap:anywhere;word-break:normal;line-height:1.25
+  }
+}
 .done-video{margin:18px 0 8px;text-align:left}
 .done-video h2{margin:0 0 4px;font-family:"Fredoka",sans-serif;color:#5b31c2}
 .done-video p{margin:0 0 11px;color:#686180;font-weight:800}
@@ -217,7 +230,7 @@ button:disabled{opacity:.28;cursor:default}
 
 <section id="start" class="screen on" aria-label="Start">
   <div class="start">
-    <nav class="topnav"><a href="index.html">← All games</a><a href="leaderboard.html">🏆 Leaderboard</a></nav>
+    <nav class="topnav"><a href="index.html">← All games</a><a href="leaderboard.html">🏆 Leaderboard</a><a href="#daily-video">▶ Watch Nini do it</a></nav>
     <div class="hello">
       <div class="challenge-badge">📝 NINI'S DAILY CHALLENGE</div>
       <div class="hawaii-clock" aria-live="polite"><span class="clock-dot"></span><span id="hawaiiDateTime">Hawaiʻi time</span></div>
@@ -256,6 +269,30 @@ button:disabled{opacity:.28;cursor:default}
     <button class="go" id="goBtn">Start</button>
     <div class="row"><span id="setLabel">Today's shared problem set</span><a class="link" href="leaderboard.html">Global leaderboard →</a></div>
     <div class="tip">Everyone playing the same level on the same Hawaiʻi date gets the same challenge. Topics rotate to avoid repetitive question patterns, and the difficulty begins stepping up after question 50. Your best score can appear on the global leaderboard.</div>
+    <section class="daily-video-card" id="daily-video" aria-label="Latest Learn With Nini video">
+      <div class="daily-video-head">
+        <div>
+          <h2 id="dailyChallengeVideoHeading">Latest Challenge ▶</h2>
+          <p id="dailyChallengeVideoMeta">Newest full 20-minute challenge from Nini.</p>
+        </div>
+      </div>
+      <div class="daily-video-embed">
+        <iframe
+          id="dailyChallengeVideoFrame"
+          src="https://www.youtube-nocookie.com/embed/videoseries?list=PLOeN8KaQujJo&playsinline=1&rel=0"
+          title="Latest full Learn With Nini daily math challenge playlist"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
+      <div class="daily-video-actions">
+        <div><strong>New challenge videos</strong><br><span>Subscribe to see the next one.</span></div>
+        <a class="daily-video-subscribe" href="https://www.youtube.com/channel/UCrZMHA7Ky5kTJd3a-X2iUag?sub_confirmation=1" target="_blank" rel="noopener">▶ Subscribe on YouTube</a>
+        <div class="daily-video-signin">YouTube may ask you to sign in.</div>
+        <a class="daily-video-link" href="https://www.youtube.com/playlist?list=PLOeN8KaQujJo" target="_blank" rel="noopener">View Full Challenge Playlist on YouTube ↗</a>
+      </div>
+    </section>
     <div class="hist"><h2>Recent days</h2><ul id="histList"></ul></div>
   </div>
 </section>
