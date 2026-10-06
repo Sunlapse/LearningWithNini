@@ -861,14 +861,17 @@
     }
     .youtube-actions {
       display:grid;
-      grid-template-columns:1fr auto;
+      grid-template-columns:minmax(0,1fr) auto;
       gap:10px 16px;
       align-items:center;
       margin-top:14px;
       padding:16px;
       border-radius:18px;
       background:rgba(255,255,255,.90);
+      min-width:0;
+      max-width:100%;
     }
+    .youtube-actions > * { min-width:0; max-width:100%; }
     .youtube-actions strong { color:#4e2bad; }
     .youtube-subscribe-btn {
       display:inline-flex;
@@ -881,12 +884,15 @@
       color:#fff;
       font-weight:900;
       box-shadow:0 7px 16px rgba(255,0,0,.16);
+      box-sizing:border-box;
     }
     .youtube-channel-link {
       grid-column:1 / -1;
       color:#6635ca;
       font-weight:900;
       width:max-content;
+      max-width:100%;
+      overflow-wrap:anywhere;
     }
 
     .why {
@@ -1130,8 +1136,23 @@
       .topic-cards { grid-template-columns: repeat(2, 1fr); }
       .start-path { grid-template-columns:1fr; gap:12px; }
       .youtube-growth-head { align-items:flex-start; flex-direction:column; }
-      .youtube-actions { grid-template-columns:1fr; }
-      .youtube-channel-link { grid-column:1; }
+      .youtube-actions { grid-template-columns:minmax(0,1fr); }
+      .youtube-subscribe-btn {
+        width:100%;
+        max-width:100%;
+        padding-left:10px;
+        padding-right:10px;
+        white-space:normal;
+        text-align:center;
+      }
+      .youtube-channel-link {
+        grid-column:1;
+        width:auto;
+        max-width:100%;
+        white-space:normal;
+        overflow-wrap:anywhere;
+        line-height:1.25;
+      }
       .benefits { grid-template-columns: repeat(2, 1fr); }
     }
 
