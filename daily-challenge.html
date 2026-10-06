@@ -241,6 +241,7 @@ button:disabled{opacity:.28;cursor:default}
       </div>
       <div class="daily-video-embed">
         <iframe
+          id="dailyChallengeVideoFrame"
           src="https://www.youtube-nocookie.com/embed/videoseries?list=PLOeN8KaQujJo&playsinline=1&rel=0"
           title="Latest full Learn With Nini daily math challenge playlist"
           loading="lazy"
@@ -303,12 +304,13 @@ button:disabled{opacity:.28;cursor:default}
     <div class="global-save" id="globalSaveStatus">Your best score will save to the global leaderboard.</div>
     <ul class="list" id="review"></ul>
     <section class="done-video" aria-label="Watch Nini solve this challenge">
-      <h2>Watch Nini solve Day <span id="doneVideoDay">1</span> ▶</h2>
-      <p>Compare your work with Nini after you finish.</p>
+      <h2 id="doneVideoHeading">Watch Nini solve Day <span id="doneVideoDay">1</span> ▶</h2>
+      <p id="doneVideoMeta">Compare your work with Nini after you finish.</p>
       <div class="daily-video-embed">
         <iframe
-          src="https://www.youtube-nocookie.com/embed/videoseries?list=UUrZMHA7Ky5kTJd3a-X2iUag&playsinline=1&rel=0"
-          title="Learn With Nini challenge solution video"
+          id="doneVideoFrame"
+          src="https://www.youtube-nocookie.com/embed/videoseries?list=PLOeN8KaQujJo&playsinline=1&rel=0"
+          title="Learn With Nini full challenge solution video"
           loading="lazy"
           referrerpolicy="strict-origin-when-cross-origin"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -697,7 +699,12 @@ function knownDailyDates(){
   remoteDailyDates.forEach(d=>ds.add(d));
   return ds;
 }
-function dayNumber(){const ds=[...knownDailyDates()].sort(),i=ds.indexOf(today());return i>=0?i+1:ds.length+1}
+const CHALLENGE_DAY_ONE='2026-09-26';
+function dayNumber(){
+  const toUtc=key=>{const [y,m,d]=key.split('-').map(Number);return Date.UTC(y,m-1,d)};
+  return Math.max(1,Math.floor((toUtc(today())-toUtc(CHALLENGE_DAY_ONE))/86400000)+1);
+}
+window.LWNCurrentChallengeDay=dayNumber();
 function streak(){const ds=knownDailyDates();const d=dayDate();if(!ds.has(fmtUTC(d)))d.setUTCDate(d.getUTCDate()-1);let n=0;while(ds.has(fmtUTC(d))){n++;d.setUTCDate(d.getUTCDate()-1)}return n}
 async function syncGlobalDailyDates(){
   if(!window.LWNLeaderboard||typeof LWNLeaderboard.dailyHistory!=='function')return;
@@ -713,7 +720,9 @@ const gradeLabel=g=>g==='mix'?'Grades 3–4':'Grade '+g;
 function renderStart(){
   updateHawaiiClock();
   renderDeviceProgress();
-  $('#dayTitle').textContent='Day '+dayNumber();
+  const challengeDay=dayNumber();
+  window.LWNCurrentChallengeDay=challengeDay;
+  $('#dayTitle').textContent='Day '+challengeDay;
   const s=deviceProgress().current;$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow to keep it going.':"Let's warm up that brain.";
   $('#name').value=settings.name;
   $$('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
@@ -920,8 +929,24 @@ renderStart();
           const diff = dateDiffDays(hawaiiDateKey(new Date()), hawaiiDateKey(published));
           const heading = document.getElementById('dailyChallengeVideoHeading');
           const meta = document.getElementById('dailyChallengeVideoMeta');
+          const startFrame = document.getElementById('dailyChallengeVideoFrame');
+          const doneFrame = document.getElementById('doneVideoFrame');
+          const doneHeading = document.getElementById('doneVideoHeading');
+          const doneMeta = document.getElementById('doneVideoMeta');
+          const doneDay = document.getElementById('doneVideoDay');
+          const doneLink = document.getElementById('doneVideoLink');
           const dayMatch = String(video.title || '').match(/\bDay\s*(\d+)\b/i);
-          const dayText = dayMatch ? ' • Day ' + dayMatch[1] : '';
+          const videoDay = dayMatch ? Number(dayMatch[1]) : null;
+          const currentDay = Number(window.LWNCurrentChallengeDay) || null;
+          const dayText = videoDay ? ' • Day ' + videoDay : '';
+          const videoId = String(video.videoId || '').trim();
+          const directEmbed = videoId
+            ? 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId) + '?playsinline=1&rel=0'
+            : '';
+          const directWatch = videoId
+            ? 'https://www.youtube.com/watch?v=' + encodeURIComponent(videoId)
+            : '';
+
           if (heading) {
             heading.textContent = diff === 0
               ? 'Today’s Challenge ▶'
@@ -931,6 +956,27 @@ renderStart();
           }
           if (meta) {
             meta.textContent = formatHawaiiDate(published) + dayText + ' • Full 20-Minute Math Challenge';
+          }
+          // The start card should always show the curated full challenge, never the latest Short.
+          if (startFrame && directEmbed) startFrame.src = directEmbed;
+
+          // Results must match the shared calendar challenge day, not a player's personal streak day.
+          if (currentDay && videoDay === currentDay && directEmbed) {
+            if (doneDay) doneDay.textContent = String(currentDay);
+            if (doneHeading) doneHeading.innerHTML = 'Watch Nini solve Day <span id="doneVideoDay">' + currentDay + '</span> ▶';
+            if (doneMeta) doneMeta.textContent = 'Compare your work with Nini after you finish.';
+            if (doneFrame) doneFrame.src = directEmbed;
+            if (doneLink && directWatch) {
+              doneLink.href = directWatch;
+              doneLink.textContent = 'Open Day ' + currentDay + ' on YouTube ↗';
+            }
+          } else if (currentDay) {
+            if (doneHeading) doneHeading.textContent = 'Nini’s Day ' + currentDay + ' video is coming soon ▶';
+            if (doneMeta) doneMeta.textContent = 'The player below shows the latest full challenge until today’s video is posted.';
+            if (doneLink) {
+              doneLink.href = 'https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
+              doneLink.textContent = 'View Full Challenge Playlist on YouTube ↗';
+            }
           }
           
         })
