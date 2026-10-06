@@ -70,7 +70,7 @@ body.theme-two .notebook strong{color:#51366f}
 .side{display:grid;gap:10px}.status{min-height:126px;border-radius:22px;background:linear-gradient(135deg,#faf8ff,#fff5fa);padding:15px;display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.4}.status.good{background:#e9fbf0;color:#168354}.status.bad{background:#fff3df;color:#ad6600}.status.info{background:#f2ecff;color:#6741bd}
 .check,.hint,.next{border:0;border-radius:20px;min-height:66px;font-weight:1000;cursor:pointer}.check{background:linear-gradient(135deg,#ff70b3,#f44495);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.25rem}.next{background:linear-gradient(135deg,#2bc27f,#25a969);color:#fff;font-family:"Fredoka",sans-serif;font-size:1.2rem}.hint{background:#7546da;color:#fff}
 .notebook{border-radius:20px;background:#fff8dc;border:1px solid #f4df94;padding:13px;color:#725b18;font-weight:900;line-height:1.35}.notebook strong{color:#57420e}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#faf9ff;border:1px solid #eee9f8;border-radius:17px;padding:11px;text-align:center}.stat small{display:block;color:var(--muted);font-weight:800}.stat strong{font-size:1.3rem}
-.levels{margin-top:16px;padding:16px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.level-card{border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;color:var(--ink);min-height:160px}.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}.level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}.level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
+.levels{margin-top:16px;padding:16px}.levels h2{text-align:center;font-family:"Fredoka",sans-serif;font-size:1.65rem;margin:0 0 13px;color:#4d2db9}.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.level-card{border:2px solid transparent;border-radius:21px;padding:14px;text-align:center;cursor:pointer;color:var(--ink);min-height:160px}.level-card:nth-child(1){background:#e8faef}.level-card:nth-child(2){background:#e9f4ff}.level-card:nth-child(3){background:#f0e9ff}.level-card.active{border-color:#7040df;box-shadow:0 0 0 4px rgba(112,64,223,.09)}.level-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#2bc67b;color:#fff;font-weight:1000}.level-card:nth-child(2) .level-num{background:#4c8ff1}.level-card:nth-child(3) .level-num{background:#8051e7}.level-card h3{margin:3px 0 5px;font-family:"Fredoka",sans-serif}.level-card p{margin:0;color:#68617f;line-height:1.28;font-size:.86rem;font-weight:800}
 .extras{margin-top:14px;padding:13px 15px}.pill{border:0;border-radius:999px;padding:10px 13px;background:#eee9ff;color:#5941a4;font-weight:900;cursor:pointer;text-decoration:none}.leader{margin-top:14px;padding:13px 15px}details summary{cursor:pointer;font-weight:1000;color:#5d3bb3}.board{display:grid;gap:7px;margin-top:10px}.row{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px 11px;border-radius:13px;background:#faf8ff;font-weight:900}.rank{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eee8ff;color:#6341c4}.empty{padding:10px;color:#8d86a3}
 .modal-bg{position:fixed;inset:0;background:rgba(40,28,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:5000}.modal-bg.show{display:flex}.modal{width:min(520px,100%);background:#fff;border-radius:25px;padding:20px;box-shadow:0 25px 60px rgba(50,30,100,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-title{font-family:"Fredoka",sans-serif;font-size:1.5rem}.close{border:0;width:40px;height:40px;border-radius:50%;background:#f0ebff;font-size:1.25rem;cursor:pointer}.profile-form{display:grid;gap:10px}.profile-form input{border:2px solid #e3dcf7;border-radius:14px;padding:12px;font-weight:900}.avatars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.avatar{border:2px solid #eee8ff;background:#faf9ff;border-radius:14px;height:54px;font-size:1.4rem;cursor:pointer}.avatar.active{border-color:#7040df;background:#f0e9ff}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:13px;padding:10px 14px;font-weight:900;cursor:pointer}.save{background:#25b97b;color:#fff}.cancel{background:#eee9ff;color:#56488b}
 @media(max-width:1080px){.shell{grid-template-columns:200px 1fr}.nini,.nini img{height:560px;min-height:560px}.workspace{grid-template-columns:1fr 310px}}
@@ -105,14 +105,17 @@ body.theme-two .notebook strong{color:#51366f}
 <section id="challenge-options" class="levels challenge-options-anchor">
       <h2>🔎 Math Detective — Choose a Case File</h2>
       <div class="level-grid">
-        <button class="level-card active" data-level="one">
-          <div class="level-num">1</div><h3>Solve the Clue</h3><p>Read a one-step word problem and solve it yourself — no operation buttons shown.</p>
+        <button class="level-card active" data-level="grade2">
+          <div class="level-num">1</div><h3>Grade 2 Cases</h3><p>Solve addition and subtraction stories with missing starts, differences, exact totals, tables, and two-step goals.</p>
+        </button>
+        <button class="level-card" data-level="one">
+          <div class="level-num">2</div><h3>Solve the Clue</h3><p>Read a one-step word problem and solve it yourself — no operation buttons shown.</p>
         </button>
         <button class="level-card" data-level="operation">
-          <div class="level-num">2</div><h3>Operation Detective</h3><p>Identify the operation first. The equation and answer step unlock after you get it right.</p>
+          <div class="level-num">3</div><h3>Operation Detective</h3><p>Identify the operation first. The equation and answer step unlock after you get it right.</p>
         </button>
         <button class="level-card" data-level="two">
-          <div class="level-num">3</div><h3>Two-Step Mysteries</h3><p>Choose two operations in order, solve the intermediate result, then find the final answer.</p>
+          <div class="level-num">4</div><h3>Two-Step Mysteries</h3><p>Choose two operations in order, solve the intermediate result, then find the final answer.</p>
         </button>
       </div>
     </section>
@@ -193,7 +196,7 @@ body.theme-two .notebook strong{color:#51366f}
     <section class="leader"><details><summary>🏆 Math Detective leaderboard</summary><div id="board" class="board"></div></details></section>
   
 <section class="parent-game-intro" aria-label="For parents">
-  <p><strong>For parents:</strong> Math Detective practices word problems, operation choice, and one- and two-step reasoning for students in grades 2–5. Kids use addition, subtraction, multiplication, and division to solve each case.</p>
+  <p><strong>For parents:</strong> Math Detective now includes a dedicated Grade 2 case file focused on addition and subtraction stories: start-unknown problems, differences, exact totals, two-step goals, and larger 3-digit contexts. The later case files add operation choice, multiplication, division, and more complex two-step reasoning.</p>
   <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
 </section>
 </main>
@@ -210,7 +213,7 @@ body.theme-two .notebook strong{color:#51366f}
 const KEY_PROFILE="learningWithNiniProfileV1",KEY_BOARD="mathDetectiveLeaderboardV1";
 const AVATARS=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(KEY_PROFILE,{name:"Nini",avatar:"⭐"}),selectedAvatar=profile.avatar||"⭐";
-let level="one",caseIndex=1,round=1,score=0,streak=0,casesSolved=0,stars=3,solved=false,answer="",selectedOp=null,selectedOp2=null,operationConfirmed=false,current=null,wrongOps1=new Set(),wrongOps2=new Set();
+let level="grade2",caseIndex=1,round=1,score=0,streak=0,casesSolved=0,stars=3,solved=false,answer="",selectedOp=null,selectedOp2=null,operationConfirmed=false,current=null,wrongOps1=new Set(),wrongOps2=new Set();
 let board=safe(KEY_BOARD,[]);
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
@@ -218,6 +221,31 @@ function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function pick(a){return a[rnd(0,a.length-1)]}
 function opWord(op){return op==="+"?"addition":op==="-"?"subtraction":op==="×"?"multiplication":"division"}
 function setStatus(t,type=""){el("status").textContent=t;el("status").className="status"+(type?" "+type:"")}
+function grade2Case(){
+  const type=rnd(0,5),name=pick(["Nini","Maya","Kai","Leo","Ava"]);
+  if(type===0){
+    const gave=rnd(4,35),left=rnd(25,240),start=gave+left;
+    return {op:"+",answer:start,story:name+" gave away "+gave+" trading cards and then had "+left+" left.",question:"How many trading cards did "+name+" have before giving any away?",equation:left+" + "+gave+" = "+start,hint:"This is a start-unknown problem. Work backward: left + gave away."};
+  }
+  if(type===1){
+    const high=rnd(120,850),diff=rnd(20,180),low=high-diff;
+    return {op:"-",answer:low,story:name+"'s team scored "+high+" points and won by "+diff+" points.",question:"How many points did the other team score?",equation:high+" − "+diff+" = "+low,hint:"Winning by "+diff+" means the other score is "+diff+" less."};
+  }
+  if(type===2){
+    const goal=pick([100,150,200,250,300]),a=rnd(20,Math.floor(goal/2)),b=rnd(15,Math.max(15,goal-a-10)),ans=goal-a-b;
+    return {op:"-",answer:ans,story:"The class goal is "+goal+" cans. They collected "+a+" Friday and "+b+" Saturday.",question:"How many more cans are needed to reach the goal?",equation:goal+" − ("+a+" + "+b+") = "+ans,hint:"First add what was collected. Then subtract that total from the goal."};
+  }
+  if(type===3){
+    const a=rnd(120,490),b=rnd(120,490),total=a+b;
+    return {op:"+",answer:total,story:"A school picnic has "+a+" adults and "+b+" children attending.",question:"How many people are attending altogether?",equation:a+" + "+b+" = "+total,hint:"The groups combine, so add them."};
+  }
+  if(type===4){
+    const a=rnd(200,850),b=rnd(100,a-50),ans=a-b;
+    return {op:"-",answer:ans,story:"Player A scored "+a+" points. Player B scored "+b+" points.",question:"How many more points did Player A score?",equation:a+" − "+b+" = "+ans,hint:"'How many more' asks for the difference."};
+  }
+  const start=rnd(180,650),spent=rnd(40,160),earned=rnd(20,120),ans=start-spent+earned;
+  return {op:"-",secondOp:"+",answer:ans,story:name+" had "+start+" tokens, spent "+spent+" tokens on a prize, then earned "+earned+" more.",question:"How many tokens does "+name+" have now?",equation:start+" − "+spent+" + "+earned+" = "+ans,hint:"Subtract what was spent, then add what was earned."};
+}
 function oneStep(){
   const op=pick(["+","-","×","÷"]),boost=Math.min(round-1,5);
   const names=["Nini","Maya","Kai","Leo","Ava"];
@@ -260,15 +288,15 @@ function twoStep(){
   const start=rnd(60,95+boost*45),spent=rnd(10,25+boost*12),more=rnd(8,20+boost*10),ans=start-spent+more;
   return {op:"-",secondOp:"+",intermediate:start-spent,answer:ans,story:name+" had "+start+" points, spent "+spent+" points on a prize, then earned "+more+" more points.",question:"How many points does "+name+" have now?",equation:start+" − "+spent+" + "+more+" = "+ans,hint:"First subtract what was spent. Then add the new points earned."};
 }
-function generate(){return level==="two"?twoStep():level==="operation"?operationCase():oneStep()}
+function generate(){return level==="grade2"?grade2Case():level==="two"?twoStep():level==="operation"?operationCase():oneStep()}
 function applyDetectiveTheme(){
-  document.body.classList.remove("theme-one","theme-operation","theme-two");
+  document.body.classList.remove("theme-grade2","theme-one","theme-operation","theme-two");
   document.body.classList.add("theme-"+level);
 }
 function newCase(){
   stars=3;solved=false;answer="";selectedOp=null;selectedOp2=null;operationConfirmed=false;wrongOps1=new Set();wrongOps2=new Set();current=generate();
   applyDetectiveTheme();
-  el("caseType").textContent=level==="one"?"Solve the Clue":level==="operation"?"Operation Detective":"Two-Step Mystery";
+  el("caseType").textContent=level==="grade2"?"Grade 2 Case":level==="one"?"Solve the Clue":level==="operation"?"Operation Detective":"Two-Step Mystery";
   el("caseNumber").textContent="Case #"+String(caseIndex).padStart(3,"0");
   el("story").textContent=current.story;el("questionPrompt").textContent=current.question;
   el("answerDisplay").textContent="Enter your answer";el("answerDisplay").classList.add("placeholder");
@@ -276,11 +304,12 @@ function newCase(){
   el("operationBoard").classList.toggle("stage-hidden",level!=="operation");
   el("twoStepBoard").classList.toggle("stage-hidden",level!=="two");
   el("answerBoard").classList.toggle("stage-hidden",level==="operation");
-  el("answerTitle").textContent=level==="two"?"3. Final answer":level==="one"?"Solve the clue":"2. What is the answer?";
+  el("answerTitle").textContent=level==="two"?"3. Final answer":(level==="one"||level==="grade2")?"Solve the clue":"2. What is the answer?";
   el("checkBtn").textContent=level==="operation"?"Check Operation →":level==="two"?"Solve Both Steps →":"Check Answer →";
   el("checkBtn").className="check";el("hintBtn").disabled=false;
   document.querySelectorAll(".op-btn").forEach(b=>{b.classList.remove("selected","correct","wrong");b.disabled=false});
-  if(level==="one"){setStatus("Read the story and enter the answer.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>No operation choices are shown. Decide what math the story needs.";}
+  if(level==="grade2"){setStatus("Read the Grade 2 story and solve it.");el("notebook").innerHTML="<strong>Grade 2 Notebook:</strong><br>Look for what is unknown: the start, the change, the total, or the difference.";}
+  else if(level==="one"){setStatus("Read the story and enter the answer.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>No operation choices are shown. Decide what math the story needs.";}
   else if(level==="operation"){setStatus("Choose the operation that matches the story.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>Get the operation right first. Then the equation unlocks.";}
   else{setStatus("Choose two operations, solve step 1, then finish step 2.");el("notebook").innerHTML="<strong>Detective Notebook:</strong><br>Use the intermediate result from step 1 in step 2.";}
   updateUI();
@@ -317,7 +346,7 @@ function recordWrongOperation(which,value,correctValue){
 function check(){
   if(solved){nextCase();return}
 
-  if(level==="one"){
+  if(level==="one"||level==="grade2"){
     if(answer===""){setStatus("Enter your answer first.","info");return}
     if(Number(answer)===current.answer){finishCase();return}
     stars=Math.max(1,stars-1);streak=0;setStatus("Not quite. Re-read the story and try again.","bad");clearAnswer();updateUI();return;
