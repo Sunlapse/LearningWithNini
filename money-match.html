@@ -182,7 +182,7 @@
   .money-review-name { margin-top:7px; font-family:"Fredoka",sans-serif; font-size:1.08rem; color:#432c8d; }
   .money-review-value { margin-top:3px; font-size:1.2rem; font-weight:1000; color:#16855c; }
   @media(max-width:650px){.money-review-grid{grid-template-columns:repeat(2,1fr)}.money-review-card img{height:62px}}
-  .mode-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .mode-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
   .mode-card {
     position:relative; border:2px solid transparent; border-radius:22px;
     padding:16px; text-align:center; cursor:pointer; min-height:160px;
@@ -191,10 +191,12 @@
   .mode-card:nth-child(1) { background:#e9faee; }
   .mode-card:nth-child(2) { background:#e9f4ff; }
   .mode-card:nth-child(3) { background:#f0eaff; cursor:pointer; }
+  .mode-card:nth-child(4) { background:#fff3df; cursor:pointer; }
   .mode-card.active { border-color:#7b49df; box-shadow:0 0 0 4px rgba(123,73,223,.10); }
   .mode-num { width:34px;height:34px;border-radius:50%;display:grid;place-items:center;margin:0 auto 8px;background:#2cc873;color:#fff;font-weight:1000; }
   .mode-card:nth-child(2) .mode-num { background:#478df5; }
   .mode-card:nth-child(3) .mode-num { background:#8353e9; }
+  .mode-card:nth-child(4) .mode-num { background:#e89536; }
   .mode-card h3 { margin:4px 0 6px; font-family:"Fredoka",sans-serif; font-size:1.15rem; }
   .mode-card p { margin:0; color:#666184; line-height:1.32; font-size:.88rem; font-weight:800; }
   .mode-stars { margin-top:12px; color:#ffb819; font-size:1.2rem; letter-spacing:2px; }
@@ -304,6 +306,12 @@
             <p>Work out the change after a purchase. Each round increases the purchase difficulty.</p>
             <div class="mode-stars">☆☆☆</div>
           </button>
+          <button class="mode-card" data-mode="grade2" onclick="setGameMode('grade2')">
+            <div class="mode-num">4</div>
+            <h3>Grade 2 Money Problems</h3>
+            <p>Solve how-much-more, exact coin-set, bill, and carnival-budget problems based on real Grade 2 work.</p>
+            <div class="mode-stars">☆☆☆</div>
+          </button>
         </div>
       </section>
 
@@ -383,7 +391,7 @@
       </section>
     
 <section class="parent-game-intro" aria-label="For parents">
-  <p><strong>For parents:</strong> Money Match practices identifying, counting, and combining U.S. coins and bills for students in grades 2–4. Real-world money challenges build fluency with values, totals, and efficient combinations.</p>
+  <p><strong>For parents:</strong> Money Match practices identifying, counting, and combining U.S. coins and bills for students in grades 2–4. The Grade 2 Money Problems level adds exact coin sets, how-much-more questions, bills, and simple carnival/store budgets. Real-world money challenges build fluency with values, totals, and efficient combinations.</p>
   <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
 </section>
 </main>
@@ -707,10 +715,12 @@
     let gameMode = 'warm';
     let currentLesson = null;
     let currentPurchase = null;
+    let currentGrade2Problem = null;
     const modeState = {
       warm: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null, lessonSchedule: null },
       master: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null, lessonSchedule: null },
-      change: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null, lessonSchedule: null }
+      change: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null, lessonSchedule: null },
+      grade2: { level: 0, score: 0, lastTarget: null, lastPurchaseKey: null, lessonSchedule: null }
     };
     const ROUND_LENGTH = 10;
 
@@ -742,7 +752,9 @@
           ? (switchingModes ? 'Warm Up: learn the money names, then build increasingly tricky amounts.' : 'Continuing Warm Up.') + progressText
           : mode === 'master'
             ? (switchingModes ? 'Money Master: bigger amounts and more ways to solve them.' : 'Continuing Money Master.') + progressText
-            : (switchingModes ? 'Change Challenge: work out the change and build it.' : 'Continuing Change Challenge.') + progressText
+            : mode === 'grade2'
+              ? (switchingModes ? 'Grade 2 Money Problems: solve the story, then build the answer.' : 'Continuing Grade 2 Money Problems.') + progressText
+              : (switchingModes ? 'Change Challenge: work out the change and build it.' : 'Continuing Change Challenge.') + progressText
       );
     }
 
@@ -771,6 +783,7 @@
       const round = getRoundNumber();
       if (gameMode === 'master') return 'Money Master · Round ' + round;
       if (gameMode === 'change') return 'Change Challenge · Round ' + round;
+      if (gameMode === 'grade2') return 'Grade 2 Money Problems · Round ' + round;
       return 'Warm Up · Round ' + round;
     }
 
@@ -799,7 +812,7 @@
     function getLessonForCurrentQuestion() {
       // Vocabulary practice is mixed into the first round instead of
       // appearing as the same fixed opening questions every time.
-      if (getRoundIndex() > 0 || gameMode === 'change') return null;
+      if (getRoundIndex() > 0 || gameMode === 'change' || gameMode === 'grade2') return null;
       const state = modeState[gameMode];
       if (!state.lessonSchedule) state.lessonSchedule = buildLessonSchedule(gameMode);
       return state.lessonSchedule[getQuestionNumber()] || null;
@@ -1048,6 +1061,30 @@
       return Math.max(min, target);
     }
 
+    function generateGrade2MoneyProblem() {
+      const type = randInt(0, 3);
+      if (type === 0) {
+        const have = pickOne([33, 38, 43, 47]);
+        const price = pickOne([50, 55, 60]);
+        return { prompt: 'You have $' + have + '. A toy costs $' + price + '. Build how much more money you need.', target: (price - have) * 100 };
+      }
+      if (type === 1) {
+        const food = randInt(1, 4), drink = randInt(1, 4), game = randInt(1, 3), pass = pickOne([10, 15, 20]);
+        return { prompt: 'At the carnival, 1 scrip = $1. Food costs ' + food + ' scrip, a drink ' + drink + ' scrip, a game ' + game + ' scrip, and the ride pass is $' + pass + '. Build the total cost.', target: (food + drink + game + pass) * 100 };
+      }
+      if (type === 2) {
+        return pickOne([
+          {prompt:'Make exactly 21¢ using exactly 4 coins.',target:21,required:{dime:1,nickel:2,penny:1},success:'Correct! 10¢ + 5¢ + 5¢ + 1¢ = 21¢.',retry:'Use exactly 4 coins that total 21¢.'},
+          {prompt:'Make exactly 16¢ using exactly 3 coins.',target:16,required:{dime:1,nickel:1,penny:1},success:'Correct! 10¢ + 5¢ + 1¢ = 16¢.',retry:'Use exactly 3 coins that total 16¢.'},
+          {prompt:'Make exactly 26¢ using exactly 2 coins.',target:26,required:{quarter:1,penny:1},success:'Correct! 25¢ + 1¢ = 26¢.',retry:'Use exactly 2 coins that total 26¢.'}
+        ]);
+      }
+      const fives = randInt(1, 2), ones = randInt(1, 4);
+      const have = 20 + 10 + fives * 5 + ones;
+      const price = pickOne([50, 55, 60]);
+      return { prompt: 'You have one $20 bill, one $10 bill, ' + fives + ' $5 bill' + (fives === 1 ? '' : 's') + ', and ' + ones + ' $1 bill' + (ones === 1 ? '' : 's') + '. A toy costs $' + price + '. Build how much more you need.', target: (price - have) * 100 };
+    }
+
     function generateChangeProblem() {
       const q = getQuestionNumber();
       const round = getRoundIndex();
@@ -1153,8 +1190,12 @@
       const targetEl = document.getElementById('target');
       const targetLabel = document.querySelector('.target-label');
       if (currentLesson) {
-        targetLabel.textContent = 'Money Skill:';
+        targetLabel.textContent = gameMode === 'grade2' ? 'Grade 2 money problem:' : 'Money Skill:';
         targetEl.textContent = currentLesson.prompt;
+        targetEl.classList.add('lesson');
+      } else if (gameMode === 'grade2' && currentGrade2Problem) {
+        targetLabel.textContent = 'Grade 2 money problem:';
+        targetEl.textContent = currentGrade2Problem.prompt;
         targetEl.classList.add('lesson');
       } else if (gameMode === 'change' && currentPurchase) {
         targetLabel.textContent = 'Make the correct change:';
@@ -1169,9 +1210,11 @@
       document.getElementById('levelPoints').textContent = `${possible} star${possible === 1 ? '' : 's'} available`;
       document.getElementById('moneyHint').textContent = currentLesson
         ? 'Use the pictures — names and values are hidden'
-        : gameMode === 'change'
-          ? 'Build the change from the pictures — labels stay hidden'
-          : 'Pictures only — use what you know';
+        : gameMode === 'grade2'
+          ? 'Solve the story first, then build the answer with coins or bills'
+          : gameMode === 'change'
+            ? 'Build the change from the pictures — labels stay hidden'
+            : 'Pictures only — use what you know';
       document.getElementById('questionText').textContent = `Round ${getRoundNumber()} · Question ${q} of ${ROUND_LENGTH}`;
       document.getElementById('progressFill').style.width = `${q * 10}%`;
       document.getElementById('stageName').textContent = getStageName();
@@ -1377,6 +1420,9 @@ playClickSound();
       if (lessonQuestion) {
         feedback = currentLesson.success;
         betterWayAvailable = false;
+      } else if (gameMode === 'grade2') {
+        feedback = 'Correct! You solved the Grade 2 money story and built ' + formatCents(target) + '.';
+        betterWayAvailable = false;
       } else if (gameMode === 'change') {
         const changeMath = formatCents(currentPurchase.paid) + ' − ' + formatCents(currentPurchase.price) + ' = ' + formatCents(target) + '.';
         if (usedPieces === minPieces) {
@@ -1488,10 +1534,29 @@ playClickSound();
       animatingBetterWay = false;
       solvedButtonText = pickOne(SUCCESS_NEXT_TEXTS);
       currentLesson = getLessonForCurrentQuestion();
+      currentGrade2Problem = null;
       if (gameMode === 'change') {
         currentLesson = null;
         currentPurchase = generateUniqueChangeProblem();
         currentTarget = currentPurchase.change;
+      } else if (gameMode === 'grade2') {
+        currentPurchase = null;
+        currentGrade2Problem = generateGrade2MoneyProblem();
+        currentTarget = currentGrade2Problem.target;
+        modeState.grade2.lastTarget = currentTarget;
+        if (currentGrade2Problem.required) {
+          currentLesson = {
+            prompt: currentGrade2Problem.prompt,
+            target: currentGrade2Problem.target,
+            required: currentGrade2Problem.required,
+            availableIds: COIN_IDS,
+            bankDisplay: 'picture',
+            success: currentGrade2Problem.success,
+            retry: currentGrade2Problem.retry
+          };
+        } else {
+          currentLesson = null;
+        }
       } else {
         currentPurchase = null;
         if (currentLesson) {
@@ -1525,9 +1590,11 @@ playClickSound();
         setMessage(
           currentLesson
             ? 'Read the money-skill question, then choose carefully.'
-            : gameMode === 'change'
-              ? 'Next purchase. Work out the change, then build it.'
-              : 'Next question. Make the amount shown.'
+            : gameMode === 'grade2'
+              ? 'Read the Grade 2 money story, solve it, then build the answer.'
+              : gameMode === 'change'
+                ? 'Next purchase. Work out the change, then build it.'
+                : 'Next question. Make the amount shown.'
         );
         showToast('info', 'Next question!');
       }
