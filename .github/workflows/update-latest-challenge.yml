@@ -1,5 +1,5 @@
 name: Update latest math challenge
-# Polls YouTube for the newest full Daily Challenge video.
+# Polls the curated full-challenge playlist so Shorts never replace the Daily Challenge.
 
 on:
   schedule:
@@ -33,7 +33,7 @@ jobs:
         run: |
           set +e
           curl --fail --location --retry 2 \
-            "https://www.youtube.com/feeds/videos.xml?channel_id=UCrZMHA7Ky5kTJd3a-X2iUag" \
+            "https://www.youtube.com/feeds/videos.xml?playlist_id=PLOeN8KaQujJo" \
             -o /tmp/youtube-feed.xml
           RSS_STATUS=$?
           set -e
@@ -41,19 +41,14 @@ jobs:
           if [ "$RSS_STATUS" -eq 0 ]; then
             python3 - <<'PY'
           import json
-          import re
           import xml.etree.ElementTree as ET
 
           root = ET.parse("/tmp/youtube-feed.xml").getroot()
           atom = "{http://www.w3.org/2005/Atom}"
           yt = "{http://www.youtube.com/xml/schemas/2015}"
-          pattern = re.compile(r"20[\s-]*minute\s+math\s+challenge", re.I)
-
           challenge = None
           for entry in root.findall(atom + "entry"):
               title = (entry.findtext(atom + "title") or "").strip()
-              if not pattern.search(title):
-                  continue
               video_id = (entry.findtext(yt + "videoId") or "").strip()
               published = (entry.findtext(atom + "published") or "").strip()
               if video_id and published:
@@ -74,22 +69,20 @@ jobs:
           fi
 
           if [ "$RSS_STATUS" -ne 0 ] || [ "$RSS_PARSE_STATUS" -ne 0 ]; then
-            echo "::notice::YouTube RSS feed unavailable. Falling back to the channel videos page."
+            echo "::notice::YouTube playlist RSS unavailable. Falling back to the playlist page."
 
             python3 -m yt_dlp \
               --flat-playlist \
               --playlist-end 20 \
               --dump-json \
-              "https://www.youtube.com/@learnwithninimath/videos" \
+              "https://www.youtube.com/playlist?list=PLOeN8KaQujJo" \
               > /tmp/youtube-videos.jsonl
 
             python3 - <<'PY'
           import datetime as dt
           import json
-          import re
           import subprocess
 
-          pattern = re.compile(r"20[\s-]*minute\s+math\s+challenge", re.I)
           match = None
 
           with open("/tmp/youtube-videos.jsonl", "r", encoding="utf-8") as f:
@@ -99,12 +92,12 @@ jobs:
                   item = json.loads(line)
                   title = (item.get("title") or "").strip()
                   video_id = (item.get("id") or "").strip()
-                  if video_id and pattern.search(title):
+                  if video_id:
                       match = {"videoId": video_id, "title": title}
                       break
 
           if not match:
-              print("::warning::No full 20-minute math challenge found on the channel. Keeping the existing video.")
+              print("::warning::No video found in the full-challenge playlist. Keeping the existing video.")
               raise SystemExit(0)
 
           video_url = "https://www.youtube.com/watch?v=" + match["videoId"]
