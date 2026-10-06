@@ -633,7 +633,8 @@ Object.assign(GEN,{
     return{q:`${total} socks are put into pairs of 2. How many pairs are there?`,a:pairs,k:'num',hint:'Make equal groups of 2.'}
   },
   word2(){
-    const start=ri(20,70),change=ri(5,25),add=R()<.5,n=pick(NAMES);
+    const start=ri(20,70),add=R()<.5,n=pick(NAMES);
+    const change=add?ri(5,25):ri(5,Math.min(25,start-5));
     return add
       ?{q:`${n} has ${start} stickers and gets ${change} more. How many stickers are there now?`,a:start+change,k:'num'}
       :{q:`${n} has ${start} stickers and gives away ${change}. How many stickers are left?`,a:start-change,k:'num'}
