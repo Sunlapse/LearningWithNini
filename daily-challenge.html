@@ -744,6 +744,42 @@ Object.assign(GEN,{
     const table='<table class="data-table2"><tr>'+names.map(x=>'<th>'+x+'</th>').join('')+'</tr><tr>'+vals.map(x=>'<td>'+x+'</td>').join('')+'</tr></table>';
     return{q:'<span class="array-problem">'+table+'<span class="array-copy">How many '+names[i].toLowerCase()+' books and '+names[j].toLowerCase()+' books are there in all?</span></span>',a:vals[i]+vals[j],k:'num',hint:'Use the table: '+vals[i]+' + '+vals[j]+'.'};
   },
+  decomposeAdd2(){
+    const a=ri(21,49),b=ri(21,Math.min(49,99-a)),at=Math.floor(a/10)*10,ao=a%10,bt=Math.floor(b/10)*10,bo=b%10;
+    return{q:'Solve '+a+' + '+b+' by adding tens and ones. What is the sum?',a:a+b,k:'num',hint:'Tens: '+at+' + '+bt+'. Ones: '+ao+' + '+bo+'. Combine the two totals.'};
+  },
+  targetPair2(){
+    const a=pick([6,8,12,14,16,18,24,28]),b=pick([6,8,12,14,16,18,24,28]);
+    let x=a,y=b;while(x===y){y=pick([6,8,12,14,16,18,24,28])}
+    const target=x+y,shown=x,others=[ri(5,18),ri(20,34)];
+    const vals=[shown,y,...others].sort(()=>R()-.5);
+    const table='<table class="data-table2"><tr>'+vals.map((v,i)=>'<th>Pack '+(i+1)+'</th>').join('')+'</tr><tr>'+vals.map(v=>'<td>'+v+'</td>').join('')+'</tr></table>';
+    return{q:'<span class="array-problem">'+table+'<span class="array-copy">Two packs have '+target+' muffins altogether. One pack has '+shown+'. How many muffins are in the other pack?</span></span>',a:y,k:'num',hint:'Find the missing addend: '+shown+' + ? = '+target+'.'};
+  },
+  startUnknown2(){
+    const gave=ri(3,12),left=ri(18,45);
+    return{q:'Rocio gave '+gave+' key chains to her friends. Then she had '+left+' key chains left. How many key chains did she have before she gave some away?',a:gave+left,k:'num',hint:'Work backward. Before = left + gave away.'};
+  },
+  goalTwoStep2(){
+    const goal=pick([50,60,75,80,90]),day1=ri(15,Math.floor(goal/2)),day2=ri(10,Math.min(30,goal-day1-5));
+    return{q:'The goal is '+goal+' cans. '+day1+' were collected Friday and '+day2+' Saturday. How many more cans are needed Sunday to meet the goal?',a:goal-day1-day2,k:'num',hint:'Step 1: add Friday + Saturday. Step 2: subtract that total from '+goal+'.'};
+  },
+  twoWaysSub2(){
+    const a=ri(45,89),b=ri(21,Math.min(39,a-10));
+    return{q:'Solve '+a+' − '+b+'. Try to show two different ways on the scratch pad. What is the difference?',a:a-b,k:'num',hint:'One way: subtract tens, then ones. Another way: count up from '+b+' to '+a+'.'};
+  },
+  differenceStory2(){
+    const high=ri(55,90),diff=ri(12,29);
+    return{q:'A basketball team scored '+high+' points and won by '+diff+' points. How many points did the other team score?',a:high-diff,k:'num',hint:'The other score is the winning score minus the winning margin.'};
+  },
+  partialDifferences2(){
+    const a=ri(55,89),b=ri(21,39),bt=Math.floor(b/10)*10,bo=b%10;
+    return{q:'Use partial differences to solve '+a+' − '+b+'. What is the difference?',a:a-b,k:'num',hint:'Break '+b+' into '+bt+' + '+bo+'. Subtract '+bt+' first, then subtract '+bo+'.'};
+  },
+  sumPlace2(){
+    const a=ri(42,69),b=pick([6,7,8,9]),sum=a+b,tens=Math.floor(sum/10),ones=sum%10;
+    return{q:a+' + '+b+' = '+sum+'. How many tens are in the sum?',a:tens,k:'num',hint:'The sum is '+sum+'. Its tens digit is '+tens+' and its ones digit is '+ones+'.'};
+  },
   mult(){const a=ri(2,10),b=ri(2,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a} × ${b} = <span class='blank'>?</span>`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
   div(){const b=ri(2,10),q=ri(2,10),lo=Math.min(b,q),hi=Math.max(b,q);return{q:`${b*q} ÷ ${b} = <span class='blank'>?</span>`,a:q,k:'num',factKey:`mul:${lo}x${hi}`}},
   missing(){const a=ri(2,9),b=ri(3,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`<span class='blank'>?</span> × ${a} = ${a*b}`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
@@ -796,10 +832,10 @@ Object.assign(GEN,{
 
 const PHASE_POOLS={
   '2':{
-    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','add2','sub2','missingAdd2','pattern2'],
-    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','compareMore2','twoDigitAddStory2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2'],
-    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','compareMore2','twoDigitAddStory2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
-    challenge:['compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2']
+    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','decomposeAdd2','add2','sub2','missingAdd2','pattern2'],
+    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2'],
+    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
+    challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2']
   },
   '3':{
     warmup:['mult','div','missing','missingDiv3','breakApart3','add','sub','round','place3','pattern3','money3'],
@@ -852,7 +888,7 @@ function nextType(phase){
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
-  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',10:'multStory2',12:'olderWord2',14:'twoDigitAddStory2',16:'compensation2',18:'openNumberLine2',20:'equalShares2',24:'breakApartAdd2',28:'hundredChart2',32:'compareMore2',36:'dataTable2',40:'rowsStory2'};
+  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',10:'multStory2',12:'olderWord2',14:'decomposeAdd2',16:'compensation2',18:'openNumberLine2',20:'equalShares2',22:'startUnknown2',24:'breakApartAdd2',26:'partialDifferences2',28:'hundredChart2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'dataTable2',38:'targetPair2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2'};
   const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
   const forcedType=settings.grade==='2'
