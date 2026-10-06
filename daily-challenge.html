@@ -117,6 +117,15 @@ button:disabled{opacity:.28;cursor:default}
 .ten-cell.first{background:var(--purple);border-color:var(--purple)}
 .ten-cell.moved,.ten-cell.second{background:var(--blue);border-color:var(--blue)}
 .ten-note{font-family:"Nunito",system-ui,sans-serif;font-weight:900;font-size:13px;color:var(--muted);text-align:center}
+.strategy-visual{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.number-line2{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:8px 10px;border:2px solid var(--line);border-radius:12px;background:#fff}
+.number-line2 .node{min-width:36px;padding:5px 7px;border-radius:9px;background:var(--key);text-align:center;font-weight:900}
+.number-line2 .jump{font-size:12px;font-weight:1000;color:var(--blue);white-space:nowrap}
+.hundred-chart2{display:grid;grid-template-columns:repeat(10,22px);gap:1px;padding:4px;border:2px solid var(--line);border-radius:10px;background:#fff;width:max-content}
+.hundred-chart2 span{width:22px;height:18px;display:grid;place-items:center;font-size:9px;font-weight:900;color:#5f6688;border-radius:3px}
+.hundred-chart2 .start{background:#efe8ff;color:#4d2db9}.hundred-chart2 .end{background:#e4f7ee;color:#157a44}
+.data-table2{border-collapse:collapse;font-family:"Nunito",system-ui,sans-serif;font-size:13px;background:#fff;border:2px solid var(--line);border-radius:10px;overflow:hidden}
+.data-table2 th,.data-table2 td{border:1px solid var(--line);padding:5px 7px;text-align:center}.data-table2 th{background:#f5f1ff}
 .area-model4{display:grid;min-width:190px;border:3px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--panel)}
 .area-part{display:grid;place-items:center;min-height:78px;padding:8px;font-family:"Nunito",system-ui,sans-serif;font-size:15px;font-weight:900;line-height:1.2}
 .area-part+ .area-part{border-left:3px solid var(--ink)}
@@ -129,6 +138,9 @@ button:disabled{opacity:.28;cursor:default}
   .array-copy{font-size:17px}
   .ten-frame{grid-template-columns:repeat(5,16px);grid-template-rows:repeat(2,16px)}
   .ten-cell{width:16px;height:16px}
+  .hundred-chart2{grid-template-columns:repeat(10,18px)}
+  .hundred-chart2 span{width:18px;height:16px;font-size:8px}
+  .data-table2{font-size:11px}
   .area-model4{min-width:170px;max-width:100%}
   .area-part{min-height:64px;font-size:13px;padding:6px}.area-part b{font-size:17px}
 }
@@ -689,6 +701,48 @@ Object.assign(GEN,{
       :'<span class="array-problem">'+array+'<span class="array-copy">Complete the array equation: '+rows+' × <span class="blank">?</span> = '+(rows*cols)+'</span></span>';
     return{q,a:hideRows?rows:cols,k:'num',factKey:'arrayeq2:'+rows+'x'+cols,hint:hideRows?'Count the rows.':'Count how many counters are in each row.'};
   },
+  multStory2(){
+    const groups=ri(2,5),each=ri(2,5),thing=pick([['vases','flowers'],['boxes','crayons'],['plates','cookies']]);
+    return{q:'There are '+groups+' '+thing[0]+'. Each '+thing[0].slice(0,-1)+' has '+each+' '+thing[1]+'. How many '+thing[1]+' are there in all?',a:groups*each,k:'num',factKey:'mulstory2:'+groups+'x'+each,hint:'Write a multiplication sentence: '+groups+' × '+each+' = ?'};
+  },
+  rowsStory2(){
+    const rows=ri(2,5),each=ri(2,6);
+    return{q:'Coins are arranged in an array. There are '+rows+' rows with '+each+' coins in each row. How many coins are there in all?',a:rows*each,k:'num',factKey:'rowsstory2:'+rows+'x'+each,hint:'Write the multiplication sentence '+rows+' × '+each+' = ?'};
+  },
+  compareMore2(){
+    const base=ri(20,60),more=ri(5,20);
+    return{q:'The Blue Team has '+base+' points. The Red Team has '+more+' more points than the Blue Team. How many points does the Red Team have?',a:base+more,k:'num',hint:'“More than” means add: '+base+' + '+more+'.'};
+  },
+  twoDigitAddStory2(){
+    const a=ri(21,59),b=ri(20,Math.min(49,99-a));
+    const item=pick(['blocks','cans','books','crayons']);
+    return{q:pick(NAMES)+' has '+a+' '+item+'. Another student has '+b+' '+item+'. How many '+item+' do they have in all?',a:a+b,k:'num',hint:'Add the tens and ones carefully: '+a+' + '+b+'.'};
+  },
+  compensation2(){
+    const a=ri(24,68),b=pick([8,9,18,19]),easy=b<10?10:20,diff=easy-b;
+    return{q:'Use compensation to solve '+a+' + '+b+'. What is the sum?',a:a+b,k:'num',hint:'Change '+b+' to '+easy+', solve '+a+' + '+easy+', then subtract '+diff+'.'};
+  },
+  breakApartAdd2(){
+    const a=ri(20,69),b=ri(20,Math.min(69,99-a)),at=Math.floor(a/10)*10,ao=a%10,bt=Math.floor(b/10)*10,bo=b%10;
+    return{q:'Use the BREAK APART method to solve '+a+' + '+b+'. What is the sum?',a:a+b,k:'num',hint:'Break apart: '+at+' + '+ao+' and '+bt+' + '+bo+'. Add tens, then ones.'};
+  },
+  openNumberLine2(){
+    const a=ri(20,59),b=ri(11,39),tens=Math.floor(b/10)*10,ones=b%10,mid=a+tens,total=a+b;
+    const visual='<span class="number-line2"><span class="node">'+a+'</span><span class="jump">+'+tens+' →</span><span class="node">'+mid+'</span>'+(ones?'<span class="jump">+'+ones+' →</span>':'')+'<span class="node">?</span></span>';
+    return{q:'<span class="array-problem">'+visual+'<span class="array-copy">Use the open number line to solve '+a+' + '+b+'. What is the sum?</span></span>',a:total,k:'num',hint:'Start at '+a+'. Jump '+tens+', then '+ones+'.'};
+  },
+  hundredChart2(){
+    const a=ri(21,59),b=ri(11,Math.min(40,100-a)),total=a+b;
+    let chart='';for(let n=1;n<=100;n++)chart+='<span class="'+(n===a?'start':n===total?'end':'')+'">'+n+'</span>';
+    const visual='<span class="hundred-chart2">'+chart+'</span>';
+    return{q:'<span class="array-problem">'+visual+'<span class="array-copy">Use the hundred chart to solve '+a+' + '+b+'. What is the sum?</span></span>',a:total,k:'num',hint:'Move down one row for +10 and move right for +1.'};
+  },
+  dataTable2(){
+    const vals=[ri(15,45),ri(15,45),ri(10,35),ri(20,49),ri(30,80)],i=ri(0,3),j=ri(i+1,4);
+    const names=['Animal','Mystery','Joke','Poetry','Chapter'];
+    const table='<table class="data-table2"><tr>'+names.map(x=>'<th>'+x+'</th>').join('')+'</tr><tr>'+vals.map(x=>'<td>'+x+'</td>').join('')+'</tr></table>';
+    return{q:'<span class="array-problem">'+table+'<span class="array-copy">How many '+names[i].toLowerCase()+' books and '+names[j].toLowerCase()+' books are there in all?</span></span>',a:vals[i]+vals[j],k:'num',hint:'Use the table: '+vals[i]+' + '+vals[j]+'.'};
+  },
   mult(){const a=ri(2,10),b=ri(2,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a} × ${b} = <span class='blank'>?</span>`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
   div(){const b=ri(2,10),q=ri(2,10),lo=Math.min(b,q),hi=Math.max(b,q);return{q:`${b*q} ÷ ${b} = <span class='blank'>?</span>`,a:q,k:'num',factKey:`mul:${lo}x${hi}`}},
   missing(){const a=ri(2,9),b=ri(3,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`<span class='blank'>?</span> × ${a} = ${a*b}`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
@@ -741,10 +795,10 @@ Object.assign(GEN,{
 
 const PHASE_POOLS={
   '2':{
-    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','add2','sub2','missingAdd2','pattern2'],
-    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2'],
-    stretch:['makeTen2','doubles2','arrayEquation2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
-    challenge:['makeTen2','arrayEquation2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2']
+    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','add2','sub2','missingAdd2','pattern2'],
+    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','compareMore2','twoDigitAddStory2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2'],
+    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','compareMore2','twoDigitAddStory2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
+    challenge:['compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2']
   },
   '3':{
     warmup:['mult','div','missing','missingDiv3','breakApart3','add','sub','round','place3','pattern3','money3'],
@@ -797,7 +851,7 @@ function nextType(phase){
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
-  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',12:'olderWord2',20:'equalShares2'};
+  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',10:'multStory2',12:'olderWord2',14:'twoDigitAddStory2',16:'compensation2',18:'openNumberLine2',20:'equalShares2',24:'breakApartAdd2',28:'hundredChart2',32:'compareMore2',36:'dataTable2',40:'rowsStory2'};
   const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
   const forcedType=settings.grade==='2'
