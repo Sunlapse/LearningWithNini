@@ -48,6 +48,7 @@ button:disabled{opacity:.28;cursor:default}
 .field{display:flex;flex-direction:column;gap:8px}
 .field>span{font-weight:700;font-size:16px}
 .field input{border:2px solid var(--line);background:var(--panel);border-radius:14px;padding:14px 16px;font-size:20px;-webkit-user-select:text;user-select:text}
+.mode-help{margin-top:2px;color:var(--muted);font-size:14px;font-weight:800;line-height:1.35}
 .seg{display:flex;gap:8px;flex-wrap:wrap}
 .seg button{flex:1;min-width:90px;padding:14px 10px;border-radius:14px;border:2px solid var(--line);background:var(--panel);font-weight:700;font-size:18px}
 .seg button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
@@ -309,10 +310,16 @@ button:disabled{opacity:.28;cursor:default}
 
     <label class="field"><span>Player nickname</span>
       <input id="name" maxlength="24" placeholder="Nickname for the leaderboard (optional)" autocomplete="off"></label>
-    <div class="field"><span>Level</span>
+    <div class="field"><span>Grade</span>
       <div class="seg" id="gradeSeg">
-        <button data-v="2">Grade 2</button><button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="5">Grade 5</button><button data-v="mix">Mixed</button>
+        <button data-v="2">Grade 2</button><button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="5">Grade 5</button>
       </div></div>
+    <div class="field"><span>Mode</span>
+      <div class="seg" id="modeSeg">
+        <button data-v="standard">Standard</button><button data-v="review">Review</button><button data-v="challenge">Challenge</button>
+      </div>
+      <div class="mode-help" id="modeHelp">Balanced practice from your selected grade.</div>
+    </div>
     <div class="field"><span>Minutes</span>
       <div class="seg" id="minSeg">
         <button data-v="10">10</button><button data-v="15">15</button><button data-v="20">20</button>
@@ -320,7 +327,7 @@ button:disabled{opacity:.28;cursor:default}
     <button class="go" id="goBtn">Start</button>
     <a class="setup-watch-link" id="setupWatchLink" href="https://www.youtube.com/playlist?list=PLOeN8KaQujJo" target="_blank" rel="noopener">▶ Watch Nini’s challenge instead</a>
     <div class="row"><span id="setLabel">Today's shared problem set</span><a class="link" href="leaderboard.html">Global leaderboard →</a></div>
-    <div class="tip">Everyone playing the same level on the same Hawaiʻi date gets the same challenge. Topics rotate to avoid repetitive question patterns, and the difficulty begins stepping up after question 50. Your best score can appear on the global leaderboard.</div>
+    <div class="tip">Everyone choosing the same grade, mode, and Hawaiʻi date gets the same challenge. Review stays on foundational and core skills from the selected grade. Challenge uses harder stretch and multi-step work from that same grade — it does not jump to a higher grade. Your best score can appear on the global leaderboard.</div>
     <div class="hist"><h2>Recent days</h2><ul id="histList"></ul></div>
   </div>
 </section>
@@ -411,7 +418,9 @@ const dayDate=()=>new Date(today()+'T12:00:00Z');
 const fmtUTC=d=>d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTCDate());
 
 const sharedProfile=LS.get('learningWithNiniProfileV1',{name:'',avatar:'⭐'});
-let settings=Object.assign({name:'',grade:'3',mins:20},LS.get('dm-settings',{}));
+let settings=Object.assign({name:'',grade:'3',mode:'standard',mins:20},LS.get('dm-settings',{}));
+if(!['2','3','4','5'].includes(String(settings.grade)))settings.grade='3';
+if(!['standard','review','challenge'].includes(String(settings.mode)))settings.mode='standard';
 // Keep Daily Challenge on the same leaderboard identity as the rest of the site.
 if(sharedProfile.name&&sharedProfile.name.trim())settings.name=sharedProfile.name.trim();
 let log=LS.get('dm-log',[]);if(!Array.isArray(log))log=[];
@@ -440,8 +449,12 @@ if(migratedDailyScores)LS.set('dm-log',log);
 pendingGlobal=pendingGlobal.map(p=>{
   if(!p||p.game!=='daily_challenge'||!p.level)return p;
   const parts=String(p.level).split('|');
-  const grade=parts[0],mins=parseInt(parts[1],10)||20,date=parts[2];
-  const matches=log.filter(x=>x&&x.date===date&&String(x.grade)===grade&&Number(x.mins)===mins);
+  const grade=parts[0];
+  const hasMode=['standard','review','challenge'].includes(parts[1]);
+  const mode=hasMode?parts[1]:'standard';
+  const mins=parseInt(hasMode?parts[2]:parts[1],10)||20;
+  const date=hasMode?parts[3]:parts[2];
+  const matches=log.filter(x=>x&&x.date===date&&String(x.grade)===grade&&Number(x.mins)===mins&&String(x.mode||'standard')===mode);
   if(!matches.length)return p;
   const best=[...matches].sort((a,b)=>(Number(b.points)||Number(b.correct)||0)-(Number(a.points)||Number(a.correct)||0))[0];
   return Object.assign({},p,{score:Number(best.points)||Number(best.correct)||0});
@@ -482,12 +495,13 @@ function queueTodayLocalResultIfNeeded(){
   if(!todays.length)return;
   const best=[...todays].sort((a,b)=>(Number(b.points)||Number(b.correct)||0)-(Number(a.points)||Number(a.correct)||0))[0];
   const mins=Number(best.mins)||Number(settings.mins)||20;
+  const mode=String(best.mode||'standard');
   queueGlobalScore({
     name:globalName(),
     avatar:sharedProfile.avatar||'⭐',
     game:'daily_challenge',
     score:Number(best.points)||Number(best.correct)||0,
-    level:String(best.grade||settings.grade)+'|'+mins+'min|'+best.date,
+    level:String(best.grade||settings.grade)+'|'+mode+'|'+mins+'min|'+best.date,
     best_streak:streak()
   });
 }
@@ -1074,13 +1088,6 @@ const PHASE_POOLS={
   }
 };
 const mergePools=(a,b)=>[...new Set(a.concat(b))];
-PHASE_POOLS.mix={
-  warmup:mergePools(PHASE_POOLS['2'].warmup,mergePools(PHASE_POOLS['3'].warmup,mergePools(PHASE_POOLS['4'].warmup,PHASE_POOLS['5'].warmup))),
-  core:mergePools(PHASE_POOLS['2'].core,mergePools(PHASE_POOLS['3'].core,mergePools(PHASE_POOLS['4'].core,PHASE_POOLS['5'].core))),
-  stretch:mergePools(PHASE_POOLS['2'].stretch,mergePools(PHASE_POOLS['3'].stretch,mergePools(PHASE_POOLS['4'].stretch,PHASE_POOLS['5'].stretch))),
-  challenge:mergePools(PHASE_POOLS['2'].challenge,mergePools(PHASE_POOLS['3'].challenge,mergePools(PHASE_POOLS['4'].challenge,PHASE_POOLS['5'].challenge)))
-};
-
 const PHASE_LABEL={warmup:'Warm-up',core:'Core Practice',stretch:'Stretch',challenge:'Challenge'};
 let lastType='',recentTypes=[],phaseQueues={},usedQuestionText=new Set(),usedFactKeys=new Set();
 
@@ -1090,6 +1097,14 @@ function shuffleSeeded(items){
   return a
 }
 function phaseForQuestion(n){
+  if(settings.mode==='review'){
+    if(n<=12)return 'warmup';
+    return n%4===0?'warmup':'core';
+  }
+  if(settings.mode==='challenge'){
+    if(n<=4)return 'stretch';
+    return n%3===0?'challenge':'stretch';
+  }
   if(n<=10)return 'warmup';
   if(n<=50)return 'core';
   if(n<=70){
@@ -1098,6 +1113,11 @@ function phaseForQuestion(n){
   }
   const slot=(n-71)%10;
   return ['core','stretch','core','stretch','stretch','challenge','stretch','challenge','stretch','challenge'][slot];
+}
+function displayPhaseLabel(phase){
+  if(settings.mode==='review')return phase==='warmup'?'Review Warm-up':'Review';
+  if(settings.mode==='challenge')return phase==='challenge'?'Challenge':'Stretch';
+  return PHASE_LABEL[phase];
 }
 function refillPhaseQueue(phase){
   phaseQueues[phase]=shuffleSeeded(PHASE_POOLS[settings.grade][phase]);
@@ -1115,7 +1135,7 @@ function genProblem(questionNumber){
   const grade3PropertySlots={3:'skipCount3',5:'commutative3',7:'ninePattern3',10:'unitPrice3',14:'splitArray3',18:'associative3',24:'combineFacts3',30:'equalGroupEquation3',36:'breakApart3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
   const grade5FocusSlots={4:'decPlace5',8:'mult3x2_5',12:'longDiv2_5',16:'decAdd5',20:'decSub5',24:'decMultPow10_5',28:'addFracUnlike5',32:'subFracUnlike5',36:'fracWhole5',40:'volume5',44:'multiStep5'};
-  const forcedType=settings.grade==='2'
+  const forcedType=settings.mode!=='standard'?null:settings.grade==='2'
     ?grade2FocusSlots[questionNumber]
     :settings.grade==='3'
       ?grade3PropertySlots[questionNumber]
@@ -1308,7 +1328,13 @@ async function syncGlobalDailyDates(){
     if($('#start').classList.contains('on'))renderStart();
   }catch(e){}
 }
-const gradeLabel=g=>g==='mix'?'Grades 2–5':'Grade '+g;
+const gradeLabel=g=>'Grade '+g;
+const modeLabel=m=>m==='review'?'Review':m==='challenge'?'Challenge':'Standard';
+const modeHelpText=m=>m==='review'
+  ?'Foundations and core skills from the selected grade.'
+  :m==='challenge'
+    ?'Harder stretch and multi-step work from the selected grade only.'
+    :'Balanced daily practice from the selected grade.';
 function renderStart(){
   updateHawaiiClock();
   renderDeviceProgress();
@@ -1317,16 +1343,19 @@ function renderStart(){
   $('#dayTitle').textContent='Day '+challengeDay;
   const s=deviceProgress().current;$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow to keep it going.':"Let's warm up that brain.";
   $('#name').value=settings.name;
-  $$('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
-  $$('#minSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+settings.mins));
-  $('#setLabel').textContent="Today's shared problem set · Hawaiʻi date";
+  $('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
+  $('#modeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.mode));
+  $('#modeHelp').textContent=modeHelpText(settings.mode);
+  $('#minSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+settings.mins));
+  $('#setLabel').textContent="Today's shared "+gradeLabel(settings.grade)+" · "+modeLabel(settings.mode)+" set · Hawaiʻi date";
   const ul=$('#histList');ul.innerHTML='';
   const recent=log.slice(-7).reverse();
   if(!recent.length){ul.innerHTML='<li class="empty">No sessions yet. Your first one shows up here.</li>'}
   recent.forEach(x=>{const li=document.createElement('li');
-    li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)}</span><span><b>${Number(x.points)||Number(x.correct)||0}</b> pts · ${x.correct}/${x.attempted} correct</span>`;ul.appendChild(li)});
+    li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)} · ${modeLabel(x.mode||'standard')}</span><span><b>${Number(x.points)||Number(x.correct)||0}</b> pts · ${x.correct}/${x.attempted} correct</span>`;ul.appendChild(li)});
 }
 $('#gradeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.grade=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
+$('#modeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.mode=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
 $('#minSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.mins=+b.dataset.v;LS.set('dm-settings',settings);renderStart()});
 $('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();LS.set('dm-settings',settings)});
 
@@ -1336,10 +1365,10 @@ function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
 function startSession(){
   updateHawaiiClock();
   setMobilePad(false);
-  R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+salt));
+  R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+settings.mode+'|'+salt));
   lastType='';recentTypes=[];phaseQueues={};usedQuestionText=new Set();usedFactKeys=new Set();
   S={items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,msLeft:settings.mins*60000,end:0,paused:false,started:Date.now()};
-  $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)}</small>`;
+  $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)} · ${modeLabel(settings.mode)}</small>`;
   $('#score').textContent='0';
   show('game');requestAnimationFrame(()=>{sizeCanvas();nextProblem();resume()});
 }
@@ -1352,7 +1381,7 @@ function nextProblem(){
   S.cur=genProblem(S.idx+1);S.idx++;S.input='';S.tries=0;S.wrongChoices=new Set();S.revealed=false;S.locked=false;
   $$('#cmp button').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct')});
   const q=$('#q');q.innerHTML=S.cur.html;q.classList.toggle('long',S.cur.text.length>34);
-  $('#qnum').textContent='#'+S.idx+' · '+PHASE_LABEL[S.cur.phase];
+  $('#qnum').textContent='#'+S.idx+' · '+displayPhaseLabel(S.cur.phase);
   $('#right').classList.toggle('is-cmp',S.cur.k==='cmp');
   $('#hint').textContent=S.cur.hint||HINT[S.cur.k];setFb('','');$('#checkBtn').textContent='Check';
   buildKeys();updAns();strokes=[];redraw();
@@ -1405,11 +1434,11 @@ function finish(){
   const attempted=done.items.filter(x=>x.r!=='skip').length;
   const secs=Math.round(settings.mins*60-done.msLeft/1000);
   const finalPoints=Math.round(done.points);
-  if(attempted>0){log.push({date:today(),grade:settings.grade,mins:settings.mins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}
+  if(attempted>0){log.push({date:today(),grade:settings.grade,mode:settings.mode,mins:settings.mins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}
   renderDeviceProgress();
   const globalStatus=$('#globalSaveStatus');
   if(attempted>0&&window.LWNLeaderboard){
-    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:settings.grade+'|'+settings.mins+'min|'+today(),best_streak:streak()};
+    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:settings.grade+'|'+settings.mode+'|'+settings.mins+'min|'+today(),best_streak:streak()};
     queueGlobalScore(payload);
     globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
     flushPendingGlobal().then(saved=>{
