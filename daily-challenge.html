@@ -506,6 +506,18 @@ function simpleArrayHTML(rows,cols){
   }
   return `<span class="mini-array" style="--array-cols:${cols}" aria-label="${rows} rows of ${cols} counters">${dots}</span>`;
 }
+function clockSVG2(hour,minute){
+  const ha=((hour%12)*30)+(minute*.5),ma=minute*6;
+  return '<svg viewBox="0 0 130 130" width="130" height="130" role="img" aria-label="analog clock">'+
+    '<circle cx="65" cy="65" r="57" fill="#fff" stroke="#2f2b3d" stroke-width="4"/>'+
+    '<text x="65" y="21" text-anchor="middle" font-size="13" font-weight="900">12</text>'+
+    '<text x="109" y="70" text-anchor="middle" font-size="13" font-weight="900">3</text>'+
+    '<text x="65" y="116" text-anchor="middle" font-size="13" font-weight="900">6</text>'+
+    '<text x="21" y="70" text-anchor="middle" font-size="13" font-weight="900">9</text>'+
+    '<line x1="65" y1="65" x2="65" y2="39" stroke="#2f2b3d" stroke-width="5" stroke-linecap="round" transform="rotate('+ha+' 65 65)"/>'+
+    '<line x1="65" y1="65" x2="65" y2="24" stroke="#2F9DF5" stroke-width="4" stroke-linecap="round" transform="rotate('+ma+' 65 65)"/>'+
+    '<circle cx="65" cy="65" r="4" fill="#2f2b3d"/></svg>';
+}
 
 /* ---------- problem generators ---------- */
 const GEN={
@@ -780,6 +792,41 @@ Object.assign(GEN,{
     const a=ri(42,69),b=pick([6,7,8,9]),sum=a+b,tens=Math.floor(sum/10),ones=sum%10;
     return{q:a+' + '+b+' = '+sum+'. How many tens are in the sum?',a:tens,k:'num',hint:'The sum is '+sum+'. Its tens digit is '+tens+' and its ones digit is '+ones+'.'};
   },
+  billsNeeded2(){
+    const fives=ri(1,2),ones=ri(1,4),have=20+10+fives*5+ones,price=pick([50,55,60]);
+    return{q:'You have one $20 bill, one $10 bill, '+fives+' $5 bill'+(fives===1?'':'s')+', and '+ones+' $1 bill'+(ones===1?'':'s')+'. A toy costs $'+price+'. How many more dollars do you need?',a:price-have,k:'num',hint:'First find how much money you have. Then subtract that amount from $'+price+'.'};
+  },
+  coinCombo2(){
+    const cases=[{cents:21,coins:4,ask:'nickels',ans:2,hint:'10¢ + 5¢ + 5¢ + 1¢ = 21¢.'},{cents:16,coins:3,ask:'nickels',ans:1,hint:'10¢ + 5¢ + 1¢ = 16¢.'},{cents:26,coins:2,ask:'pennies',ans:1,hint:'25¢ + 1¢ = 26¢.'}],x=pick(cases);
+    return{q:'A student has '+x.cents+'¢ using exactly '+x.coins+' coins. How many '+x.ask+' are in the set?',a:x.ans,k:'num',hint:x.hint};
+  },
+  clockRead2(){
+    const hour=ri(1,11),minute=pick([0,15,30,45]),visual=clockSVG2(hour,minute);
+    return{q:'<span class="array-problem">'+visual+'<span class="array-copy">What time is shown on the clock?</span></span>',a:hour+':'+pad2(minute),k:'time',hint:'The long blue hand shows the minutes. The shorter dark hand shows the hour.'};
+  },
+  quarterTime2(){
+    const hour=ri(1,10),past=R()<.5,answer=past?(hour+':15'):(hour+':45'),phrase=past?('a quarter past '+hour):('a quarter to '+(hour+1));
+    return{q:'What time is '+phrase+'?',a:answer,k:'time',hint:'Quarter past means :15. Quarter to means :45 of the hour before.'};
+  },
+  elapsedTime2(){
+    const hour=ri(1,9),minute=pick([0,15,30,45]),dur=pick([30,45,60]),start=hour*60+minute,end=start+dur,eh=Math.floor(end/60),em=end%60,endHour=eh>12?eh-12:eh;
+    return{q:'Homework starts at '+hour+':'+pad2(minute)+' and ends at '+endHour+':'+pad2(em)+'. How many minutes pass?',a:dur,k:'num',hint:'Count forward from the start time to the finish time.'};
+  },
+  placeRegroup2(){
+    const h=ri(2,8),t=ri(1,8),o=ri(0,9),n=h*100+t*10+o,trade=R()<.5;
+    if(trade){const newH=h-1,newT=t+10;return{q:n+' can be written as '+newH+' hundreds + <span class="blank">?</span> tens + '+o+' ones. How many tens?',a:newT,k:'num',hint:'Trade 1 hundred for 10 tens.'};}
+    const newT=t-1,newO=o+10;
+    return{q:n+' can be written as '+h+' hundreds + '+newT+' tens + <span class="blank">?</span> ones. How many ones?',a:newO,k:'num',hint:'Trade 1 ten for 10 ones.'};
+  },
+  digitSwap2(){
+    let h=ri(2,8),t=ri(0,9),o=ri(1,9);while(h===o)o=ri(1,9);
+    const n=h*100+t*10+o,swapped=o*100+t*10+h;
+    return{q:'A number has the same three digits as '+n+'. Its tens digit stays the same, but its hundreds and ones digits switch places. What is the new number?',a:swapped,k:'num',hint:'Keep the '+t+' in the tens place and swap '+h+' and '+o+'.'};
+  },
+  identifyPattern2(){
+    const step=pick([1,2,5,10,100]),start=step===100?ri(1,4)*100:ri(10,90);
+    return{q:'What is the counting rule? '+start+', '+(start+step)+', '+(start+2*step)+', '+(start+3*step)+', '+(start+4*step)+'. Counting by <span class="blank">?</span>',a:step,k:'num',hint:'Find the difference between neighboring numbers.'};
+  },
   mult(){const a=ri(2,10),b=ri(2,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a} × ${b} = <span class='blank'>?</span>`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
   div(){const b=ri(2,10),q=ri(2,10),lo=Math.min(b,q),hi=Math.max(b,q);return{q:`${b*q} ÷ ${b} = <span class='blank'>?</span>`,a:q,k:'num',factKey:`mul:${lo}x${hi}`}},
   missing(){const a=ri(2,9),b=ri(3,10),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`<span class='blank'>?</span> × ${a} = ${a*b}`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
@@ -832,10 +879,10 @@ Object.assign(GEN,{
 
 const PHASE_POOLS={
   '2':{
-    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','decomposeAdd2','add2','sub2','missingAdd2','pattern2'],
-    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2'],
-    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
-    challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2']
+    warmup:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','identifyPattern2','decomposeAdd2','add2','sub2','missingAdd2','pattern2'],
+    core:['makeTen2','doubles2','olderWord2','takeAwayStory2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','array2','add2','sub2','missingAdd2','place2','compare2','pattern2','money2','measure2','time2','pairs2','word2'],
+    stretch:['makeTen2','doubles2','arrayEquation2','multStory2','rowsStory2','clockRead2','quarterTime2','elapsedTime2','billsNeeded2','coinCombo2','placeRegroup2','digitSwap2','identifyPattern2','compareMore2','twoDigitAddStory2','decomposeAdd2','targetPair2','startUnknown2','goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','olderWord2','twoStep2','add2Big','sub2Big','money2','measure2','time2','array2','pairs2','equalShares2','place2','compare2'],
+    challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','billsNeeded2','coinCombo2','placeRegroup2','digitSwap2','identifyPattern2','quarterTime2','elapsedTime2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2']
   },
   '3':{
     warmup:['mult','div','missing','missingDiv3','breakApart3','add','sub','round','place3','pattern3','money3'],
@@ -888,7 +935,7 @@ function nextType(phase){
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
-  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',10:'multStory2',12:'olderWord2',14:'decomposeAdd2',16:'compensation2',18:'openNumberLine2',20:'equalShares2',22:'startUnknown2',24:'breakApartAdd2',26:'partialDifferences2',28:'hundredChart2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'dataTable2',38:'targetPair2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2'};
+  const grade2FocusSlots={2:'makeTen2',4:'doubles2',6:'takeAwayStory2',8:'arrayEquation2',9:'clockRead2',10:'multStory2',11:'money2',12:'olderWord2',14:'decomposeAdd2',16:'billsNeeded2',18:'quarterTime2',20:'elapsedTime2',22:'startUnknown2',24:'placeRegroup2',26:'digitSwap2',28:'identifyPattern2',30:'goalTwoStep2',32:'compareMore2',34:'differenceStory2',36:'coinCombo2',38:'dataTable2',40:'rowsStory2',42:'twoWaysSub2',44:'sumPlace2',46:'breakApartAdd2',48:'hundredChart2',50:'openNumberLine2'};
   const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
   const grade4PropertySlots={6:'missingPartial4',16:'areaModel4',26:'partialProduct4'};
   const forcedType=settings.grade==='2'
