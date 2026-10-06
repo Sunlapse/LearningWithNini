@@ -48,6 +48,9 @@ button:disabled{opacity:.28;cursor:default}
 .field{display:flex;flex-direction:column;gap:8px}
 .field>span{font-weight:700;font-size:16px}
 .field input{border:2px solid var(--line);background:var(--panel);border-radius:14px;padding:14px 16px;font-size:20px;-webkit-user-select:text;user-select:text}
+.avatar-pick{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.avatar-pick button{min-height:48px;border:2px solid var(--line);border-radius:14px;background:var(--panel);font-size:24px;cursor:pointer}
+.avatar-pick button[aria-pressed="true"]{border-color:#7546DE;background:#F0EAFF;box-shadow:0 0 0 3px rgba(117,70,222,.10)}
 .mode-help{margin-top:2px;color:var(--muted);font-size:14px;font-weight:800;line-height:1.35}
 .seg{display:flex;gap:8px;flex-wrap:wrap}
 .seg button{flex:1;min-width:90px;padding:14px 10px;border-radius:14px;border:2px solid var(--line);background:var(--panel);font-weight:700;font-size:18px}
@@ -310,6 +313,15 @@ button:disabled{opacity:.28;cursor:default}
 
     <label class="field"><span>Player nickname</span>
       <input id="name" maxlength="24" placeholder="Nickname for the leaderboard (optional)" autocomplete="off"></label>
+    <div class="field"><span>Choose an icon</span>
+      <div class="avatar-pick" id="avatarPick" aria-label="Choose leaderboard icon">
+        <button type="button" data-av="⭐">⭐</button>
+        <button type="button" data-av="🐱">🐱</button>
+        <button type="button" data-av="🐰">🐰</button>
+        <button type="button" data-av="🌈">🌈</button>
+        <button type="button" data-av="❤️">❤️</button>
+      </div>
+    </div>
     <div class="field"><span>Grade</span>
       <div class="seg" id="gradeSeg">
         <button data-v="2">Grade 2</button><button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="5">Grade 5</button>
@@ -1343,6 +1355,7 @@ function renderStart(){
   $('#dayTitle').textContent='Day '+challengeDay;
   const s=deviceProgress().current;$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow to keep it going.':"Let's warm up that brain.";
   $('#name').value=settings.name;
+  $('#avatarPick button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.av===(sharedProfile.avatar||'⭐')));
   $('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
   $('#modeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.mode));
   $('#modeHelp').textContent=modeHelpText(settings.mode);
@@ -1354,10 +1367,11 @@ function renderStart(){
   recent.forEach(x=>{const li=document.createElement('li');
     li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)} · ${modeLabel(x.mode||'standard')}</span><span><b>${Number(x.points)||Number(x.correct)||0}</b> pts · ${x.correct}/${x.attempted} correct</span>`;ul.appendChild(li)});
 }
+$('#avatarPick').addEventListener('click',e=>{const b=e.target.closest('button[data-av]');if(!b)return;sharedProfile.avatar=b.dataset.av;LS.set('learningWithNiniProfileV1',sharedProfile);renderStart()});
 $('#gradeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.grade=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
 $('#modeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.mode=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
 $('#minSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.mins=+b.dataset.v;LS.set('dm-settings',settings);renderStart()});
-$('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();LS.set('dm-settings',settings)});
+$('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();sharedProfile.name=settings.name;LS.set('dm-settings',settings);LS.set('learningWithNiniProfileV1',sharedProfile)});
 
 /* ---------- session ---------- */
 let S=null,tick=null;
