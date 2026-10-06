@@ -106,6 +106,17 @@ button:disabled{opacity:.28;cursor:default}
 .fr span:first-child{border-bottom:.08em solid currentColor;padding:0 .15em .06em}
 .fr span:last-child{padding:.06em .15em 0}
 .blank{display:inline-block;min-width:1.3em;text-align:center;border:.07em dashed var(--muted);border-radius:.2em;color:var(--muted);margin:0 .2em;padding:0 .1em}
+.array-problem{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:16px;width:100%}
+.mini-array{display:grid;grid-template-columns:repeat(var(--array-cols),12px);gap:3px;padding:8px;border-radius:12px;background:var(--key);border:2px solid var(--line);width:max-content}
+.mini-array-dot{width:12px;height:12px;border-radius:50%;background:var(--purple)}
+.mini-array-dot.second{background:var(--blue)}
+.array-copy{display:block;font-family:"Nunito",system-ui,sans-serif;font-weight:800;font-size:clamp(18px,2.2vw,26px);line-height:1.3}
+@media(max-width:640px){
+  .array-problem{grid-template-columns:1fr;justify-items:center;text-align:center;gap:10px}
+  .mini-array{grid-template-columns:repeat(var(--array-cols),9px);gap:3px}
+  .mini-array-dot{width:9px;height:9px}
+  .array-copy{font-size:17px}
+}
 .mobile-pad-toggle{display:none}
 .padwrap{flex:1;min-height:0;position:relative;border-radius:20px;border:2px solid var(--line);background-color:var(--paper);
   background-image:linear-gradient(var(--grid) 1.5px,transparent 1.5px),linear-gradient(90deg,var(--grid) 1.5px,transparent 1.5px);background-size:32px 32px;overflow:hidden}
@@ -446,6 +457,21 @@ const ri=(a,b)=>a+Math.floor(R()*(b-a+1));
 const pick=a=>a[Math.floor(R()*a.length)];
 const fmt=n=>n.toLocaleString('en-US');
 const NAMES=['Maya','Leo','Kai','Ava','Noah','Lani','Sam','Mia','Eli','Zoe','Koa','Ruby'];
+const BREAK_APART_SPLITS={
+  4:[[1,3],[2,2]],5:[[1,4],[2,3]],6:[[1,5],[2,4],[3,3]],
+  7:[[2,5],[3,4]],8:[[2,6],[3,5],[4,4]],9:[[3,6],[4,5]],10:[[4,6],[5,5]]
+};
+function chooseBreakApart(rows){
+  const choices=BREAK_APART_SPLITS[rows]||[[1,rows-1]];
+  return pick(choices);
+}
+function miniArrayHTML(rows,cols,split){
+  let dots='';
+  for(let r=0;r<rows;r++){
+    for(let col=0;col<cols;col++)dots+=`<span class="mini-array-dot${r>=split?' second':''}" aria-hidden="true"></span>`;
+  }
+  return `<span class="mini-array" style="--array-cols:${cols}" aria-label="${rows} rows of ${cols} counters, split after row ${split}">${dots}</span>`;
+}
 
 /* ---------- problem generators ---------- */
 const GEN={
@@ -547,6 +573,21 @@ Object.assign(GEN,{
   expanded3(){const h=ri(1,9),t=ri(0,9),o=ri(0,9),n=h*100+t*10+o;return{q:`${n} = ${h*100} + <span class='blank'>?</span> + ${o}`,a:t*10,k:'num'}},
   money3(){const q=ri(1,5),d=ri(0,5),n=ri(0,4);return{q:`${q} quarters + ${d} dimes + ${n} nickels = how many cents?`,a:q*25+d*10+n*5,k:'num'}},
   measure3(){const yd=ri(2,12);return{q:`${yd} yards = <span class='blank'>?</span> feet`,a:yd*3,k:'num'}},
+  breakApart3(){
+    const rows=ri(4,10),cols=ri(3,9),parts=chooseBreakApart(rows),left=parts[0],right=parts[1],hideLeft=R()<.5;
+    const missing=hideLeft?left:right;
+    const shownLeft=hideLeft?'<span class="blank">?</span>':left;
+    const shownRight=hideLeft?right:'<span class="blank">?</span>';
+    return{q:`Complete the break-apart fact: ${rows} × ${cols} = (${shownLeft} × ${cols}) + (${shownRight} × ${cols})`,a:missing,k:'num',factKey:`decomp:${rows}x${cols}`,hint:`The two row groups must add to ${rows}. Keep × ${cols} in both smaller facts.`}
+  },
+  combineFacts3(){
+    const rows=ri(4,10),cols=ri(3,9),parts=chooseBreakApart(rows),left=parts[0],right=parts[1];
+    return{q:`(${left} × ${cols}) + (${right} × ${cols}) = <span class="blank">?</span> × ${cols}`,a:rows,k:'num',factKey:`combine:${rows}x${cols}`,hint:`Combine the row groups: ${left} + ${right}. The number in each row stays ${cols}.`}
+  },
+  splitArray3(){
+    const rows=ri(4,9),cols=ri(3,8),parts=chooseBreakApart(rows),left=parts[0],right=parts[1],array=miniArrayHTML(rows,cols,left);
+    return{q:`<span class="array-problem">${array}<span class="array-copy">This ${rows} × ${cols} array is split into ${left} × ${cols} and ${right} × ${cols}. How many counters are in the whole array?</span></span>`,a:rows*cols,k:'num',factKey:`array:${rows}x${cols}`,hint:`Find (${left} × ${cols}) + (${right} × ${cols}), or multiply ${rows} × ${cols}.`}
+  },
   wordMult(){const a=ri(3,9),b=ri(4,9),n=pick(NAMES),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${n} has ${a} bags with ${b} marbles in each bag. How many marbles in all?`,a:a*b,k:'num',factKey:`mul:${lo}x${hi}`}},
   wordDiv(){const groups=ri(3,8),each=ri(3,9),lo=Math.min(groups,each),hi=Math.max(groups,each);return{q:`${groups*each} stickers are shared equally among ${groups} friends. How many stickers does each friend get?`,a:each,k:'num',factKey:`mul:${lo}x${hi}`}},
   factorPair4(){const a=ri(3,12),b=ri(3,12),lo=Math.min(a,b),hi=Math.max(a,b);return{q:`${a*b} = ${a} × <span class='blank'>?</span>`,a:b,k:'num',factKey:`mul:${lo}x${hi}`}},
@@ -558,10 +599,10 @@ Object.assign(GEN,{
 
 const PHASE_POOLS={
   '3':{
-    warmup:['mult','div','missing','missingDiv3','add','sub','round','place3','pattern3','money3'],
-    core:['wordMult','wordDiv','wordAddSub3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
-    stretch:['twoStep3','wordUnknown3','fracOf3','expanded3','measure3','time','fraccmp','area','perim','missingDividend3','add4','sub4','equivfrac','angle','factorPair4'],
-    challenge:['twoStep3','wordUnknown3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
+    warmup:['mult','div','missing','missingDiv3','breakApart3','add','sub','round','place3','pattern3','money3'],
+    core:['wordMult','wordDiv','wordAddSub3','breakApart3','combineFacts3','splitArray3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
+    stretch:['twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','fracOf3','expanded3','measure3','time','fraccmp','area','perim','missingDividend3','add4','sub4','equivfrac','angle','factorPair4'],
+    challenge:['twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
   },
   '4':{
     warmup:['mult','factorPair4','add4','sub4','placeMillion','roundBig','deccmp','pattern4','money4','measure4'],
@@ -608,9 +649,11 @@ function nextType(phase){
 }
 function genProblem(questionNumber){
   const phase=phaseForQuestion(questionNumber);
+  const grade3PropertySlots={5:'breakApart3',14:'splitArray3',24:'combineFacts3'};
+  const forcedType=settings.grade==='3'?grade3PropertySlots[questionNumber]:null;
   let p,t,tries=0,duplicate=false;
   do{
-    t=nextType(phase);
+    t=forcedType||nextType(phase);
     p=GEN[t]();
     p.type=t;p.phase=phase;p.html=toHTML(p.q);p.text=toText(p.q);
     duplicate=usedQuestionText.has(p.text)||(p.factKey&&usedFactKeys.has(p.factKey));
@@ -779,7 +822,7 @@ function nextProblem(){
   const q=$('#q');q.innerHTML=S.cur.html;q.classList.toggle('long',S.cur.text.length>34);
   $('#qnum').textContent='#'+S.idx+' · '+PHASE_LABEL[S.cur.phase];
   $('#right').classList.toggle('is-cmp',S.cur.k==='cmp');
-  $('#hint').textContent=HINT[S.cur.k];setFb('','');$('#checkBtn').textContent='Check';
+  $('#hint').textContent=S.cur.hint||HINT[S.cur.k];setFb('','');$('#checkBtn').textContent='Check';
   buildKeys();updAns();strokes=[];redraw();
 }
 function buildKeys(){
