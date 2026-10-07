@@ -1480,7 +1480,7 @@ function finish(){
   const sessionGrade=String(done.grade||settings.grade);
   const sessionMode=String(done.mode||settings.mode);
   const secs=Math.max(0,Math.min(sessionMins*60,Math.round(sessionMins*60-(Number(done.msLeft)||0)/1000)));
-  const finalPoints=Math.round(done.points);
+  const finalPoints=Math.round(done.points*100)/100;
   if(attempted>0){log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}
   renderDeviceProgress();
   const globalStatus=$('#globalSaveStatus');
