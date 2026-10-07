@@ -1562,14 +1562,14 @@
           <div class="youtube-growth-head">
             <div>
               <h2 id="latestChallengeHeading">Latest Challenge ▶</h2>
-              <p id="latestChallengeMeta">Newest full 20-minute challenge from Nini.</p>
+              <p id="latestChallengeMeta">Newest video from Nini’s Daily Math Challenges playlist.</p>
             </div>
           </div>
           <div class="youtube-embed">
             <iframe
               id="latestChallengeFrame"
               src="https://www.youtube-nocookie.com/embed/videoseries?list=PLOeN8KaQujJo&playsinline=1&rel=0"
-              title="Latest full Learn With Nini daily math challenge playlist"
+              title="Learn With Nini Daily Math Challenges playlist"
               loading="lazy"
               referrerpolicy="strict-origin-when-cross-origin"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -1581,13 +1581,13 @@
               <span>Subscribe to see the next one.</span>
             </div>
             <a class="youtube-subscribe-btn" href="https://www.youtube.com/channel/UCrZMHA7Ky5kTJd3a-X2iUag?sub_confirmation=1" target="_blank" rel="noopener noreferrer">▶ Subscribe on YouTube</a>
-            <a class="youtube-channel-link" href="https://www.youtube.com/playlist?list=PLOeN8KaQujJo" target="_blank" rel="noopener noreferrer">View Full Challenge Playlist on YouTube ↗</a>
+            <a class="youtube-channel-link" href="https://www.youtube.com/playlist?list=PLOeN8KaQujJo" target="_blank" rel="noopener noreferrer">View Daily Math Challenges Playlist on YouTube ↗</a>
           </div>
         </section>
 
         <section class="about-story" id="about">
           <h2>About Nini ♡</h2>
-          <p>Nini is a 3rd grader who loves math and likes seeing how much she can improve with practice. Learn With Nini started as a family project built around her daily math routine — a 20-minute challenge, focused skill games, and a simple way for other kids to practice alongside her.</p>
+          <p>Nini is a 3rd grader who loves math and likes seeing how much she can improve with practice. Learn With Nini started as a family project built around her daily math routine — a 10, 15, or 20-minute challenge, focused skill games, and a simple way for other kids to practice alongside her.</p>
           <div class="about-benefits">
             <div class="about-benefit"><strong>💗 Builds Confidence</strong>See progress and feel proud of improvement.</div>
             <div class="about-benefit"><strong>⭐ Makes Math Fun</strong>Games, challenges, and real-life practice.</div>
@@ -1668,7 +1668,7 @@
                 : 'Latest Challenge ▶';
           }
           if (meta) {
-            meta.textContent = formatHawaiiDate(published) + dayText + ' • Full 20-Minute Math Challenge';
+            meta.textContent = formatHawaiiDate(published) + dayText + ' • Daily Math Challenge';
           }
           const quickLink = document.getElementById('challengeVideoLink');
           if (quickLink) quickLink.textContent = diff === 0
