@@ -35,6 +35,10 @@ button,input{font:inherit}
 .maze-road-line{position:absolute;inset:-7px;z-index:1;width:calc(100% + 14px);height:calc(100% + 14px);pointer-events:none;overflow:visible}
 .maze-road-line path{fill:none;stroke:#f8e78f;stroke-width:6;stroke-linecap:round;stroke-dasharray:12 11;vector-effect:non-scaling-stroke}
 .maze.theme-addsub .maze-cell.cleared .maze-road-line path{stroke:#fff5b5}
+.maze.theme-mult .maze-road-line path{stroke:#d8c59a;stroke-width:5;stroke-dasharray:4 9}
+.maze.theme-mult .maze-cell.cleared .maze-road-line path{stroke:#fff2c9}
+.maze.theme-mixed .maze-road-line path{stroke:#a9dcff;stroke-width:5;stroke-dasharray:9 8}
+.maze.theme-mixed .maze-cell.cleared .maze-road-line path{stroke:#e7f7ff}
 .maze.theme-addsub .maze-cell.cleared{background:#7f858b}
 .maze.theme-addsub .maze-cell.cleared:after{background:repeating-linear-gradient(90deg,#fff5b5 0 16%,transparent 16% 28%)}
 .maze.theme-addsub .maze-cell.current{background:#ffe48d;box-shadow:0 0 0 3px #f5bb32 inset}
@@ -168,7 +172,7 @@ function renderMaze(position=q-1){
     const routeIndex=ROUTE.indexOf(i);
     if(routeIndex>=0)c.classList.add("route");
     if(routeIndex>=0&&routeIndex<position)c.classList.add("cleared");
-    if(level==="addsub"&&routeIndex>=0){
+    if(routeIndex>=0){
       const center={x:50,y:50};
       const edgePoint=(from,to)=>{
         if(to==null)return center;
