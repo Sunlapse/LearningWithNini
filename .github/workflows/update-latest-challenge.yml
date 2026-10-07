@@ -1,5 +1,5 @@
 name: Update latest math challenge
-# Polls the curated full-challenge playlist so Shorts never replace the Daily Challenge.
+# Polls the Daily Math Challenges playlist so Shorts and unrelated uploads never replace the Daily Challenge.
 
 on:
   schedule:
@@ -29,7 +29,7 @@ jobs:
       - name: Install YouTube fallback reader
         run: python3 -m pip install --disable-pip-version-check --quiet --upgrade yt-dlp
 
-      - name: Read latest full challenge from YouTube
+      - name: Read latest Daily Math Challenge from playlist
         run: |
           set +e
           curl --fail --location --retry 2 \
@@ -97,7 +97,7 @@ jobs:
                       break
 
           if not match:
-              print("::warning::No video found in the full-challenge playlist. Keeping the existing video.")
+              print("::warning::No video found in the Daily Math Challenges playlist. Keeping the existing video.")
               raise SystemExit(0)
 
           video_url = "https://www.youtube.com/watch?v=" + match["videoId"]
