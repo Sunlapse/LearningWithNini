@@ -1463,6 +1463,7 @@
             </div>
             <div class="topic-cards">
               <article class="feature-card fraction">
+                <div class="new-game-badge" id="fractionNewModesBadge">✨ NEW MODES</div>
                 <div class="card-icon">🍕</div>
                 <h4>Fraction &amp; Decimal Lab</h4>
                 <div class="grade-tag">Grades 3–5</div>
@@ -1699,6 +1700,9 @@
           const badge = document.getElementById(id);
           if (badge) badge.remove();
         });
+      }
+      if (now >= new Date("2026-10-21T00:00:00-10:00")) {
+        document.getElementById("fractionNewModesBadge")?.remove();
       }
       const multiplicationExpires = new Date("2026-10-20T00:00:00-10:00");
       if (now >= multiplicationExpires) {
