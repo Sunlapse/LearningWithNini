@@ -1508,7 +1508,7 @@ function finish(){
   }else{globalStatus.textContent='Your result is saved on this device.'}
   const finishedDay=dayNumber();
   $('#doneVideoDay').textContent=finishedDay;
-  $('#doneVideoLink').href='https://www.youtube.com/@LearnWithNiniMath/search?query='+encodeURIComponent('Day '+finishedDay+' 20 Minute Math Challenge');
+  $('#doneVideoLink').href='https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
   const maxPoints=done.items.length;
   $('#bigScore').innerHTML=`${finalPoints}<small> points</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
@@ -1668,7 +1668,7 @@ renderStart();
             if (doneMeta) doneMeta.textContent = 'The player below shows the latest full challenge until today’s video is posted.';
             if (doneLink) {
               doneLink.href = 'https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
-              doneLink.textContent = 'View Full Challenge Playlist on YouTube ↗';
+              doneLink.textContent = 'View Daily Math Challenges Playlist on YouTube ↗';
             }
           }
           
