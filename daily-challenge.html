@@ -1415,6 +1415,7 @@ function updTimer(){
   }
 }
 function nextProblem(){
+  if(!S||finishing)return;
   S.cur=genProblem(S.idx+1);S.idx++;S.input='';S.tries=0;S.wrongChoices=new Set();S.revealed=false;S.locked=false;
   $$('#cmp button').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct')});
   const q=$('#q');q.innerHTML=S.cur.html;q.classList.toggle('long',S.cur.text.length>34);
@@ -1460,7 +1461,7 @@ function submit(val){
       return;
     }
     S.tries++;
-    if(S.tries<2){setFb('Not quite. Try once more.','bad');setTimeout(()=>{S.input='';updAns()},500)}
+    if(S.tries<2){setFb('Not quite. Try once more.','bad');setTimeout(()=>{if(!S||finishing)return;S.input='';updAns()},500)}
     else{S.revealed=true;S.items.push({t:S.cur.text,type:S.cur.type,given,ans:showAns(S.cur),r:'no',points:0});
       setFb('Answer: '+showAns(S.cur),'bad');$('#checkBtn').textContent='Next';}
   }
