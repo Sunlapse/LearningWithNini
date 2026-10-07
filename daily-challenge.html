@@ -1374,23 +1374,46 @@ $('#minSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(
 $('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();sharedProfile.name=settings.name;LS.set('dm-settings',settings);LS.set('learningWithNiniProfileV1',sharedProfile)});
 
 /* ---------- session ---------- */
-let S=null,tick=null;
+let S=null,tick=null,finishTimeout=null,finishing=false;
 function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
 function startSession(){
   updateHawaiiClock();
   setMobilePad(false);
+  finishing=false;
+  clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;
   R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+settings.mode+'|'+salt));
   lastType='';recentTypes=[];phaseQueues={};usedQuestionText=new Set();usedFactKeys=new Set();
-  S={items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,msLeft:settings.mins*60000,end:0,paused:false,started:Date.now()};
+  const sessionMins=Number(settings.mins)||20;
+  S={items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,mins:sessionMins,grade:String(settings.grade),mode:String(settings.mode),msLeft:sessionMins*60000,end:0,paused:false,started:Date.now()};
   $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)} · ${modeLabel(settings.mode)}</small>`;
   $('#score').textContent='0';
   show('game');requestAnimationFrame(()=>{sizeCanvas();nextProblem();resume()});
 }
 function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function resume(){S.paused=false;S.end=Date.now()+S.msLeft;$('#pause').classList.remove('on');clearInterval(tick);tick=setInterval(updTimer,250);updTimer()}
-function pauseS(){if(!S||S.paused)return;S.msLeft=Math.max(0,S.end-Date.now());S.paused=true;clearInterval(tick);$('#pause').classList.add('on')}
-function updTimer(){const ms=Math.max(0,S.end-Date.now());S.msLeft=ms;const s=Math.ceil(ms/1000);
-  $('#timer').textContent=Math.floor(s/60)+':'+pad2(s%60);$('#timer').classList.toggle('low',s<=60);if(ms<=0)finish()}
+function resume(){
+  if(!S||finishing)return;
+  S.paused=false;S.end=Date.now()+Math.max(0,S.msLeft);$('#pause').classList.remove('on');
+  clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;
+  if(S.msLeft<=0){updTimer();return}
+  tick=setInterval(updTimer,250);
+  finishTimeout=setTimeout(()=>{if(S&&!S.paused)updTimer()},Math.max(50,S.msLeft+100));
+  updTimer();
+}
+function pauseS(){
+  if(!S||S.paused||finishing)return;
+  S.msLeft=Math.max(0,S.end-Date.now());
+  if(S.msLeft<=0){finish();return}
+  S.paused=true;clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;$('#pause').classList.add('on');
+}
+function updTimer(){
+  if(!S||finishing)return;
+  const ms=Math.max(0,S.end-Date.now());S.msLeft=ms;const s=Math.ceil(ms/1000);
+  $('#timer').textContent=Math.floor(s/60)+':'+pad2(s%60);$('#timer').classList.toggle('low',s<=60);
+  if(ms<=0){
+    clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;
+    finish();
+  }
+}
 function nextProblem(){
   S.cur=genProblem(S.idx+1);S.idx++;S.input='';S.tries=0;S.wrongChoices=new Set();S.revealed=false;S.locked=false;
   $$('#cmp button').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct')});
@@ -1444,15 +1467,24 @@ function submit(val){
 }
 function skip(){if(!S||S.locked||S.paused)return;if(!S.revealed)S.items.push({t:S.cur.text,type:S.cur.type,given:'',ans:showAns(S.cur),r:'skip'});nextProblem()}
 function finish(){
-  if(!S)return;clearInterval(tick);const done=S;S=null;
+  if(!S||finishing)return;
+  finishing=true;
+  clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;
+  const done=S;S=null;
+  // Leave the game immediately so a later save/render error can never strand
+  // a learner on a frozen 0:00 screen.
+  show('done');
   const attempted=done.items.filter(x=>x.r!=='skip').length;
-  const secs=Math.round(settings.mins*60-done.msLeft/1000);
+  const sessionMins=Number(done.mins)||Number(settings.mins)||20;
+  const sessionGrade=String(done.grade||settings.grade);
+  const sessionMode=String(done.mode||settings.mode);
+  const secs=Math.max(0,Math.min(sessionMins*60,Math.round(sessionMins*60-(Number(done.msLeft)||0)/1000)));
   const finalPoints=Math.round(done.points);
-  if(attempted>0){log.push({date:today(),grade:settings.grade,mode:settings.mode,mins:settings.mins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}
+  if(attempted>0){log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}
   renderDeviceProgress();
   const globalStatus=$('#globalSaveStatus');
   if(attempted>0&&window.LWNLeaderboard){
-    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:settings.grade+'|'+settings.mode+'|'+settings.mins+'min|'+today(),best_streak:streak()};
+    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:sessionGrade+'|'+sessionMode+'|'+sessionMins+'min|'+today(),best_streak:streak()};
     queueGlobalScore(payload);
     globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
     flushPendingGlobal().then(saved=>{
@@ -1472,10 +1504,11 @@ function finish(){
   done.items.forEach((x,i)=>{const li=document.createElement('li');
     const mark=x.r==='skip'?'<span class="sk">–</span>':x.r==='no'?'<span class="no">✗</span>':'<span class="ok">✓</span>';
     const g=x.r==='skip'?'skipped · '+x.ans:x.r==='no'?`${escapeHTML(x.given)} → ${x.ans}`:x.ans;
-    li.innerHTML=`${mark}<span>${escapeHTML(x.t)}</span><span class="given">${g}</span>`;ul.appendChild(li)});
+    li.innerHTML=`${mark}<span>${escapeHTML(String(x.t??''))}</span><span class="given">${g}</span>`;ul.appendChild(li)});
   if(!done.items.length)ul.innerHTML='<li><span></span><span>No problems answered this time.</span><span></span></li>';
-  renderPracticeRecommendations(done.items);
+  try{renderPracticeRecommendations(done.items)}catch(e){}
   show('done');
+  finishing=false;
 }
 $('#goBtn').addEventListener('click',startSession);
 $('#keys').addEventListener('click',e=>{const b=e.target.closest('.key');if(b)press(b.dataset.k)});
