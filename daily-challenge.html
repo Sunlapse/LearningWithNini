@@ -505,16 +505,28 @@ async function flushPendingGlobal(){
 function queueTodayLocalResultIfNeeded(){
   const todays=log.filter(x=>x&&x.date===today());
   if(!todays.length)return;
-  const best=[...todays].sort((a,b)=>(Number(b.points)||Number(b.correct)||0)-(Number(a.points)||Number(a.correct)||0))[0];
-  const mins=Number(best.mins)||Number(settings.mins)||20;
-  const mode=String(best.mode||'standard');
-  queueGlobalScore({
-    name:globalName(),
-    avatar:sharedProfile.avatar||'⭐',
-    game:'daily_challenge',
-    score:Number(best.points)||Number(best.correct)||0,
-    level:String(best.grade||settings.grade)+'|'+mode+'|'+mins+'min|'+best.date,
-    best_streak:streak()
+  const bestBySession=new Map();
+  todays.forEach(item=>{
+    const mins=Number(item.mins)||20;
+    const mode=String(item.mode||'standard');
+    const grade=String(item.grade||settings.grade);
+    const key=[grade,mode,mins,item.date].join('|');
+    const points=Number(item.points)||Number(item.correct)||0;
+    const prev=bestBySession.get(key);
+    const prevPoints=prev?(Number(prev.points)||Number(prev.correct)||0):-1;
+    if(!prev||points>prevPoints)bestBySession.set(key,item);
+  });
+  bestBySession.forEach(best=>{
+    const mins=Number(best.mins)||20;
+    const mode=String(best.mode||'standard');
+    queueGlobalScore({
+      name:globalName(),
+      avatar:sharedProfile.avatar||'⭐',
+      game:'daily_challenge',
+      score:Number(best.points)||Number(best.correct)||0,
+      level:String(best.grade||settings.grade)+'|'+mode+'|'+mins+'min|'+best.date,
+      best_streak:streak()
+    });
   });
 }
 
@@ -1335,7 +1347,7 @@ async function syncGlobalDailyDates(){
   const name=globalName();
   if(!name)return;
   try{
-    const rows=await LWNLeaderboard.dailyHistory({name,minutes:20,limit:365});
+    const rows=await LWNLeaderboard.dailyHistory({name,minutes:null,limit:365});
     remoteDailyDates=new Set(rows.map(x=>x&&x.date).filter(Boolean));
     if($('#start').classList.contains('on'))renderStart();
   }catch(e){}
