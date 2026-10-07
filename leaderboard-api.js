@@ -258,81 +258,104 @@ window.LWNLeaderboard = (() => {
     return rows.filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()));
   }
 
-  async function dailyChallenge({date=null,minutes=20,limit=10}={}){
+  async function dailyChallenge({date=null,minutes=null,limit=1000,includeReview=false}={}){
     const u=new URLSearchParams({
-      select:"player_name,avatar,score,grade,minutes,challenge_date,best_streak,updated_at",
-      minutes:"eq."+String(minutes||20),
+      select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at",
       order:"score.desc,updated_at.asc",
-      limit:"200"
+      limit:"1000"
     });
     if(date)u.set("challenge_date","eq."+date);
+    if([10,15,20].includes(Number(minutes)))u.set("minutes","eq."+String(Number(minutes)));
+    if(!includeReview)u.set("mode","neq.review");
 
     const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load Daily Challenge leaderboard");
     const rows=await res.json();
 
+    const combined=!([10,15,20].includes(Number(minutes)));
     const map=new Map();
     for(const r of rows){
       const key=String(r.player_name||"Player").trim().toLowerCase();
+      const mins=Number(r.minutes)||20;
+      const score=Number(r.score)||0;
       const item={
         name:r.player_name||"Player",
         avatar:r.avatar||"⭐",
-        score:Number(r.score)||0,
+        score,
         grade:String(r.grade||""),
-        minutes:Number(r.minutes)||0,
+        mode:String(r.mode||"standard"),
+        minutes:mins,
+        equivalent_score:Math.round((score*20/mins)*100)/100,
         date:String(r.challenge_date||""),
         best_streak:Number(r.best_streak)||0,
         updated_at:r.updated_at||""
       };
       const prev=map.get(key);
-      if(!prev || item.score>prev.score || (item.score===prev.score && String(item.updated_at)<String(prev.updated_at))){
+      const itemRank=combined?item.equivalent_score:item.score;
+      const prevRank=prev?(combined?prev.equivalent_score:prev.score):-Infinity;
+      if(!prev || itemRank>prevRank ||
+        (itemRank===prevRank && item.score>prev.score) ||
+        (itemRank===prevRank && item.score===prev.score && String(item.updated_at)<String(prev.updated_at))){
         map.set(key,item);
       }
     }
 
     const out=[...map.values()];
-    out.sort((a,b)=>b.score-a.score || b.best_streak-a.best_streak || String(a.updated_at).localeCompare(String(b.updated_at)) || a.name.localeCompare(b.name));
-    return out.slice(0,limit);
+    out.sort((a,b)=>{
+      const ar=combined?a.equivalent_score:a.score;
+      const br=combined?b.equivalent_score:b.score;
+      return br-ar || b.score-a.score || b.best_streak-a.best_streak || String(a.updated_at).localeCompare(String(b.updated_at)) || a.name.localeCompare(b.name);
+    });
+    return out.slice(0,Math.max(1,Number(limit)||1000));
   }
 
-  async function dailyHistory({name,minutes=20,limit=30}={}){
+  async function dailyHistory({name,minutes=null,limit=100}={}){
     name=String(name||"").trim();
     if(!name)return [];
     const u=new URLSearchParams({
-      select:"player_name,avatar,score,grade,minutes,challenge_date,best_streak,updated_at",
+      select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at",
       player_name:"eq."+name,
-      minutes:"eq."+String(minutes||20),
-      order:"challenge_date.asc,score.desc,updated_at.asc",
-      limit:"500"
+      order:"challenge_date.desc,updated_at.desc",
+      limit:"1000"
     });
+    if([10,15,20].includes(Number(minutes)))u.set("minutes","eq."+String(Number(minutes)));
 
     const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load Daily Challenge history");
     const rows=await res.json();
 
-    const byDate=new Map();
+    const bySession=new Map();
     for(const r of rows){
       const date=String(r.challenge_date||"");
       if(!date)continue;
+      const mins=Number(r.minutes)||20;
+      const score=Number(r.score)||0;
+      const mode=String(r.mode||"standard");
+      const grade=String(r.grade||"");
+      const key=[date,grade,mode,mins].join("|");
       const item={
         name:r.player_name||name,
         avatar:r.avatar||"⭐",
-        score:Number(r.score)||0,
-        grade:String(r.grade||""),
-        minutes:Number(r.minutes)||0,
+        score,
+        grade,
+        mode,
+        minutes:mins,
+        equivalent_score:Math.round((score*20/mins)*100)/100,
         date,
         best_streak:Number(r.best_streak)||0,
         updated_at:r.updated_at||""
       };
-      const prev=byDate.get(date);
+      const prev=bySession.get(key);
       if(!prev || item.score>prev.score || (item.score===prev.score && String(item.updated_at)<String(prev.updated_at))){
-        byDate.set(date,item);
+        bySession.set(key,item);
       }
     }
 
-    const out=[...byDate.values()].sort((a,b)=>a.date.localeCompare(b.date));
-    out.forEach((x,i)=>x.day=i+1);
-    return out.slice(-Math.max(1,Number(limit)||30)).reverse();
+    const out=[...bySession.values()].sort((a,b)=>b.date.localeCompare(a.date)||b.minutes-a.minutes||a.mode.localeCompare(b.mode));
+    const dates=[...new Set(out.map(x=>x.date))].sort();
+    const dayByDate=new Map(dates.map((d,i)=>[d,i+1]));
+    out.forEach(x=>x.day=dayByDate.get(x.date)||1);
+    return out.slice(0,Math.max(1,Number(limit)||100));
   }
 
   async function overall(limit=10){
