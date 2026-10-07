@@ -31,7 +31,10 @@ button,input{font:inherit}
 .maze.theme-addsub .maze-cell{background:linear-gradient(160deg,#d8c7af,#bca78d)}
 .maze.theme-addsub .maze-cell:not(.route):before{content:"🏠";font-size:1.4rem;filter:saturate(.9);opacity:.9}
 .maze.theme-addsub .maze-cell.route{background:#60656c;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
-.maze.theme-addsub .maze-cell.route:after{inset:46% 11%;height:8%;border-radius:999px;background:repeating-linear-gradient(90deg,#f8e78f 0 16%,transparent 16% 28%);opacity:.95}
+.maze.theme-addsub .maze-cell.route:after{display:none}
+.maze-road-line{position:absolute;inset:-7px;z-index:1;width:calc(100% + 14px);height:calc(100% + 14px);pointer-events:none;overflow:visible}
+.maze-road-line path{fill:none;stroke:#f8e78f;stroke-width:6;stroke-linecap:round;stroke-dasharray:12 11;vector-effect:non-scaling-stroke}
+.maze.theme-addsub .maze-cell.cleared .maze-road-line path{stroke:#fff5b5}
 .maze.theme-addsub .maze-cell.cleared{background:#7f858b}
 .maze.theme-addsub .maze-cell.cleared:after{background:repeating-linear-gradient(90deg,#fff5b5 0 16%,transparent 16% 28%)}
 .maze.theme-addsub .maze-cell.current{background:#ffe48d;box-shadow:0 0 0 3px #f5bb32 inset}
@@ -165,8 +168,29 @@ function renderMaze(position=q-1){
     const routeIndex=ROUTE.indexOf(i);
     if(routeIndex>=0)c.classList.add("route");
     if(routeIndex>=0&&routeIndex<position)c.classList.add("cleared");
-    if(i===ROUTE[position]){c.classList.add("current");c.innerHTML='<span class="maze-icon">🧒</span>'}
-    else if(i===ROUTE[ROUTE.length-1]){c.classList.add("exit");c.innerHTML='<span class="maze-icon">🚩</span><span class="maze-label">EXIT</span>'}
+    if(level==="addsub"&&routeIndex>=0){
+      const center={x:50,y:50};
+      const edgePoint=(from,to)=>{
+        if(to==null)return center;
+        const dr=Math.floor(to/5)-Math.floor(from/5),dc=(to%5)-(from%5);
+        if(dc===1)return{x:100,y:50};
+        if(dc===-1)return{x:0,y:50};
+        if(dr===1)return{x:50,y:100};
+        if(dr===-1)return{x:50,y:0};
+        return center;
+      };
+      const prev=routeIndex>0?ROUTE[routeIndex-1]:null;
+      const next=routeIndex<ROUTE.length-1?ROUTE[routeIndex+1]:null;
+      const a=edgePoint(i,prev),b=edgePoint(i,next);
+      let d;
+      if(prev==null){d="M "+center.x+" "+center.y+" L "+b.x+" "+b.y}
+      else if(next==null){d="M "+a.x+" "+a.y+" L "+center.x+" "+center.y}
+      else if((a.x===b.x)||(a.y===b.y)){d="M "+a.x+" "+a.y+" L "+b.x+" "+b.y}
+      else{d="M "+a.x+" "+a.y+" Q 50 50 "+b.x+" "+b.y}
+      c.insertAdjacentHTML("beforeend",'<svg class="maze-road-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="'+d+'"/></svg>');
+    }
+    if(i===ROUTE[position]){c.classList.add("current");c.insertAdjacentHTML("beforeend",'<span class="maze-icon">🧒</span>')}
+    else if(i===ROUTE[ROUTE.length-1]){c.classList.add("exit");c.insertAdjacentHTML("beforeend",'<span class="maze-icon">🚩</span><span class="maze-label">EXIT</span>')}
     box.appendChild(c);
   }
 }
