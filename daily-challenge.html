@@ -197,6 +197,8 @@ button:disabled{opacity:.28;cursor:default}
 .list li{display:grid;grid-template-columns:34px 1fr auto;gap:10px;padding:10px 0;border-bottom:2px solid var(--line);font-size:17px;align-items:baseline}
 .list .ok{color:var(--green);font-weight:700}.list .no{color:var(--red);font-weight:700}.list .sk{color:var(--muted);font-weight:700}
 .list .given{color:var(--muted);text-align:right;white-space:nowrap}
+.results-review-title{margin:22px 0 2px;font-family:"Fredoka",system-ui,sans-serif;color:#5332ae}
+.results-review-copy{margin:0 0 10px;color:var(--muted);font-weight:800}
 .practice-next{border:2px solid var(--line);border-radius:22px;padding:16px;background:linear-gradient(135deg,#fff9ea,#f6f0ff);box-shadow:0 10px 24px rgba(74,50,137,.08)}
 .practice-next h2{margin:0 0 4px;font-family:"Fredoka",system-ui,sans-serif;color:#5332ae}
 .practice-next>p{margin:0 0 12px;color:var(--muted);font-weight:800}
@@ -387,6 +389,8 @@ button:disabled{opacity:.28;cursor:default}
     <div class="big" id="bigScore"></div>
     <div class="stats" id="stats"></div>
     <div class="global-save" id="globalSaveStatus">Your best score will save to the global leaderboard.</div>
+    <h2 class="results-review-title">📝 Your question review</h2>
+    <p class="results-review-copy">Check what you got right, missed, skipped, or needed another try.</p>
     <ul class="list" id="review"></ul>
     <section class="practice-next" id="practiceNext" aria-label="Recommended practice" hidden>
       <h2>🎯 Practice next</h2>
@@ -1232,20 +1236,36 @@ function practiceGameForType(type){
   const group=PRACTICE_TYPE_GROUPS.find(g=>g.types.includes(type));
   return group?group.game:null;
 }
+function inferPracticeGame(item){
+  const mapped=practiceGameForType(item&&item.type);
+  if(mapped)return mapped;
+  const s=String((item&&item.t)||'').toLowerCase();
+  if(/fraction|numerator|denominator/.test(s))return 'fractions';
+  if(/clock|time|minutes|hour/.test(s))return 'time';
+  if(/dollar|cent|coin|bill|cost|price|money/.test(s))return 'money';
+  if(/area|perimeter|angle|volume|shape/.test(s))return 'geometry';
+  if(/length|inch|foot|feet|yard|meter|centimeter|kilometer/.test(s))return 'measure';
+  if(/place|digit|expanded|round|hundred|thousand|million/.test(s))return 'place';
+  if(/divide|division|quotient|shared equally|each group/.test(s))return 'division';
+  if(/multiply|multiplication|product|rows|groups of|times/.test(s))return 'multiplication';
+  if(/pattern|compare|greater|less|comes next/.test(s))return 'number';
+  if(/how many|how much|left|more|fewer|difference|total|altogether/.test(s))return 'detective';
+  return 'maze';
+}
 function renderPracticeRecommendations(items){
   const section=$('#practiceNext'),grid=$('#practiceGrid'),copy=$('#practiceNextText');
   if(!section||!grid)return;
+  const trouble=(items||[]).filter(item=>item&&['no','ok2','skip'].includes(item.r));
   const counts={};
-  items.forEach(item=>{
-    if(!item||!item.type||!['no','ok2','skip'].includes(item.r))return;
-    const game=practiceGameForType(item.type);
-    if(!game)return;
+  trouble.forEach(item=>{
+    const game=inferPracticeGame(item);
     counts[game]=(counts[game]||0)+(item.r==='no'?2:1);
   });
   const ranked=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  if(!ranked.length){
-    section.hidden=true;
-    grid.innerHTML='';
+  if(!trouble.length){
+    section.hidden=false;
+    copy.textContent='Great work — no missed, skipped, or second-try questions to target this time.';
+    grid.innerHTML='<div class="practice-card"><span class="practice-icon">🌟</span><span class="practice-copy"><strong>No targeted practice needed</strong><span>Come back for tomorrow’s Daily Challenge or choose any game you want to practice.</span></span></div>';
     return;
   }
   section.hidden=false;
@@ -1483,7 +1503,13 @@ function finish(){
   if(!S||finishing)return;
   finishing=true;
   clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;
-  const done=S;S=null;
+  const done=S;
+  // If time expires after a learner has already made a wrong attempt on the
+  // current question, keep that question in the review and recommendations.
+  if(done.cur&&!done.locked&&!done.revealed&&done.tries>0){
+    done.items.push({t:done.cur.text,type:done.cur.type,given:done.input||'unfinished',ans:showAns(done.cur),r:'no',points:0});
+  }
+  S=null;
   // Leave the game immediately so a later save/render error can never strand
   // a learner on a frozen 0:00 screen.
   show('done');
