@@ -1355,10 +1355,10 @@ async function syncGlobalDailyDates(){
 const gradeLabel=g=>'Grade '+g;
 const modeLabel=m=>m==='review'?'Review':m==='challenge'?'Challenge':'Standard';
 const modeHelpText=m=>m==='review'
-  ?'Foundations and core skills from the selected grade.'
+  ?'Foundations and core skills from the selected grade. Practice only — Review Mode does not add to the public leaderboard.'
   :m==='challenge'
-    ?'Harder stretch and multi-step work from the selected grade only.'
-    :'Balanced daily practice from the selected grade.';
+    ?'Harder stretch and multi-step work from the selected grade only. Scores count on the public leaderboard.'
+    :'Balanced daily practice from the selected grade. Scores count on the public leaderboard.';
 function renderStart(){
   updateHawaiiClock();
   renderDeviceProgress();
