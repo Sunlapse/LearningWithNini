@@ -1584,9 +1584,6 @@ function finish(){
   const finalPoints=Math.round(done.points*100)/100;
   if(attempted>0&&!done.testMinute){try{log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}catch(e){console.error('Saving local progress failed',e)}}
   if(!done.testMinute)try{renderDeviceProgress()}catch(e){console.error('Progress display failed',e)}
-  const finishedDay=dayNumber();
-  $('#doneVideoDay').textContent=finishedDay;
-  $('#doneVideoLink').href='https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
   const maxPoints=done.items.length;
   $('#bigScore').innerHTML=`${finalPoints}<small> ${done.testMinute?'test points':'points'}</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
@@ -1606,6 +1603,13 @@ function finish(){
     });
   }else{globalStatus.textContent=done.testMinute?'🧪 1-minute test — no leaderboard or streak changes.':'Your result is saved on this device.'}
   }catch(e){console.error('Leaderboard save failed without affecting review',e)}
+  // Video display runs last and is isolated so it can never block the score or upload.
+  try{
+    const doneVideoDay=$('#doneVideoDay');
+    if(doneVideoDay)doneVideoDay.textContent=dayNumber();
+    const doneVideoLink=$('#doneVideoLink');
+    if(doneVideoLink)doneVideoLink.href='https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
+  }catch(e){console.error('Video display failed without affecting results',e)}
 
   finishing=false;
 }
@@ -1752,7 +1756,7 @@ renderStart();
               doneLink.textContent = 'Open Day ' + currentDay + ' on YouTube ↗';
             }
           } else if (currentDay) {
-            if (doneHeading) doneHeading.textContent = 'Nini’s Day ' + currentDay + ' video is coming soon ▶';
+            if (doneHeading) doneHeading.innerHTML = 'Nini’s Day <span id="doneVideoDay">' + currentDay + '</span> video is coming soon ▶';
             if (doneMeta) doneMeta.textContent = 'The player below shows the latest full challenge until today’s video is posted.';
             if (doneLink) {
               doneLink.href = 'https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
