@@ -310,6 +310,13 @@ button:disabled{opacity:.28;cursor:default}
 #done .done{min-width:0}
 #done .practice-next[hidden]{display:none}
 
+
+/* Results: prevent intrinsic grid columns from collapsing review to one word per line. */
+#done .done{width:100%;min-width:0;max-width:620px}
+#done #review{display:block;width:100%;min-width:0}
+#done #review li{display:grid!important;grid-template-columns:26px minmax(0,1fr)!important;width:100%;min-width:0;gap:6px 10px}
+#done #review li>span:nth-child(2){grid-column:2;min-width:0;overflow-wrap:break-word}
+#done #review li>.given{grid-column:2;white-space:normal;min-width:0;text-align:left}
 </style>
 </head>
 <body>
@@ -1542,6 +1549,24 @@ function finish(){
     done.items.push({t:done.cur.text,type:done.cur.type,given:done.input||'unfinished',ans:showAns(done.cur),r:'no',points:0});
   }
   S=null;
+  // Render actual recorded questions first, before any score, streak, or network work.
+  // This also makes an exception in subsequent result calculations non-destructive.
+  const earlyList=$('#review');
+  const earlyItems=Array.isArray(done.items)?done.items:[];
+  earlyList.replaceChildren();
+  for(const [i,x] of earlyItems.entries()){
+    const li=document.createElement('li');
+    const mark=document.createElement('span');mark.className=x.r==='skip'?'sk':x.r==='no'?'no':'ok';
+    mark.textContent=x.r==='skip'?'–':x.r==='no'?'✗':'✓';
+    const q=document.createElement('span');q.textContent=(i+1)+'. '+String(x.t||'Question');
+    const a=document.createElement('span');a.className='given';
+    a.textContent=(x.r==='skip'?'Skipped':x.r==='no'?'Incorrect':x.r==='ok2'?'Correct after another try':'Correct')+
+      ' · Your answer: '+String(x.given||'—')+' · Correct answer: '+String(x.ans||'—');
+    li.append(mark,q,a);earlyList.appendChild(li);
+  }
+  if(!earlyItems.length)earlyList.innerHTML='<li>No answered or skipped questions were recorded.</li>';
+  try{renderPracticeRecommendations(earlyItems)}catch(e){console.error('Practice recommendation error',e)}
+
   // Leave the game immediately so a later save/render error can never strand
   // a learner on a frozen 0:00 screen.
   show('done');
