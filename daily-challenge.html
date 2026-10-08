@@ -1230,7 +1230,12 @@ const HINT={num:'',frac:'Use / for a fraction, like 3/4',rem:'Remainder? Use R, 
 const KEYSET={num:'0123456789.',frac:'0123456789/',rem:'0123456789R',time:'0123456789:'};
 const FR=/\{(\d+|\?)\/(\d+)\}/g;
 const toHTML=q=>q.replace(FR,(m,n,d)=>`<span class="fr"><span>${n==='?'?'<span class="blank">?</span>':n}</span><span>${d}</span></span>`);
-const toText=q=>q.replace(FR,'$1/$2').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+const toText=q=>{
+  const node=document.createElement('div');
+  node.innerHTML=q.replace(FR,'$1/$2');
+  node.querySelectorAll('svg,canvas,style,script,.ten-frame-wrap,.ten-note,[aria-hidden="true"]').forEach(el=>el.remove());
+  return (node.textContent||'').replace(/\s+/g,' ').trim();
+};
 const showAns=p=>p.k==='frac'?`${p.a[0]}/${p.a[1]}`:p.k==='num'?String(p.a):p.a;
 
 function fracVal(s){let m=s.match(/^(\d+)\/(\d+)$/);if(m)return +m[2]===0?null:+m[1]/+m[2];m=s.match(/^\d+$/);return m?+s:null}
