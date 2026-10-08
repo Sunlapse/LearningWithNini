@@ -280,6 +280,36 @@ button:disabled{opacity:.28;cursor:default}
 .done-video h2{margin:0 0 4px;font-family:"Fredoka",sans-serif;color:#5b31c2}
 .done-video p{margin:0 0 11px;color:#686180;font-weight:800}
 @media(max-width:640px){.daily-video-card{padding:12px}.daily-video-embed{min-height:200px}.daily-video-head{align-items:flex-start;flex-direction:column}}
+
+/* Mobile Chrome: keep the entire question, table and controls readable. */
+@media (max-width:640px) and (orientation:portrait){
+ #game{min-height:0;overflow:hidden}
+ #game .body{min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+ #game .left,#game .right{width:100%;min-width:0;flex:0 0 auto}
+ #game .qcard{height:auto!important;max-height:none!important;min-height:100px;display:block;overflow:visible;padding:14px}
+ #game .qnum{padding:0 0 8px}
+ #game .q,#game .q.long{display:block;width:100%;min-width:0;max-width:100%;font-size:clamp(17px,4.8vw,23px);line-height:1.4;overflow-wrap:anywhere;word-break:normal}
+ #game .q>*{max-width:100%}
+ #game .q table,#game .data-table2{display:block;width:max-content;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:clamp(10px,2.7vw,13px)}
+ #game .q svg,#game .q img{max-width:100%;height:auto}
+ #game .right{display:flex;flex-direction:column;gap:8px}
+ #game .ans{min-height:62px;font-size:34px}
+ #game .keys{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(46px,auto);gap:7px;flex:none}
+ #game .key{min-width:0;min-height:46px;font-size:25px}
+ #game .acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:8px;position:static;flex:none}
+ #game .acts button{min-width:0;min-height:54px}
+ #game .bar{gap:7px;min-width:0}
+ #game .who{font-size:clamp(12px,3vw,16px)}
+ #game .timer{font-size:clamp(23px,7vw,32px);min-width:0}
+ #game .score{font-size:clamp(15px,4vw,20px)}
+ #game .icon{width:40px;height:42px;flex:none}
+}
+#done .list li{grid-template-columns:26px minmax(0,1fr);align-items:start}
+#done .list li>span:nth-child(2){min-width:0;overflow-wrap:anywhere}
+#done .list .given{grid-column:2;text-align:left;white-space:normal;overflow-wrap:anywhere}
+#done .done{min-width:0}
+#done .practice-next[hidden]{display:none}
+
 </style>
 </head>
 <body>
@@ -1540,6 +1570,7 @@ function finish(){
   const pct=attempted?Math.round(done.correct/attempted*100):0;
   $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
   const ul=$('#review');
+  try{sessionStorage.setItem('lwn-last-question-review',JSON.stringify(done.items||[]))}catch(e){}
   // Render the review independently of recommendations and persist it before
   // any asynchronous leaderboard activity can affect the results screen.
   const reviewItems=Array.isArray(done.items)?done.items:[];
@@ -1569,7 +1600,7 @@ function finish(){
     console.error('Daily Challenge review rendering failed',reviewError);
     ul.textContent='Your review could not be displayed. Please try refreshing the page.';
   }
-  try{renderPracticeRecommendations(reviewItems)}catch(e){console.error('Practice recommendations failed',e)}
+  try{renderPracticeRecommendations(reviewItems)}catch(e){console.error('Practice recommendations failed',e);const section=$('#practiceNext');if(section){section.hidden=false;$('#practiceNextText').textContent='Choose a game to practice the skills you found difficult.';$('#practiceGrid').innerHTML='<a class="practice-card" href="index.html#games">Browse math games →</a>';}}
   show('done');
   finishing=false;
 }
