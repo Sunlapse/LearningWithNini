@@ -419,13 +419,13 @@ button:disabled{opacity:.28;cursor:default}
     <div class="big" id="bigScore"></div>
     <div class="stats" id="stats"></div>
     <div class="global-save" id="globalSaveStatus">Your best score will save to the global leaderboard.</div>
-    <h2 class="results-review-title">📝 Your question review</h2>
+    <h2 class="results-review-title">📝 Your question review <small style="font-size:11px;color:#777">v3</small></h2>
     <p class="results-review-copy">Check what you got right, missed, skipped, or needed another try.</p>
-    <ul class="list" id="review"></ul>
-    <section class="practice-next" id="practiceNext" aria-label="Recommended practice" hidden>
+    <ul class="list" id="review"><li>Review will appear here after your challenge.</li></ul>
+    <section class="practice-next" id="practiceNext" aria-label="Recommended practice">
       <h2>🎯 Practice next</h2>
       <p id="practiceNextText">Based on the questions that gave you trouble today.</p>
-      <div class="practice-grid" id="practiceGrid"></div>
+      <div class="practice-grid" id="practiceGrid"><a class="practice-card" href="index.html">Browse math games →</a></div>
     </section>
     <section class="done-video" aria-label="Watch Nini solve this challenge">
       <h2 id="doneVideoHeading">Watch Nini solve Day <span id="doneVideoDay">1</span> ▶</h2>
@@ -1534,6 +1534,7 @@ function finish(){
   finishing=true;
   clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;
   const done=S;
+  try{sessionStorage.setItem('lwn-last-question-review',JSON.stringify(done.items||[]))}catch(e){}
   // If time expires after a learner has already made a wrong attempt on the
   // current question, keep that question in the review and recommendations.
   if(done.cur&&!done.locked&&!done.revealed&&done.tries>0){
@@ -1559,6 +1560,8 @@ function finish(){
   const pct=attempted?Math.round(done.correct/attempted*100):0;
   $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
   const ul=$('#review');
+  $('#practiceNext').hidden=false;
+  ul.innerHTML='<li>Preparing your completed question review…</li>';
   try{sessionStorage.setItem('lwn-last-question-review',JSON.stringify(done.items||[]))}catch(e){}
   // Render the review independently of recommendations and persist it before
   // any asynchronous leaderboard activity can affect the results screen.
