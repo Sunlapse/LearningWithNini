@@ -1697,8 +1697,11 @@
           const diff = dateDiffDays(hawaiiDateKey(new Date()), hawaiiDateKey(published));
           const heading = document.getElementById('latestChallengeHeading');
           const meta = document.getElementById('latestChallengeMeta');
-          const dayMatch = String(video.title || '').match(/\bDay\s*(\d+)\b/i);
-          const dayText = dayMatch ? ' • Day ' + dayMatch[1] : '';
+          // The daily challenge day is based on the Hawaiʻi calendar, not the
+          // latest uploaded YouTube video's title (which can lag behind).
+          const currentKey = hawaiiDateKey(new Date());
+          const currentDay = dateDiffDays(currentKey, '2026-10-07') + 12;
+          const dayText = currentDay > 0 ? ' • Day ' + currentDay : '';
           if (heading) {
             heading.textContent = diff === 0
               ? 'Today’s Challenge ▶'
@@ -1707,7 +1710,7 @@
                 : 'Latest Challenge ▶';
           }
           if (meta) {
-            meta.textContent = formatHawaiiDate(published) + dayText + ' • Daily Math Challenge';
+            meta.textContent = formatHawaiiDate(new Date()) + dayText + ' • Daily Math Challenge';
           }
           const quickLink = document.getElementById('challengeVideoLink');
           if (quickLink) quickLink.textContent = diff === 0
