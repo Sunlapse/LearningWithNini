@@ -1539,13 +1539,37 @@ function finish(){
   $('#bigScore').innerHTML=`${finalPoints}<small> points</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
   $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
-  const ul=$('#review');ul.innerHTML='';
-  done.items.forEach((x,i)=>{const li=document.createElement('li');
-    const mark=x.r==='skip'?'<span class="sk">–</span>':x.r==='no'?'<span class="no">✗</span>':'<span class="ok">✓</span>';
-    const g=x.r==='skip'?'skipped · '+x.ans:x.r==='no'?`${escapeHTML(x.given)} → ${x.ans}`:x.ans;
-    li.innerHTML=`${mark}<span>${escapeHTML(String(x.t??''))}</span><span class="given">${g}</span>`;ul.appendChild(li)});
-  if(!done.items.length)ul.innerHTML='<li><span></span><span>No problems answered this time.</span><span></span></li>';
-  try{renderPracticeRecommendations(done.items)}catch(e){}
+  const ul=$('#review');
+  // Render the review independently of recommendations and persist it before
+  // any asynchronous leaderboard activity can affect the results screen.
+  const reviewItems=Array.isArray(done.items)?done.items:[];
+  try {
+    ul.replaceChildren();
+    if(!reviewItems.length){
+      const li=document.createElement('li');
+      li.textContent='No completed questions were recorded for this session.';
+      ul.appendChild(li);
+    }
+    reviewItems.forEach((x,i)=>{
+      const li=document.createElement('li');
+      const mark=document.createElement('span');
+      mark.className=x.r==='skip'?'sk':x.r==='no'?'no':'ok';
+      mark.textContent=x.r==='skip'?'–':x.r==='no'?'✗':'✓';
+      const question=document.createElement('span');
+      question.textContent=(i+1)+'. '+String(x.t??'Question');
+      const answer=document.createElement('span');
+      answer.className='given';
+      answer.textContent=x.r==='skip'?'Skipped · Answer: '+String(x.ans??''):
+        x.r==='no'?'Your answer: '+String(x.given??'')+' · Correct: '+String(x.ans??''):
+        (x.r==='retry'?'Correct after another try · ':'Correct · ')+String(x.ans??'');
+      li.append(mark,question,answer);
+      ul.appendChild(li);
+    });
+  }catch(reviewError){
+    console.error('Daily Challenge review rendering failed',reviewError);
+    ul.textContent='Your review could not be displayed. Please try refreshing the page.';
+  }
+  try{renderPracticeRecommendations(reviewItems)}catch(e){console.error('Practice recommendations failed',e)}
   show('done');
   finishing=false;
 }
