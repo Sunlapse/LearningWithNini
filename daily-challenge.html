@@ -376,6 +376,7 @@ button:disabled{opacity:.28;cursor:default}
         <button data-v="10">10</button><button data-v="15">15</button><button data-v="20">20</button>
       </div></div>
     <button class="go" id="goBtn">Start</button>
+    <button type="button" id="oneMinuteTestBtn" class="ghost" style="width:100%;margin-top:8px">⏱️ 1-minute test challenge (no leaderboard)</button>
     <button type="button" id="testResultsBtn" class="ghost" style="width:100%;margin-top:8px">🧪 Test results (instant preview)</button>
     <a class="setup-watch-link" id="setupWatchLink" href="https://www.youtube.com/playlist?list=PLOeN8KaQujJo" target="_blank" rel="noopener">▶ Watch Nini’s challenge instead</a>
     <div class="row"><span id="setLabel">Today's shared problem set</span><a class="link" href="leaderboard.html">Global leaderboard →</a></div>
@@ -1446,15 +1447,15 @@ $('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();shar
 /* ---------- session ---------- */
 let S=null,tick=null,finishTimeout=null,finishing=false;
 function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
-function startSession(){
+function startSession(testMinute=false){
   updateHawaiiClock();
   setMobilePad(false);
   finishing=false;
   clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;
   R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+settings.mode+'|'+salt));
   lastType='';recentTypes=[];phaseQueues={};usedQuestionText=new Set();usedFactKeys=new Set();
-  const sessionMins=Number(settings.mins)||20;
-  S={items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,mins:sessionMins,grade:String(settings.grade),mode:String(settings.mode),msLeft:sessionMins*60000,end:0,paused:false,started:Date.now()};
+  const sessionMins=testMinute?1:(Number(settings.mins)||20);
+  S={testMinute,items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,mins:sessionMins,grade:String(settings.grade),mode:String(settings.mode),msLeft:sessionMins*60000,end:0,paused:false,started:Date.now()};
   $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)} · ${modeLabel(settings.mode)}</small>`;
   $('#score').textContent='0';
   show('game');requestAnimationFrame(()=>{sizeCanvas();nextProblem();resume()});
@@ -1577,20 +1578,20 @@ function finish(){
   const sessionMode=String(done.mode||settings.mode);
   const secs=Math.max(0,Math.min(sessionMins*60,Math.round(sessionMins*60-(Number(done.msLeft)||0)/1000)));
   const finalPoints=Math.round(done.points*100)/100;
-  if(attempted>0){try{log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}catch(e){console.error('Saving local progress failed',e)}}
-  try{renderDeviceProgress()}catch(e){console.error('Progress display failed',e)}
+  if(attempted>0&&!done.testMinute){try{log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}catch(e){console.error('Saving local progress failed',e)}}
+  if(!done.testMinute)try{renderDeviceProgress()}catch(e){console.error('Progress display failed',e)}
   const finishedDay=dayNumber();
   $('#doneVideoDay').textContent=finishedDay;
   $('#doneVideoLink').href='https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
   const maxPoints=done.items.length;
-  $('#bigScore').innerHTML=`${finalPoints}<small> points</small><span class="score-context">of ${maxPoints} possible</span>`;
+  $('#bigScore').innerHTML=`${finalPoints}<small> ${done.testMinute?'test points':'points'}</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
   $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
   // Review was already rendered above; never clear it during scoring or saving.
   try{sessionStorage.setItem('lwn-last-question-review',JSON.stringify(done.items||[]))}catch(e){}
   try{
   const globalStatus=$('#globalSaveStatus');
-  if(attempted>0&&window.LWNLeaderboard){
+  if(attempted>0&&!done.testMinute&&window.LWNLeaderboard){
     const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:sessionGrade+'|'+sessionMode+'|'+sessionMins+'min|'+today(),best_streak:streak()};
     queueGlobalScore(payload);
     globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
@@ -1599,7 +1600,7 @@ function finish(){
         ?'🏆 Global best score saved for '+globalName()+'.'
         :'Your local result is saved. It will retry automatically when the connection returns.';
     });
-  }else{globalStatus.textContent='Your result is saved on this device.'}
+  }else{globalStatus.textContent=done.testMinute?'🧪 1-minute test — no leaderboard or streak changes.':'Your result is saved on this device.'}
   }catch(e){console.error('Leaderboard save failed without affecting review',e)}
 
   finishing=false;
@@ -1632,7 +1633,8 @@ function previewResults(){
 }
 $('#testResultsBtn').addEventListener('click',previewResults);
 
-$('#goBtn').addEventListener('click',startSession);
+$('#goBtn').addEventListener('click',()=>startSession(false));
+$('#oneMinuteTestBtn').addEventListener('click',()=>startSession(true));
 $('#keys').addEventListener('click',e=>{const b=e.target.closest('.key');if(b)press(b.dataset.k)});
 $('#cmp').addEventListener('click',e=>{const b=e.target.closest('button');if(b)submit(b.dataset.c)});
 $('#checkBtn').addEventListener('click',()=>submit());
