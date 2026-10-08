@@ -1549,19 +1549,8 @@ function finish(){
   const sessionMode=String(done.mode||settings.mode);
   const secs=Math.max(0,Math.min(sessionMins*60,Math.round(sessionMins*60-(Number(done.msLeft)||0)/1000)));
   const finalPoints=Math.round(done.points*100)/100;
-  if(attempted>0){log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}
-  renderDeviceProgress();
-  const globalStatus=$('#globalSaveStatus');
-  if(attempted>0&&window.LWNLeaderboard){
-    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:sessionGrade+'|'+sessionMode+'|'+sessionMins+'min|'+today(),best_streak:streak()};
-    queueGlobalScore(payload);
-    globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
-    flushPendingGlobal().then(saved=>{
-      globalStatus.textContent=saved&&!pendingGlobal.some(x=>pendingKey(x)===pendingKey(payload))
-        ?'🏆 Global best score saved for '+globalName()+'.'
-        :'Your local result is saved. It will retry automatically when the connection returns.';
-    });
-  }else{globalStatus.textContent='Your result is saved on this device.'}
+  if(attempted>0){try{log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}catch(e){console.error('Saving local progress failed',e)}}
+  try{renderDeviceProgress()}catch(e){console.error('Progress display failed',e)}
   const finishedDay=dayNumber();
   $('#doneVideoDay').textContent=finishedDay;
   $('#doneVideoLink').href='https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
@@ -1601,7 +1590,20 @@ function finish(){
     ul.textContent='Your review could not be displayed. Please try refreshing the page.';
   }
   try{renderPracticeRecommendations(reviewItems)}catch(e){console.error('Practice recommendations failed',e);const section=$('#practiceNext');if(section){section.hidden=false;$('#practiceNextText').textContent='Choose a game to practice the skills you found difficult.';$('#practiceGrid').innerHTML='<a class="practice-card" href="index.html#games">Browse math games →</a>';}}
-  show('done');
+  try{
+  const globalStatus=$('#globalSaveStatus');
+  if(attempted>0&&window.LWNLeaderboard){
+    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:sessionGrade+'|'+sessionMode+'|'+sessionMins+'min|'+today(),best_streak:streak()};
+    queueGlobalScore(payload);
+    globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
+    flushPendingGlobal().then(saved=>{
+      globalStatus.textContent=saved&&!pendingGlobal.some(x=>pendingKey(x)===pendingKey(payload))
+        ?'🏆 Global best score saved for '+globalName()+'.'
+        :'Your local result is saved. It will retry automatically when the connection returns.';
+    });
+  }else{globalStatus.textContent='Your result is saved on this device.'}
+  }catch(e){console.error('Leaderboard save failed without affecting review',e)}
+
   finishing=false;
 }
 $('#goBtn').addEventListener('click',startSession);
