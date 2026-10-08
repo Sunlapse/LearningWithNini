@@ -369,6 +369,7 @@ button:disabled{opacity:.28;cursor:default}
         <button data-v="10">10</button><button data-v="15">15</button><button data-v="20">20</button>
       </div></div>
     <button class="go" id="goBtn">Start</button>
+    <button type="button" id="testResultsBtn" class="ghost" style="width:100%;margin-top:8px">🧪 Test results (instant preview)</button>
     <a class="setup-watch-link" id="setupWatchLink" href="https://www.youtube.com/playlist?list=PLOeN8KaQujJo" target="_blank" rel="noopener">▶ Watch Nini’s challenge instead</a>
     <div class="row"><span id="setLabel">Today's shared problem set</span><a class="link" href="leaderboard.html">Global leaderboard →</a></div>
     <div class="tip">Everyone choosing the same grade, mode, and Hawaiʻi date gets the same challenge. Review stays on foundational and core skills from the selected grade. Challenge uses harder stretch and multi-step work from that same grade — it does not jump to a higher grade. Your best score can appear on the global leaderboard.</div>
@@ -1609,6 +1610,34 @@ function finish(){
 
   finishing=false;
 }
+
+// Instant results preview: no session, timer, leaderboard, or streak changes.
+function previewResults(){
+  const examples=[
+    {t:'What is 7 + 5?',type:'add2',given:'12',ans:'12',r:'ok',points:1},
+    {t:'What is 9 × 3?',type:'mult3',given:'24',ans:'27',r:'no',points:0},
+    {t:'What is 60 − 18?',type:'sub2',given:'42',ans:'42',r:'ok2',points:.75},
+    {t:'What is 48 ÷ 6?',type:'div3',given:'',ans:'8',r:'skip',points:0}
+  ];
+  show('done');
+  $('#bigScore').innerHTML='1.75<small> sample points</small>';
+  $('#stats').innerHTML='<div><b>2/3</b>correct</div><div><b>Preview</b>not saved</div>';
+  $('#globalSaveStatus').textContent='🧪 Test preview only — no leaderboard or streak changes.';
+  const ul=$('#review');ul.replaceChildren();
+  examples.forEach((x,i)=>{
+    const li=document.createElement('li');
+    const mark=document.createElement('span');mark.className=x.r==='skip'?'sk':x.r==='no'?'no':'ok';mark.textContent=x.r==='skip'?'–':x.r==='no'?'✗':'✓';
+    const question=document.createElement('span');question.textContent=(i+1)+'. '+x.t;
+    const answer=document.createElement('span');answer.className='given';
+    answer.textContent=x.r==='skip'?'Skipped · Answer: '+x.ans:x.r==='no'?'Your answer: '+x.given+' · Correct: '+x.ans:x.r==='ok2'?'Correct after another try · '+x.ans:'Correct · '+x.ans;
+    li.append(mark,question,answer);ul.appendChild(li);
+  });
+  try{renderPracticeRecommendations(examples)}catch(e){console.error('Preview recommendations',e);$('#practiceNext').hidden=false;$('#practiceNextText').textContent='Practice games are temporarily unavailable.'}
+  $('#doneVideoDay').textContent=dayNumber();
+  $('#doneVideoLink').href='https://www.youtube.com/playlist?list=PLOeN8KaQujJo';
+}
+$('#testResultsBtn').addEventListener('click',previewResults);
+
 $('#goBtn').addEventListener('click',startSession);
 $('#keys').addEventListener('click',e=>{const b=e.target.closest('.key');if(b)press(b.dataset.k)});
 $('#cmp').addEventListener('click',e=>{const b=e.target.closest('button');if(b)submit(b.dataset.c)});
