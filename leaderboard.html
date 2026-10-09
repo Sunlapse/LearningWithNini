@@ -85,7 +85,7 @@ button{font:inherit}
 .daily-compare-note strong{color:#503a09}
 .leaderboard-total{display:grid;justify-items:end;gap:1px}
 .score-sub{font-family:"Nunito",Arial,sans-serif;font-size:.68rem;color:#8a829f;font-weight:900}
-.leaderboard-list{display:grid}.leaderboard-item{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:15px 22px;border-bottom:1px solid rgba(83,59,160,.075);transition:.15s}.leaderboard-item:last-child{border-bottom:0}.leaderboard-item:hover{background:#fbf9ff}.leaderboard-rank{min-width:38px;width:auto;height:38px;padding:0 9px;border-radius:13px;display:grid;place-items:center;background:#f0ebff;color:#6141bb;font-family:"Fredoka",sans-serif;font-size:1.04rem}.leaderboard-item:nth-child(1) .leaderboard-rank{background:#fff0af;color:#755700}.leaderboard-item:nth-child(2) .leaderboard-rank{background:#edf0f6;color:#5d6472}.leaderboard-item:nth-child(3) .leaderboard-rank{background:#ffe7d5;color:#8b5734}.leaderboard-name{font-family:"Fredoka",sans-serif;font-size:1.08rem;color:#49328d}.leaderboard-meta{font-size:.82rem;color:#8a829f;font-weight:800;margin-top:3px;white-space:normal}.leaderboard-total{font-family:"Fredoka",sans-serif;font-size:1.18rem;color:#6940c9;white-space:nowrap}.leaderboard-empty{padding:42px 20px;text-align:center;color:#857c9e;font-weight:900}.loading{padding:42px 20px;text-align:center;color:#82789d;font-weight:900}
+.leaderboard-list{display:grid}.leaderboard-item{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:15px 22px;border-bottom:1px solid rgba(83,59,160,.075);transition:.15s}.leaderboard-item:last-child{border-bottom:0}.leaderboard-item:hover{background:#fbf9ff}.leaderboard-rank{min-width:38px;width:auto;height:38px;padding:0 9px;border-radius:13px;display:grid;place-items:center;background:#f0ebff;color:#6141bb;font-family:"Fredoka",sans-serif;font-size:1.04rem}.leaderboard-item:nth-child(1) .leaderboard-rank{background:#fff0af;color:#755700}.leaderboard-item:nth-child(2) .leaderboard-rank{background:#edf0f6;color:#5d6472}.leaderboard-item:nth-child(3) .leaderboard-rank{background:#ffe7d5;color:#8b5734}.leaderboard-name{font-family:"Fredoka",sans-serif;font-size:1.08rem;color:#49328d}.leaderboard-meta{font-size:.82rem;color:#8a829f;font-weight:800;margin-top:3px;white-space:normal}.leaderboard-meta strong{font-weight:1000;color:#49328d}.leaderboard-total{font-family:"Fredoka",sans-serif;font-size:1.18rem;color:#6940c9;white-space:nowrap}.leaderboard-empty{padding:42px 20px;text-align:center;color:#857c9e;font-weight:900}.loading{padding:42px 20px;text-align:center;color:#82789d;font-weight:900}
 .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:18px}.rule{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.8);padding:15px}.rule-icon{font-size:1.3rem}.rule strong{display:block;margin:5px 0 2px;color:#50359b}.rule span{color:#817894;font-size:.88rem;font-weight:800;line-height:1.35}
 footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
 @media(max-width:760px){
@@ -144,12 +144,11 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
       </div>
       <div class="daily-duration-wrap" id="dailyDurationWrap">
         <span class="duration-label">Challenge length</span>
-        <button class="duration-tab active" data-mins="all" type="button">All 10/15/20</button>
         <button class="duration-tab" data-mins="20" type="button">20 min</button>
         <button class="duration-tab" data-mins="15" type="button">15 min</button>
         <button class="duration-tab" data-mins="10" type="button">10 min</button>
       </div>
-      <div class="daily-compare-note" id="dailyCompareNote"><strong>⚖️ Challenge Score = 20-minute equivalent.</strong> Actual points ÷ minutes × 20 lets 10, 15 and 20-minute results appear together. Review Mode is saved in personal history but does not count in public rankings.</div>
+      <div class="daily-compare-note" id="dailyCompareNote"><strong>Actual points only.</strong> Today shows activity across challenge lengths, newest first—not a ranking. Daily History and Personal Best are separated by duration. Review Mode is saved in personal history but does not count in public rankings.</div>
       <div class="leaderboard-list" id="activeLeaderboard"><div class="loading">Loading global scores…</div></div>
     </div>
 
@@ -163,11 +162,11 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
   <footer>LearnWithNini.com ♡ Learn, play, and grow.</footer>
 </main>
 
-<script src="leaderboard-api.js"></script>
+<script src="leaderboard-api.js?v=20261009-actual-scores"></script>
 <script>
 const GAMES=[
   {id:"overall",label:"Overall",icon:"🏆",note:"Combined best scores across all games"},
-  {id:"daily_challenge",label:"Daily Challenge",icon:"📝",note:"Compare 10, 15 and 20-minute challenge scores fairly"},
+  {id:"daily_challenge",label:"Daily Challenge",icon:"📝",note:"Today’s activity and actual scores by challenge length"},
   {id:"money",label:"Money Match",icon:"💵",note:"Money Match high scores"},
   {id:"time",label:"Time Match",icon:"🕒",note:"Time Match high scores"},
   {id:"multiplication",label:"Multiplication Sprint",icon:"✖️",note:"Multiplication Sprint high scores"},
@@ -184,7 +183,7 @@ const GAMES=[
 ];
 let activeGame="overall";
 let dailyView="today";
-let dailyDuration="all";
+let dailyDuration="20";
 const el=id=>document.getElementById(id);
 
 function hawaiiDateISO(){
@@ -239,16 +238,14 @@ function selectGame(id){
   renderActive();
 }
 function updateDailyTabs(){
+  el("dailyDurationWrap").classList.toggle("show",activeGame==="daily_challenge"&&dailyView!=="today");
   el("dailyTodayBtn").classList.toggle("active",dailyView==="today");
   el("dailyHistoryBtn").classList.toggle("active",dailyView==="history");
   el("dailyBestBtn").classList.toggle("active",dailyView==="best");
   document.querySelectorAll(".duration-tab").forEach(b=>b.classList.toggle("active",b.dataset.mins===String(dailyDuration)));
 }
 function selectedMinutes(){
-  return dailyDuration==="all"?null:Number(dailyDuration);
-}
-function durationText(){
-  return dailyDuration==="all"?"10, 15 and 20-minute":dailyDuration+"-minute";
+  return Number(dailyDuration);
 }
 function setCompareNote(show){
   el("dailyCompareNote").classList.toggle("show",!!show);
@@ -318,30 +315,21 @@ function chooseLeaderboardProfile(){
   });
   setTimeout(()=>input.focus(),40);
 }
-function dailyMeta(x,combined=false){
-  const parts=[gradeLabel(x.grade),modeLabel(x.mode),Number(x.minutes||20)+" min"];
-  if(combined)parts.push(fmtScore(x.score)+" actual pts");
-  else parts.push("20-min equivalent "+fmtScore(x.equivalent_score));
-  if(x.date)parts.push(prettyHawaiiDate(x.date));
+function dailyMeta(x){
+  const parts=['<strong>'+esc(gradeLabel(x.grade))+'</strong>',
+    '<strong>'+Number(x.minutes||20)+' min</strong>',esc(modeLabel(x.mode))];
+  if(x.date)parts.push(esc(prettyHawaiiDate(x.date)));
   return parts.join(" • ");
 }
-function dailyRowHtml(x,i,combined=false){
-  const main=combined?fmtScore(x.equivalent_score):fmtScore(x.score);
-  const sub=combined?"20-min eq.":fmtScore(x.equivalent_score)+" eq.";
+function dailyRowHtml(x,i,activity=false){
   return '<div class="leaderboard-item">'+
-    '<div class="leaderboard-rank">'+(i+1)+'</div>'+
+    '<div class="leaderboard-rank">'+(activity?'✏️':i+1)+'</div>'+
     '<div><div class="leaderboard-name">'+esc(x.avatar||"⭐")+' '+esc(x.name||"Player")+'</div>'+
-    '<div class="leaderboard-meta">'+esc(dailyMeta(x,combined))+'</div></div>'+
-    '<div class="leaderboard-total"><span>⭐ '+main+'</span><span class="score-sub">'+sub+'</span></div></div>';
+    '<div class="leaderboard-meta">'+dailyMeta(x)+'</div></div>'+
+    '<div class="leaderboard-total"><span>⭐ '+fmtScore(x.score)+'</span><span class="score-sub">points</span></div></div>';
 }
 function historyRowHtml(x){
-  const meta=[gradeLabel(x.grade),modeLabel(x.mode),Number(x.minutes||20)+" min",prettyHawaiiDate(x.date)];
-  if(Number(x.best_streak)>0)meta.push("🔥 "+Number(x.best_streak)+" day streak");
-  return '<div class="leaderboard-item">'+
-    '<div class="leaderboard-rank">'+Number(x.minutes||20)+'m</div>'+
-    '<div><div class="leaderboard-name">'+esc(x.avatar||"⭐")+' '+esc(x.name||"Player")+'</div>'+
-    '<div class="leaderboard-meta">'+esc(meta.join(" • "))+'</div></div>'+
-    '<div class="leaderboard-total"><span>⭐ '+fmtScore(x.score)+'</span><span class="score-sub">'+fmtScore(x.equivalent_score)+' 20-min eq.</span></div></div>';
+  return dailyRowHtml(x,0,true);
 }
 function scoreMetaOverall(x){
   const parts=[
@@ -358,12 +346,15 @@ function rowHtml(x,i,overall=false){
     '<div class="leaderboard-meta">'+esc(meta)+'</div></div>'+
     '<div class="leaderboard-total">⭐ '+fmtScore(overall?x.total:x.score||0)+'</div></div>';
 }
+let renderVersion=0;
 async function renderActive(){
+  const version=++renderVersion;
   const list=el("activeLeaderboard");list.innerHTML='<div class="loading">Loading global scores…</div>';
   try{
     let rows;
     if(activeGame==="overall"){
       rows=await LWNLeaderboard.overall(10);
+      if(version!==renderVersion)return;
       el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
       list.innerHTML=rows.length?rows.map((x,i)=>rowHtml(x,i,true)).join(""):'<div class="leaderboard-empty">No global scores yet. Play a game and be the first on the board! 🌟</div>';
       return;
@@ -371,20 +362,18 @@ async function renderActive(){
 
     if(activeGame==="daily_challenge"){
       const mins=selectedMinutes();
-      const combined=mins===null;
 
       if(dailyView==="today"){
-        rows=await LWNLeaderboard.dailyChallenge({date:hawaiiDateISO(),minutes:mins,limit:1000});
-        el("boardTitle").textContent="Daily Challenge — Today";
-        el("boardNote").textContent=combined
-          ?"Today's 10, 15 and 20-minute scores ranked by 20-minute equivalent"
-          :"Today's "+dailyDuration+"-minute Daily Challenge scores";
+        rows=await LWNLeaderboard.dailyChallenge({date:hawaiiDateISO(),minutes:null,limit:1000,activity:true});
+      if(version!==renderVersion)return;
+        el("boardTitle").textContent="Daily Challenge — Today’s Activity";
+        el("boardNote").textContent="Everyone’s saved challenge scores today • newest first • actual points";
         el("dailyDateNote").textContent="Hawaiʻi date: "+prettyHawaiiDate(hawaiiDateISO());
-        el("countBadge").textContent=rows.length?(rows.length+" player"+(rows.length===1?"":"s")):"No scores";
-        setCompareNote(combined);
+        el("countBadge").textContent=rows.length?(rows.length+" result"+(rows.length===1?"":"s")):"No scores";
+        setCompareNote(true);
         list.innerHTML=rows.length
-          ?rows.map((x,i)=>dailyRowHtml(x,i,combined)).join("")
-          :'<div class="leaderboard-empty">No '+(combined?"Daily Challenge":dailyDuration+"-minute")+' scores yet today. Be the first! 🌟</div>';
+          ?rows.map((x,i)=>dailyRowHtml(x,i,true)).join("")
+          :'<div class="leaderboard-empty">No Daily Challenge scores yet today. Be the first! 🌟</div>';
         return;
       }
 
@@ -392,7 +381,7 @@ async function renderActive(){
         const name=currentDailyNickname();
         el("boardTitle").textContent="Daily Challenge — Daily History";
         el("boardNote").textContent=name
-          ?"Your saved "+(combined?"10, 15 and 20-minute":dailyDuration+"-minute")+" sessions"
+          ?"Your saved "+(dailyDuration+"-minute")+" sessions"
           :"Your Daily Challenge history";
         el("dailyDateNote").textContent=name?"Player: "+name:"Set a nickname to see your history";
         setCompareNote(false);
@@ -403,32 +392,34 @@ async function renderActive(){
           return;
         }
         rows=await LWNLeaderboard.dailyHistory({name,minutes:mins,limit:100});
+      if(version!==renderVersion)return;
         el("countBadge").textContent=rows.length?(rows.length+" session"+(rows.length===1?"":"s")):"No history";
         list.innerHTML=rows.length
           ?rows.map(historyRowHtml).join("")
-          :'<div class="leaderboard-empty">No saved '+(combined?"Daily Challenge":dailyDuration+"-minute")+' history yet for '+esc(name)+'.</div>';
+          :'<div class="leaderboard-empty">No saved '+(dailyDuration+"-minute")+' history yet for '+esc(name)+'.</div>';
         return;
       }
 
       rows=await LWNLeaderboard.dailyChallenge({date:null,minutes:mins,limit:1000});
+      if(version!==renderVersion)return;
       el("boardTitle").textContent="Daily Challenge — Personal Best";
-      el("boardNote").textContent=combined
-        ?"Each player's best 20-minute-equivalent score across 10, 15 and 20-minute challenges"
-        :"Each player's highest "+dailyDuration+"-minute Daily Challenge score";
+      el("boardNote").textContent="Each player's highest "+dailyDuration+"-minute Daily Challenge score • actual points";
       el("dailyDateNote").textContent="Best score per player";
       el("countBadge").textContent=rows.length?(rows.length+" player"+(rows.length===1?"":"s")):"No scores";
-      setCompareNote(combined);
+      setCompareNote(false);
       list.innerHTML=rows.length
-        ?rows.map((x,i)=>dailyRowHtml(x,i,combined)).join("")
+        ?rows.map((x,i)=>dailyRowHtml(x,i)).join("")
         :'<div class="leaderboard-empty">No Daily Challenge scores yet.</div>';
       return;
     }
 
     rows=await LWNLeaderboard.top(activeGame,10);
+      if(version!==renderVersion)return;
     el("countBadge").textContent=rows.length?("Top "+rows.length):"No scores";
     setCompareNote(false);
     list.innerHTML=rows.length?rows.map((x,i)=>rowHtml(x,i,false)).join(""):'<div class="leaderboard-empty">No global scores yet. Play this game and be the first on the board! 🌟</div>';
   }catch{
+    if(version!==renderVersion)return;
     el("countBadge").textContent="Offline";
     list.innerHTML='<div class="leaderboard-empty">Could not load global scores right now.</div>';
   }
@@ -451,7 +442,7 @@ el("dailyBestBtn").addEventListener("click",()=>{dailyView="best";updateDailyTab
 el("dailyDurationWrap").addEventListener("click",e=>{
   const b=e.target.closest(".duration-tab");
   if(!b)return;
-  dailyDuration=b.dataset.mins||"all";
+  dailyDuration=b.dataset.mins||"20";
   updateDailyTabs();
   renderActive();
 });

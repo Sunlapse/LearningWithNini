@@ -258,7 +258,7 @@ window.LWNLeaderboard = (() => {
     return rows.filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()));
   }
 
-  async function dailyChallenge({date=null,minutes=null,limit=1000,includeReview=false}={}){
+  async function dailyChallenge({date=null,minutes=null,limit=1000,includeReview=false,activity=false}={}){
     const u=new URLSearchParams({
       select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at",
       order:"score.desc,updated_at.asc",
@@ -272,10 +272,10 @@ window.LWNLeaderboard = (() => {
     if(!res.ok) throw new Error("Could not load Daily Challenge leaderboard");
     const rows=await res.json();
 
-    const combined=!([10,15,20].includes(Number(minutes)));
     const map=new Map();
     for(const r of rows){
-      const key=String(r.player_name||"Player").trim().toLowerCase();
+      const playerKey=String(r.player_name||"Player").trim().toLowerCase();
+      const key=activity?[playerKey,r.grade,r.mode,r.minutes,r.challenge_date].join("|"):playerKey;
       const mins=Number(r.minutes)||20;
       const score=Number(r.score)||0;
       const item={
@@ -285,14 +285,13 @@ window.LWNLeaderboard = (() => {
         grade:String(r.grade||""),
         mode:String(r.mode||"standard"),
         minutes:mins,
-        equivalent_score:Math.round((score*20/mins)*100)/100,
         date:String(r.challenge_date||""),
         best_streak:Number(r.best_streak)||0,
         updated_at:r.updated_at||""
       };
       const prev=map.get(key);
-      const itemRank=combined?item.equivalent_score:item.score;
-      const prevRank=prev?(combined?prev.equivalent_score:prev.score):-Infinity;
+      const itemRank=item.score;
+      const prevRank=prev?prev.score:-Infinity;
       if(!prev || itemRank>prevRank ||
         (itemRank===prevRank && item.score>prev.score) ||
         (itemRank===prevRank && item.score===prev.score && String(item.updated_at)<String(prev.updated_at))){
@@ -302,9 +301,8 @@ window.LWNLeaderboard = (() => {
 
     const out=[...map.values()];
     out.sort((a,b)=>{
-      const ar=combined?a.equivalent_score:a.score;
-      const br=combined?b.equivalent_score:b.score;
-      return br-ar || b.score-a.score || b.best_streak-a.best_streak || String(a.updated_at).localeCompare(String(b.updated_at)) || a.name.localeCompare(b.name);
+      if(activity)return String(b.updated_at).localeCompare(String(a.updated_at)) || a.name.localeCompare(b.name);
+      return b.score-a.score || b.best_streak-a.best_streak || String(a.updated_at).localeCompare(String(b.updated_at)) || a.name.localeCompare(b.name);
     });
     return out.slice(0,Math.max(1,Number(limit)||1000));
   }
@@ -340,7 +338,6 @@ window.LWNLeaderboard = (() => {
         grade,
         mode,
         minutes:mins,
-        equivalent_score:Math.round((score*20/mins)*100)/100,
         date,
         best_streak:Number(r.best_streak)||0,
         updated_at:r.updated_at||""
