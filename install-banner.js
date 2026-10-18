@@ -5,6 +5,10 @@
   if (!document.querySelector('script[src="/xp.js"]')) {
     var xs = document.createElement("script"); xs.src = "/xp.js"; xs.defer = true; document.head.appendChild(xs);
   }
+  // Parent accounts: keeps progress synced for signed-in families.
+  if (!document.querySelector('script[src="/account.js"]')) {
+    var as = document.createElement("script"); as.src = "/account.js"; as.defer = true; document.head.appendChild(as);
+  }
   // First-visit welcome: nickname, icon and grade.
   if (!document.querySelector('script[src="/welcome.js"]')) {
     var ws = document.createElement("script"); ws.src = "/welcome.js"; ws.defer = true; document.head.appendChild(ws);

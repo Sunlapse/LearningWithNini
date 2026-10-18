@@ -166,6 +166,7 @@
         return '<button type="button" data-goal="' + g.xp + '" aria-pressed="' + (g.xp === s.goal) + '"><b>' + g.xp + "</b>" + g.label + "</button>";
       }).join("") + "</div>" +
       "<a href='/path.html' style='display:block;text-align:center;margin-top:14px;padding:12px;border-radius:16px;background:linear-gradient(135deg,#F05A9F,#7546DE);color:#fff;font:700 17px/1.1 Fredoka,sans-serif;text-decoration:none'>🗺️ Open my learning path</a>" +
+      "<a href='/account.html' style='display:block;text-align:center;margin-top:8px;padding:11px;border-radius:16px;border:2px solid #E6DFF5;color:#5d35c1;font:800 15px/1.1 Nunito,sans-serif;text-decoration:none'>👤 Parents: save progress to an account</a>" +
       "<h3>Weekly league</h3><div class='league' id='lwnLeague'><div class='muted'>Loading this week's league…</div></div>" +
       "<p class='muted' style='margin:12px 0 0'>Earn XP in every game. Leagues count Daily Challenge points from Monday to Sunday (Hawaiʻi time) and reset every Monday.</p></div>";
     sh.querySelectorAll("[data-goal]").forEach(function (b) {
