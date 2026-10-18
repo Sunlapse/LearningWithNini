@@ -13,7 +13,7 @@
 
   function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && typeof s === "object") return s; } catch (e) {} return {}; }
   function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
-  function st() { var s = load(); s.days = s.days || {}; s.last = s.last || {}; s.goal = s.goal || 30; s.goalDays = s.goalDays || []; return s; }
+  function st() { var s = load(); s.days = s.days || {}; s.last = s.last || {}; s.games = s.games || {}; s.dailyDone = s.dailyDone || 0; s.goal = s.goal || 30; s.goalDays = s.goalDays || []; return s; }
   function today() {
     var p = {}; new Intl.DateTimeFormat("en-US", { timeZone: "Pacific/Honolulu", year: "numeric", month: "2-digit", day: "2-digit" })
       .formatToParts(new Date()).forEach(function (x) { if (x.type !== "literal") p[x.type] = x.value; });
@@ -50,12 +50,18 @@
     s.last[key] = score;
     var keys = Object.keys(s.last); if (keys.length > 300) keys.slice(0, keys.length - 300).forEach(function (k) { delete s.last[k]; });
     save(s);
+    var earned;
     if (p.game === "daily_challenge") {
       var first = prev == null;
-      add(Math.min(gain, 60) + (first ? 10 : 0), first ? "challenge bonus" : "");
+      earned = Math.min(gain, 60) + (first ? 10 : 0);
+      if (first) s.dailyDone += 1;
     } else {
-      add(Math.min(gain, 15), "");
+      earned = Math.min(gain, 15);
     }
+    // per-game totals feed the learning path
+    s.games[p.game] = (s.games[p.game] || 0) + Math.max(0, Math.round(earned));
+    save(s);
+    add(earned, p.game === "daily_challenge" && prev == null ? "challenge bonus" : "");
   }
   function hook() {
     var L = window.LWNLeaderboard;
@@ -159,6 +165,7 @@
       "<h3>Daily goal</h3><div class='goals'>" + GOALS.map(function (g) {
         return '<button type="button" data-goal="' + g.xp + '" aria-pressed="' + (g.xp === s.goal) + '"><b>' + g.xp + "</b>" + g.label + "</button>";
       }).join("") + "</div>" +
+      "<a href='/path.html' style='display:block;text-align:center;margin-top:14px;padding:12px;border-radius:16px;background:linear-gradient(135deg,#F05A9F,#7546DE);color:#fff;font:700 17px/1.1 Fredoka,sans-serif;text-decoration:none'>🗺️ Open my learning path</a>" +
       "<h3>Weekly league</h3><div class='league' id='lwnLeague'><div class='muted'>Loading this week's league…</div></div>" +
       "<p class='muted' style='margin:12px 0 0'>Earn XP in every game. Leagues count Daily Challenge points from Monday to Sunday (Hawaiʻi time) and reset every Monday.</p></div>";
     sh.querySelectorAll("[data-goal]").forEach(function (b) {
@@ -223,7 +230,7 @@
     }
   }
 
-  window.LWNXP = { add: add, fromScore: fromScore, open: openSheet, today: function () { return st().days[today()] || 0; } };
+  window.LWNXP = { add: add, fromScore: fromScore, open: openSheet, state: st, today: function () { return st().days[today()] || 0; } };
   if (!hook()) { var tries = 0, t = setInterval(function () { if (hook() || ++tries > 40) clearInterval(t); }, 250); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount); else mount();
 })();
