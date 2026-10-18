@@ -470,6 +470,7 @@ button:disabled{opacity:.28;cursor:default}
 
 </div>
 <script src="leaderboard-api.js"></script>
+<script src="badges.js"></script>
 <script>
 (function(){
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -1401,6 +1402,7 @@ function renderDeviceProgress(){
     el.innerHTML='<small>'+label+'</small><div class="week-dot">'+(p.dates.has(key)?'✓':'·')+'</div>';
     strip.appendChild(el);
   }
+  try{window.LWNBadges&&LWNBadges.render(p)}catch(e){console.error('Badges display failed',e)}
 }
 function knownDailyDates(){
   const ds=localDailyDates();
@@ -1593,6 +1595,7 @@ function finish(){
   const finalPoints=Math.round(done.points*100)/100;
   if(attempted>0&&!done.testMinute){try{log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}catch(e){console.error('Saving local progress failed',e)}}
   if(!done.testMinute)try{renderDeviceProgress()}catch(e){console.error('Progress display failed',e)}
+  try{if(window.LWNBadges)LWNBadges.afterFinish({test:!!done.testMinute,attempted,points:finalPoints,correct:done.correct,grade:sessionGrade,mode:sessionMode,mins:sessionMins,date:today(),player:globalName(),progress:deviceProgress()})}catch(e){console.error('Badges failed without affecting results',e)}
   const maxPoints=done.items.length;
   $('#bigScore').innerHTML=`${finalPoints}<small> ${done.testMinute?'test points':'points'}</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
