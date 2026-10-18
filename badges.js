@@ -107,6 +107,7 @@ window.LWNBadges = (function () {
 
   function celebrate(ids, note) {
     if (!ids.length && !note) return;
+    if (ids.length) { try { window.LWNFun && setTimeout(function () { LWNFun.play("badge"); }, 900); } catch (e) {} }
     css();
     var done = document.querySelector("#done .done");
     if (!done) return;

@@ -471,11 +471,14 @@ button:disabled{opacity:.28;cursor:default}
 </div>
 <script src="leaderboard-api.js"></script>
 <script src="badges.js"></script>
+<script src="fun.js"></script>
 <script>
 (function(){
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const pad2=n=>String(n).padStart(2,'0');
+const fun=(m,...a)=>{try{if(window.LWNFun&&LWNFun[m])return LWNFun[m](...a)}catch(e){console.error('Fun effect failed',e)}};
+let remoteDailySynced=false;
 const fmtD=d=>d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
 const today=()=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Pacific/Honolulu',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const p={};parts.forEach(x=>{if(x.type!=='literal')p[x.type]=x.value});return p.year+'-'+p.month+'-'+p.day};
 const dayDate=()=>new Date(today()+'T12:00:00Z');
@@ -1378,10 +1381,12 @@ function deviceProgress(){
   });
 
   const totalCorrect=log.reduce((sum,x)=>sum+(Number(x&&x.correct)||0),0);
-  return {current,best,completed:dates.length,totalCorrect,dates:ds};
+  return {current,best,completed:realDailyDates().size,totalCorrect,dates:ds};
 }
 function renderDeviceProgress(){
+  const freezeSaved=remoteDailySynced?(fun('applyFreezes',realDailyDates(),today())||''):'';
   const p=deviceProgress();
+  const frozenSet=fun('frozenDates')||new Set();
   $('#deviceStreak').textContent=p.current;
   $('#deviceCompleted').textContent=p.completed;
   $('#deviceBest').textContent=p.best;
@@ -1398,15 +1403,23 @@ function renderDeviceProgress(){
     const key=fmtUTC(d);
     const el=document.createElement('div');
     el.className='week-day'+(p.dates.has(key)?' done':'')+(key===today()?' today':'');
+    const isFrozen=frozenSet.has(key)&&!realDailyDates().has(key);
     const label=new Intl.DateTimeFormat('en-US',{weekday:'short',timeZone:'UTC'}).format(d).slice(0,1);
-    el.innerHTML='<small>'+label+'</small><div class="week-dot">'+(p.dates.has(key)?'✓':'·')+'</div>';
+    el.innerHTML='<small>'+label+'</small><div class="week-dot">'+(isFrozen?'🧊':p.dates.has(key)?'✓':'·')+'</div>';
     strip.appendChild(el);
   }
+  fun('freezeNote',document.querySelector('.progress-panel'),freezeSaved,today());
   try{window.LWNBadges&&LWNBadges.render(p)}catch(e){console.error('Badges display failed',e)}
 }
-function knownDailyDates(){
+function realDailyDates(){
   const ds=localDailyDates();
   remoteDailyDates.forEach(d=>ds.add(d));
+  return ds;
+}
+function knownDailyDates(){
+  const ds=realDailyDates();
+  const frozen=fun('frozenDates');
+  if(frozen)frozen.forEach(d=>ds.add(d));
   return ds;
 }
 const CHALLENGE_DAY_ONE='2026-09-26';
@@ -1417,14 +1430,15 @@ function dayNumber(){
 window.LWNCurrentChallengeDay=dayNumber();
 function streak(){const ds=knownDailyDates();const d=dayDate();if(!ds.has(fmtUTC(d)))d.setUTCDate(d.getUTCDate()-1);let n=0;while(ds.has(fmtUTC(d))){n++;d.setUTCDate(d.getUTCDate()-1)}return n}
 async function syncGlobalDailyDates(){
-  if(!window.LWNLeaderboard||typeof LWNLeaderboard.dailyHistory!=='function')return;
+  if(!window.LWNLeaderboard||typeof LWNLeaderboard.dailyHistory!=='function'){remoteDailySynced=true;return}
   const name=globalName();
-  if(!name)return;
+  if(!name){remoteDailySynced=true;return}
   try{
     const rows=await LWNLeaderboard.dailyHistory({name,minutes:null,limit:365});
     remoteDailyDates=new Set(rows.map(x=>x&&x.date).filter(Boolean));
+    remoteDailySynced=true;
     if($('#start').classList.contains('on'))renderStart();
-  }catch(e){}
+  }catch(e){remoteDailySynced=true;if($('#start').classList.contains('on'))renderStart()}
 }
 const gradeLabel=g=>'Grade '+g;
 const modeLabel=m=>m==='review'?'Review':m==='challenge'?'Challenge':'Standard';
@@ -1474,6 +1488,7 @@ function startSession(testMinute=false){
   $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)} · ${modeLabel(settings.mode)}</small>`;
   $('#score').textContent='0';
   show('game');requestAnimationFrame(()=>{sizeCanvas();nextProblem();resume()});
+  fun('start');
 }
 function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function resume(){
@@ -1528,6 +1543,7 @@ function submit(val){
     const earned=S.tries===0?1:S.tries===1?.75:.5;
     S.correct++;S.points+=earned;$('#score').textContent=Number.isInteger(S.points)?S.points:Math.round(S.points*100)/100;
     S.items.push({t:S.cur.text,type:S.cur.type,given,ans:showAns(S.cur),r:S.tries?'ok2':'ok',points:earned});
+    fun('right',{retry:S.tries>0});
     if(S.cur.k==='cmp')$$('#cmp button').forEach(b=>{if(isRight(S.cur,b.dataset.c))b.classList.add('correct');b.disabled=true});
     $('#ans').classList.add('good');setFb((S.tries?'Got it!':'Correct!')+' +'+earned+' point'+(earned===1?'':'s'),'good');
     S.locked=true;const fl=$('#flash');fl.classList.add('on');setTimeout(()=>{fl.classList.remove('on');nextProblem()},750);
@@ -1541,18 +1557,21 @@ function submit(val){
         S.revealed=true;S.items.push({t:S.cur.text,type:S.cur.type,given,ans:showAns(S.cur),r:'no',points:0});
         buttons.forEach(b=>{b.disabled=true;if(isRight(S.cur,b.dataset.c))b.classList.add('correct')});
         setFb('Recorded wrong — all incorrect choices were tried. Answer: '+showAns(S.cur),'bad');$('#checkBtn').textContent='Next';
+        fun('wrong',true);
       }else{
         setFb('That choice is wrong. Try a different answer.','bad');
+        fun('wrong',false);
       }
       return;
     }
     S.tries++;
+    fun('wrong',S.tries>=2);
     if(S.tries<2){setFb('Not quite. Try once more.','bad');setTimeout(()=>{if(!S||finishing)return;S.input='';updAns()},500)}
     else{S.revealed=true;S.items.push({t:S.cur.text,type:S.cur.type,given,ans:showAns(S.cur),r:'no',points:0});
       setFb('Answer: '+showAns(S.cur),'bad');$('#checkBtn').textContent='Next';}
   }
 }
-function skip(){if(!S||S.locked||S.paused)return;if(!S.revealed)S.items.push({t:S.cur.text,type:S.cur.type,given:'',ans:showAns(S.cur),r:'skip'});nextProblem()}
+function skip(){if(!S||S.locked||S.paused)return;fun('skipped');if(!S.revealed)S.items.push({t:S.cur.text,type:S.cur.type,given:'',ans:showAns(S.cur),r:'skip'});nextProblem()}
 function finish(){
   if(!S||finishing)return;
   finishing=true;
@@ -1599,6 +1618,8 @@ function finish(){
   const maxPoints=done.items.length;
   $('#bigScore').innerHTML=`${finalPoints}<small> ${done.testMinute?'test points':'points'}</small><span class="score-context">of ${maxPoints} possible</span>`;
   const pct=attempted?Math.round(done.correct/attempted*100):0;
+  if(attempted>0)fun('finish',pct);
+  if(attempted>0&&!done.testMinute&&fun('maybeEarn',deviceProgress().current,today())){setTimeout(()=>fun('say','You earned a 🧊 streak freeze!',3000),3600)}
   $('#stats').innerHTML=`<div><b>${done.correct}/${attempted}</b>correct</div><div><b>${pct}%</b>accuracy</div><div><b>${Math.floor(secs/60)}:${pad2(secs%60)}</b>time</div><div><b>${streak()}</b>day streak</div>`;
   // Review was already rendered above; never clear it during scoring or saving.
   try{sessionStorage.setItem('lwn-last-question-review',JSON.stringify(done.items||[]))}catch(e){}
