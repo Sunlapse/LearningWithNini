@@ -1,6 +1,10 @@
 // Learn With Nini – "Add to Home Screen" banner for iPad/iPhone
 // Shows a friendly tip on Apple devices in Safari, only if the site isn't already installed.
 (function () {
+  // XP ring, daily goal and weekly leagues on every page.
+  if (!document.querySelector('script[src="/xp.js"]')) {
+    var xs = document.createElement("script"); xs.src = "/xp.js"; xs.defer = true; document.head.appendChild(xs);
+  }
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch(function () {});
   }
