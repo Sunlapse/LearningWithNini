@@ -5,6 +5,10 @@
   if (!document.querySelector('script[src="/xp.js"]')) {
     var xs = document.createElement("script"); xs.src = "/xp.js"; xs.defer = true; document.head.appendChild(xs);
   }
+  // First-visit welcome: nickname, icon and grade.
+  if (!document.querySelector('script[src="/welcome.js"]')) {
+    var ws = document.createElement("script"); ws.src = "/welcome.js"; ws.defer = true; document.head.appendChild(ws);
+  }
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch(function () {});
   }
@@ -49,6 +53,6 @@
   };
 
   window.addEventListener("load", function () {
-    setTimeout(function () { document.body.appendChild(box); }, 2500);
+    setTimeout(function () { if (!document.getElementById("lwnWelcome")) document.body.appendChild(box); }, 2500);
   });
 })();
