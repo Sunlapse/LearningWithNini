@@ -1346,6 +1346,43 @@
 .printable-sample .printable-gives-back{margin-top:4px;color:#327dd9;font-weight:800;}
 .printable-sample .printable-gives-back a{color:inherit;text-decoration:underline;}
 @media(max-width:420px){.printable-sample{padding:12px 10px;}.printable-grade-row{gap:6px;grid-template-columns:minmax(50px,1fr) auto auto;}.printable-grade-label{font-size:.85rem;}.printable-grade-row a{font-size:.75rem;}.printable-grade-row .printable-buy{padding:8px;}}
+
+/* ---- Adventure redesign ---- */
+.hero-clock,.hero-equation{display:none!important}
+.hero-photo{object-position:center 22%}
+.adventures{margin:6px 0 22px}
+.adv-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.adventures h2,.for-parents h2{margin:0;font-family:"Fredoka",sans-serif;color:#3178ce;font-size:clamp(1.9rem,3vw,2.7rem);letter-spacing:-.025em}
+.adv-all{font-weight:900;color:#1E6FD9;text-decoration:none;white-space:nowrap}
+.adv-sub{margin:2px 0 12px;color:#596181;font-weight:800}
+.adv-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.adv-card{position:relative;display:block;border-radius:22px;overflow:hidden;aspect-ratio:4/5;background:#dbe9f8;box-shadow:0 10px 22px rgba(40,76,120,.14);text-decoration:none;color:#fff;transition:transform .15s}
+.adv-card:hover{transform:translateY(-3px)}
+.adv-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.adv-card:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(transparent,rgba(10,30,60,.72))}
+.adv-card.soon img{filter:saturate(.75)}
+.adv-tag{position:absolute;z-index:1;top:10px;left:10px;background:#FFD23F;color:#1f2456;font-weight:900;font-size:.72rem;padding:4px 9px;border-radius:999px}
+.adv-card.soon .adv-tag{background:rgba(255,255,255,.9);color:#3a4a6a}
+.adv-cap{position:absolute;z-index:1;left:12px;right:10px;bottom:10px;font-weight:800;font-size:.9rem;line-height:1.15}
+.adv-cap b{display:block;font-family:"Fredoka",sans-serif;font-size:1.25rem;font-weight:600}
+.how-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+.how-tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;text-decoration:none;background:#fff;border:2px solid #E3EEFA;border-radius:22px;padding:14px 10px 16px;color:#1f2456;box-shadow:0 8px 18px rgba(40,76,120,.08);transition:transform .15s}
+.how-tile:hover{transform:translateY(-3px)}
+.how-tile b{font-family:"Fredoka",sans-serif;font-weight:600;font-size:1.25rem;line-height:1.1}
+.how-art{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font-size:3.1rem;background:#FFF3C4;overflow:hidden}
+.t3 .how-art{background:#E1F0FF}
+.how-art.photo img{width:100%;height:100%;object-fit:cover}
+.how-num{position:absolute;top:10px;left:12px;width:30px;height:30px;border-radius:50%;background:#1E6FD9;color:#fff;font-weight:900;display:grid;place-items:center}
+.start-here .step-video-link{display:inline-block;margin-top:12px}
+.for-parents{margin:26px 0 20px;padding:20px 22px;border-radius:26px;background:#F6F9FD;border:1px solid rgba(59,104,160,.12)}
+.parents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.parent-card{background:#fff;border:1px solid #DCE7F4;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px;color:#4c5677;font-weight:700;font-size:.95rem;line-height:1.4}
+.parent-card strong{color:#24446c;font-size:1.02rem}
+.parent-btn{margin-top:auto;align-self:flex-start;background:#1E6FD9;color:#fff;text-decoration:none;font-weight:900;border-radius:12px;padding:9px 13px;font-size:.9rem}
+.parent-link{margin-top:auto;color:#1E6FD9;font-weight:900;text-decoration:none}
+.for-parents .printable-sample{max-width:560px}
+@media(max-width:980px){.adv-row{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 10px;margin:0 -2px;scrollbar-width:none}.adv-row::-webkit-scrollbar{display:none}.adv-card{flex:0 0 27%;scroll-snap-align:start}.parents-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.adv-card{flex-basis:46%}.how-tiles{gap:8px}.how-tile{padding:12px 6px 14px;border-radius:18px}.how-tile b{font-size:1rem}.how-art{width:70px;height:70px;font-size:2.3rem}.how-num{width:24px;height:24px;font-size:.8rem;top:7px;left:7px}.for-parents{padding:16px 12px}.hero-copy p{margin-top:14px}}
 </style>
 <!-- Learn With Nini app (Add to Home Screen) -->
 <link rel="manifest" href="/manifest.json">
@@ -1353,8 +1390,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Nini Math">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
 <script src="/install-banner.js" defer></script>
 </head>
 <body>
@@ -1371,7 +1408,7 @@
         <a href="path.html">My Path</a>
         <a href="#skill-games">Games</a>
         <a href="leaderboard.html">Leaderboard</a>
-        <a href="parents-teachers.html">Parents &amp; Teachers</a>
+        <a href="#parents">Parents</a>
         <a href="#about">About</a>
       </nav>
 
@@ -1394,9 +1431,9 @@
     <section class="hero-wrap">
       <div class="shell hero">
         <div class="hero-copy">
-          <div class="hello">Hi, I’m Nini! ⭐</div>
-          <h1>Free Math Games <span class="pink">+ a Daily 20-Minute Math Challenge</span></h1>
-          <p>Practice alongside Nini. Finish the Daily Challenge, see which skills need work, and get matched to games for targeted practice. Grades 2–5.</p>
+          <div class="hello">Hi, I’m Nini! 🏄‍♀️</div>
+          <h1>Free Math Games <span class="pink">+ a Daily Challenge</span></h1>
+          <p>Come on a math adventure with me! Grades 2–5.</p>
           <div class="hero-actions">
             <a class="primary-btn" href="daily-challenge.html">Start Today’s Challenge <span>→</span></a>
           </div>
@@ -1405,43 +1442,11 @@
             <a href="#skill-games"><b>🎮</b>Games<small>14 math games</small></a>
             <a href="leaderboard.html"><b>🏆</b>Leaderboard<small>Weekly leagues</small></a>
           </nav>
-          <div class="hero-trust" aria-label="Online games and daily challenge are free; no account needed to play; grades 2 through 5">
-            <span>✓ Free online games &amp; Daily Challenge</span>
-            <span>✓ No account needed to play</span>
-            <span>✓ Grades 2–5</span>
-          </div>
-          <aside class="printable-sample" aria-label="Printable math samples and full packs">
-            <strong class="printable-heading">Take math offline ✏️</strong>
-            <span class="printable-caption">Choose your grade · Free Day 1 or a full 7-day PDF pack</span>
-            <div class="printable-grade-row" role="group" aria-labelledby="printable-grade-2">
-              <strong class="printable-grade-label" id="printable-grade-2">Grade 2</strong>
-              <a class="printable-free" href="downloads/learn-with-nini-grade-2-free-day-1.pdf" download aria-label="Download free Grade 2 Day 1 PDF sample">Free sample</a>
-              <a class="printable-buy" href="https://payhip.com/buy?link=sEmBn" target="_blank" rel="noopener" aria-label="Buy the full Grade 2 7-day PDF pack for 9 dollars">Full pack · $9</a>
-            </div>
-            <div class="printable-grade-row" role="group" aria-labelledby="printable-grade-3">
-              <strong class="printable-grade-label" id="printable-grade-3">Grade 3</strong>
-              <a class="printable-free" href="downloads/learn-with-nini-free-day-1.pdf" download aria-label="Download free Grade 3 Day 1 PDF sample">Free sample</a>
-              <a class="printable-buy" href="https://payhip.com/buy?link=CDagY" target="_blank" rel="noopener" aria-label="Buy the full Grade 3 7-day PDF pack for 9 dollars">Full pack · $9</a>
-            </div>
-            <div class="printable-grade-row" role="group" aria-labelledby="printable-grade-4">
-              <strong class="printable-grade-label" id="printable-grade-4">Grade 4</strong>
-              <a class="printable-free" href="downloads/learn-with-nini-grade-4-free-day-1.pdf" download aria-label="Download free Grade 4 Day 1 PDF sample">Free sample</a>
-              <a class="printable-buy" href="https://payhip.com/buy?link=C80ra" target="_blank" rel="noopener" aria-label="Buy the full Grade 4 7-day PDF pack for 9 dollars">Full pack · $9</a>
-            </div>
-            <div class="printable-grade-row" role="group" aria-labelledby="printable-grade-5">
-              <strong class="printable-grade-label" id="printable-grade-5">Grade 5</strong>
-              <a class="printable-free" href="downloads/learn-with-nini-grade-5-free-day-1.pdf" download aria-label="Download free Grade 5 Day 1 PDF sample">Free sample</a>
-              <a class="printable-buy" href="https://payhip.com/buy?link=Aub52" target="_blank" rel="noopener" aria-label="Buy the full Grade 5 7-day PDF pack for 9 dollars">Full pack · $9</a>
-            </div>
-            <small class="printable-note">Free samples include 10 questions + answers. No email required.</small>
-            <small class="printable-note">Full pack: 7 days of practice + answer keys · instant PDF download.</small>
-            <small class="printable-note printable-gives-back">💛 A portion of profits supports Hawaii math classrooms. <a href="#about">Learn more</a></small>
-          </aside>
-
+          
         </div>
 
         <div class="hero-art" aria-label="Nini with fun math graphics">
-          <img class="hero-photo" src="nini-hero.webp" alt="Nini smiling" />
+          <img class="hero-photo" src="nini-hero.webp" alt="Nini in her wetsuit with her surfboards" width="900" height="1140" fetchpriority="high" />
           <div class="hero-sticker hero-equation" aria-hidden="true">24 <span class="pink">÷</span> 6 <span class="pink">=</span> 4</div>
           <div class="hero-sticker hero-clock" aria-hidden="true">
             <span class="n12">12</span><span class="n3">3</span><span class="n6">6</span><span class="n9">9</span>
@@ -1459,35 +1464,31 @@
 
     <section class="content" id="games">
       <div class="shell">
+
+        <section class="adventures" id="adventures" aria-labelledby="advTitle">
+          <div class="adv-head">
+            <h2 id="advTitle">Nini’s Adventures</h2>
+            <a class="adv-all" href="path.html">My Path →</a>
+          </div>
+          <p class="adv-sub">Do math, unlock a trip!</p>
+          <div class="adv-row">
+            <a class="adv-card" href="path.html#u1"><img src="adv-hawaii.webp" alt="Nini surfing" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 1</span><span class="adv-cap"><b>Hawaii</b>Surfing</span></a>
+            <a class="adv-card" href="path.html#u2"><img src="adv-alaska.webp" alt="Nini skiing" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 2</span><span class="adv-cap"><b>Alaska</b>Skiing</span></a>
+            <a class="adv-card" href="path.html#u3"><img src="adv-china.webp" alt="Nini great wall" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 3</span><span class="adv-cap"><b>China</b>Great Wall</span></a>
+            <a class="adv-card" href="path.html#u4"><img src="adv-italy.webp" alt="Nini leaning tower" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 4</span><span class="adv-cap"><b>Italy</b>Leaning Tower</span></a>
+            <a class="adv-card soon" href="path.html"><img src="adv-reef.webp" alt="Nini swimming underwater" loading="lazy" width="600" height="656"><span class="adv-tag">Coming soon</span><span class="adv-cap"><b>Underwater</b>Swimming</span></a>
+            <a class="adv-card soon" href="path.html"><img src="adv-ranch.webp" alt="Nini riding" loading="lazy" width="600" height="656"><span class="adv-tag">Coming soon</span><span class="adv-cap"><b>Horse Ranch</b>Riding</span></a>
+          </div>
+        </section>
+
         <section class="start-here" id="start-here">
           <h2>How It Works</h2>
-          <p class="start-intro">A little math every day, like a game. No account needed to play — parents can <a href="account.html">create a free account</a> to save progress across devices.</p>
-          <div class="start-path">
-            <div class="path-step">
-              <strong><span class="path-num">1</span>Do Today’s Challenge</strong>
-              <span>Pick your grade and 10, 15, or 20 minutes. Finish each day to grow your 🔥 streak — Nini cheers you on!</span>
-              <a class="start-challenge-btn" href="daily-challenge.html">Start Daily Challenge →</a>
-              <a class="step-video-link" id="challengeVideoLink" href="#latest-video">▶ Watch Nini’s latest full challenge →</a>
-            </div>
-            <div class="path-step">
-              <strong><span class="path-num">2</span>Follow Your Path</strong>
-              <span>Every game earns ⚡ XP. Fill your daily goal ring and unlock all 17 levels on your math path.</span>
-              <a class="path-link" href="path.html">🗺️ Open My Path →</a>
-            </div>
-            <div class="path-step">
-              <strong><span class="path-num">3</span>Earn Badges &amp; Leagues</strong>
-              <span>Collect 🏅 badges, try to beat Nini’s score, and climb from 🥉 Bronze to 💎 Diamond in the weekly league.</span>
-              <a class="path-link" href="leaderboard.html">🏆 See the Leaderboard →</a>
-            </div>
+          <div class="how-tiles">
+            <a class="how-tile t1" href="daily-challenge.html"><span class="how-art">🔥</span><span class="how-num">1</span><b>Do today’s challenge</b></a>
+            <a class="how-tile t2" href="path.html"><span class="how-art photo"><img src="adv-hawaii.webp" alt="" loading="lazy"></span><span class="how-num">2</span><b>Unlock adventures</b></a>
+            <a class="how-tile t3" href="leaderboard.html"><span class="how-art">🏆</span><span class="how-num">3</span><b>Win badges</b></a>
           </div>
-          <details class="app-tip">
-            <summary>📲 Use it like an app on your iPad or iPhone</summary>
-            <ol>
-              <li>Open <b>learnwithnini.com</b> in <b>Safari</b>.</li>
-              <li>Tap the <b>Share</b> button (square with an up arrow).</li>
-              <li>Tap <b>Add to Home Screen</b>, then <b>Add</b>. Nini’s icon appears on your Home Screen!</li>
-            </ol>
-          </details>
+          <a class="step-video-link" id="challengeVideoLink" href="#latest-video">▶ Watch Nini’s latest challenge →</a>
         </section>
 
         <section class="games-organized" id="skill-games">
@@ -1691,6 +1692,52 @@
           </div>
         </section>
 
+        <section class="for-parents" id="parents" aria-labelledby="parentsTitle">
+          <h2 id="parentsTitle">For Parents 👋</h2>
+          <div class="parents-grid">
+            <div class="parent-card">
+              <strong>👤 Save progress</strong>
+              <span>Kids can play with no account. A free parent account keeps streaks, badges and the path on every device.</span>
+              <a class="parent-btn" href="account.html">Create a free account →</a>
+            </div>
+            <div class="parent-card">
+              <strong>📲 Use it like an app</strong>
+              <span>On iPad or iPhone: open learnwithnini.com in Safari → Share → <b>Add to Home Screen</b>.</span>
+            </div>
+            <div class="parent-card">
+              <strong>💛 Learning that gives back</strong>
+              <span>A portion of profits supports Hawaii public school math classrooms through DonorsChoose.</span>
+              <a class="parent-link" href="parents-teachers.html">Parents &amp; Teachers guide →</a>
+            </div>
+          </div>
+          <aside class="printable-sample" aria-label="Printable math samples and full packs">
+            <strong class="printable-heading">Take math offline ✏️</strong>
+            <span class="printable-caption">Choose your grade · Free Day 1 or a full 7-day PDF pack</span>
+            <div class="printable-grade-row" role="group" aria-labelledby="printable-grade-2">
+              <strong class="printable-grade-label" id="printable-grade-2">Grade 2</strong>
+              <a class="printable-free" href="downloads/learn-with-nini-grade-2-free-day-1.pdf" download aria-label="Download free Grade 2 Day 1 PDF sample">Free sample</a>
+              <a class="printable-buy" href="https://payhip.com/buy?link=sEmBn" target="_blank" rel="noopener" aria-label="Buy the full Grade 2 7-day PDF pack for 9 dollars">Full pack · $9</a>
+            </div>
+            <div class="printable-grade-row" role="group" aria-labelledby="printable-grade-3">
+              <strong class="printable-grade-label" id="printable-grade-3">Grade 3</strong>
+              <a class="printable-free" href="downloads/learn-with-nini-free-day-1.pdf" download aria-label="Download free Grade 3 Day 1 PDF sample">Free sample</a>
+              <a class="printable-buy" href="https://payhip.com/buy?link=CDagY" target="_blank" rel="noopener" aria-label="Buy the full Grade 3 7-day PDF pack for 9 dollars">Full pack · $9</a>
+            </div>
+            <div class="printable-grade-row" role="group" aria-labelledby="printable-grade-4">
+              <strong class="printable-grade-label" id="printable-grade-4">Grade 4</strong>
+              <a class="printable-free" href="downloads/learn-with-nini-grade-4-free-day-1.pdf" download aria-label="Download free Grade 4 Day 1 PDF sample">Free sample</a>
+              <a class="printable-buy" href="https://payhip.com/buy?link=C80ra" target="_blank" rel="noopener" aria-label="Buy the full Grade 4 7-day PDF pack for 9 dollars">Full pack · $9</a>
+            </div>
+            <div class="printable-grade-row" role="group" aria-labelledby="printable-grade-5">
+              <strong class="printable-grade-label" id="printable-grade-5">Grade 5</strong>
+              <a class="printable-free" href="downloads/learn-with-nini-grade-5-free-day-1.pdf" download aria-label="Download free Grade 5 Day 1 PDF sample">Free sample</a>
+              <a class="printable-buy" href="https://payhip.com/buy?link=Aub52" target="_blank" rel="noopener" aria-label="Buy the full Grade 5 7-day PDF pack for 9 dollars">Full pack · $9</a>
+            </div>
+            <small class="printable-note">Free samples include 10 questions + answers. No email required.</small>
+            <small class="printable-note">Full pack: 7 days of practice + answer keys · instant PDF download.</small>
+                      </aside>
+        </section>
+
         <section class="about-story" id="about">
           <h2>About Nini ⭐</h2>
           <p>Nini is a 3rd grader who loves math and likes seeing how much she can improve with practice. Learn With Nini started as a family project built around her daily math routine — a 10, 15, or 20-minute challenge, focused skill games, and a simple way for other kids to practice alongside her.</p>
@@ -1700,8 +1747,6 @@
             <div class="about-benefit"><strong>📈 Builds Skills</strong>Practice one topic at a time and keep growing.</div>
             <div class="about-benefit"><strong>🧠 Growth Mindset</strong>Mistakes are part of learning.</div>
           </div>
-          <div class="about-gives-back"><strong>💛 Learning That Gives Back</strong>A portion of profits from Learn With Nini goes to math classrooms in Hawaii public schools through DonorsChoose.</div>
-          <a class="about-more" href="parents-teachers.html">Parents &amp; Teachers guide →</a>
         </section>
 
         <section class="adventure">

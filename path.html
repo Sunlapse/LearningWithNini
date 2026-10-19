@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>My Math Path | Learn With Nini</title>
+<title>My Math Adventure | Learn With Nini</title>
 <meta name="description" content="Follow Nini's math path: play each game, earn XP, and unlock the next level.">
 <meta name="theme-color" content="#FBF9FF">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,9 +25,22 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
 .overall .bar{height:12px;background:#ECF3FB;border-radius:999px;overflow:hidden;margin-top:8px}
 .overall .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:999px}
 .overall b{font-family:"Fredoka",sans-serif;font-size:18px;color:#284C79}
-.unit{margin:26px 0 6px;border-radius:20px;padding:14px 16px;color:#fff;box-shadow:0 8px 20px rgba(40,76,120,.15)}
+.unit{position:relative;margin:30px 0 6px;border-radius:22px;overflow:hidden;color:#fff;min-height:170px;display:flex;align-items:flex-end;padding:16px;box-shadow:0 10px 24px rgba(40,76,120,.18);scroll-margin-top:80px}
+.unit img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.unit:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(8,28,58,.78))}
+.unit .ut{position:relative;z-index:1}
+.unit.locked img{filter:grayscale(.85) brightness(.9)}
+.unit .ulock{position:absolute;z-index:1;top:12px;right:12px;background:rgba(255,255,255,.92);color:#1F2456;font-weight:900;font-size:13px;padding:5px 10px;border-radius:999px}
+.unit .uhere{position:absolute;z-index:1;top:12px;left:12px;background:#FFD23F;color:#1F2456;font-weight:900;font-size:13px;padding:5px 10px;border-radius:999px}
+.passport{display:flex;gap:8px;justify-content:center;margin:12px 0 4px}
+.stamp{width:62px;height:62px;border-radius:50%;border:3px dashed #B9C9DD;display:grid;place-items:center;font-size:26px;filter:grayscale(1);opacity:.45;transform:rotate(-8deg);background:#fff}
+.stamp.got{filter:none;opacity:1;border:3px solid #E5533A;color:#E5533A;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 5px #E5533A}
+.stamp small{display:block;font:900 8px/1 "Nunito",sans-serif;letter-spacing:.04em;text-transform:uppercase;margin-top:-6px}
+.stop.chk .node{border-radius:50%;border:4px dashed #9FB4CC;background:#fff;box-shadow:0 7px 0 #D5DFEA}
+.stop.chk.done .node{border:4px solid #E5533A;background:#FFF4EF;box-shadow:0 7px 0 #E9B7A9}
 .unit small{display:block;font-weight:900;letter-spacing:.06em;text-transform:uppercase;opacity:.9;font-size:12px}
-.unit h2{margin:2px 0 0;font-family:"Fredoka",sans-serif;font-size:24px;line-height:1.1}
+.unit h2{margin:2px 0 0;font-family:"Fredoka",sans-serif;font-size:26px;line-height:1.1}
+.unit .trip{display:block;font-weight:800;font-size:14px;opacity:.95;margin-top:2px}
 .u1{background:linear-gradient(135deg,#F0785A,#FF8A65)}.u2{background:linear-gradient(135deg,#468ADE,#2F9DF5)}
 .u3{background:linear-gradient(135deg,#1E9E58,#2FBFA4)}.u4{background:linear-gradient(135deg,#E2A400,#F0785A)}
 .track{position:relative;padding:8px 0}
@@ -40,7 +53,6 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
 .stop.done .node{background:linear-gradient(145deg,#FFD84D,#F7B500);box-shadow:0 7px 0 #C98F00}
 .stop.cur .node{background:linear-gradient(145deg,#3EBAF4,#468ADE);box-shadow:0 7px 0 #2F72C4;animation:pulse 1.8s ease-in-out infinite}
 .stop.lock .node{filter:grayscale(1);opacity:.55}
-.stop.chk .node{border-radius:26px}
 .label{margin-top:12px;font-weight:900;font-size:14px;text-align:center;line-height:1.15}
 .label span{display:block;color:var(--muted);font-size:12px;font-weight:800}
 .start{position:absolute;top:-34px;background:#fff;color:#468ADE;border:2px solid #D8E7FA;font:700 15px/1 "Fredoka",sans-serif;padding:7px 12px;border-radius:12px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
@@ -57,6 +69,7 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){.stop.cur .node,.start{animation:none}}
+.u4 img{object-position:center 72%}
 </style>
 <!-- Learn With Nini app (Add to Home Screen) -->
 <link rel="manifest" href="/manifest.json">
@@ -64,8 +77,8 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Nini Math">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
 <script src="/install-banner.js" defer></script>
 </head>
 <body>
@@ -74,11 +87,12 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
   <div class="stats"><span id="xpStat">⚡ 0 XP</span><span id="lvlStat">🗺️ 0/17</span></div>
 </header>
 <main>
-  <h1>My Math Path</h1>
-  <p class="lead">Play each level to earn XP. Fill the ring to unlock the next one!</p>
+  <h1>My Math Adventure</h1>
+  <p class="lead">Travel with Nini! Finish levels to collect passport stamps.</p>
+  <div class="passport" id="passport" aria-label="Passport stamps"></div>
   <div class="overall"><b id="overallText">Let's start!</b><div class="bar"><i id="overallBar" style="width:0%"></i></div></div>
   <div id="path"></div>
-  <div class="trophy" id="trophy"><b>🏆</b>Finish the whole path to win the Nini Math Trophy!</div>
+  <div class="trophy" id="trophy"><b>🏆</b>Finish the whole adventure to win the Nini Math Trophy!</div>
 </main>
 <div class="tip" id="tip" role="dialog" aria-live="polite"></div>
 
@@ -87,22 +101,22 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
   // Each level is an existing game. A level is complete at GOAL XP earned in that game.
   var GOAL = 30;
   var UNITS = [
-    {cls:"u1", n:1, title:"Number Sense", steps:[
+    {cls:"u1", n:1, place:"Hawaii", emoji:"🏄‍♀️", photo:"/adv-hawaii.webp", trip:"Surf with Nini", title:"Number Sense", steps:[
       {id:"place_value", icon:"🔢", name:"Place Value Challenge", url:"place-value-challenge.html"},
       {id:"number_battle", icon:"⚔️", name:"Number Battle", url:"number-battle.html"},
       {id:"money", icon:"🪙", name:"Money Match", url:"money-match.html"},
       {chk:1}]},
-    {cls:"u2", n:2, title:"Time, Times & Sharing", steps:[
+    {cls:"u2", n:2, place:"Alaska", emoji:"⛷️", photo:"/adv-alaska.webp", trip:"Ski with Nini", title:"Time, Times & Sharing", steps:[
       {id:"time", icon:"⏰", name:"Time Match", url:"time-match.html"},
       {id:"multiplication", icon:"✖️", name:"Multiplication Sprint", url:"multiplication-sprint.html"},
       {id:"division", icon:"➗", name:"Division Dash", url:"division-dash.html"},
       {chk:2}]},
-    {cls:"u3", n:3, title:"Puzzles & Fractions", steps:[
+    {cls:"u3", n:3, place:"China", emoji:"🏯", photo:"/adv-china.webp", trip:"Walk the Great Wall", title:"Puzzles & Fractions", steps:[
       {id:"math_maze", icon:"🧩", name:"Math Maze", url:"math-maze.html"},
       {id:"fraction", icon:"🍕", name:"Fraction Builder", url:"fraction-builder.html"},
       {id:"detective", icon:"🔎", name:"Math Detective", url:"math-detective.html"},
       {chk:3}]},
-    {cls:"u4", n:4, title:"Shapes & Measuring", steps:[
+    {cls:"u4", n:4, place:"Italy", emoji:"🍕", photo:"/adv-italy.webp", trip:"Visit the Leaning Tower", title:"Shapes & Measuring", steps:[
       {id:"geometry", icon:"📐", name:"Geometry Builder", url:"geometry-builder.html"},
       {id:"length", icon:"📏", name:"Length Lab", url:"length-lab.html"},
       {id:"capacity", icon:"🥤", name:"Capacity Lab", url:"capacity-lab.html"},
@@ -130,8 +144,8 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
       var progress, done, label, sub;
       if(st.chk){
         progress=Math.min(1,daily/st.chk); done=daily>=st.chk;
-        st.icon="⭐"; st.name="Checkpoint "+st.chk; st.url="daily-challenge.html";
-        sub=done?"Complete!":"Finish "+st.chk+" Daily Challenge"+(st.chk>1?"s":"")+" ("+Math.min(daily,st.chk)+"/"+st.chk+")";
+        st.icon=u.emoji; st.name=u.place+" Stamp"; st.url="daily-challenge.html";
+        sub=done?"Stamp collected!":"Finish "+st.chk+" Daily Challenge"+(st.chk>1?"s":"")+" ("+Math.min(daily,st.chk)+"/"+st.chk+")";
       }else{
         var xp=games[st.id]||0; progress=Math.min(1,xp/GOAL); done=xp>=GOAL;
         sub=done?"Complete!":Math.min(xp,GOAL)+" / "+GOAL+" XP";
@@ -144,17 +158,26 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
     document.getElementById("xpStat").textContent="⚡ "+Object.keys(games).reduce(function(a,k){return a+(games[k]||0)},0)+" XP";
     document.getElementById("lvlStat").textContent="🗺️ "+doneCount+"/"+total;
     document.getElementById("overallBar").style.width=Math.round(doneCount/total*100)+"%";
-    document.getElementById("overallText").textContent = doneCount===0 ? "Level 1 is waiting for you!" :
-      doneCount===total ? "You finished the whole path! 🏆" : doneCount+" of "+total+" levels done — keep going!";
+    var curStep=steps.filter(function(x){return x.status==="cur"})[0];
+    document.getElementById("overallText").textContent = doneCount===total ? "You finished the whole adventure! 🏆" :
+      (doneCount===0 ? "First stop: Hawaii 🏄‍♀️" : "📍 "+curStep.u.place+" "+curStep.u.emoji+" · "+doneCount+" of "+total+" levels done");
+    document.getElementById("passport").innerHTML=UNITS.map(function(u){
+      var got=steps.some(function(x){return x.u===u&&x.st.chk&&x.status==="done"});
+      return '<div class="stamp'+(got?' got':'')+'" title="'+esc(u.place)+(got?' stamp collected':' stamp')+'"><span>'+u.emoji+'<small>'+esc(u.place)+'</small></span></div>';
+    }).join("");
     document.getElementById("trophy").classList.toggle("won", doneCount===total);
 
     var html="", i=0, lastUnit=null;
     steps.forEach(function(x){
-      if(x.u!==lastUnit){ if(lastUnit) html+="</div>"; html+='<div class="unit '+x.u.cls+'"><small>Unit '+x.u.n+'</small><h2>'+esc(x.u.title)+'</h2></div><div class="track">'; lastUnit=x.u; i=0; }
+      if(x.u!==lastUnit){ if(lastUnit) html+="</div>";
+        var us=steps.filter(function(y){return y.u===x.u}), locked=us.every(function(y){return y.status==="lock"}), here=us.some(function(y){return y.status==="cur"});
+        html+='<div class="unit '+x.u.cls+(locked?' locked':'')+'" id="'+x.u.cls+'"><img src="'+x.u.photo+'" alt="Nini in '+esc(x.u.place)+'">'+
+          (locked?'<span class="ulock">🔒 Coming up</span>':'')+(here?'<span class="uhere">📍 Nini is here!</span>':'')+
+          '<div class="ut"><small>Unit '+x.u.n+' · '+esc(x.u.place)+' '+x.u.emoji+'</small><h2>'+esc(x.u.title)+'</h2><span class="trip">'+esc(x.u.trip)+'</span></div></div><div class="track">'; lastUnit=x.u; i=0; }
       var off=OFFSETS[i%OFFSETS.length]; i++;
       var color = x.status==="done" ? "#F7B500" : "#F0785A";
       html+='<div class="stop '+x.status+(x.st.chk?" chk":"")+'" style="margin-left:calc(50% - 70px + '+off+'px)">'+
-        (x.status==="cur" ? '<div class="start">START</div>' : '')+
+        (x.status==="cur" ? '<div class="start">'+(x.st.chk?'Get your stamp!':(steps.indexOf(x)===0?'START':'Next stop!'))+'</div>' : '')+
         '<button class="node" type="button" data-i="'+steps.indexOf(x)+'" aria-label="'+esc(x.st.name)+': '+esc(x.sub)+'">'+
         (x.status!=="lock" ? ring(x.progress,color) : "")+'<span>'+(x.status==="lock"?"🔒":x.st.icon)+'</span>'+
         (x.status==="done" ? '<span class="check">✓</span>' : '')+'</button>'+
@@ -165,7 +188,8 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
     var el=document.getElementById("path"); el.innerHTML=html;
     el.querySelectorAll(".node").forEach(function(b){ b.addEventListener("click",function(){ openTip(steps[+b.dataset.i]); }); });
     var cur=el.querySelector(".stop.cur");
-    if(cur && !render.scrolled){ render.scrolled=true; setTimeout(function(){ cur.scrollIntoView({block:"center",behavior:"smooth"}); },300); }
+    var target=/^#u[1-4]$/.test(location.hash)?document.querySelector(location.hash):cur;
+    if(target && !render.scrolled){ render.scrolled=true; setTimeout(function(){ target.scrollIntoView({block:target===cur?"center":"start",behavior:"smooth"}); },300); }
   }
 
   function openTip(x){
@@ -173,8 +197,8 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
     var msg = x.status==="lock"
       ? "🔒 <b>"+esc(st.name)+"</b> unlocks after you finish the glowing level. (You can still play any game from the home page.)"
       : x.status==="done"
-        ? "✅ <b>"+esc(st.name)+"</b> is complete! Play again anytime for more XP."
-        : st.chk ? "⭐ <b>"+esc(st.name)+"</b><br>"+esc(x.sub)+"."
+        ? (st.chk ? "🛂 <b>"+esc(st.name)+"</b> collected!"+(UNITS[x.u.n]?" Nini says: Next stop, "+esc(UNITS[x.u.n].place)+" "+UNITS[x.u.n].emoji+"!":" You finished the whole trip!") : "✅ <b>"+esc(st.name)+"</b> is complete! Play again anytime for more XP.")
+        : st.chk ? x.u.emoji+" <b>"+esc(st.name)+"</b><br>"+esc(x.sub)+" to get your passport stamp!"+(UNITS[x.u.n]?"<br>Next stop: "+esc(UNITS[x.u.n].place)+" "+UNITS[x.u.n].emoji:"")
                  : "<b>"+esc(st.icon+" "+st.name)+"</b><br>Earn "+GOAL+" XP in this game to finish the level. ("+esc(x.sub)+")";
     t.innerHTML='<button type="button" aria-label="Close">×</button>'+msg+(x.status!=="lock" ? '<br><a class="go" href="'+st.url+'">'+(x.status==="done"?"Play again →":"Let's go! →")+'</a>' : "");
     t.classList.add("on");
