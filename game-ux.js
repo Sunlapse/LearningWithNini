@@ -97,6 +97,42 @@
     }).observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["class", "disabled"] });
   }
 
-  function start() { css(); try { levelDropdown(); } catch (e) {} try { autoNext(); } catch (e) {} }
+  /* ---------- 3. after "Next…", bring the new question back into view ---------- */
+  var Q_SEL = [".question-card", ".challenge-card", "#prompt", "#questionText", ".question-text", ".perim-question", ".question", "[class*='question']", "[class*='prompt']"];
+  function questionEl() {
+    for (var i = 0; i < Q_SEL.length; i++) {
+      var els = document.querySelectorAll(Q_SEL[i]);
+      for (var j = 0; j < els.length; j++) if (els[j].offsetParent !== null && els[j].getBoundingClientRect().height > 20) return els[j];
+    }
+    return null;
+  }
+  // height of whatever bar is pinned to the top of the screen
+  function headerH() {
+    var h = 0;
+    [0.15, 0.5, 0.85].forEach(function (fx) {
+      var el = document.elementFromPoint(innerWidth * fx, 6);
+      while (el && el !== document.body) {
+        var cs = getComputedStyle(el);
+        if (cs.position === "fixed" || cs.position === "sticky") { h = Math.max(h, el.getBoundingClientRect().bottom); break; }
+        el = el.parentElement;
+      }
+    });
+    return Math.min(h, innerHeight * 0.3);
+  }
+  function scrollToQuestion() {
+    var q = questionEl(); if (!q) return;
+    var top = q.getBoundingClientRect().top, hh = headerH();
+    if (top >= hh && top < innerHeight * 0.35) return; // already in view
+    var smooth = !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+    window.scrollTo({ top: Math.max(0, scrollY + top - hh - 12), behavior: smooth ? "smooth" : "auto" });
+  }
+  function nextScroll() {
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("button");
+      if (b && /^\s*Next\b/i.test(b.textContent || "")) setTimeout(scrollToQuestion, 250);
+    }, true);
+  }
+
+  function start() { css(); try { levelDropdown(); } catch (e) {} try { autoNext(); } catch (e) {} try { nextScroll(); } catch (e) {} }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
 })();

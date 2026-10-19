@@ -201,10 +201,61 @@
     }).catch(function () {});
   }
 
+  /* ---------- trip banner: a game opened from My Path shows where Nini is ---------- */
+  var TRIPS = {
+    1: { place: "Hawaii", emoji: "🏄‍♀️", photo: "/adv-hawaii.webp", games: {
+      "place-value-challenge.html": "Count Nini's seashells by hundreds, tens and ones 🐚",
+      "number-battle.html": "Beach battle! Which number makes the bigger wave? 🌊",
+      "money-match.html": "Count your coins for shave ice on the North Shore 🍧" } },
+    2: { place: "Alaska", emoji: "⛷️", photo: "/adv-alaska.webp", games: {
+      "time-match.html": "Read the clock so you catch the ski lift on time 🚡",
+      "multiplication-sprint.html": "Count the skiers on every chairlift ⛷️",
+      "division-dash.html": "Share the hot cocoa fairly with your ski team ☕" } },
+    3: { place: "China", emoji: "🏯", photo: "/adv-china.webp", games: {
+      "math-maze.html": "Find your way along the Great Wall 🧱",
+      "fraction-builder.html": "Share the dumplings fairly 🥟",
+      "math-detective.html": "Solve the mysteries at the watchtowers 🔎" } },
+    4: { place: "Italy", emoji: "🍕", photo: "/adv-italy.webp", games: {
+      "geometry-builder.html": "Build shapes like the Leaning Tower of Pisa 🗼",
+      "length-lab.html": "Measure things all around Pisa 📏",
+      "capacity-lab.html": "Fill the gelato cups and water jugs 🍨",
+      "weight-mass-lab.html": "Weigh the ingredients for Nini's pizza 🍕" } }
+  };
+  // Every game belongs to one trip, so its Nini photo shows her at that place
+  var FOCUS = { 1: "center 62%", 2: "center 62%", 3: "center 62%", 4: "center 66%" };
+  function tripPhoto() {
+    for (var u in TRIPS) if (TRIPS[u].games[page]) {
+      document.querySelectorAll('img[src$="nini-hero.webp"]').forEach(function (im) {
+        im.src = TRIPS[u].photo; im.alt = "Nini in " + TRIPS[u].place; im.style.setProperty("object-position", FOCUS[u], "important");
+      });
+      return;
+    }
+  }
+  function tripBanner() {
+    var t = null; try { t = JSON.parse(sessionStorage.getItem("lwn-trip") || "null"); } catch (e) {}
+    if (!t || t.page !== page || !TRIPS[t.u] || !TRIPS[t.u].games[page] || document.getElementById("lwnTrip")) return;
+    var T = TRIPS[t.u]; css();
+    var s = document.createElement("style");
+    s.textContent = "#lwnTrip{position:relative;z-index:50;display:flex;align-items:center;gap:12px;margin:8px auto;max-width:1100px;width:calc(100% - 20px);padding:10px 12px;border-radius:18px;color:#fff;overflow:hidden;font-family:'Nunito',system-ui,sans-serif;box-shadow:0 8px 20px rgba(30,60,100,.18)}" +
+      "#lwnTrip:before{content:'';position:absolute;inset:0;background:var(--p) center/cover;z-index:-2}#lwnTrip:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,28,58,.88),rgba(8,28,58,.55));z-index:-1}" +
+      "#lwnTrip img{width:46px;height:46px;border-radius:50%;border:3px solid #fff;flex:none}#lwnTrip .tx{flex:1;min-width:0}#lwnTrip b{display:block;font:700 18px/1.15 'Fredoka',sans-serif}" +
+      "#lwnTrip span{display:block;font-weight:800;font-size:14px;line-height:1.3;opacity:.95}#lwnTrip a{flex:none;color:#1F2456;background:#FFD23F;border-radius:999px;padding:7px 11px;font-weight:900;font-size:13px;text-decoration:none}" +
+      "#lwnTrip button{flex:none;border:0;background:rgba(255,255,255,.18);color:#fff;width:28px;height:28px;border-radius:50%;font-size:17px;cursor:pointer}" +
+      "@media(max-width:520px){#lwnTrip a{display:none}#lwnTrip b{font-size:16px}#lwnTrip span{font-size:13px}}";
+    document.head.appendChild(s);
+    var b = document.createElement("div"); b.id = "lwnTrip"; b.style.setProperty("--p", "url('" + T.photo + "')");
+    b.innerHTML = '<img src="/nini-face.webp" alt=""><div class="tx"><b>📍 You\'re in ' + esc(T.place) + "! " + T.emoji + "</b><span>" + esc(T.games[page]) + '</span></div><a href="/path.html#u' + t.u + '">🗺️ My Path</a><button type="button" aria-label="Hide">×</button>';
+    b.querySelector("button").onclick = function () { b.remove(); };
+    var header = document.querySelector("header, .topbar, .appbar, nav");
+    if (header && header.parentNode === document.body) header.insertAdjacentElement("afterend", b); else document.body.insertBefore(b, document.body.firstChild);
+  }
+
   window.LWNIcons = { locked: LOCKED, unlocked: unlocked, isUnlocked: function (i) { return unlocked().indexOf(i) >= 0; }, unlock: unlock, check: checkUnlocks, openChest: openChest };
 
   function start() {
     beatNiniBanner();
+    tripBanner();
+    tripPhoto();
     setTimeout(function () { checkUnlocks(); chestButton(); }, 1200);
     setTimeout(leagueRecap, 2500);
     // hide the chest button while a Daily Challenge round is on screen

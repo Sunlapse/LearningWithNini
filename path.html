@@ -248,6 +248,8 @@ button.stamp{font:inherit;cursor:pointer;padding:0}
     t.innerHTML='<button type="button" aria-label="Close">×</button>'+msg+(x.status!=="lock" ? '<br><a class="go" href="'+st.url+'">'+(x.status==="done"?"Play again →":"Let's go! →")+'</a>' : "");
     t.classList.add("on");
     t.querySelector("button").onclick=function(){ t.classList.remove("on"); };
+    var go=t.querySelector("a.go");
+    if(go&&!st.chk&&!st.boss) go.addEventListener("click",function(){ try{sessionStorage.setItem("lwn-trip",JSON.stringify({u:x.u.n,page:st.url.split("?")[0]}))}catch(e){} });
   }
 
   function postcard(n,isNew){
