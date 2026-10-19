@@ -105,7 +105,18 @@
       "#lwnXPSheet .league li{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:10px;font-weight:800;font-size:14px}" +
       "#lwnXPSheet .league li.me{background:#FFFBF0}" +
       "#lwnXPSheet .league li .n{width:22px;color:#8A8199}#lwnXPSheet .league li .p{margin-left:auto;font-family:'Fredoka',sans-serif}" +
-      "#lwnXPSheet .muted{color:#7A718D;font-size:13px;font-weight:700}";
+      "#lwnXPSheet .muted{color:#7A718D;font-size:13px;font-weight:700}" +
+      "#lwnLeaguePanel .league{border-radius:22px;padding:16px;background:#fff;border:2px solid #DFE9F5;box-shadow:0 10px 24px rgba(40,76,120,.08)}" +
+      "#lwnLeaguePanel .league .tier{font:700 24px/1.1 'Fredoka',sans-serif}" +
+      "#lwnLeaguePanel .league ol{margin:12px 0 0;padding:0;list-style:none}" +
+      "#lwnLeaguePanel .league li{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;font-weight:800;font-size:15px}" +
+      "#lwnLeaguePanel .league li:nth-child(odd){background:#F7FAFE}#lwnLeaguePanel .league li.me{background:#FFF6D6}" +
+      "#lwnLeaguePanel .league li .n{width:24px;color:#8A8199}#lwnLeaguePanel .league li .p{margin-left:auto;font-family:'Fredoka',sans-serif}" +
+      "#lwnLeaguePanel .muted{color:#6B7392;font-size:14px;font-weight:700;margin-top:3px}" +
+      "#lwnLeaguePanel .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 12px}" +
+      "#lwnLeaguePanel .ladder div{text-align:center;background:#fff;border:2px solid #E3EEFA;border-radius:16px;padding:8px 4px;font:800 12px/1.2 'Nunito',sans-serif;color:#5B6688}" +
+      "#lwnLeaguePanel .ladder div b{display:block;font:700 16px/1.2 'Fredoka',sans-serif;color:#24446c}#lwnLeaguePanel .ladder span{font-size:22px}" +
+      "#lwnLeaguePanel .ladder div.on{border-color:#1E6FD9;background:#EAF3FF}";
     document.head.appendChild(s);
   }
   function ringSVG(frac, full) {
@@ -197,8 +208,8 @@
       }).sort(function (a, b) { return b.points - a.points; });
     });
   }
-  function renderLeague(players) {
-    var el = document.getElementById("lwnLeague"); if (!el) return;
+  function renderLeague(players, id) {
+    var el = document.getElementById(id || "lwnLeague"); if (!el) return;
     var me = myName().toLowerCase(), mine = players.filter(function (p) { return p.key === me; })[0];
     var pts = mine ? mine.points : 0, tier = tierFor(pts), idx = LEAGUES.indexOf(tier), next = idx > 0 ? LEAGUES[idx - 1] : null;
     var group = players.filter(function (p) { return tierFor(p.points) === tier; });
@@ -206,7 +217,11 @@
     var head = "<div class='tier' style='color:" + tier.color + "'>" + tier.icon + " " + tier.name + " League</div>" +
       "<div class='muted'>" + (mine ? "You have " + pts + " points this week" + (rank ? " · #" + rank + " in " + tier.name : "") : "Finish a Daily Challenge this week to join") +
       (next ? " · " + Math.ceil(next.min - pts) + " more to reach " + next.icon + " " + next.name : " · Top league! 🏆") + "</div>";
-    var list = group.slice(0, 8);
+    if (id === "lwnLeagueP") {
+      var lad = document.getElementById("lwnLadder");
+      if (lad) lad.innerHTML = LEAGUES.slice().reverse().map(function (L) { return "<div class='" + (L === tier && mine ? "on" : "") + "'><span>" + L.icon + "</span><b>" + L.name + "</b>" + L.min + "+ pts</div>"; }).join("");
+    }
+    var list = group.slice(0, id === "lwnLeagueP" ? 10 : 8);
     if (mine && list.indexOf(mine) < 0) list.push(mine);
     el.innerHTML = head + (list.length ? "<ol>" + list.map(function (p) {
       return "<li class='" + (p === mine ? "me" : "") + "'><span class='n'>" + (group.indexOf(p) + 1) + "</span><span>" + esc(p.avatar || "⭐") + "</span><span>" +
@@ -223,6 +238,19 @@
       document.body.appendChild(b);
     }
     paint();
+    // Leaderboard page: show this week's league right on the page
+    var panel = document.getElementById("lwnLeaguePanel");
+    if (panel && !document.getElementById("lwnLeagueP")) {
+      panel.innerHTML = "<div class='ladder' id='lwnLadder'></div><div class='league' id='lwnLeagueP'><div class='muted'>Loading this week's league…</div></div>" +
+        "<p class='muted' style='margin:10px 2px 0'>Every Daily Challenge you finish adds points. Leagues reset every Monday (Hawaiʻi time).</p>";
+      var tryL = function (n) {
+        league().then(function (p) { renderLeague(p, "lwnLeagueP"); }).catch(function () {
+          if (n < 20) setTimeout(function () { tryL(n + 1); }, 300);
+          else { var e = document.getElementById("lwnLeagueP"); if (e) e.innerHTML = "<div class='muted'>League standings need an internet connection.</div>"; }
+        });
+      };
+      tryL(0);
+    }
     // Hide the ring while a Daily Challenge round is on screen (it would sit on the Skip button).
     var game = document.getElementById("game");
     if (game) {
