@@ -89,6 +89,10 @@ window.LWNBadges = (function () {
       shelf.id = "badgeShelf"; shelf.className = "badge-shelf"; shelf.setAttribute("aria-label", "Badges");
       panel.insertAdjacentElement("afterend", shelf);
     }
+    if (location.hash === "#badges" && !render.jumped) {
+      render.jumped = true;
+      setTimeout(function () { shelf.scrollIntoView({ behavior: "smooth", block: "start" }); }, 400);
+    }
     var e = earned(), items = list(), have = items.filter(function (b) { return e[b.id]; }).length;
     shelf.innerHTML = "<h2>🏅 My badges</h2><p>" + have + " of " + items.length + " earned · tap a badge to see how to get it</p>" +
       '<div class="badge-grid">' + items.map(function (b) {
