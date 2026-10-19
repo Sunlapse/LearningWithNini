@@ -73,6 +73,9 @@
       else if (k === "lwn-xp-v1") out[k] = mergeXP(l, c);
       else if (k === "lwn-freeze-v1") out[k] = mergeFreeze(l, c);
       else if (k === "learningWithNiniProfileV1") out[k] = newerProfile(l, c);
+      else if (k === "lwn-icons-v1" || k === "lwn-postcards-v1") out[k] = JSON.stringify(union(json(l, []), json(c, [])));
+      else if (k === "lwn-boss-v1") { var bx = json(l, {}), by = json(c, {}), bo = {}; Object.keys(bx).concat(Object.keys(by)).forEach(function (q) { bo[q] = !!(bx[q] || by[q]); }); out[k] = JSON.stringify(bo); }
+      else if (k === "lwn-league-best") out[k] = String(Math.max(Number(json(l, 0)) || 0, Number(json(c, 0)) || 0));
       else out[k] = l; // this device's choice wins for settings and everything else
     });
     // keep the older name/icon copies in step with the winning profile

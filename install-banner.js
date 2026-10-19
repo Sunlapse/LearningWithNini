@@ -17,6 +17,10 @@
   if (!document.querySelector('script[src="/profile.js"]')) {
     var ps = document.createElement("script"); ps.src = "/profile.js"; ps.defer = true; document.head.appendChild(ps);
   }
+  // Treasure chest, collectible icons, Beat Nini, league recap.
+  if (!document.querySelector('script[src="/rewards.js"]')) {
+    var rs = document.createElement("script"); rs.src = "/rewards.js"; rs.defer = true; document.head.appendChild(rs);
+  }
   // First-visit welcome: nickname, icon and grade.
   if (!document.querySelector('script[src="/welcome.js"]')) {
     var ws = document.createElement("script"); ws.src = "/welcome.js"; ws.defer = true; document.head.appendChild(ws);

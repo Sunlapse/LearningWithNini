@@ -39,6 +39,7 @@
     Object.keys(s.days).sort().slice(0, -60).forEach(function (k) { delete s.days[k]; });
     save(s);
     paint(); toast("+" + xp + " XP" + (why ? " · " + why : ""));
+    try { window.dispatchEvent(new CustomEvent("lwn:xp", { detail: { xp: xp, why: why || "" } })); } catch (e) {}
     if (reached) goalReached();
   }
   // Every game already saves its running score; XP is the gain since the last save for that game and level.
@@ -191,13 +192,14 @@
 
   /* ---------- weekly leagues (from Daily Challenge points) ---------- */
   function tierFor(points) { for (var i = 0; i < LEAGUES.length; i++) if (points >= LEAGUES[i].min) return LEAGUES[i]; return LEAGUES[LEAGUES.length - 1]; }
-  function league() {
+  // weekStart: a Monday (YYYY-MM-DD); defaults to this week. Counts that Monday–Sunday only.
+  function league(weekStart) {
     if (!window.LWNLeaderboard || typeof LWNLeaderboard.dailyChallenge !== "function") return Promise.reject();
-    var start = monday(today());
+    var start = weekStart || monday(today()), end = shift(start, 7);
     return LWNLeaderboard.dailyChallenge({ activity: true, includeReview: false }).then(function (rows) {
       var byPlayer = {};
       rows.forEach(function (r) {
-        if (!r.date || r.date < start) return;
+        if (!r.date || r.date < start || r.date >= end) return;
         var k = String(r.name).trim().toLowerCase(); if (!k) return;
         var p = byPlayer[k] = byPlayer[k] || { name: r.name, avatar: r.avatar, days: {} };
         p.days[r.date] = Math.max(p.days[r.date] || 0, Number(r.score) || 0);
@@ -208,9 +210,14 @@
       }).sort(function (a, b) { return b.points - a.points; });
     });
   }
+  // remember the highest league ever reached (used for icon unlocks)
+  function noteBest(tier) {
+    try { var b = Number(localStorage.getItem("lwn-league-best") || 0), r = LEAGUES.length - 1 - LEAGUES.indexOf(tier); if (r > b) localStorage.setItem("lwn-league-best", String(r)); } catch (e) {}
+  }
   function renderLeague(players, id) {
     var el = document.getElementById(id || "lwnLeague"); if (!el) return;
     var me = myName().toLowerCase(), mine = players.filter(function (p) { return p.key === me; })[0];
+    if (mine) noteBest(tierFor(mine.points));
     var pts = mine ? mine.points : 0, tier = tierFor(pts), idx = LEAGUES.indexOf(tier), next = idx > 0 ? LEAGUES[idx - 1] : null;
     var group = players.filter(function (p) { return tierFor(p.points) === tier; });
     var rank = mine ? group.indexOf(mine) + 1 : 0;
@@ -259,7 +266,8 @@
     }
   }
 
-  window.LWNXP = { add: add, fromScore: fromScore, open: openSheet, state: st, today: function () { return st().days[today()] || 0; } };
+  window.LWNXP = { add: add, fromScore: fromScore, open: openSheet, state: st, league: league, tierFor: tierFor, leagues: LEAGUES,
+    noteBest: noteBest, myName: myName, monday: monday, shift: shift, hawaiiToday: today, today: function () { return st().days[today()] || 0; } };
   if (!hook()) { var tries = 0, t = setInterval(function () { if (hook() || ++tries > 40) clearInterval(t); }, 250); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount); else mount();
 })();

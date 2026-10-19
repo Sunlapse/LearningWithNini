@@ -71,6 +71,23 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){.stop.cur .node,.start{animation:none}}
 .u4 img{object-position:center 72%}
+button.stamp{font:inherit;cursor:pointer;padding:0}
+.stop.boss .node{width:96px;height:96px;font-size:42px;background:linear-gradient(145deg,#FF9B7A,#E5533A);box-shadow:0 7px 0 #B23B26}
+.stop.boss.lock .node{background:#E4EBF3;box-shadow:0 7px 0 #C7D2E0}
+.stop.boss.done .node{background:linear-gradient(145deg,#FFD84D,#F7B500);box-shadow:0 7px 0 #C98F00}
+#postcard{position:fixed;inset:0;z-index:50;background:rgba(20,44,74,.55);display:grid;place-items:center;padding:16px}
+#postcard .pc{width:min(440px,100%);background:#FFFDF6;border-radius:22px;overflow:hidden;box-shadow:0 26px 60px rgba(0,0,0,.35);transform:rotate(-1.5deg);animation:pcIn .45s ease-out}
+#postcard .pcimg{position:relative;height:230px}#postcard .pcimg img{width:100%;height:100%;object-fit:cover}
+.u4-pc{object-position:center 70%}
+#postcard .pcstamp{position:absolute;right:12px;top:12px;width:70px;height:70px;border-radius:50%;background:#fff;border:3px solid #E5533A;color:#E5533A;display:grid;place-items:center;font-size:28px;transform:rotate(10deg);box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 5px #E5533A}
+#postcard .pcstamp small{display:block;font:900 8px/1 "Nunito",sans-serif;text-transform:uppercase;margin-top:-8px}
+#postcard .pcbody{padding:16px 18px 18px;font-weight:800;color:#3c4566}
+#postcard .pcnew{display:inline-block;background:#FFD23F;color:#1F2456;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:900;margin-bottom:6px}
+#postcard .pcto{font:700 22px/1.1 "Fredoka",sans-serif;color:#1E6FD9}
+#postcard p{font-size:17px;line-height:1.45;margin:8px 0 10px;font-family:"Fredoka",sans-serif;font-weight:500;color:#2c3557}
+#postcard .pcsign{display:flex;align-items:center;gap:8px;font:600 18px "Fredoka",sans-serif;color:#E5533A}#postcard .pcsign img{width:38px;height:38px;border-radius:50%}
+#postcard .pcbtn{display:block;width:100%;margin-top:14px;border:0;border-radius:14px;padding:13px;background:linear-gradient(135deg,#45b8ed,#1E6FD9);color:#fff;font:700 18px/1 "Fredoka",sans-serif;cursor:pointer}
+@keyframes pcIn{from{transform:rotate(-8deg) scale(.85);opacity:0}to{transform:rotate(-1.5deg);opacity:1}}
 </style>
 <!-- Learn With Nini app (Add to Home Screen) -->
 <link rel="manifest" href="/manifest.json">
@@ -80,12 +97,13 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
+<script src="/fun.js"></script>
 <script src="/install-banner.js" defer></script>
 </head>
 <body>
 <header class="top">
   <a href="/">🏠 Home</a>
-  <div class="stats"><span id="xpStat">⚡ 0 XP</span><span id="lvlStat">🗺️ 0/17</span></div>
+  <div class="stats"><span id="xpStat">⚡ 0 XP</span><span id="lvlStat">🗺️ 0/21</span></div>
 </header>
 <main>
   <h1>My Math Adventure</h1>
@@ -106,25 +124,39 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
       {id:"place_value", icon:"🔢", name:"Place Value Challenge", url:"place-value-challenge.html"},
       {id:"number_battle", icon:"⚔️", name:"Number Battle", url:"number-battle.html"},
       {id:"money", icon:"🪙", name:"Money Match", url:"money-match.html"},
+      {boss:1},
       {chk:1}]},
     {cls:"u2", n:2, place:"Alaska", emoji:"⛷️", photo:"/adv-alaska.webp", trip:"Ski with Nini", title:"Time, Times & Sharing", steps:[
       {id:"time", icon:"⏰", name:"Time Match", url:"time-match.html"},
       {id:"multiplication", icon:"✖️", name:"Multiplication Sprint", url:"multiplication-sprint.html"},
       {id:"division", icon:"➗", name:"Division Dash", url:"division-dash.html"},
+      {boss:2},
       {chk:2}]},
     {cls:"u3", n:3, place:"China", emoji:"🏯", photo:"/adv-china.webp", trip:"Walk the Great Wall", title:"Puzzles & Fractions", steps:[
       {id:"math_maze", icon:"🧩", name:"Math Maze", url:"math-maze.html"},
       {id:"fraction", icon:"🍕", name:"Fraction Builder", url:"fraction-builder.html"},
       {id:"detective", icon:"🔎", name:"Math Detective", url:"math-detective.html"},
+      {boss:3},
       {chk:3}]},
     {cls:"u4", n:4, place:"Italy", emoji:"🍕", photo:"/adv-italy.webp", trip:"Visit the Leaning Tower", title:"Shapes & Measuring", steps:[
       {id:"geometry", icon:"📐", name:"Geometry Builder", url:"geometry-builder.html"},
       {id:"length", icon:"📏", name:"Length Lab", url:"length-lab.html"},
       {id:"capacity", icon:"🥤", name:"Capacity Lab", url:"capacity-lab.html"},
       {id:"weight_mass", icon:"⚖️", name:"Weight & Mass Lab", url:"weight-mass-lab.html"},
+      {boss:4},
       {chk:4}]}
   ];
   var OFFSETS = [0, 70, 100, 70, 0, -70, -100, -70];
+  var BOSS = {1:{icon:"🌊",name:"The Big Wave"},2:{icon:"🏔️",name:"The Snow Mountain"},3:{icon:"🐉",name:"The Great Wall Dragon"},4:{icon:"🗼",name:"The Leaning Tower"}};
+  var POSTCARDS = {
+    1:"Aloha from Hawaii! 🌺 I learned to surf right here. You finished Number Sense, that's like catching your very first wave! Next stop: Alaska ⛷️",
+    2:"Brrr, greetings from the snow in Alaska! ❄️ Skiing takes practice, just like times tables, and you did it! Next stop: China 🏯",
+    3:"Nǐ hǎo from the Great Wall of China! It is SO long, like a giant number line. You crushed Puzzles & Fractions! Next stop: Italy 🍕",
+    4:"Ciao from the Leaning Tower of Pisa! 🇮🇹 It leans almost 4 degrees, that's geometry! You finished the whole adventure. I'm so proud of you! 🏆"
+  };
+  function getJ(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+  // Daily Challenges finished: XP counter, or the days saved in the challenge history (whichever is more)
+  function dailyCount(s){var days={};(getJ("dm-log",[])||[]).forEach(function(r){if(r&&r.date)days[r.date]=1});return Math.max(s.dailyDone||0,Object.keys(days).length)}
 
   function state(){
     try{ if(window.LWNXP && LWNXP.state) return LWNXP.state(); }catch(e){}
@@ -138,21 +170,26 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
   }
 
   function render(){
-    var s=state(), games=s.games||{}, daily=s.dailyDone||0;
+    var s=state(), games=s.games||{}, daily=dailyCount(s), bosses=getJ("lwn-boss-v1",{})||{};
     var steps=[], foundCurrent=false, doneCount=0, total=0;
-    UNITS.forEach(function(u){ u.steps.forEach(function(st){
+    UNITS.forEach(function(u){ var unitOk=true; u.steps.forEach(function(st){
       total++;
       var progress, done, label, sub;
-      if(st.chk){
-        progress=Math.min(1,daily/st.chk); done=daily>=st.chk;
+      if(st.boss){
+        done=!!bosses["u"+st.boss]; progress=done?1:0;
+        st.icon=BOSS[st.boss].icon; st.name="Boss: "+BOSS[st.boss].name; st.url="boss.html?u="+st.boss;
+        sub=done?"Boss beaten! 🏆":"Get 8 of 10 right in 3 min";
+      }else if(st.chk){
+        // the stamp is the end of the unit: every game and the boss must be done first
+        progress=Math.min(1,daily/st.chk); done=daily>=st.chk && unitOk;
         st.icon=u.emoji; st.name=u.place+" Stamp"; st.url="daily-challenge.html";
-        sub=done?"Stamp collected!":"Finish "+st.chk+" Daily Challenge"+(st.chk>1?"s":"")+" ("+Math.min(daily,st.chk)+"/"+st.chk+")";
+        sub=done?"Stamp collected!":(daily>=st.chk?"Finish this unit's levels and boss first":"Finish "+st.chk+" Daily Challenge"+(st.chk>1?"s":"")+" ("+Math.min(daily,st.chk)+"/"+st.chk+")");
       }else{
         var xp=games[st.id]||0; progress=Math.min(1,xp/GOAL); done=xp>=GOAL;
         sub=done?"Complete!":Math.min(xp,GOAL)+" / "+GOAL+" XP";
       }
       var status = done ? "done" : (!foundCurrent ? (foundCurrent=true,"cur") : "lock");
-      if(done) doneCount++;
+      if(done) doneCount++; else unitOk=false;
       steps.push({u:u, st:st, status:status, progress:progress, sub:sub});
     }); });
 
@@ -164,8 +201,14 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
       (doneCount===0 ? "First stop: Hawaii 🏄‍♀️" : "📍 "+curStep.u.place+" "+curStep.u.emoji+" · "+doneCount+" of "+total+" levels done");
     document.getElementById("passport").innerHTML=UNITS.map(function(u){
       var got=steps.some(function(x){return x.u===u&&x.st.chk&&x.status==="done"});
-      return '<div class="stamp'+(got?' got':'')+'" title="'+esc(u.place)+(got?' stamp collected':' stamp')+'"><span>'+u.emoji+'<small>'+esc(u.place)+'</small></span></div>';
+      return '<button type="button" class="stamp'+(got?' got':'')+'" data-u="'+u.n+'" title="'+esc(u.place)+(got?' stamp collected — tap for Nini\'s postcard':' stamp')+'"><span>'+u.emoji+'<small>'+esc(u.place)+'</small></span></button>';
     }).join("");
+    document.querySelectorAll("#passport .stamp").forEach(function(b){ b.onclick=function(){ if(b.classList.contains("got")) postcard(+b.dataset.u); else { var t=document.getElementById("tip"); t.innerHTML='<button type="button" aria-label="Close">×</button>🛂 Collect the <b>'+esc(UNITS[b.dataset.u-1].place)+'</b> stamp to get a postcard from Nini!'; t.classList.add("on"); t.querySelector("button").onclick=function(){t.classList.remove("on")}; } }; });
+    // a brand-new stamp → Nini's postcard pops up once
+    var seen=getJ("lwn-postcards-v1",[])||[];
+    seen=seen.map(String);
+    var fresh=UNITS.filter(function(u){return seen.indexOf(String(u.n))<0 && steps.some(function(x){return x.u===u&&x.st.chk&&x.status==="done"})})[0];
+    if(fresh && !document.getElementById("postcard") && !render.pcPending){ render.pcPending=true; seen.push(String(fresh.n)); try{localStorage.setItem("lwn-postcards-v1",JSON.stringify(seen))}catch(e){} setTimeout(function(){render.pcPending=false;postcard(fresh.n,true)},700); }
     document.getElementById("trophy").classList.toggle("won", doneCount===total);
 
     var html="", i=0, lastUnit=null;
@@ -177,8 +220,8 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
           '<div class="ut"><small>Unit '+x.u.n+' · '+esc(x.u.place)+' '+x.u.emoji+'</small><h2>'+esc(x.u.title)+'</h2><span class="trip">'+esc(x.u.trip)+'</span></div></div><div class="track">'; lastUnit=x.u; i=0; }
       var off=OFFSETS[i%OFFSETS.length]; i++;
       var color = x.status==="done" ? "#F7B500" : "#F0785A";
-      html+='<div class="stop '+x.status+(x.st.chk?" chk":"")+'" style="margin-left:calc(50% - 70px + '+off+'px)">'+
-        (x.status==="cur" ? '<div class="start">'+(x.st.chk?'Get your stamp!':(steps.indexOf(x)===0?'START':'Next stop!'))+'</div>' : '')+
+      html+='<div class="stop '+x.status+(x.st.chk?" chk":"")+(x.st.boss?" boss":"")+'" style="margin-left:calc(50% - 70px + '+off+'px)">'+
+        (x.status==="cur" ? '<div class="start">'+(x.st.chk?'Get your stamp!':x.st.boss?'Boss battle! ⚔️':(steps.indexOf(x)===0?'START':'Next stop!'))+'</div>' : '')+
         '<button class="node" type="button" data-i="'+steps.indexOf(x)+'" aria-label="'+esc(x.st.name)+': '+esc(x.sub)+'">'+
         (x.status!=="lock" ? ring(x.progress,color) : "")+'<span>'+(x.status==="lock"?"🔒":x.st.icon)+'</span>'+
         (x.status==="done" ? '<span class="check">✓</span>' : '')+'</button>'+
@@ -198,12 +241,24 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
     var msg = x.status==="lock"
       ? "🔒 <b>"+esc(st.name)+"</b> unlocks after you finish the glowing level. (You can still play any game from the home page.)"
       : x.status==="done"
-        ? (st.chk ? "🛂 <b>"+esc(st.name)+"</b> collected!"+(UNITS[x.u.n]?" Nini says: Next stop, "+esc(UNITS[x.u.n].place)+" "+UNITS[x.u.n].emoji+"!":" You finished the whole trip!") : "✅ <b>"+esc(st.name)+"</b> is complete! Play again anytime for more XP.")
+        ? (st.boss ? "🏆 You beat <b>"+esc(BOSS[st.boss].name)+"</b>! Battle again anytime for more XP." : st.chk ? "🛂 <b>"+esc(st.name)+"</b> collected!"+(UNITS[x.u.n]?" Nini says: Next stop, "+esc(UNITS[x.u.n].place)+" "+UNITS[x.u.n].emoji+"!":" You finished the whole trip!") : "✅ <b>"+esc(st.name)+"</b> is complete! Play again anytime for more XP.")
+        : st.boss ? "⚔️ <b>"+esc(st.name)+"</b><br>A boss blocks the way to the "+esc(x.u.place)+" stamp! Get 8 of 10 mixed questions right in 3 minutes to beat it."
         : st.chk ? x.u.emoji+" <b>"+esc(st.name)+"</b><br>"+esc(x.sub)+" to get your passport stamp!"+(UNITS[x.u.n]?"<br>Next stop: "+esc(UNITS[x.u.n].place)+" "+UNITS[x.u.n].emoji:"")
                  : "<b>"+esc(st.icon+" "+st.name)+"</b><br>Earn "+GOAL+" XP in this game to finish the level. ("+esc(x.sub)+")";
     t.innerHTML='<button type="button" aria-label="Close">×</button>'+msg+(x.status!=="lock" ? '<br><a class="go" href="'+st.url+'">'+(x.status==="done"?"Play again →":"Let's go! →")+'</a>' : "");
     t.classList.add("on");
     t.querySelector("button").onclick=function(){ t.classList.remove("on"); };
+  }
+
+  function postcard(n,isNew){
+    var u=UNITS[n-1], old=document.getElementById("postcard"); if(old) old.remove();
+    var m=document.createElement("div"); m.id="postcard";
+    m.innerHTML='<div class="pc" role="dialog" aria-modal="true" aria-label="Postcard from Nini"><div class="pcimg"><img src="'+u.photo+'"'+(n===4?' style="object-position:center 70%"':'')+' alt="Nini in '+esc(u.place)+'"><span class="pcstamp">'+u.emoji+'<small>'+esc(u.place)+'</small></span></div>'+
+      '<div class="pcbody">'+(isNew?'<div class="pcnew">🛂 New stamp collected!</div>':'')+'<div class="pcto">Postcard from Nini</div><p>'+esc(POSTCARDS[n])+'</p><div class="pcsign"><img src="/nini-face.webp" alt=""> Love, Nini</div>'+
+      '<button type="button" class="pcbtn">'+(isNew&&UNITS[n]?"Next stop: "+esc(UNITS[n].place)+" "+UNITS[n].emoji+" →":"Close")+'</button></div></div>';
+    m.addEventListener("click",function(e){ if(e.target===m||e.target.classList.contains("pcbtn")){ m.remove(); render(); } });
+    document.body.appendChild(m);
+    if(isNew){ try{ LWNFun.confetti(180); LWNFun.play("win"); }catch(e){} }
   }
 
   render();

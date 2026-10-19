@@ -39,6 +39,8 @@
       "#lwnProfile .av{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}" +
       "#lwnProfile .av button{min-height:50px;font-size:26px;border:2px solid #e1eaf6;border-radius:14px;background:#faf9ff;cursor:pointer}" +
       "#lwnProfile .av button.on{border-color:#4088df;background:#e8f2ff;transform:scale(1.06)}" +
+      "#lwnProfile .av button.lock{position:relative;background:#F3F5F8;border-style:dashed}#lwnProfile .av button.lock span{filter:grayscale(1);opacity:.35}" +
+      "#lwnProfile .av button.lock i{position:absolute;right:3px;bottom:2px;font-size:13px;font-style:normal}" +
       "#lwnProfile .go{width:100%;margin-top:16px;border:0;border-radius:16px;padding:14px;background:linear-gradient(135deg,#45b8ed,#478add);color:#fff;font:700 19px/1 'Fredoka',sans-serif;cursor:pointer}" +
       ".lwn-me{display:inline-flex;align-items:center;gap:8px;margin-top:12px;align-self:flex-start;border:2px solid #E3EEFA;background:#fff;border-radius:999px;padding:6px 14px 6px 6px;font:800 15px/1 'Nunito',system-ui,sans-serif;color:#24446c;cursor:pointer;box-shadow:0 6px 16px rgba(40,76,120,.07)}" +
       ".lwn-me .i{width:34px;height:34px;border-radius:50%;background:#FFF3C4;display:grid;place-items:center;font-size:20px}" +
@@ -46,6 +48,17 @@
     document.head.appendChild(s);
   }
 
+  // Collectible icons (unlocked by milestones / treasure chests — see rewards.js)
+  function collectHtml(avatar) {
+    var C = window.LWNIcons; if (!C) return "";
+    var have = C.locked.filter(function (x) { return C.isUnlocked(x.i); }).length;
+    return '<div class="lbl">Collect more <span style="color:#7a7191;font-weight:800">(' + have + " of " + C.locked.length + ')</span></div><div class="av">' +
+      C.locked.map(function (x) {
+        return C.isUnlocked(x.i)
+          ? '<button type="button" data-av="' + x.i + '" class="' + (x.i === avatar ? "on" : "") + '" aria-label="Icon ' + x.i + '">' + x.i + "</button>"
+          : '<button type="button" class="lock" data-lock="' + esc(x.how) + '" data-i="' + x.i + '" aria-label="Locked: ' + esc(x.how) + '"><span>' + x.i + "</span><i>🔒</i></button>";
+      }).join("") + "</div>";
+  }
   // opts.onSave(profile) — default: reload so every part of the page shows the new icon
   function open(opts) {
     opts = opts || {};
@@ -62,11 +75,14 @@
       '<div class="help" id="lwnPHelp">Keep the same nickname so your scores stay together.</div>' +
       '<div class="lbl">Pick your icon</div><div class="av">' +
       ICONS.map(function (a) { return '<button type="button" data-av="' + a + '" class="' + (a === avatar ? "on" : "") + '" aria-label="Icon ' + a + '">' + a + "</button>"; }).join("") +
-      '</div><button type="button" class="go">Save ✓</button></div>';
+      "</div>" + collectHtml(avatar) + '<button type="button" class="go">Save ✓</button></div>';
     document.body.appendChild(w);
     var big = w.querySelector("#lwnPBig"), input = w.querySelector("#lwnPName"), help = w.querySelector("#lwnPHelp");
     w.querySelectorAll("[data-av]").forEach(function (b) {
       b.onclick = function () { avatar = b.dataset.av; big.textContent = avatar; w.querySelectorAll("[data-av]").forEach(function (x) { x.classList.toggle("on", x === b); }); };
+    });
+    w.querySelectorAll("[data-lock]").forEach(function (b) {
+      b.onclick = function () { help.textContent = "🔒 " + b.dataset.i + "  " + b.dataset.lock + " to unlock it!"; help.classList.remove("bad"); };
     });
     function close() { w.remove(); }
     w.querySelector(".x").onclick = close;

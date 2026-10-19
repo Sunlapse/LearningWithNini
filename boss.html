@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Boss Level | Learn With Nini</title>
+<meta name="description" content="Beat the boss at the end of each unit on Nini's math adventure.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1F2456;--muted:#6B7392;--blue:#1E6FD9;--line:#DFE9F5;--bg:#F6F9FD;--red:#E5533A}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,sans-serif;min-height:100vh}
+.top{display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+@media (display-mode:standalone){.top{padding-top:max(34px,calc(10px + env(safe-area-inset-top,0px)))}}
+.top a,.top span{text-decoration:none;font-weight:900;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;color:inherit}
+main{max-width:560px;margin:0 auto;padding:6px 16px 120px}
+.hero{position:relative;border-radius:24px;overflow:hidden;min-height:190px;display:flex;align-items:flex-end;color:#fff;box-shadow:0 12px 28px rgba(30,60,100,.2)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(8,20,45,.82))}
+.hero .t{position:relative;z-index:1;padding:16px}
+.hero small{font-weight:900;letter-spacing:.06em;font-size:12px;text-transform:uppercase;opacity:.9}
+.hero h1{margin:2px 0 0;font:700 30px/1.05 "Fredoka",sans-serif}
+.boss{font-size:64px;line-height:1;position:absolute;right:14px;top:10px;z-index:1;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
+.boss.hit{animation:hit .35s}
+.card{background:#fff;border:2px solid var(--line);border-radius:22px;padding:18px;margin-top:14px;box-shadow:0 10px 24px rgba(40,76,120,.07)}
+.bars{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;font-weight:900;font-size:14px}
+.bar{height:14px;border-radius:999px;background:#EEF2F7;overflow:hidden}.bar i{display:block;height:100%;border-radius:999px;transition:width .4s}
+.hp i{background:linear-gradient(90deg,#FF8A65,var(--red))}.tm i{background:linear-gradient(90deg,#45b8ed,var(--blue))}
+.q{font:700 26px/1.25 "Fredoka",sans-serif;text-align:center;margin:18px 0 14px;color:#203D61;min-height:66px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts button{border:2px solid #D4E2F3;background:#fff;border-radius:18px;padding:16px 8px;font:700 22px/1.1 "Fredoka",sans-serif;color:#203D61;cursor:pointer;min-height:64px}
+.opts button.good{background:#E5F8EE;border-color:#2BB673;color:#13734A}.opts button.bad{background:#FDE6EC;border-color:#E5533A;color:#A02350}
+.opts button:disabled{cursor:default}
+.count{text-align:center;color:var(--muted);font-weight:900;margin-top:12px}
+.go{display:block;width:100%;margin-top:16px;border:0;border-radius:16px;padding:15px;background:linear-gradient(135deg,#45b8ed,#1E6FD9);color:#fff;font:700 20px/1 "Fredoka",sans-serif;cursor:pointer;text-align:center;text-decoration:none}
+.ghost{display:block;width:100%;margin-top:8px;border:2px solid var(--line);border-radius:16px;padding:13px;background:#fff;font:800 16px "Nunito",sans-serif;color:var(--blue);text-align:center;text-decoration:none}
+.center{text-align:center}.big{font-size:80px;line-height:1.1}
+h2{font:700 28px/1.1 "Fredoka",sans-serif;color:var(--blue);margin:6px 0}
+p{font-weight:800;color:#55607F;line-height:1.45}
+ul.rules{text-align:left;font-weight:800;color:#3f4a6b;line-height:1.6;padding-left:20px}
+@keyframes hit{0%,100%{transform:none}30%{transform:translateX(-8px) rotate(-6deg)}60%{transform:translateX(8px) rotate(6deg)}}
+</style>
+<!-- Learn With Nini app (Add to Home Screen) -->
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nini Math">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
+<script src="/fun.js"></script>
+<script src="/install-banner.js" defer></script>
+</head>
+<body>
+<header class="top"><a href="/path.html">← My Path</a><span id="who"></span></header>
+<main id="app"></main>
+<script>
+(function(){
+  var BOSSES={
+    1:{place:"Hawaii",emoji:"🏄‍♀️",photo:"/adv-hawaii.webp",name:"The Big Wave",boss:"🌊",topic:"Number Sense"},
+    2:{place:"Alaska",emoji:"⛷️",photo:"/adv-alaska.webp",name:"The Snow Mountain",boss:"🏔️",topic:"Time, Times & Sharing"},
+    3:{place:"China",emoji:"🏯",photo:"/adv-china.webp",name:"The Great Wall Dragon",boss:"🐉",topic:"Puzzles & Fractions"},
+    4:{place:"Italy",emoji:"🍕",photo:"/adv-italy.webp",name:"The Leaning Tower",boss:"🗼",topic:"Shapes & Measuring"}
+  };
+  var u=Math.max(1,Math.min(4,parseInt(new URLSearchParams(location.search).get("u"),10)||1)), B=BOSSES[u];
+  var TOTAL=10, NEED=8, SECS=180;
+  function $(s){return document.querySelector(s)}
+  function R(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+  function pick(a){return a[Math.floor(Math.random()*a.length)]}
+  function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function fmt(n){return Number(n).toLocaleString("en-US")}
+  // four unique answer choices around the right one
+  function choices(ans, near){
+    var set=[ans], tries=0;
+    while(set.length<4&&tries<200){tries++; var c=near(); if(c!==ans&&set.indexOf(c)<0&&!(typeof c==="number"&&c<0))set.push(c);}
+    return set.sort(function(){return Math.random()-.5});
+  }
+  function num(ans,spread){return choices(ans,function(){return ans+pick([-1,1])*R(1,spread)})}
+  function clock(h,m){return h+":"+(m<10?"0":"")+m}
+
+  var GEN={
+    1:[
+      function(){var n=R(1000,9999),s=String(n),i=R(0,3),d=+s[i];if(!d){d=R(1,9);s=s.slice(0,i)+d+s.slice(i+1);n=+s}var v=d*Math.pow(10,3-i);
+        return{q:"What is the value of the "+d+" in "+fmt(n)+"?",a:fmt(v),o:choices(fmt(v),function(){return fmt(d*Math.pow(10,R(0,3)))}).concat([]).slice(0,4)}},
+      function(){var a=R(100,999),b=R(100,999);if(a===b)b++;return{q:fmt(a)+" ⬜ "+fmt(b)+"<br><small>Which sign goes in the box?</small>",a:a>b?">":"<",o:[">","<","="]}},
+      function(){var n=R(11,989),t=Math.round(n/10)*10;return{q:"Round "+n+" to the nearest ten.",a:t,o:choices(t,function(){return t+pick([-10,10,-20,20])})}},
+      function(){var q=R(1,3),d=R(1,4),n=R(0,3),c=q*25+d*10+n*5;return{q:q+" quarter"+(q>1?"s":"")+", "+d+" dime"+(d>1?"s":"")+(n?" and "+n+" nickel"+(n>1?"s":""):"")+".<br><small>How many cents?</small>",a:c+"¢",o:choices(c+"¢",function(){return (c+pick([-15,-10,-5,5,10,15]))+"¢"})}},
+      function(){var a=R(120,600),b=R(110,390);return{q:a+" + "+b+" = ?",a:a+b,o:num(a+b,20)}},
+      function(){var a=R(400,900),b=R(100,a-50);return{q:a+" − "+b+" = ?",a:a-b,o:num(a-b,20)}}
+    ],
+    2:[
+      function(){var a=R(2,10),b=R(2,10);return{q:a+" × "+b+" = ?",a:a*b,o:choices(a*b,function(){return pick([(a+pick([-1,1]))*b,a*(b+pick([-1,1])),a*b+pick([-2,2,-4,4])])})}},
+      function(){var b=R(2,10),q=R(2,10);return{q:(b*q)+" ÷ "+b+" = ?",a:q,o:num(q,3)}},
+      function(){var h=R(1,11),m=pick([0,15,30,45]),add=pick([15,30,45]),t=h*60+m+add,H=Math.floor(t/60),M=t%60;if(H>12)H-=12;
+        var a=clock(H,M);return{q:"It is "+clock(h,m)+". What time will it be in "+add+" minutes?",a:a,o:choices(a,function(){var x=t+pick([-15,15,30,-30]),hh=Math.floor(x/60),mm=((x%60)+60)%60;if(hh>12)hh-=12;if(hh<1)hh+=12;return clock(hh,mm)})}},
+      function(){var a=R(3,9),b=R(3,9);return{q:a+" bags with "+b+" apples each.<br><small>How many apples in all?</small>",a:a*b,o:choices(a*b,function(){return pick([a+b,a*b+pick([-3,3,-6,6]),(a-1)*b])})}},
+      function(){var k=R(2,6),each=R(2,9);return{q:(k*each)+" stickers shared by "+k+" friends.<br><small>How many does each friend get?</small>",a:each,o:num(each,3)}},
+      function(){return{q:"How many minutes are in 1 hour?",a:60,o:[60,100,30,24]}}
+    ],
+    3:[
+      function(){var d=pick([3,4,5,6]),n=R(2,8);return{q:"What is 1/"+d+" of "+(d*n)+"?",a:n,o:num(n,3)}},
+      function(){var p=pick([[1,2,1,4],[1,3,1,6],[2,3,1,3],[3,4,1,2],[1,2,1,3],[2,5,1,5]]),big=p[0]/p[1]>p[2]/p[3]?p[0]+"/"+p[1]:p[2]+"/"+p[3];
+        return{q:"Which fraction is bigger?<br>"+p[0]+"/"+p[1]+" or "+p[2]+"/"+p[3],a:big,o:[p[0]+"/"+p[1],p[2]+"/"+p[3],"They're equal"]}},
+      function(){var d=pick([2,3,4]),k=pick([2,3,4]);return{q:"1/"+d+" = ?/"+(d*k),a:k,o:num(k,2)}},
+      function(){var a=R(3,9),b=R(3,9);return{q:a+" × ⬜ = "+(a*b),a:b,o:num(b,3)}},
+      function(){var t=R(20,60),g=R(5,t-5);return{q:"Nini had "+t+" shells. She gave away "+g+". How many are left?",a:t-g,o:num(t-g,6)}},
+      function(){var n=pick([2,3,4,5]),s=R(2,9);var seq=[s,s+n,s+2*n,s+3*n];return{q:"What comes next?<br>"+seq.join(", ")+", ⬜",a:s+4*n,o:num(s+4*n,3)}}
+    ],
+    4:[
+      function(){var s=pick([["triangle",3],["square",4],["pentagon",5],["hexagon",6],["octagon",8]]);return{q:"How many sides does a "+s[0]+" have?",a:s[1],o:num(s[1],2)}},
+      function(){var l=R(3,12),w=R(2,9);return{q:"A rectangle is "+l+" cm long and "+w+" cm wide.<br><small>What is its perimeter?</small>",a:2*(l+w)+" cm",o:choices(2*(l+w)+" cm",function(){return pick([l*w,l+w,2*(l+w)+pick([-2,2,4])])+" cm"})}},
+      function(){var l=R(3,10),w=R(2,8);return{q:"A rectangle is "+l+" m by "+w+" m.<br><small>What is its area?</small>",a:l*w+" sq m",o:choices(l*w+" sq m",function(){return pick([2*(l+w),l+w,l*w+pick([-2,2,l,-w])])+" sq m"})}},
+      function(){var m=R(2,9);return{q:m+" meters = ? centimeters",a:fmt(m*100),o:[fmt(m*100),fmt(m*10),fmt(m*1000),fmt(m*100+10)].sort(function(){return Math.random()-.5})}},
+      function(){var k=R(2,6);return{q:k+" kilograms = ? grams",a:fmt(k*1000),o:[fmt(k*1000),fmt(k*100),fmt(k*10),fmt(k*1000+100)].sort(function(){return Math.random()-.5})}},
+      function(){var f=R(2,5);return{q:f+" feet = ? inches",a:f*12,o:num(f*12,4)}},
+      function(){return pick([{q:"A right angle measures how many degrees?",a:90,o:[90,45,180,100]},{q:"How many milliliters are in 1 liter?",a:"1,000",o:["1,000","100","10","500"]}])}
+    ]
+  };
+  // build 10 questions, using each question type before repeating
+  function build(){var g=GEN[u],qs=[],pool=[];while(qs.length<TOTAL){if(!pool.length)pool=g.slice().sort(function(){return Math.random()-.5});var x=pool.pop()();x.o=x.o.map(String);x.a=String(x.a);if(x.o.indexOf(x.a)<0)x.o[0]=x.a;qs.push(x)}return qs}
+
+  var qs,i,right,left,timer,locked;
+  function hero(){return '<section class="hero"><img src="'+B.photo+'" alt="Nini in '+esc(B.place)+'"><div class="boss" id="boss">'+B.boss+'</div><div class="t"><small>Unit '+u+' boss · '+esc(B.place)+' '+B.emoji+'</small><h1>'+esc(B.name)+'</h1></div></section>'}
+  function intro(){
+    var beaten=(JSON.parse(localStorage.getItem("lwn-boss-v1")||"{}")||{})["u"+u];
+    $("#app").innerHTML=hero()+'<div class="card center"><h2>Boss Level ⚔️</h2><p>Nini needs your help to get past '+esc(B.name)+'!</p><ul class="rules"><li>'+TOTAL+' mixed questions from '+esc(B.topic)+'</li><li>Get <b>'+NEED+'</b> right to beat the boss</li><li>You have <b>3 minutes</b> ⏱️</li></ul>'+(beaten?'<p>✅ You already beat this boss. Play again for fun and XP!</p>':'')+'<button class="go" id="start">Start the battle! ⚔️</button></div>';
+    $("#start").onclick=start;
+  }
+  function start(){
+    qs=build();i=0;right=0;left=SECS;locked=false;
+    $("#app").innerHTML=hero()+'<div class="card"><div class="bars"><div class="bar hp"><i id="hp" style="width:100%"></i></div><span>'+B.boss+' Boss</span><div class="bar tm"><i id="tm" style="width:100%"></i></div><span id="tt">3:00</span></div><div class="q" id="q"></div><div class="opts" id="opts"></div><div class="count" id="count"></div></div>';
+    try{LWNFun.start&&LWNFun.start()}catch(e){}
+    timer=setInterval(function(){left--;$("#tm").style.width=(left/SECS*100)+"%";$("#tt").textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");if(left<=0)end()},1000);
+    show();
+  }
+  function show(){
+    var x=qs[i];$("#q").innerHTML=x.q;$("#count").textContent="Question "+(i+1)+" of "+TOTAL+" · "+right+" right";
+    $("#opts").innerHTML=x.o.map(function(o){return '<button type="button">'+esc(o)+'</button>'}).join("");
+    $("#opts").querySelectorAll("button").forEach(function(b){b.onclick=function(){answer(b,x)}});locked=false;
+  }
+  function answer(b,x){
+    if(locked)return;locked=true;
+    var ok=b.textContent===x.a;
+    $("#opts").querySelectorAll("button").forEach(function(c){c.disabled=true;if(c.textContent===x.a)c.classList.add("good")});
+    if(ok){right++;$("#hp").style.width=Math.max(0,100-right/NEED*100)+"%";var bo=$("#boss");bo.classList.remove("hit");void bo.offsetWidth;bo.classList.add("hit");try{LWNFun.right&&LWNFun.right()}catch(e){}}
+    else{b.classList.add("bad");try{LWNFun.wrong&&LWNFun.wrong(true)}catch(e){}}
+    setTimeout(function(){i++;if(i>=TOTAL||(i-right)>TOTAL-NEED)end();else show()},ok?700:1300);
+  }
+  function end(){
+    clearInterval(timer);
+    var win=right>=NEED;
+    if(win){
+      var s=JSON.parse(localStorage.getItem("lwn-boss-v1")||"{}")||{},first=!s["u"+u];s["u"+u]=true;localStorage.setItem("lwn-boss-v1",JSON.stringify(s));
+      try{LWNXP&&LWNXP.add(first?40:15,"boss beaten")}catch(e){}
+      try{LWNFun.confetti&&LWNFun.confetti(220);LWNFun.play&&LWNFun.play("win")}catch(e){}
+      try{window.LWNIcons&&LWNIcons.check()}catch(e){}
+      $("#app").innerHTML=hero()+'<div class="card center"><div class="big">🏆</div><h2>Boss beaten!</h2><p>You got <b>'+right+' of '+TOTAL+'</b> right and defeated '+esc(B.name)+'!'+(first?' <br>+40 XP ⚡':' <br>+15 XP ⚡')+'</p><p>Now finish the Daily Challenges to collect your '+esc(B.place)+' passport stamp! 🛂</p><a class="go" href="/path.html">Back to my path →</a><button class="ghost" id="again">Battle again</button></div>';
+    }else{
+      $("#app").innerHTML=hero()+'<div class="card center"><div class="big">'+B.boss+'</div><h2>So close!</h2><p>You got <b>'+right+' of '+TOTAL+'</b>. You need '+NEED+' to beat '+esc(B.name)+'.'+(left<=0?' Time ran out ⏱️':'')+'</p><p>Every try makes you stronger 💪</p><button class="go" id="again">Try again ⚔️</button><a class="ghost" href="/path.html">Back to my path</a></div>';
+    }
+    $("#again").onclick=start;
+  }
+  try{var p=JSON.parse(localStorage.getItem("learningWithNiniProfileV1")||"null");if(p&&p.name)$("#who").textContent=(p.avatar||"⭐")+" "+p.name;else $("#who").remove()}catch(e){}
+  intro();
+})();
+</script>
+</body>
+</html>
