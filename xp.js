@@ -178,8 +178,8 @@
       }).join("") + "</div>" +
       "<a href='/path.html' style='display:block;text-align:center;margin-top:14px;padding:12px;border-radius:16px;background:linear-gradient(135deg,#44B8EE,#468ADE);color:#fff;font:700 17px/1.1 Fredoka,sans-serif;text-decoration:none'>🗺️ Open my learning path</a>" +
       "<a href='/account.html' style='display:block;text-align:center;margin-top:8px;padding:11px;border-radius:16px;border:2px solid #DFE9F5;color:#3574c1;font:800 15px/1.1 Nunito,sans-serif;text-decoration:none'>👤 Parents: save progress to an account</a>" +
-      "<h3>Weekly league</h3><div class='league' id='lwnLeague'><div class='muted'>Loading this week's league…</div></div>" +
-      "<p class='muted' style='margin:12px 0 0'>Earn XP in every game. Leagues count Daily Challenge points from Monday to Sunday (Hawaiʻi time) and reset every Monday.</p></div>";
+      "<h3>Weekly league <span class='muted'>(Daily Challenge only)</span></h3><div class='league' id='lwnLeague'><div class='muted'>Loading this week's league…</div></div>" +
+      "<p class='muted' style='margin:12px 0 0'>⚡ XP from games fills your daily goal and path. Leagues count only Daily Challenge points, Monday to Sunday (Hawaiʻi time), and reset every Monday.</p></div>";
     sh.querySelectorAll("[data-goal]").forEach(function (b) {
       b.addEventListener("click", function () { var s2 = st(); s2.goal = Number(b.dataset.goal); save(s2); paint(); openSheet(); });
     });
@@ -242,7 +242,7 @@
     var panel = document.getElementById("lwnLeaguePanel");
     if (panel && !document.getElementById("lwnLeagueP")) {
       panel.innerHTML = "<div class='ladder' id='lwnLadder'></div><div class='league' id='lwnLeagueP'><div class='muted'>Loading this week's league…</div></div>" +
-        "<p class='muted' style='margin:10px 2px 0'>Every Daily Challenge you finish adds points. Leagues reset every Monday (Hawaiʻi time).</p>";
+        "<p class='muted' style='margin:10px 2px 0'>Only Daily Challenge points count here. ⚡ XP from games fills your daily goal and your path instead. Leagues reset every Monday (Hawaiʻi time).</p>";
       var tryL = function (n) {
         league().then(function (p) { renderLeague(p, "lwnLeagueP"); }).catch(function () {
           if (n < 20) setTimeout(function () { tryL(n + 1); }, 300);
