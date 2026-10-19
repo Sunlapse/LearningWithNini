@@ -228,12 +228,13 @@
       var lad = document.getElementById("lwnLadder");
       if (lad) lad.innerHTML = LEAGUES.slice().reverse().map(function (L) { return "<div class='" + (L === tier && mine ? "on" : "") + "'><span>" + L.icon + "</span><b>" + L.name + "</b>" + L.min + "+ pts</div>"; }).join("");
     }
-    var list = group.slice(0, id === "lwnLeagueP" ? 10 : 8);
+    // everyone playing this week, all leagues together, each with their league medal
+    var list = players.slice(0, id === "lwnLeagueP" ? 10 : 8);
     if (mine && list.indexOf(mine) < 0) list.push(mine);
-    el.innerHTML = head + (list.length ? "<ol>" + list.map(function (p) {
-      return "<li class='" + (p === mine ? "me" : "") + "'><span class='n'>" + (group.indexOf(p) + 1) + "</span><span>" + esc(p.avatar || "⭐") + "</span><span>" +
+    el.innerHTML = head + (list.length ? "<div class='muted' style='margin-top:10px;font-weight:900'>This week's players</div><ol>" + list.map(function (p) {
+      return "<li class='" + (p === mine ? "me" : "") + "'><span class='n'>" + (players.indexOf(p) + 1) + "</span><span title='" + tierFor(p.points).name + "'>" + tierFor(p.points).icon + "</span><span>" + esc(p.avatar || "⭐") + "</span><span>" +
         esc(p.name) + "</span><span class='p'>" + p.points + "</span></li>";
-    }).join("") + "</ol>" : "<div class='muted' style='margin-top:8px'>No one in this league yet this week — be the first!</div>");
+    }).join("") + "</ol>" : "<div class='muted' style='margin-top:8px'>No one has played yet this week. Be the first!</div>");
   }
 
   /* ---------- mount ---------- */
