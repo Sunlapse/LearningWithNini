@@ -41,7 +41,7 @@
       ".lwn-toast2.on{transform:translate(-50%,0)}" +
       "@keyframes lwnPop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}" +
       "@keyframes lwnWiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-7deg)}40%{transform:rotate(7deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(4deg)}}" +
-      "@keyframes lwnShake{0%,100%{transform:scale(1)}50%{transform:scale(1.25) rotate(8deg)}}" +
+      "@keyframes lwnShake{0%{transform:scale(1)}15%{transform:scale(1.1) rotate(-14deg)}30%{transform:scale(1.15) rotate(14deg)}45%{transform:scale(1.2) rotate(-14deg)}60%{transform:scale(1.3) rotate(14deg)}80%{transform:scale(1.6);opacity:1}100%{transform:scale(2.2);opacity:0}}" +
       "@keyframes lwnBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}" +
       "@media (prefers-reduced-motion:reduce){.lwn-chest-tap,#lwnChestBtn{animation:none}}";
     document.head.appendChild(s);
@@ -59,8 +59,70 @@
     requestAnimationFrame(function () { t.classList.add("on"); });
     setTimeout(function () { t.classList.remove("on"); setTimeout(function () { t.remove(); }, 400); }, 3200);
   }
-  function confetti(n) { try { if (window.LWNFun && LWNFun.confetti) LWNFun.confetti(n || 120); } catch (e) {} }
-  function sound(k) { try { if (window.LWNFun && LWNFun.play) LWNFun.play(k); } catch (e) {} }
+  /* ---------- big celebration: flash, shockwave, exploding confetti + emoji, fanfare ---------- */
+  var reduced = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  function burst(x, y, opts) {
+    opts = opts || {};
+    if (reduced) return;
+    if (x == null) { x = innerWidth / 2; y = innerHeight * 0.42; }
+    var c = document.createElement("canvas"), dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight;
+    c.width = W * dpr; c.height = H * dpr;
+    c.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483600";
+    document.body.appendChild(c);
+    var g = c.getContext("2d"); g.scale(dpr, dpr);
+    var COLORS = ["#FFD23F", "#FF6B6B", "#1E6FD9", "#45B8ED", "#2BB673", "#FF9F1C", "#B794F4", "#FFFFFF"];
+    var EMO = opts.emoji || ["⭐", "✨", "💎", "🪙", "🎉"];
+    var parts = [], i, n = opts.count || 170;
+    for (i = 0; i < n; i++) {
+      var a = Math.random() * Math.PI * 2, sp = 4 + Math.random() * 11, emoji = i < 26;
+      parts.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 4, r: Math.random() * 6.28, vr: (Math.random() - .5) * .4,
+        w: 6 + Math.random() * 8, h: 4 + Math.random() * 6, col: COLORS[i % COLORS.length], e: emoji ? EMO[i % EMO.length] : null, s: 18 + Math.random() * 16, life: 0 });
+    }
+    // a second wave of confetti raining from the top
+    for (i = 0; i < 90; i++) parts.push({ x: Math.random() * W, y: -20 - Math.random() * H * .5, vx: (Math.random() - .5) * 2, vy: 2 + Math.random() * 3, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3,
+      w: 6 + Math.random() * 7, h: 4 + Math.random() * 5, col: COLORS[i % COLORS.length], e: null, s: 0, life: 0, rain: 1 });
+    var t0 = performance.now();
+    function frame(t) {
+      var dt = Math.min(2, (t - (frame.last || t)) / 16.7); frame.last = t;
+      var el = t - t0; g.clearRect(0, 0, W, H);
+      if (el < 260) { // flash + shockwave ring
+        var k = el / 260;
+        g.fillStyle = "rgba(255,248,210," + (0.55 * (1 - k)) + ")"; g.fillRect(0, 0, W, H);
+        g.beginPath(); g.arc(x, y, 30 + k * Math.max(W, H) * 0.6, 0, 6.29); g.lineWidth = 14 * (1 - k); g.strokeStyle = "rgba(255,210,63," + (1 - k) + ")"; g.stroke();
+      }
+      var alive = 0;
+      parts.forEach(function (p) {
+        p.life += dt; p.vy += (p.rain ? 0.05 : 0.32) * dt; p.vx *= Math.pow(0.985, dt); p.x += p.vx * dt; p.y += p.vy * dt; p.r += p.vr * dt;
+        if (p.y > H + 40) return; alive++;
+        var fade = Math.max(0, Math.min(1, (260 - p.life) / 60));
+        g.save(); g.globalAlpha = fade; g.translate(p.x, p.y); g.rotate(p.r);
+        if (p.e) { g.font = p.s + "px serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(p.e, 0, 0); }
+        else { g.fillStyle = p.col; g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2))); }
+        g.restore();
+      });
+      if (alive && el < 5000) requestAnimationFrame(frame); else c.remove();
+    }
+    requestAnimationFrame(frame);
+  }
+  var actx = null;
+  function fanfare() {
+    try {
+      if (/^(true|1)$/.test(String(localStorage.getItem("lwn-sound-muted")))) return;
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      var now = actx.currentTime;
+      // "pop!" then a quick rising arpeggio
+      var nb = actx.createBuffer(1, actx.sampleRate * 0.15, actx.sampleRate), d = nb.getChannelData(0);
+      for (var i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+      var ns = actx.createBufferSource(), ng = actx.createGain(); ns.buffer = nb; ng.gain.value = 0.35; ns.connect(ng).connect(actx.destination); ns.start(now);
+      [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach(function (f, k) {
+        var o = actx.createOscillator(), gn = actx.createGain(); o.type = k < 4 ? "triangle" : "sine"; o.frequency.value = f;
+        var st = now + 0.08 + k * 0.09; gn.gain.setValueAtTime(0, st); gn.gain.linearRampToValueAtTime(0.22, st + 0.02); gn.gain.exponentialRampToValueAtTime(0.001, st + (k === 4 ? 0.7 : 0.25));
+        o.connect(gn).connect(actx.destination); o.start(st); o.stop(st + 0.8);
+      });
+    } catch (e) {}
+  }
+  function confetti(n, x, y, emoji) { burst(x, y, { count: n, emoji: emoji }); }
+  function sound(k) { if (k === "win") fanfare(); }
 
   /* ---------- 2. collectible icons ---------- */
   var CHEST_ICONS = ["🦜", "🐙", "🦩", "🐳", "🦚"];
@@ -133,6 +195,7 @@
       c.opened = hiToday(); set("lwn-chest-v1", c);
       chest.style.animation = "none"; chest.classList.add("lwn-chest-open");
       var rw = pickReward(), card = m.querySelector(".card");
+      var cr = chest.getBoundingClientRect(), cx = cr.left + cr.width / 2, cy = cr.top + cr.height / 2;
       setTimeout(function () {
         var big, title, text;
         if (rw.type === "icon") { unlock(rw.icon, true); big = rw.icon; title = "A rare icon!"; text = "You found the " + rw.icon + " icon. Only treasure chests have it! Tap “Change my icon” on the homepage to use it."; }
@@ -142,7 +205,10 @@
         card.innerHTML = '<div style="font-weight:900;color:#B7791F;letter-spacing:.06em;font-size:13px">DAILY TREASURE CHEST</div>' +
           '<div class="big">' + big + '</div><h2>' + esc(title) + "</h2><p>" + esc(text) + '</p><p style="color:#8A8199;font-size:13px">A new chest is waiting tomorrow 🎁</p>' +
           '<button type="button" class="btn" data-close>Yay! ✓</button>';
-        confetti(140); sound("win"); checkUnlocks();
+        var em = rw.type === "icon" ? [rw.icon, "✨", "⭐", "💎"] : rw.type === "freeze" ? ["🧊", "❄️", "✨", "⭐"] : ["⚡", "⭐", "✨", "🪙"];
+        burst(cx, cy, { count: 200, emoji: em }); fanfare();
+        var bg = card.querySelector(".big"); if (bg && !reduced) bg.animate([{ transform: "scale(0) rotate(-30deg)" }, { transform: "scale(1.35) rotate(8deg)" }, { transform: "scale(1)" }], { duration: 650, easing: "cubic-bezier(.2,1.6,.4,1)" });
+        checkUnlocks();
       }, 550);
     };
   }
