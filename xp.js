@@ -52,9 +52,8 @@
     save(s);
     var earned;
     if (p.game === "daily_challenge") {
-      var first = prev == null;
-      earned = Math.min(gain, 60) + (first ? 10 : 0);
-      if (first) s.dailyDone += 1;
+      if (prev == null) { s.dailyDone += 1; save(s); toast("📝 Daily Challenge done! Counts for your league & passport stamps"); }
+      return;
     } else {
       earned = Math.min(gain, 15);
     }
@@ -170,9 +169,9 @@
     }
     var gs = goalStreak(s);
     sh.innerHTML = '<div class="card"><button class="x" aria-label="Close">×</button>' +
-      "<h2>⚡ " + xp + " XP today</h2><div class='muted'>Daily goal: " + s.goal + " XP" +
+      "<h2>⚡ " + xp + " XP today <span style='font:800 15px Nunito,sans-serif;color:#7A718D'>(games only)</span></h2><div class='muted'>Daily goal: " + s.goal + " XP" +
       (xp >= s.goal ? " — done! 🎉" : " — " + (s.goal - xp) + " to go") + (gs ? " · 🎯 " + gs + "-day goal streak" : "") + "</div>" +
-      "<h3>This week · " + weekXP + " XP</h3><div class='week'>" + bars + "</div>" +
+      "<h3>This week · " + weekXP + " XP <span class='muted'>(games only)</span></h3><div class='week'>" + bars + "</div>" +
       "<h3>Daily goal</h3><div class='goals'>" + GOALS.map(function (g) {
         return '<button type="button" data-goal="' + g.xp + '" aria-pressed="' + (g.xp === s.goal) + '"><b>' + g.xp + "</b>" + g.label + "</button>";
       }).join("") + "</div>" +
