@@ -15,6 +15,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(1000px 500px at 50% -200px,#FFF9E7,transparent),var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,sans-serif;min-height:100vh}
 .top{display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+@media (display-mode:standalone){.top{padding-top:max(34px,calc(10px + env(safe-area-inset-top,0px)))}}
 .top a{text-decoration:none;font-weight:900;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;color:inherit}
 main{max-width:460px;margin:0 auto;padding:10px 16px 120px}
 h1{font-family:"Fredoka",sans-serif;color:#3477C8;font-size:34px;line-height:1.05;margin:8px 0 6px;text-align:center}
@@ -30,6 +31,7 @@ input:focus{border-color:#488bdd;box-shadow:0 0 0 4px rgba(72,139,221,.1)}
 .check input{width:20px;height:20px;margin-top:1px;flex:none}
 .go{width:100%;margin-top:16px;border:0;border-radius:16px;padding:15px;background:linear-gradient(135deg,#45b8ed,#478add);color:#fff;font:700 19px/1 "Fredoka",sans-serif;cursor:pointer}
 .go:disabled{opacity:.6}
+a.go.play{display:block;text-align:center;text-decoration:none}
 .ghost{width:100%;margin-top:8px;border:2px solid var(--line);border-radius:14px;padding:12px;background:#fff;font:800 15px "Nunito",sans-serif;color:#3574c1;cursor:pointer}
 .msg{margin-top:12px;border-radius:12px;padding:10px 12px;font-weight:800;font-size:14px;display:none}
 .msg.on{display:block}.msg.bad{background:#FDF7E6;color:#A03C23}.msg.good{background:#E5F8EE;color:#13734A}.msg.info{background:#ECF5FF;color:#3a608f}
@@ -79,7 +81,8 @@ input:focus{border-color:#488bdd;box-shadow:0 0 0 4px rgba(72,139,221,.1)}
     <div class="small" style="margin-top:0">Signed in as</div>
     <div class="who" id="whoEmail"></div>
     <div class="row"><span class="pill" id="syncState">☁️ Progress saved</span><span class="pill" id="nick"></span></div>
-    <button class="go" id="syncNow" type="button">Sync now</button>
+    <a class="go play" href="/">🎮 Back to playing →</a>
+    <button class="ghost" id="syncNow" type="button">Sync now</button>
     <button class="ghost" id="signOut" type="button">Sign out</button>
     <div class="msg" id="msg2" role="status"></div>
     <ul class="why small">
@@ -132,7 +135,7 @@ input:focus{border-color:#488bdd;box-shadow:0 0 0 4px rgba(72,139,221,.1)}
     job.then(function(s){
       if(!s)return;
       say(msg,"Saving progress…","info");
-      return LWNAccount.pullMerge().then(function(){ try{sessionStorage.setItem("lwn-sync-pulled","1")}catch(e){} location.reload(); });
+      return LWNAccount.pullMerge().then(function(){ try{sessionStorage.setItem("lwn-sync-pulled","1")}catch(e){} say(msg,"All set! Taking you back to the games…","good"); setTimeout(function(){ location.href="/"; },1200); });
     }).catch(function(err){
       var t=String(err&&err.message||err||"");
       say(msg,/invalid login/i.test(t)?"Email or password is not right. Try again.":/already registered/i.test(t)?"That email already has an account — tap “Sign in”.":/rate limit/i.test(t)?"Too many tries — please wait a few minutes.":"Something went wrong: "+t,"bad");
