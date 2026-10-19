@@ -65,9 +65,9 @@ window.LWNLeaderboard = (() => {
         align-items:center;
         justify-content:center;
         gap:9px;
-        background:linear-gradient(135deg,#fff4c8,#f3e9ff);
-        color:#50319f;
-        box-shadow:0 10px 25px rgba(79,50,143,.10);
+        background:linear-gradient(135deg,#fff4c8,#e9f3ff);
+        color:#31629f;
+        box-shadow:0 10px 25px rgba(50,92,143,.10);
         font:900 15px/1.2 "Nunito",Arial,sans-serif;
         cursor:pointer;
       }
@@ -140,18 +140,18 @@ window.LWNLeaderboard = (() => {
         </div>`;
       const style=document.createElement("style");
       style.textContent=`
-        #lwnNicknameOverlay{position:fixed;inset:0;z-index:99999;background:rgba(38,27,80,.42);display:grid;place-items:center;padding:18px;font-family:"Nunito",Arial,sans-serif}
-        .lwn-nickname-card{width:min(460px,100%);background:#fff;border-radius:28px;padding:24px;box-shadow:0 28px 70px rgba(45,29,96,.28);position:relative;text-align:center;color:#282061}
-        .lwn-nickname-close{position:absolute;right:14px;top:12px;border:0;background:#f1ecff;width:38px;height:38px;border-radius:50%;font-size:24px;color:#6542bd}
-        .lwn-nickname-emoji{font-size:34px}.lwn-nickname-card h2{font-family:"Fredoka","Nunito",sans-serif;color:#5d35c1;font-size:28px;margin:6px 0}
+        #lwnNicknameOverlay{position:fixed;inset:0;z-index:99999;background:rgba(27,51,80,.42);display:grid;place-items:center;padding:18px;font-family:"Nunito",Arial,sans-serif}
+        .lwn-nickname-card{width:min(460px,100%);background:#fff;border-radius:28px;padding:24px;box-shadow:0 28px 70px rgba(29,59,96,.28);position:relative;text-align:center;color:#203D61}
+        .lwn-nickname-close{position:absolute;right:14px;top:12px;border:0;background:#ecf5ff;width:38px;height:38px;border-radius:50%;font-size:24px;color:#4279bd}
+        .lwn-nickname-emoji{font-size:34px}.lwn-nickname-card h2{font-family:"Fredoka","Nunito",sans-serif;color:#3574c1;font-size:28px;margin:6px 0}
         .lwn-nickname-card p{color:#6e6688;font-weight:800;line-height:1.4;margin:0 0 16px}
-        .lwn-nickname-card label{display:block;text-align:left;font-weight:900;color:#3f3475}
-        .lwn-nickname-card input{width:100%;margin-top:6px;border:2px solid #ddd4f3;border-radius:15px;padding:13px 14px;font:inherit;font-weight:800;outline:none}
-        .lwn-nickname-card input:focus{border-color:#7448dd;box-shadow:0 0 0 4px rgba(116,72,221,.10)}\n        .lwn-nickname-help{text-align:left;margin-top:7px;color:#7a7191;font-size:12px;font-weight:800;line-height:1.35}.lwn-nickname-help.bad{color:#b23b67}
-        .lwn-avatar-label{text-align:left;font-weight:900;margin:14px 0 7px;color:#3f3475}.lwn-avatar-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
-        .lwn-avatar-row button{border:2px solid #e8e1f6;border-radius:14px;background:#faf9ff;min-height:50px;font-size:23px}.lwn-avatar-row button.selected{border-color:#7040df;background:#eee8ff}
+        .lwn-nickname-card label{display:block;text-align:left;font-weight:900;color:#345175}
+        .lwn-nickname-card input{width:100%;margin-top:6px;border:2px solid #d4e2f3;border-radius:15px;padding:13px 14px;font:inherit;font-weight:800;outline:none}
+        .lwn-nickname-card input:focus{border-color:#488bdd;box-shadow:0 0 0 4px rgba(72,139,221,.10)}\n        .lwn-nickname-help{text-align:left;margin-top:7px;color:#7a7191;font-size:12px;font-weight:800;line-height:1.35}.lwn-nickname-help.bad{color:#b2533b}
+        .lwn-avatar-label{text-align:left;font-weight:900;margin:14px 0 7px;color:#345175}.lwn-avatar-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+        .lwn-avatar-row button{border:2px solid #e1eaf6;border-radius:14px;background:#faf9ff;min-height:50px;font-size:23px}.lwn-avatar-row button.selected{border-color:#4088df;background:#e8f2ff}
         .lwn-nickname-save,.lwn-nickname-skip{width:100%;border:0;border-radius:16px;font-weight:1000;cursor:pointer}
-        .lwn-nickname-save{margin-top:16px;padding:14px;background:linear-gradient(135deg,#ef579e,#7547dd);color:#fff;font-size:18px}
+        .lwn-nickname-save{margin-top:16px;padding:14px;background:linear-gradient(135deg,#45b8ed,#478add);color:#fff;font-size:18px}
         .lwn-nickname-skip{margin-top:8px;padding:10px;background:transparent;color:#72688c}
       `;
       document.head.appendChild(style);document.body.appendChild(overlay);

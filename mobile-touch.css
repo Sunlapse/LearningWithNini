@@ -74,7 +74,7 @@ label,
     object-fit: cover !important;
     object-position: center 26% !important;
     border-radius: 30px !important;
-    box-shadow: 0 12px 28px rgba(68, 48, 126, .10) !important;
+    box-shadow: 0 12px 28px rgba(48,83,126, .10) !important;
   }
 
   .nini .bubble,
@@ -91,7 +91,7 @@ label,
     text-align: center !important;
     font-size: 1.05rem !important;
     line-height: 1.18 !important;
-    box-shadow: 0 8px 20px rgba(68, 48, 126, .09) !important;
+    box-shadow: 0 8px 20px rgba(48,83,126, .09) !important;
   }
 
   .nini .bubble small,

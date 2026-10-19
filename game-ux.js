@@ -11,8 +11,8 @@
     s.textContent =
       ".lwn-level-toggle{display:none}" +
       "@media(max-width:700px){" +
-      ".lwn-level-toggle{display:flex;width:100%;align-items:center;gap:10px;border:2px solid #7040df;border-radius:16px;background:#fff;padding:12px 14px;font:800 16px/1.2 'Nunito',system-ui,sans-serif;color:#2b1d63;cursor:pointer;text-align:left}" +
-      ".lwn-level-toggle .n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#7040df;color:#fff;font-weight:900;font-size:14px}" +
+      ".lwn-level-toggle{display:flex;width:100%;align-items:center;gap:10px;border:2px solid #4088df;border-radius:16px;background:#fff;padding:12px 14px;font:800 16px/1.2 'Nunito',system-ui,sans-serif;color:#1d3c63;cursor:pointer;text-align:left}" +
+      ".lwn-level-toggle .n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#4088df;color:#fff;font-weight:900;font-size:14px}" +
       ".lwn-level-toggle .t{flex:1}.lwn-level-toggle .t small{display:block;color:#7a7191;font-size:12px;font-weight:800}" +
       ".lwn-level-toggle .c{flex:none;font-size:18px;transition:transform .2s}" +
       ".lwn-levels-open .lwn-level-toggle .c{transform:rotate(180deg)}" +

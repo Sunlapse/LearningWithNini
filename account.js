@@ -133,11 +133,11 @@
     if (document.getElementById("lwn-acct-css")) return;
     var s = document.createElement("style"); s.id = "lwn-acct-css";
     s.textContent =
-      ".lwn-save{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#FFF7D7,#F2ECFF);border:2px solid #F7C948;border-radius:18px;padding:12px 14px;margin:12px 0;text-decoration:none;color:#2b1d63;font-family:'Nunito',system-ui,sans-serif}" +
-      ".lwn-save .i{font-size:30px;flex:none}.lwn-save b{display:block;font:700 17px/1.15 'Fredoka',system-ui,sans-serif;color:#5d35c1}" +
-      ".lwn-save span{display:block;font-weight:800;font-size:13px;color:#6e6688;line-height:1.3}.lwn-save .go{margin-left:auto;flex:none;background:linear-gradient(135deg,#ef579e,#7547dd);color:#fff;border-radius:12px;padding:9px 12px;font:700 15px/1 'Fredoka',sans-serif;white-space:nowrap}" +
+      ".lwn-save{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#FFF7D7,#ECF5FF);border:2px solid #F7C948;border-radius:18px;padding:12px 14px;margin:12px 0;text-decoration:none;color:#1d3c63;font-family:'Nunito',system-ui,sans-serif}" +
+      ".lwn-save .i{font-size:30px;flex:none}.lwn-save b{display:block;font:700 17px/1.15 'Fredoka',system-ui,sans-serif;color:#3574c1}" +
+      ".lwn-save span{display:block;font-weight:800;font-size:13px;color:#6e6688;line-height:1.3}.lwn-save .go{margin-left:auto;flex:none;background:linear-gradient(135deg,#45b8ed,#478add);color:#fff;border-radius:12px;padding:9px 12px;font:700 15px/1 'Fredoka',sans-serif;white-space:nowrap}" +
       ".lwn-signin-btn{white-space:nowrap}@media(max-width:560px){#lwnSignInBtn{display:none!important}}" +
-      ".lwn-hero-acct{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font:800 15px/1.2 'Nunito',system-ui,sans-serif;color:#5d35c1;text-decoration:none;background:#fff;border:2px solid #E6DFF5;border-radius:999px;padding:9px 14px}";
+      ".lwn-hero-acct{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font:800 15px/1.2 'Nunito',system-ui,sans-serif;color:#3574c1;text-decoration:none;background:#fff;border:2px solid #DFE9F5;border-radius:999px;padding:9px 14px}";
     document.head.appendChild(s);
   }
   function saveCard(title, sub) {

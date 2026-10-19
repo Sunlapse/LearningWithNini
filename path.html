@@ -10,46 +10,46 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1F2456;--muted:#7A718D;--purple:#7546DE;--pink:#F05A9F;--gold:#F7B500;--line:#E6DFF5;--bg:#FBF9FF}
+:root{--ink:#1F2456;--muted:#7A718D;--purple:#468ADE;--pink:#F0785A;--gold:#F7B500;--line:#DFE9F5;--bg:#FBF9FF}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(1200px 600px at 50% -200px,#FFE7F3,transparent),var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,sans-serif;min-height:100vh}
+body{margin:0;background:radial-gradient(1200px 600px at 50% -200px,#FFF9E7,transparent),var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,sans-serif;min-height:100vh}
 a{color:inherit}
 .top{position:sticky;top:0;z-index:5;display:flex;gap:8px;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:rgba(251,249,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .top a{text-decoration:none;font-weight:900;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px}
 .stats{display:flex;gap:6px}
 .stats span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-weight:900;font-size:14px}
 main{max-width:560px;margin:0 auto;padding:18px 16px 140px}
-h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);line-height:1;margin:6px 0 6px;color:#6034C8;text-align:center}
+h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);line-height:1;margin:6px 0 6px;color:#3477C8;text-align:center}
 .lead{text-align:center;color:var(--muted);font-weight:800;margin:0 0 14px}
 .overall{background:#fff;border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:6px}
-.overall .bar{height:12px;background:#F1ECFB;border-radius:999px;overflow:hidden;margin-top:8px}
+.overall .bar{height:12px;background:#ECF3FB;border-radius:999px;overflow:hidden;margin-top:8px}
 .overall .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:999px}
-.overall b{font-family:"Fredoka",sans-serif;font-size:18px;color:#382879}
-.unit{margin:26px 0 6px;border-radius:20px;padding:14px 16px;color:#fff;box-shadow:0 8px 20px rgba(80,40,120,.15)}
+.overall b{font-family:"Fredoka",sans-serif;font-size:18px;color:#284C79}
+.unit{margin:26px 0 6px;border-radius:20px;padding:14px 16px;color:#fff;box-shadow:0 8px 20px rgba(40,76,120,.15)}
 .unit small{display:block;font-weight:900;letter-spacing:.06em;text-transform:uppercase;opacity:.9;font-size:12px}
 .unit h2{margin:2px 0 0;font-family:"Fredoka",sans-serif;font-size:24px;line-height:1.1}
-.u1{background:linear-gradient(135deg,#F05A9F,#FF8A65)}.u2{background:linear-gradient(135deg,#7546DE,#2F9DF5)}
-.u3{background:linear-gradient(135deg,#1E9E58,#2FBFA4)}.u4{background:linear-gradient(135deg,#E2A400,#F05A9F)}
+.u1{background:linear-gradient(135deg,#F0785A,#FF8A65)}.u2{background:linear-gradient(135deg,#468ADE,#2F9DF5)}
+.u3{background:linear-gradient(135deg,#1E9E58,#2FBFA4)}.u4{background:linear-gradient(135deg,#E2A400,#F0785A)}
 .track{position:relative;padding:8px 0}
 .stop{position:relative;display:flex;flex-direction:column;align-items:center;margin:22px 0;width:140px}
 .stop.cur{margin-top:52px}
 .node{position:relative;width:86px;height:86px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;font-size:36px;
-  background:#E9E4F3;box-shadow:0 7px 0 #CFC7E0;transition:transform .1s}
-.node:active{transform:translateY(4px);box-shadow:0 3px 0 #CFC7E0}
+  background:#E4EBF3;box-shadow:0 7px 0 #C7D2E0;transition:transform .1s}
+.node:active{transform:translateY(4px);box-shadow:0 3px 0 #C7D2E0}
 .node svg{position:absolute;inset:-9px;pointer-events:none}
 .stop.done .node{background:linear-gradient(145deg,#FFD84D,#F7B500);box-shadow:0 7px 0 #C98F00}
-.stop.cur .node{background:linear-gradient(145deg,#F778B4,#7546DE);box-shadow:0 7px 0 #5B2FC4;animation:pulse 1.8s ease-in-out infinite}
+.stop.cur .node{background:linear-gradient(145deg,#3EBAF4,#468ADE);box-shadow:0 7px 0 #2F72C4;animation:pulse 1.8s ease-in-out infinite}
 .stop.lock .node{filter:grayscale(1);opacity:.55}
 .stop.chk .node{border-radius:26px}
 .label{margin-top:12px;font-weight:900;font-size:14px;text-align:center;line-height:1.15}
 .label span{display:block;color:var(--muted);font-size:12px;font-weight:800}
-.start{position:absolute;top:-34px;background:#fff;color:#7546DE;border:2px solid #E3D8FA;font:700 15px/1 "Fredoka",sans-serif;padding:7px 12px;border-radius:12px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
+.start{position:absolute;top:-34px;background:#fff;color:#468ADE;border:2px solid #D8E7FA;font:700 15px/1 "Fredoka",sans-serif;padding:7px 12px;border-radius:12px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
 .start:after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-7px;border:7px solid transparent;border-top-color:#fff;border-bottom:0}
-.nini{position:absolute;width:60px;height:60px;border-radius:50%;border:3px solid #F53E8C;background:#fff;top:12px}
+.nini{position:absolute;width:60px;height:60px;border-radius:50%;border:3px solid #F5633E;background:#fff;top:12px}
 .check{position:absolute;right:-4px;top:-4px;background:#1E9E58;color:#fff;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:15px;border:3px solid #fff}
-.tip{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:20;width:min(92vw,440px);background:#2b1d63;color:#fff;border-radius:18px;padding:14px 16px;font-weight:800;font-size:15px;display:none;box-shadow:0 10px 30px rgba(43,29,99,.35)}
+.tip{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:20;width:min(92vw,440px);background:#1d3c63;color:#fff;border-radius:18px;padding:14px 16px;font-weight:800;font-size:15px;display:none;box-shadow:0 10px 30px rgba(29,60,99,.35)}
 .tip.on{display:block}
-.tip a.go{display:inline-block;margin-top:10px;background:linear-gradient(135deg,#F05A9F,#7546DE);color:#fff;text-decoration:none;font:700 17px/1 "Fredoka",sans-serif;padding:11px 16px;border-radius:12px}
+.tip a.go{display:inline-block;margin-top:10px;background:linear-gradient(135deg,#44B8EE,#468ADE);color:#fff;text-decoration:none;font:700 17px/1 "Fredoka",sans-serif;padding:11px 16px;border-radius:12px}
 .tip button{float:right;border:0;background:none;color:#fff;font-size:20px;cursor:pointer}
 .trophy{text-align:center;margin-top:30px;font-weight:900;color:var(--muted)}
 .trophy b{display:block;font-size:64px;line-height:1.1;filter:grayscale(1);opacity:.5}
@@ -118,7 +118,7 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
   function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
   function ring(frac, color){
     var r=50,c=2*Math.PI*r,f=Math.max(0,Math.min(1,frac));
-    return '<svg viewBox="0 0 104 104" width="104" height="104" aria-hidden="true"><circle cx="52" cy="52" r="'+r+'" fill="none" stroke="#EEE8FA" stroke-width="7"/>'+
+    return '<svg viewBox="0 0 104 104" width="104" height="104" aria-hidden="true"><circle cx="52" cy="52" r="'+r+'" fill="none" stroke="#E8F0FA" stroke-width="7"/>'+
       '<circle cx="52" cy="52" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+(c*f).toFixed(1)+' '+c.toFixed(1)+'" transform="rotate(-90 52 52)"/></svg>';
   }
 
@@ -152,7 +152,7 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
     steps.forEach(function(x){
       if(x.u!==lastUnit){ if(lastUnit) html+="</div>"; html+='<div class="unit '+x.u.cls+'"><small>Unit '+x.u.n+'</small><h2>'+esc(x.u.title)+'</h2></div><div class="track">'; lastUnit=x.u; i=0; }
       var off=OFFSETS[i%OFFSETS.length]; i++;
-      var color = x.status==="done" ? "#F7B500" : "#F05A9F";
+      var color = x.status==="done" ? "#F7B500" : "#F0785A";
       html+='<div class="stop '+x.status+(x.st.chk?" chk":"")+'" style="margin-left:calc(50% - 70px + '+off+'px)">'+
         (x.status==="cur" ? '<div class="start">START</div>' : '')+
         '<button class="node" type="button" data-i="'+steps.indexOf(x)+'" aria-label="'+esc(x.st.name)+': '+esc(x.sub)+'">'+

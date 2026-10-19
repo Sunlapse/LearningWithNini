@@ -35,12 +35,12 @@
   css.textContent =
     "#nini-install{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);" +
     "width:min(92vw,440px);background:#fff;color:#0b2a5b;border-radius:20px;" +
-    "box-shadow:0 10px 30px rgba(245,62,140,.3);padding:14px 16px;display:flex;gap:12px;" +
+    "box-shadow:0 10px 30px rgba(245,99,62,.3);padding:14px 16px;display:flex;gap:12px;" +
     "align-items:center;font:15px/1.35 -apple-system,system-ui,sans-serif;z-index:99999}" +
     "#nini-install img{width:52px;height:52px;border-radius:12px;flex:none}" +
     "#nini-install b{display:block;font-size:16px;margin-bottom:2px}" +
     "#nini-install button{margin-left:auto;align-self:flex-start;border:0;background:none;" +
-    "font-size:22px;line-height:1;color:#f53e8c;cursor:pointer;padding:0 2px}";
+    "font-size:22px;line-height:1;color:#f5633e;cursor:pointer;padding:0 2px}";
   document.head.appendChild(css);
 
   var share =

@@ -59,19 +59,19 @@ window.LWNBadges = (function () {
     var s = document.createElement("style"); s.id = "lwn-badge-css";
     s.textContent =
       ".badge-shelf{background:#fff;border:2px solid #EFE3C2;border-radius:20px;padding:14px;margin-top:12px}" +
-      ".badge-shelf h2{font-family:'Fredoka',sans-serif;color:#5932BD;font-size:20px;margin:0 0 2px}" +
+      ".badge-shelf h2{font-family:'Fredoka',sans-serif;color:#3271BD;font-size:20px;margin:0 0 2px}" +
       ".badge-shelf p{margin:0 0 10px;color:#7A718D;font-size:13px;font-weight:700}" +
       ".badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}" +
-      ".badge{border:0;background:#FFF7FB;border-radius:16px;padding:10px 4px 8px;text-align:center;cursor:pointer;font:inherit;color:#382879}" +
+      ".badge{border:0;background:#FFFDF7;border-radius:16px;padding:10px 4px 8px;text-align:center;cursor:pointer;font:inherit;color:#284C79}" +
       ".badge .bi{font-size:30px;line-height:1.1;display:block}" +
       ".badge .bn{display:block;font-size:11px;font-weight:900;margin-top:4px;line-height:1.15}" +
-      ".badge.locked{background:#F4F2F8;color:#A49DB5}.badge.locked .bi{filter:grayscale(1);opacity:.35}" +
-      ".badge-tip{margin-top:10px;background:#F2ECFF;border-radius:12px;padding:8px 10px;font-size:13px;font-weight:800;color:#4b3a8f;min-height:18px}" +
-      ".badge-win{background:linear-gradient(135deg,#FFF7D7,#FFE3F1);border:2px solid #F7C948;border-radius:20px;padding:14px;margin:0 0 14px;text-align:center;animation:lwnPop .5s ease-out}" +
-      ".badge-win h2{font-family:'Fredoka',sans-serif;color:#C2185B;margin:0 0 8px;font-size:22px}" +
+      ".badge.locked{background:#F2F5F8;color:#A49DB5}.badge.locked .bi{filter:grayscale(1);opacity:.35}" +
+      ".badge-tip{margin-top:10px;background:#ECF5FF;border-radius:12px;padding:8px 10px;font-size:13px;font-weight:800;color:#3a608f;min-height:18px}" +
+      ".badge-win{background:linear-gradient(135deg,#FFF7D7,#FFF8E3);border:2px solid #F7C948;border-radius:20px;padding:14px;margin:0 0 14px;text-align:center;animation:lwnPop .5s ease-out}" +
+      ".badge-win h2{font-family:'Fredoka',sans-serif;color:#C23A18;margin:0 0 8px;font-size:22px}" +
       ".badge-win .wins{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}" +
       ".badge-win .w{background:#fff;border-radius:16px;padding:10px 12px;min-width:84px}" +
-      ".badge-win .w b{display:block;font-size:38px;line-height:1.1}.badge-win .w span{font-size:12px;font-weight:900;color:#382879}" +
+      ".badge-win .w b{display:block;font-size:38px;line-height:1.1}.badge-win .w span{font-size:12px;font-weight:900;color:#284C79}" +
       ".badge-win .note{margin-top:8px;font-size:13px;font-weight:700;color:#7A718D}" +
       "@keyframes lwnPop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.04);opacity:1}100%{transform:scale(1)}}";
     document.head.appendChild(s);

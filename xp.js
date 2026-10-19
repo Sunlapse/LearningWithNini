@@ -77,33 +77,33 @@
     var s = document.createElement("style"); s.id = "lwn-xp-css";
     s.textContent =
       "#lwnXP{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:55;width:58px;height:58px;border:0;border-radius:50%;background:#fff;" +
-      "box-shadow:0 6px 18px rgba(80,40,120,.25);padding:0;cursor:pointer;display:grid;place-items:center}" +
-      "#lwnXP svg{position:absolute;inset:0}#lwnXP b{position:relative;font:700 15px/1 'Fredoka','Nunito',system-ui,sans-serif;color:#382879}" +
+      "box-shadow:0 6px 18px rgba(40,76,120,.25);padding:0;cursor:pointer;display:grid;place-items:center}" +
+      "#lwnXP svg{position:absolute;inset:0}#lwnXP b{position:relative;font:700 15px/1 'Fredoka','Nunito',system-ui,sans-serif;color:#284C79}" +
       "#lwnXP small{position:relative;display:block;font:900 9px/1 'Nunito',system-ui,sans-serif;color:#8A8199;margin-top:2px}" +
-      "#lwnXP.full{box-shadow:0 0 0 4px #FFE58A,0 6px 18px rgba(80,40,120,.25)}" +
+      "#lwnXP.full{box-shadow:0 0 0 4px #FFE58A,0 6px 18px rgba(40,76,120,.25)}" +
       "body.lwn-xp-hide #lwnXP{display:none}" +
-      "#lwnXPToast{position:fixed;left:12px;bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:2147482999;background:#382879;color:#fff;font:800 14px/1 'Nunito',system-ui,sans-serif;" +
+      "#lwnXPToast{position:fixed;left:12px;bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:2147482999;background:#284C79;color:#fff;font:800 14px/1 'Nunito',system-ui,sans-serif;" +
       "padding:9px 12px;border-radius:999px;opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s;pointer-events:none;transform:translateY(6px)}" +
       "#lwnXPToast.on{opacity:1;transform:none}" +
-      "#lwnXPSheet{position:fixed;inset:0;z-index:2147483000;background:rgba(30,20,60,.35);display:none;align-items:flex-end;justify-content:center}" +
+      "#lwnXPSheet{position:fixed;inset:0;z-index:2147483000;background:rgba(20,38,60,.35);display:none;align-items:flex-end;justify-content:center}" +
       "#lwnXPSheet.on{display:flex}" +
       "#lwnXPSheet .card{background:#fff;width:min(520px,100%);max-height:88vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));" +
-      "font-family:'Nunito',system-ui,sans-serif;color:#2b1d63}" +
-      "#lwnXPSheet h2{font:700 22px/1.1 'Fredoka',system-ui,sans-serif;margin:0 0 4px;color:#5932BD}" +
-      "#lwnXPSheet h3{font:700 17px/1.1 'Fredoka',system-ui,sans-serif;margin:16px 0 8px;color:#382879}" +
-      "#lwnXPSheet .x{float:right;border:0;background:#F4F2F8;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer}" +
+      "font-family:'Nunito',system-ui,sans-serif;color:#1d3c63}" +
+      "#lwnXPSheet h2{font:700 22px/1.1 'Fredoka',system-ui,sans-serif;margin:0 0 4px;color:#3271BD}" +
+      "#lwnXPSheet h3{font:700 17px/1.1 'Fredoka',system-ui,sans-serif;margin:16px 0 8px;color:#284C79}" +
+      "#lwnXPSheet .x{float:right;border:0;background:#F2F5F8;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer}" +
       "#lwnXPSheet .goals{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}" +
-      "#lwnXPSheet .goals button{border:2px solid #E6DFF5;background:#fff;border-radius:14px;padding:8px 2px;font:800 12px/1.2 'Nunito',sans-serif;color:#382879;cursor:pointer}" +
+      "#lwnXPSheet .goals button{border:2px solid #DFE9F5;background:#fff;border-radius:14px;padding:8px 2px;font:800 12px/1.2 'Nunito',sans-serif;color:#284C79;cursor:pointer}" +
       "#lwnXPSheet .goals button b{display:block;font:700 17px/1.1 'Fredoka',sans-serif}" +
-      "#lwnXPSheet .goals button[aria-pressed=true]{border-color:#7546DE;background:#F2ECFF}" +
+      "#lwnXPSheet .goals button[aria-pressed=true]{border-color:#468ADE;background:#ECF5FF}" +
       "#lwnXPSheet .week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px;font-weight:900;color:#8A8199}" +
-      "#lwnXPSheet .week i{display:block;height:46px;background:#F4F2F8;border-radius:10px;position:relative;overflow:hidden;margin-bottom:3px}" +
-      "#lwnXPSheet .week i span{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(#F05A9F,#7546DE)}" +
-      "#lwnXPSheet .league{border-radius:18px;padding:12px;background:#FBF9FF;border:2px solid #E6DFF5}" +
+      "#lwnXPSheet .week i{display:block;height:46px;background:#F2F5F8;border-radius:10px;position:relative;overflow:hidden;margin-bottom:3px}" +
+      "#lwnXPSheet .week i span{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(#44B8EE,#468ADE)}" +
+      "#lwnXPSheet .league{border-radius:18px;padding:12px;background:#FBF9FF;border:2px solid #DFE9F5}" +
       "#lwnXPSheet .league .tier{font:700 20px/1.1 'Fredoka',sans-serif}" +
       "#lwnXPSheet .league ol{margin:10px 0 0;padding:0;list-style:none}" +
       "#lwnXPSheet .league li{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:10px;font-weight:800;font-size:14px}" +
-      "#lwnXPSheet .league li.me{background:#FFF0F7}" +
+      "#lwnXPSheet .league li.me{background:#FFFBF0}" +
       "#lwnXPSheet .league li .n{width:22px;color:#8A8199}#lwnXPSheet .league li .p{margin-left:auto;font-family:'Fredoka',sans-serif}" +
       "#lwnXPSheet .muted{color:#7A718D;font-size:13px;font-weight:700}";
     document.head.appendChild(s);
@@ -111,10 +111,10 @@
   function ringSVG(frac, full) {
     var r = 25, c = 2 * Math.PI * r, f = Math.max(0, Math.min(1, frac));
     return '<svg viewBox="0 0 58 58" width="58" height="58" aria-hidden="true">' +
-      '<circle cx="29" cy="29" r="' + r + '" fill="none" stroke="#EEE8FA" stroke-width="6"/>' +
+      '<circle cx="29" cy="29" r="' + r + '" fill="none" stroke="#E8F0FA" stroke-width="6"/>' +
       '<circle cx="29" cy="29" r="' + r + '" fill="none" stroke="' + (full ? "#F7B500" : "url(#lwnG)") + '" stroke-width="6" stroke-linecap="round"' +
       ' stroke-dasharray="' + (c * f).toFixed(1) + " " + c.toFixed(1) + '" transform="rotate(-90 29 29)"/>' +
-      '<defs><linearGradient id="lwnG" x1="0" x2="1"><stop offset="0" stop-color="#F05A9F"/><stop offset="1" stop-color="#7546DE"/></linearGradient></defs></svg>';
+      '<defs><linearGradient id="lwnG" x1="0" x2="1"><stop offset="0" stop-color="#F0785A"/><stop offset="1" stop-color="#468ADE"/></linearGradient></defs></svg>';
   }
   function paint() {
     var b = document.getElementById("lwnXP"); if (!b) return;
@@ -165,8 +165,8 @@
       "<h3>Daily goal</h3><div class='goals'>" + GOALS.map(function (g) {
         return '<button type="button" data-goal="' + g.xp + '" aria-pressed="' + (g.xp === s.goal) + '"><b>' + g.xp + "</b>" + g.label + "</button>";
       }).join("") + "</div>" +
-      "<a href='/path.html' style='display:block;text-align:center;margin-top:14px;padding:12px;border-radius:16px;background:linear-gradient(135deg,#F05A9F,#7546DE);color:#fff;font:700 17px/1.1 Fredoka,sans-serif;text-decoration:none'>🗺️ Open my learning path</a>" +
-      "<a href='/account.html' style='display:block;text-align:center;margin-top:8px;padding:11px;border-radius:16px;border:2px solid #E6DFF5;color:#5d35c1;font:800 15px/1.1 Nunito,sans-serif;text-decoration:none'>👤 Parents: save progress to an account</a>" +
+      "<a href='/path.html' style='display:block;text-align:center;margin-top:14px;padding:12px;border-radius:16px;background:linear-gradient(135deg,#44B8EE,#468ADE);color:#fff;font:700 17px/1.1 Fredoka,sans-serif;text-decoration:none'>🗺️ Open my learning path</a>" +
+      "<a href='/account.html' style='display:block;text-align:center;margin-top:8px;padding:11px;border-radius:16px;border:2px solid #DFE9F5;color:#3574c1;font:800 15px/1.1 Nunito,sans-serif;text-decoration:none'>👤 Parents: save progress to an account</a>" +
       "<h3>Weekly league</h3><div class='league' id='lwnLeague'><div class='muted'>Loading this week's league…</div></div>" +
       "<p class='muted' style='margin:12px 0 0'>Earn XP in every game. Leagues count Daily Challenge points from Monday to Sunday (Hawaiʻi time) and reset every Monday.</p></div>";
     sh.querySelectorAll("[data-goal]").forEach(function (b) {
