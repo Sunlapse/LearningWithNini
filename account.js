@@ -127,7 +127,72 @@
     document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") push(false).catch(function () {}); });
   }
 
+  /* ---------- "save your progress" prompts (hidden once signed in) ---------- */
+  function signedIn() { var t = json(get("sb-lwn-auth"), null); return !!(t && (t.refresh_token || (t.currentSession && t.currentSession.refresh_token))); }
+  function promptCSS() {
+    if (document.getElementById("lwn-acct-css")) return;
+    var s = document.createElement("style"); s.id = "lwn-acct-css";
+    s.textContent =
+      ".lwn-save{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#FFF7D7,#F2ECFF);border:2px solid #F7C948;border-radius:18px;padding:12px 14px;margin:12px 0;text-decoration:none;color:#2b1d63;font-family:'Nunito',system-ui,sans-serif}" +
+      ".lwn-save .i{font-size:30px;flex:none}.lwn-save b{display:block;font:700 17px/1.15 'Fredoka',system-ui,sans-serif;color:#5d35c1}" +
+      ".lwn-save span{display:block;font-weight:800;font-size:13px;color:#6e6688;line-height:1.3}.lwn-save .go{margin-left:auto;flex:none;background:linear-gradient(135deg,#ef579e,#7547dd);color:#fff;border-radius:12px;padding:9px 12px;font:700 15px/1 'Fredoka',sans-serif;white-space:nowrap}" +
+      ".lwn-signin-btn{white-space:nowrap}@media(max-width:560px){#lwnSignInBtn{display:none!important}}" +
+      ".lwn-hero-acct{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font:800 15px/1.2 'Nunito',system-ui,sans-serif;color:#5d35c1;text-decoration:none;background:#fff;border:2px solid #E6DFF5;border-radius:999px;padding:9px 14px}";
+    document.head.appendChild(s);
+  }
+  function saveCard(title, sub) {
+    promptCSS();
+    var a = document.createElement("a"); a.className = "lwn-save"; a.href = "/account.html";
+    a.innerHTML = '<span class="i">☁️</span><div><b>' + title + "</b><span>" + sub + '</span></div><span class="go">Save it →</span>';
+    return a;
+  }
+  function prompts() {
+    var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    var inNow = signedIn();
+    // Homepage header button
+    var actions = document.querySelector(".header-actions");
+    if (actions && !document.getElementById("lwnSignInBtn")) {
+      promptCSS();
+      var b = document.createElement("a"); b.id = "lwnSignInBtn"; b.href = "/account.html";
+      var cls = actions.querySelector(".leaderboard-btn"); b.className = (cls ? cls.className : "") + " lwn-signin-btn";
+      b.setAttribute("aria-label", inNow ? "Parent account" : "Parent sign in");
+      b.innerHTML = "<span>👤</span><span class='leaderboard-label'>" + (inNow ? "Account" : "Sign in") + "</span>";
+      actions.insertBefore(b, actions.firstChild);
+    }
+    // Homepage hero: a clear link under the main button (always visible on phones)
+    var heroActions = document.querySelector(".hero-actions");
+    if (heroActions && !document.getElementById("lwnHeroAcct")) {
+      promptCSS();
+      var h = document.createElement("a"); h.id = "lwnHeroAcct"; h.className = "lwn-hero-acct"; h.href = "/account.html";
+      h.textContent = inNow ? "👤 Parent account · progress saved ✓" : "👤 Parents: sign in to save progress";
+      heroActions.insertAdjacentElement("afterend", h);
+    }
+    if (inNow) return;
+    // My Path page
+    if (page === "path.html") {
+      var ov = document.querySelector(".overall");
+      if (ov && !document.getElementById("lwnSavePath")) {
+        var c = saveCard("Don’t lose your path!", "Grown-ups: a free account saves progress on every device.");
+        c.id = "lwnSavePath"; ov.insertAdjacentElement("afterend", c);
+      }
+    }
+    // Daily Challenge results screen
+    var done = document.querySelector("#done .done");
+    if (done && !document.getElementById("lwnSaveDone")) {
+      var show = function () {
+        if (!document.getElementById("done").classList.contains("on") || document.getElementById("lwnSaveDone")) return;
+        var c2 = saveCard("Save your streak! 🔥", "Ask a grown-up to make a free account so your streak and badges are never lost.");
+        c2.id = "lwnSaveDone";
+        var after = document.getElementById("stats") || done.firstChild;
+        after.insertAdjacentElement("afterend", c2);
+      };
+      new MutationObserver(show).observe(document.getElementById("done"), { attributes: true, attributeFilter: ["class"] });
+      show();
+    }
+  }
+
   window.LWNAccount = { sdk: sdk, session: session, signUp: signUp, signIn: signIn, signOut: signOut, pullMerge: pullMerge, push: push,
     lastSync: function () { return get("lwn-sync-at"); }, _merge: merge };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", auto); else auto();
+  function boot() { auto(); try { prompts(); } catch (e) {} }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();

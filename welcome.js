@@ -56,7 +56,8 @@
       '<div class="lbl">3. What grade are you in?</div><div class="gr">' +
       ["2", "3", "4", "5"].map(function (g) { return '<button type="button" data-g="' + g + '" class="' + (g === grade ? "on" : "") + '">Grade ' + g + "</button>"; }).join("") + "</div>" +
       '<button type="button" class="go">Let’s go! 🚀</button>' +
-      '<button type="button" class="later">Maybe later</button></div>';
+      '<button type="button" class="later">Maybe later</button>' +
+      '<a href="/account.html" style="display:block;margin-top:4px;font-weight:900;font-size:13px;color:#5d35c1">👤 Grown-ups: save progress with a free account →</a></div>';
     document.body.appendChild(w);
 
     w.querySelectorAll("[data-av]").forEach(function (b) {

@@ -958,9 +958,9 @@ Object.assign(GEN,{
   },
   placeRegroup2(){
     const h=ri(2,8),t=ri(1,8),o=ri(0,9),n=h*100+t*10+o,trade=R()<.5;
-    if(trade){const newH=h-1,newT=t+10;return{q:n+' can be written as '+newH+' hundreds + <span class="blank">?</span> tens + '+o+' ones. How many tens?',a:newT,k:'num',hint:'Trade 1 hundred for 10 tens.'};}
+    if(trade){const newH=h-1,newT=t+10;return{q:n+' can be written as '+newH+' hundreds + <span class="blank">?</span> tens + '+o+' ones. How many tens?',a:newT,k:'num',hint:'Only '+newH+' hundreds are used, so 1 hundred is left over. 1 hundred = 10 tens, so add 10 tens to the '+t+' tens.'};}
     const newT=t-1,newO=o+10;
-    return{q:n+' can be written as '+h+' hundreds + '+newT+' tens + <span class="blank">?</span> ones. How many ones?',a:newO,k:'num',hint:'Trade 1 ten for 10 ones.'};
+    return{q:n+' can be written as '+h+' hundreds + '+newT+' tens + <span class="blank">?</span> ones. How many ones?',a:newO,k:'num',hint:'Only '+newT+' tens are used, so 1 ten is left over. 1 ten = 10 ones, so add 10 ones to the '+o+' ones.'};
   },
   digitSwap2(){
     let h=ri(2,8),t=ri(0,9),o=ri(1,9);while(h===o)o=ri(1,9);
@@ -985,8 +985,8 @@ Object.assign(GEN,{
   },
   placeWays2(){
     const h=ri(2,8),t=ri(1,8),o=ri(0,9),n=h*100+t*10+o,mode=pick([1,2,3]);
-    if(mode===1){const hh=h-1,tt=t+10;return{q:n+' = '+hh+' hundreds + <span class="blank">?</span> tens + '+o+' ones',a:tt,k:'num',hint:'Trade 1 hundred for 10 tens.'};}
-    if(mode===2){const tt=t-1,oo=o+10;return{q:n+' = '+h+' hundreds + '+tt+' tens + <span class="blank">?</span> ones',a:oo,k:'num',hint:'Trade 1 ten for 10 ones.'};}
+    if(mode===1){const hh=h-1,tt=t+10;return{q:n+' = '+hh+' hundreds + <span class="blank">?</span> tens + '+o+' ones',a:tt,k:'num',hint:'Only '+hh+' hundreds are used, so 1 hundred is left over. 1 hundred = 10 tens, so add 10 tens to the '+t+' tens.'};}
+    if(mode===2){const tt=t-1,oo=o+10;return{q:n+' = '+h+' hundreds + '+tt+' tens + <span class="blank">?</span> ones',a:oo,k:'num',hint:'Only '+tt+' tens are used, so 1 ten is left over. 1 ten = 10 ones, so add 10 ones to the '+o+' ones.'};}
     const hh=h-1,tt=t+9,oo=o+10;
     return{q:n+' = '+hh+' hundreds + '+tt+' tens + <span class="blank">?</span> ones',a:oo,k:'num',hint:'Trade 1 hundred for 10 tens, then trade 1 ten for 10 ones.'};
   },

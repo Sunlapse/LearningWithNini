@@ -178,12 +178,12 @@ function makeGrade2(){
   }else if(grade2Type==="hundredsToTens"){
     const h=Math.max(1,d[0]),newH=h-1,newT=d[1]+10;correct=newT;
     el("prompt").textContent=number+" = "+newH+" hundreds + ? tens + "+d[2]+" ones. How many tens?";
-    el("bigNumber").textContent=fmt(number);el("placeChart").innerHTML=chart3HTML(number,0);el("expanded").textContent="Trade 1 hundred for 10 tens.";
+    el("bigNumber").textContent=fmt(number);el("placeChart").innerHTML=chart3HTML(number,0);el("expanded").textContent="Only "+newH+" hundreds are used, so 1 hundred is left over. 1 hundred = 10 tens, so add 10 tens to the "+d[1]+" tens.";
     grade2Hint="One hundred is the same as 10 tens.";grade2Explain=number+" can be "+newH+" hundreds, "+newT+" tens, and "+d[2]+" ones.";
   }else if(grade2Type==="tensToOnes"&&d[1]>0){
     const newT=d[1]-1,newO=d[2]+10;correct=newO;
     el("prompt").textContent=number+" = "+d[0]+" hundreds + "+newT+" tens + ? ones. How many ones?";
-    el("bigNumber").textContent=fmt(number);el("placeChart").innerHTML=chart3HTML(number,1);el("expanded").textContent="Trade 1 ten for 10 ones.";
+    el("bigNumber").textContent=fmt(number);el("placeChart").innerHTML=chart3HTML(number,1);el("expanded").textContent="Only "+newT+" tens are used, so 1 ten is left over. 1 ten = 10 ones, so add 10 ones to the "+d[2]+" ones.";
     grade2Hint="One ten is the same as 10 ones.";grade2Explain=number+" can be "+d[0]+" hundreds, "+newT+" tens, and "+newO+" ones.";
   }else if(grade2Type==="swap"&&d[0]!==d[2]){
     correct=d[2]*100+d[1]*10+d[0];
