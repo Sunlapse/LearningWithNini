@@ -13,6 +13,10 @@
   if (document.querySelector('link[href*="mobile-touch.css"]') && !document.querySelector('script[src="/game-ux.js"]')) {
     var gs = document.createElement("script"); gs.src = "/game-ux.js"; gs.defer = true; document.head.appendChild(gs);
   }
+  // Nickname + icon picker ("Change my icon").
+  if (!document.querySelector('script[src="/profile.js"]')) {
+    var ps = document.createElement("script"); ps.src = "/profile.js"; ps.defer = true; document.head.appendChild(ps);
+  }
   // First-visit welcome: nickname, icon and grade.
   if (!document.querySelector('script[src="/welcome.js"]')) {
     var ws = document.createElement("script"); ws.src = "/welcome.js"; ws.defer = true; document.head.appendChild(ws);

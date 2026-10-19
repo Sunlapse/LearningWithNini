@@ -12,7 +12,7 @@
 
   if (get(DONE) || hasNickname()) return;
 
-  var AVATARS = ["⭐", "🐱", "🐰", "🌈", "❤️", "🦄", "🐶", "🦊", "🐼", "🚀"];
+  var AVATARS = ["⭐", "🐱", "🦭", "🐰", "🦄", "🐶", "🦊", "🐼", "🐨", "🐯", "🐸", "🐢", "🐬", "🦋", "🌺", "🌈", "❤️", "🚀", "🏄\u200d♀️", "⛷️"];
   function css() {
     var s = document.createElement("style"); s.id = "lwn-welcome-css";
     s.textContent =
@@ -74,7 +74,7 @@
         help.textContent = "Please use a fun nickname only — no email address or phone number."; help.classList.add("bad"); input.focus(); return;
       }
       if (name.toLowerCase() === "nini") { help.textContent = "That one’s taken by me! 😄 Try another."; help.classList.add("bad"); input.focus(); return; }
-      var prof = { name: name, avatar: avatar };
+      var prof = { name: name, avatar: avatar, updatedAt: Date.now() };
       set(PROFILE, JSON.stringify(prof)); set("niniPlayerName", name); set("niniAvatar", avatar);
       try { var s2 = JSON.parse(get("dm-settings") || "{}"); s2.grade = grade; s2.name = name; set("dm-settings", JSON.stringify(s2)); } catch (e) {}
       set(DONE, "1");

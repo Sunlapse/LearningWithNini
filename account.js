@@ -61,6 +61,8 @@
     var x = json(a, {}), y = json(b, {});
     return JSON.stringify({ have: Math.max(x.have || 0, y.have || 0), used: union(x.used, y.used), earned: union(x.earned, y.earned), notice: x.notice || y.notice });
   }
+  // Nickname + icon: the most recently changed one wins (ties keep this device's).
+  function newerProfile(a, b) { var x = json(a, {}), y = json(b, {}); return (Number(y.updatedAt) || 0) > (Number(x.updatedAt) || 0) ? b : a; }
   function merge(local, cloud) {
     var out = {};
     Object.keys(cloud || {}).concat(Object.keys(local || {})).forEach(function (k) {
@@ -70,8 +72,12 @@
       else if (k === "lwn-badges-v1") out[k] = mergeBadges(l, c);
       else if (k === "lwn-xp-v1") out[k] = mergeXP(l, c);
       else if (k === "lwn-freeze-v1") out[k] = mergeFreeze(l, c);
-      else out[k] = l; // this device's choice wins for settings, nickname and everything else
+      else if (k === "learningWithNiniProfileV1") out[k] = newerProfile(l, c);
+      else out[k] = l; // this device's choice wins for settings and everything else
     });
+    // keep the older name/icon copies in step with the winning profile
+    var prof = json(out["learningWithNiniProfileV1"], null);
+    if (prof && prof.name) { out["niniPlayerName"] = prof.name; out["niniAvatar"] = prof.avatar || "⭐"; }
     return out;
   }
 

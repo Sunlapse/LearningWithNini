@@ -271,6 +271,7 @@ function updateLeaderboardProfileButton(){
   el("leaderboardProfileBtn").title=name?"Change leaderboard nickname":"Set leaderboard nickname";
 }
 function chooseLeaderboardProfile(){
+  if(window.LWNProfile){LWNProfile.open({onSave:function(){updateLeaderboardProfileButton();if(activeGame==="daily_challenge"&&dailyView==="history")renderActive();}});return;}
   if(document.getElementById("leaderboardProfileModal"))return;
   let current=null;
   try{current=JSON.parse(localStorage.getItem("learningWithNiniProfileV1")||"null")}catch{}
@@ -314,7 +315,7 @@ function chooseLeaderboardProfile(){
   overlay.querySelector(".lb-profile-save").addEventListener("click",()=>{
     const name=String(input.value||"").trim().replace(/\s+/g," ").slice(0,24);
     if(!name){input.focus();return}
-    const profile={name,avatar:selectedAvatar};
+    const profile={name,avatar:selectedAvatar,updatedAt:Date.now()};
     localStorage.setItem("learningWithNiniProfileV1",JSON.stringify(profile));
     localStorage.setItem("niniPlayerName",name);
     localStorage.setItem("niniAvatar",selectedAvatar);

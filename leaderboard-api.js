@@ -131,9 +131,24 @@ window.LWNLeaderboard = (() => {
           <div class="lwn-avatar-row">
             <button type="button" data-av="⭐" class="selected">⭐</button>
             <button type="button" data-av="🐱">🐱</button>
+            <button type="button" data-av="🦭">🦭</button>
             <button type="button" data-av="🐰">🐰</button>
+            <button type="button" data-av="🦄">🦄</button>
+            <button type="button" data-av="🐶">🐶</button>
+            <button type="button" data-av="🦊">🦊</button>
+            <button type="button" data-av="🐼">🐼</button>
+            <button type="button" data-av="🐨">🐨</button>
+            <button type="button" data-av="🐯">🐯</button>
+            <button type="button" data-av="🐸">🐸</button>
+            <button type="button" data-av="🐢">🐢</button>
+            <button type="button" data-av="🐬">🐬</button>
+            <button type="button" data-av="🦋">🦋</button>
+            <button type="button" data-av="🌺">🌺</button>
             <button type="button" data-av="🌈">🌈</button>
             <button type="button" data-av="❤️">❤️</button>
+            <button type="button" data-av="🚀">🚀</button>
+            <button type="button" data-av="🏄‍♀️">🏄‍♀️</button>
+            <button type="button" data-av="⛷️">⛷️</button>
           </div>
           <button class="lwn-nickname-save" type="button">Save nickname</button>
           <button class="lwn-nickname-skip" type="button">Use an anonymous Math Star name</button>
@@ -169,7 +184,7 @@ window.LWNLeaderboard = (() => {
       });
       function finish(profile){
         overlay.remove();style.remove();nicknamePromise=null;
-        localStorage.setItem("learningWithNiniProfileV1",JSON.stringify(profile));
+        profile.updatedAt=Date.now();localStorage.setItem("learningWithNiniProfileV1",JSON.stringify(profile));
         localStorage.setItem("niniPlayerName",profile.name);
         localStorage.setItem("niniAvatar",profile.avatar);
         setVisibleProfile(profile);removeNicknameNudge();resolve(profile);

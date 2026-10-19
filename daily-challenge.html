@@ -365,9 +365,24 @@ button:disabled{opacity:.28;cursor:default}
       <div class="avatar-pick" id="avatarPick" aria-label="Choose leaderboard icon">
         <button type="button" data-av="⭐">⭐</button>
         <button type="button" data-av="🐱">🐱</button>
+        <button type="button" data-av="🦭">🦭</button>
         <button type="button" data-av="🐰">🐰</button>
+        <button type="button" data-av="🦄">🦄</button>
+        <button type="button" data-av="🐶">🐶</button>
+        <button type="button" data-av="🦊">🦊</button>
+        <button type="button" data-av="🐼">🐼</button>
+        <button type="button" data-av="🐨">🐨</button>
+        <button type="button" data-av="🐯">🐯</button>
+        <button type="button" data-av="🐸">🐸</button>
+        <button type="button" data-av="🐢">🐢</button>
+        <button type="button" data-av="🐬">🐬</button>
+        <button type="button" data-av="🦋">🦋</button>
+        <button type="button" data-av="🌺">🌺</button>
         <button type="button" data-av="🌈">🌈</button>
         <button type="button" data-av="❤️">❤️</button>
+        <button type="button" data-av="🚀">🚀</button>
+        <button type="button" data-av="🏄‍♀️">🏄‍♀️</button>
+        <button type="button" data-av="⛷️">⛷️</button>
       </div>
     </div>
     <div class="field"><span>Grade</span>
@@ -1466,11 +1481,11 @@ function renderStart(){
   recent.forEach(x=>{const li=document.createElement('li');
     li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)} · ${modeLabel(x.mode||'standard')}</span><span><b>${Number(x.points)||Number(x.correct)||0}</b> pts · ${x.correct}/${x.attempted} correct</span>`;ul.appendChild(li)});
 }
-$('#avatarPick').addEventListener('click',e=>{const b=e.target.closest('button[data-av]');if(!b)return;sharedProfile.avatar=b.dataset.av;LS.set('learningWithNiniProfileV1',sharedProfile);renderStart()});
+$('#avatarPick').addEventListener('click',e=>{const b=e.target.closest('button[data-av]');if(!b)return;sharedProfile.avatar=b.dataset.av;sharedProfile.updatedAt=Date.now();LS.set('learningWithNiniProfileV1',sharedProfile);renderStart()});
 $('#gradeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.grade=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
 $('#modeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.mode=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
 $('#minSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.mins=+b.dataset.v;LS.set('dm-settings',settings);renderStart()});
-$('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();sharedProfile.name=settings.name;LS.set('dm-settings',settings);LS.set('learningWithNiniProfileV1',sharedProfile)});
+$('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();sharedProfile.name=settings.name;sharedProfile.updatedAt=Date.now();LS.set('dm-settings',settings);LS.set('learningWithNiniProfileV1',sharedProfile)});
 
 /* ---------- session ---------- */
 let S=null,tick=null,finishTimeout=null,finishing=false;
