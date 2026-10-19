@@ -9,6 +9,10 @@
   if (!document.querySelector('script[src="/account.js"]')) {
     var as = document.createElement("script"); as.src = "/account.js"; as.defer = true; document.head.appendChild(as);
   }
+  // Game pages: level dropdown on phones + auto-advance after correct answers.
+  if (document.querySelector('link[href*="mobile-touch.css"]') && !document.querySelector('script[src="/game-ux.js"]')) {
+    var gs = document.createElement("script"); gs.src = "/game-ux.js"; gs.defer = true; document.head.appendChild(gs);
+  }
   // First-visit welcome: nickname, icon and grade.
   if (!document.querySelector('script[src="/welcome.js"]')) {
     var ws = document.createElement("script"); ws.src = "/welcome.js"; ws.defer = true; document.head.appendChild(ws);
