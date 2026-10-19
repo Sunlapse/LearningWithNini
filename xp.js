@@ -52,8 +52,9 @@
     save(s);
     var earned;
     if (p.game === "daily_challenge") {
-      if (prev == null) { s.dailyDone += 1; save(s); toast("📝 Daily Challenge done! Counts for your league & passport stamps"); }
-      return;
+      var first = prev == null;
+      earned = Math.min(gain, 60) + (first ? 10 : 0);
+      if (first) s.dailyDone += 1;
     } else {
       earned = Math.min(gain, 15);
     }
@@ -169,16 +170,16 @@
     }
     var gs = goalStreak(s);
     sh.innerHTML = '<div class="card"><button class="x" aria-label="Close">×</button>' +
-      "<h2>⚡ " + xp + " XP today <span style='font:800 15px Nunito,sans-serif;color:#7A718D'>(games only)</span></h2><div class='muted'>Daily goal: " + s.goal + " XP" +
+      "<h2>⚡ " + xp + " XP today</h2><div class='muted'>Daily goal: " + s.goal + " XP" +
       (xp >= s.goal ? " — done! 🎉" : " — " + (s.goal - xp) + " to go") + (gs ? " · 🎯 " + gs + "-day goal streak" : "") + "</div>" +
-      "<h3>This week · " + weekXP + " XP <span class='muted'>(games only)</span></h3><div class='week'>" + bars + "</div>" +
+      "<h3>This week · " + weekXP + " XP</h3><div class='week'>" + bars + "</div>" +
       "<h3>Daily goal</h3><div class='goals'>" + GOALS.map(function (g) {
         return '<button type="button" data-goal="' + g.xp + '" aria-pressed="' + (g.xp === s.goal) + '"><b>' + g.xp + "</b>" + g.label + "</button>";
       }).join("") + "</div>" +
       "<a href='/path.html' style='display:block;text-align:center;margin-top:14px;padding:12px;border-radius:16px;background:linear-gradient(135deg,#44B8EE,#468ADE);color:#fff;font:700 17px/1.1 Fredoka,sans-serif;text-decoration:none'>🗺️ Open my learning path</a>" +
       "<a href='/account.html' style='display:block;text-align:center;margin-top:8px;padding:11px;border-radius:16px;border:2px solid #DFE9F5;color:#3574c1;font:800 15px/1.1 Nunito,sans-serif;text-decoration:none'>👤 Parents: save progress to an account</a>" +
       "<h3>Weekly league <span class='muted'>(Daily Challenge only)</span></h3><div class='league' id='lwnLeague'><div class='muted'>Loading this week's league…</div></div>" +
-      "<p class='muted' style='margin:12px 0 0'>⚡ XP from games fills your daily goal and path. Leagues count only Daily Challenge points, Monday to Sunday (Hawaiʻi time), and reset every Monday.</p></div>";
+      "<p class='muted' style='margin:12px 0 0'>⚡ XP comes from every game and the Daily Challenge. Weekly leagues count only Daily Challenge points, Monday to Sunday (Hawaiʻi time), and reset every Monday.</p></div>";
     sh.querySelectorAll("[data-goal]").forEach(function (b) {
       b.addEventListener("click", function () { var s2 = st(); s2.goal = Number(b.dataset.goal); save(s2); paint(); openSheet(); });
     });
@@ -241,7 +242,7 @@
     var panel = document.getElementById("lwnLeaguePanel");
     if (panel && !document.getElementById("lwnLeagueP")) {
       panel.innerHTML = "<div class='ladder' id='lwnLadder'></div><div class='league' id='lwnLeagueP'><div class='muted'>Loading this week's league…</div></div>" +
-        "<p class='muted' style='margin:10px 2px 0'>Only Daily Challenge points count here. ⚡ XP from games fills your daily goal and your path instead. Leagues reset every Monday (Hawaiʻi time).</p>";
+        "<p class='muted' style='margin:10px 2px 0'>Only Daily Challenge points count here. ⚡ XP (from games and the Daily Challenge) fills your daily goal and path. Leagues reset every Monday (Hawaiʻi time).</p>";
       var tryL = function (n) {
         league().then(function (p) { renderLeague(p, "lwnLeagueP"); }).catch(function () {
           if (n < 20) setTimeout(function () { tryL(n + 1); }, 300);
