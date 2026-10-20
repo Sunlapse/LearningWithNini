@@ -39,6 +39,8 @@
       ".lwn-beatnini b{font-family:'Fredoka',sans-serif;font-size:1.25em;color:#C2410C}" +
       ".lwn-toast2{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:2147483400;background:#1d3c63;color:#fff;border-radius:16px;padding:11px 16px;font:800 15px/1.3 'Nunito',sans-serif;box-shadow:0 10px 26px rgba(0,0,0,.25);transition:transform .35s;max-width:92vw;text-align:center}" +
       ".lwn-toast2.on{transform:translate(-50%,0)}" +
+      ".lwn-tipcard{margin:12px 0;display:flex;flex-direction:column;gap:6px;background:#EAF4FF;border:2px solid #BFDBFE;border-radius:16px;padding:12px 14px;color:#1F3A60;font:700 15px/1.4 'Nunito',system-ui,sans-serif;text-align:left}" +
+      ".lwn-tipcard b{font-weight:900}.lwn-tipcard .pts{font-size:13px;color:#4B5D80;font-weight:700}" +
       "@keyframes lwnPop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}" +
       "@keyframes lwnWiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-7deg)}40%{transform:rotate(7deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(4deg)}}" +
       "@keyframes lwnShake{0%{transform:scale(1)}15%{transform:scale(1.1) rotate(-14deg)}30%{transform:scale(1.15) rotate(14deg)}45%{transform:scale(1.2) rotate(-14deg)}60%{transform:scale(1.3) rotate(14deg)}80%{transform:scale(1.6);opacity:1}100%{transform:scale(2.2);opacity:0}}" +
@@ -316,12 +318,45 @@
     if (header && header.parentNode === document.body) header.insertAdjacentElement("afterend", b); else document.body.insertBefore(b, document.body.firstChild);
   }
 
+  /* ---------- friendlier Daily Challenge: first-time tips + right-grade advice after each round ---------- */
+  var POINTS_LINE = "Each right answer = 1 point (¾ point on the 2nd try, ½ on the 3rd). The timer keeps going, so answer as many as you can!";
+  function dailyHelper() {
+    if (page !== "daily-challenge.html") return;
+    css();
+    var log = get("dm-log", []) || [];
+    var go = document.getElementById("goBtn"), grade = document.getElementById("gradeSeg");
+    if (!log.length && grade && !document.getElementById("lwnFirstTip")) {
+      var tip = document.createElement("div"); tip.id = "lwnFirstTip"; tip.className = "lwn-tipcard";
+      tip.innerHTML = "<b>👋 First time? Here's how to start</b><span>Pick the grade you're in now and try <b>10 minutes</b>. Too easy? Move up a grade next time!</span><span class='pts'>⭐ " + esc(POINTS_LINE) + "</span>";
+      var field = grade.closest(".field") || grade; field.parentNode.insertBefore(tip, field);
+      var ten = document.querySelector('#minSeg button[data-v="10"]'); if (ten) setTimeout(function () { ten.click(); }, 50);
+    }
+    var done = document.getElementById("done"); if (!done) return;
+    new MutationObserver(function () {
+      if (!done.classList.contains("on")) return;
+      setTimeout(function () {
+        var L = get("dm-log", []) || [], r = L[L.length - 1]; if (!r || r.date !== hiToday()) return;
+        var old = document.getElementById("lwnAfterTip"); if (old) old.remove();
+        var att = Number(r.attempted) || 0, acc = att ? (Number(r.correct) || 0) / att : 0, g = String(r.grade), gn = parseInt(g, 10), msg = "";
+        if (att < 5) msg = "You answered <b>" + att + "</b> question" + (att === 1 ? "" : "s") + ". The timer keeps running, so keep going until the end next time for lots more points! 💪";
+        else if (acc < 0.5 && gn > 2) msg = "That one was tricky! 🧗 Try <b>Grade " + (gn - 1) + "</b> next time, then move back up when it feels easy.";
+        else if (acc >= 0.9 && att >= 15 && gn < 5) msg = "Wow, <b>" + Math.round(acc * 100) + "%</b> right! 🚀 Ready to try <b>Grade " + (gn + 1) + "</b>?";
+        else if (acc >= 0.7) msg = "Great job! <b>" + Math.round(acc * 100) + "%</b> right. 🌟 Come back tomorrow to grow your streak!";
+        else msg = "Nice work! <b>" + Math.round(acc * 100) + "%</b> right. Every day of practice makes you faster. 🌱";
+        var box = document.createElement("div"); box.id = "lwnAfterTip"; box.className = "lwn-tipcard";
+        box.innerHTML = "<span>" + msg + "</span><span class='pts'>⭐ " + esc(POINTS_LINE) + "</span>";
+        var stats = document.getElementById("stats"); if (stats) stats.insertAdjacentElement("afterend", box);
+      }, 400);
+    }).observe(done, { attributes: true, attributeFilter: ["class"] });
+  }
+
   window.LWNIcons = { locked: LOCKED, unlocked: unlocked, isUnlocked: function (i) { return unlocked().indexOf(i) >= 0; }, unlock: unlock, check: checkUnlocks, openChest: openChest };
 
   function start() {
     beatNiniBanner();
     tripBanner();
     tripPhoto();
+    dailyHelper();
     setTimeout(function () { checkUnlocks(); chestButton(); }, 1200);
     setTimeout(leagueRecap, 2500);
     // hide the chest button while a Daily Challenge round is on screen

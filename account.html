@@ -52,6 +52,17 @@ a.go.play{display:block;text-align:center;text-decoration:none}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
 .pill{background:#FBF9FF;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-weight:900;font-size:13px}
 .why{margin-top:18px}
+.report{margin:16px 0 6px;border:2px solid var(--line);border-radius:18px;padding:14px;background:#FBFDFF}
+.report h3{margin:0 0 10px;font:700 20px "Fredoka",sans-serif;color:#1E6FD9}
+.report .days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:10px}
+.report .days i{font-style:normal;text-align:center;font-size:11px;font-weight:900;color:#8A8199}
+.report .days i b{display:grid;place-items:center;height:30px;border-radius:9px;background:#EEF2F7;color:#fff;font-size:15px;margin-bottom:3px}
+.report .days i.on b{background:#2BB673}
+.report .tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.report .tiles div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;font-size:12px;font-weight:800;color:#6B7392}
+.report .tiles b{display:block;font:700 22px "Fredoka",sans-serif;color:#1F2456}
+.report p{margin:6px 0;font-weight:700;color:#3f4a6b;font-size:14px}
+.report .next a{color:#1E6FD9;font-weight:900}
 .why li{margin:6px 0;font-weight:800;color:#345277}
 </style>
 <!-- Learn With Nini app (Add to Home Screen) -->
@@ -82,6 +93,7 @@ a.go.play{display:block;text-align:center;text-decoration:none}
       <label for="pw">Password <span id="pwHint" style="font-weight:700;color:#7a7191">(8+ characters)</span></label>
       <input id="pw" type="password" autocomplete="new-password" minlength="8" required>
       <div class="check" id="adultRow"><input type="checkbox" id="adult"><label for="adult" style="margin:0">I’m a parent or guardian (18+). Kids: please ask a grown-up to set this up.</label></div>
+      <div class="check" id="reportRow"><input type="checkbox" id="report1" checked><label for="report1" style="margin:0">📊 Email me a weekly progress report about my child's practice. <span style="color:#7a7191;font-weight:700">(Turn off anytime.)</span></label></div>
       <div class="check" id="newsRow"><input type="checkbox" id="news"><label for="news" style="margin:0">📬 Email me occasional Learn With Nini news: new games, adventures and tips. <span style="color:#7a7191;font-weight:700">(Optional. Unsubscribe anytime.)</span></label></div>
       <button class="go" id="go" type="submit">Create account</button>
       <div class="msg" id="msg" role="status"></div>
@@ -94,8 +106,10 @@ a.go.play{display:block;text-align:center;text-decoration:none}
     <div class="who" id="whoEmail"></div>
     <div class="row"><span class="pill" id="syncState">☁️ Progress saved</span><span class="pill" id="nick"></span></div>
     <a class="go play" href="/">🎮 Back to playing →</a>
+    <section class="report" id="report" aria-label="This week's progress"></section>
     <button class="ghost" id="syncNow" type="button">Sync now</button>
-    <div class="check" style="margin-top:14px"><input type="checkbox" id="newsIn"><label for="newsIn" style="margin:0">📬 Email me occasional Learn With Nini news (new games, adventures, tips)</label></div>
+    <div class="check" style="margin-top:14px"><input type="checkbox" id="reportIn"><label for="reportIn" style="margin:0">📊 Email me a weekly progress report (every Sunday)</label></div>
+    <div class="check" style="margin-top:8px"><input type="checkbox" id="newsIn"><label for="newsIn" style="margin:0">📬 Email me occasional Learn With Nini news (new games, adventures, tips)</label></div>
     <button class="ghost" id="signOut" type="button">Sign out</button>
     <div class="msg" id="msg2" role="status"></div>
     <ul class="why small">
@@ -119,6 +133,7 @@ a.go.play{display:block;text-align:center;text-decoration:none}
     $("go").textContent=m==="up"?"Create account":"Sign in";
     $("adultRow").style.display=m==="up"?"flex":"none";
     $("newsRow").style.display=m==="up"?"flex":"none";
+    $("reportRow").style.display=m==="up"?"flex":"none";
     $("pw").setAttribute("autocomplete",m==="up"?"new-password":"current-password");
     $("pwHint").style.display=m==="up"?"inline":"none";
     $("msg").className="msg";
@@ -131,9 +146,39 @@ a.go.play{display:block;text-align:center;text-decoration:none}
     var n=nick();$("nick").textContent=n||"No nickname yet";
     $("syncState").textContent="☁️ Last saved: "+when(LWNAccount.lastSync());
     var md=(s.user&&s.user.user_metadata)||{}; $("newsIn").checked=!!md.email_updates;
+    $("reportIn").checked=md.weekly_report!==false; // on unless the parent turned it off
+    $("reportIn").onchange=function(){ var on=$("reportIn").checked, m=$("msg2"); say(m,"Saving…","info");
+      LWNAccount.setPrefs({weekly_report:on}).then(function(){ say(m,on?"Weekly reports are on 📊":"Weekly reports are off.","good"); })
+        .catch(function(){ $("reportIn").checked=!on; say(m,"Couldn’t save that. Try again.","bad"); }); };
+    renderReport();
     $("newsIn").onchange=function(){ var on=$("newsIn").checked, m=$("msg2"); say(m,"Saving…","info");
       LWNAccount.setEmailUpdates(on).then(function(){ say(m,on?"You’re on the list! 📬":"You won’t get news emails.","good"); })
         .catch(function(){ $("newsIn").checked=!on; say(m,"Couldn’t save that. Try again.","bad"); }); };
+  }
+  function J(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+  function hiDay(off){var d=new Date(Date.now()+(off||0)*864e5);return new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(d)}
+  var GAMES={place_value:"Place Value",number_battle:"Number Battle",money:"Money Match",time:"Time Match",multiplication:"Multiplication Sprint",division:"Division Dash",math_maze:"Math Maze",fraction:"Fraction Builder",detective:"Math Detective",geometry:"Geometry Builder",length:"Length Lab",capacity:"Capacity Lab",weight_mass:"Weight & Mass Lab"};
+  var URLS={place_value:"place-value-challenge.html",number_battle:"number-battle.html",money:"money-match.html",time:"time-match.html",multiplication:"multiplication-sprint.html",division:"division-dash.html",math_maze:"math-maze.html",fraction:"fraction-builder.html",detective:"math-detective.html",geometry:"geometry-builder.html",length:"length-lab.html",capacity:"capacity-lab.html",weight_mass:"weight-mass-lab.html"};
+  function renderReport(){
+    var el=$("report"); if(!el) return;
+    var week=[];for(var i=6;i>=0;i--)week.push(hiDay(-i));
+    var log=(J("dm-log",[])||[]).filter(function(r){return r&&week.indexOf(r.date)>=0});
+    var xp=J("lwn-xp-v1",{})||{}, days=xp.days||{}, games=xp.games||{};
+    var weekXP=week.reduce(function(a,d){return a+(Number(days[d])||0)},0);
+    var mins=Math.round(log.reduce(function(a,r){return a+(Number(r.secs)||Number(r.mins)*60||0)},0)/60);
+    var att=log.reduce(function(a,r){return a+(Number(r.attempted)||0)},0), cor=log.reduce(function(a,r){return a+(Number(r.correct)||0)},0);
+    var active=week.filter(function(d){return (Number(days[d])||0)>0||log.some(function(r){return r.date===d})}).length;
+    var badges=Object.keys(J("lwn-badges-v1",{})||{}).length;
+    var played=Object.keys(GAMES).filter(function(k){return (Number(games[k])||0)>0}).sort(function(a,b){return games[b]-games[a]});
+    var next=Object.keys(GAMES).filter(function(k){return (Number(games[k])||0)<30})[0];
+    var bars=week.map(function(d){var on=(Number(days[d])||0)>0||log.some(function(r){return r.date===d});var lab=new Date(d+"T12:00:00Z").toLocaleDateString("en-US",{weekday:"narrow",timeZone:"UTC"});return '<i class="'+(on?"on":"")+'" title="'+d+'"><b>'+(on?"✓":"")+'</b>'+lab+'</i>'}).join("");
+    el.innerHTML='<h3>📊 This week</h3><div class="days">'+bars+'</div>'+
+      '<div class="tiles"><div><b>'+active+'/7</b>days practiced</div><div><b>'+mins+'</b>challenge minutes</div><div><b>'+(att?Math.round(cor/att*100)+"%":"–")+'</b>accuracy</div><div><b>'+weekXP+'</b>XP earned</div></div>'+
+      '<p><b>Daily Challenges:</b> '+log.length+' this week'+(log.length?' · best '+Math.max.apply(null,log.map(function(r){return Number(r.points)||0}))+' points':'')+'</p>'+
+      (played.length?'<p><b>Most practiced:</b> '+played.slice(0,3).map(function(k){return GAMES[k]}).join(", ")+'</p>':'')+
+      '<p><b>Badges earned:</b> '+badges+'</p>'+
+      (next?'<p class="next">🎯 <b>Nini suggests next:</b> <a href="'+URLS[next]+'">'+GAMES[next]+' →</a></p>':'<p class="next">🏆 Every game on the path is complete!</p>')+
+      '<p class="small" style="margin-top:6px">From the progress saved to this account. Tap “Sync now” to include other devices.</p>';
   }
   function showOut(){ $("in").hidden=true;$("out").hidden=false; }
 
@@ -145,7 +190,7 @@ a.go.play{display:block;text-align:center;text-decoration:none}
     if(mode==="up"&&!$("adult").checked){say(msg,"Please confirm you’re a parent or guardian.","bad");return}
     $("go").disabled=true;say(msg,mode==="up"?"Creating your account…":"Signing in…","info");
     var job=mode==="up"
-      ? LWNAccount.signUp(email,pw,$("news").checked).then(function(r){
+      ? LWNAccount.signUp(email,pw,$("news").checked,$("report1").checked).then(function(r){
           if(r.needsConfirm){say(msg,"Almost done! Check your email for a confirmation link, then come back and sign in.","good");return null}
           return LWNAccount.session();
         })

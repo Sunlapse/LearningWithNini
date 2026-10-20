@@ -113,8 +113,8 @@
   }
 
   // emailUpdates: the parent ticked "send me updates" (optional, off by default)
-  function signUp(email, password, emailUpdates) {
-    var meta = { email_updates: !!emailUpdates, email_updates_at: new Date().toISOString(), email_updates_source: "signup" };
+  function signUp(email, password, emailUpdates, weeklyReport) {
+    var meta = { email_updates: !!emailUpdates, email_updates_at: new Date().toISOString(), email_updates_source: "signup", weekly_report: weeklyReport !== false };
     return sdk().then(function (c) { return c.auth.signUp({ email: email, password: password, options: { emailRedirectTo: "https://learnwithnini.com/account.html", data: meta } }); })
       .then(function (r) { if (r.error) throw r.error; return { needsConfirm: !r.data.session }; });
   }
@@ -126,6 +126,9 @@
   function setEmailUpdates(on) {
     return sdk().then(function (c) { return c.auth.updateUser({ data: { email_updates: !!on, email_updates_at: new Date().toISOString(), email_updates_source: "account page" } }); })
       .then(function (r) { if (r.error) throw r.error; return !!on; });
+  }
+  function setPrefs(data) {
+    return sdk().then(function (c) { return c.auth.updateUser({ data: data }); }).then(function (r) { if (r.error) throw r.error; return true; });
   }
   function signOut() { return push(true).catch(function () {}).then(function () { return client.auth.signOut(); }); }
 
@@ -207,7 +210,7 @@
     }
   }
 
-  window.LWNAccount = { sdk: sdk, session: session, signUp: signUp, signIn: signIn, signOut: signOut, setEmailUpdates: setEmailUpdates, pullMerge: pullMerge, push: push,
+  window.LWNAccount = { sdk: sdk, session: session, signUp: signUp, signIn: signIn, signOut: signOut, setEmailUpdates: setEmailUpdates, setPrefs: setPrefs, pullMerge: pullMerge, push: push,
     lastSync: function () { return get("lwn-sync-at"); }, _merge: merge };
   function boot() { auto(); try { prompts(); } catch (e) {} }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
