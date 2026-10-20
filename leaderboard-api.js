@@ -224,6 +224,14 @@ window.LWNLeaderboard = (() => {
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",relabelEmptyProfile);
   else relabelEmptyProfile();
 
+  // A device that played as an automatic "Math Star ###" name and then signed in to a parent account
+  // ends up with the same scores under both names. Hide the automatic-name copy when that device has a real name.
+  function dropAnonDupes(rows){
+    if(!Array.isArray(rows))return rows;
+    const anon=/^math star \d+$/i, nm=r=>String(r.player_name||"").trim();
+    const real=new Set(rows.filter(r=>r.device_id&&!anon.test(nm(r))).map(r=>r.device_id));
+    return rows.filter(r=>!(r.device_id&&anon.test(nm(r))&&real.has(r.device_id)));
+  }
   async function saveScore({name,avatar="⭐",game,score,level=null,best_streak=0}){
     const player=await ensureLeaderboardNickname(name,avatar);
     name=player.name;avatar=player.avatar;
@@ -254,7 +262,7 @@ window.LWNLeaderboard = (() => {
     });
     const res=await fetch(URL+"/rest/v1/game_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load leaderboard");
-    const rows=await res.json();
+    const rows=dropAnonDupes(await res.json());
     return rows
       .filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()))
       .slice(0,limit)
@@ -269,13 +277,13 @@ window.LWNLeaderboard = (() => {
     });
     const res=await fetch(URL+"/rest/v1/game_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load leaderboard");
-    const rows=await res.json();
+    const rows=dropAnonDupes(await res.json());
     return rows.filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()));
   }
 
   async function dailyChallenge({date=null,minutes=null,limit=1000,includeReview=false,activity=false}={}){
     const u=new URLSearchParams({
-      select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at",
+      select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at,device_id",
       order:"score.desc,updated_at.asc",
       limit:"1000"
     });
@@ -285,7 +293,7 @@ window.LWNLeaderboard = (() => {
 
     const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load Daily Challenge leaderboard");
-    const rows=await res.json();
+    const rows=dropAnonDupes(await res.json());
 
     const map=new Map();
     for(const r of rows){
@@ -326,7 +334,7 @@ window.LWNLeaderboard = (() => {
     name=String(name||"").trim();
     if(!name)return [];
     const u=new URLSearchParams({
-      select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at",
+      select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at,device_id",
       player_name:"eq."+name,
       order:"challenge_date.desc,updated_at.desc",
       limit:"1000"
@@ -335,7 +343,7 @@ window.LWNLeaderboard = (() => {
 
     const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load Daily Challenge history");
-    const rows=await res.json();
+    const rows=dropAnonDupes(await res.json());
 
     const bySession=new Map();
     for(const r of rows){
