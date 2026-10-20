@@ -86,7 +86,7 @@
     var t0 = performance.now();
     function frame(t) {
       var dt = Math.min(2, (t - (frame.last || t)) / 16.7); frame.last = t;
-      var el = t - t0; g.clearRect(0, 0, W, H);
+      var el = Math.max(0, t - t0); g.clearRect(0, 0, W, H);
       if (el < 260) { // flash + shockwave ring
         var k = el / 260;
         g.fillStyle = "rgba(255,248,210," + (0.55 * (1 - k)) + ")"; g.fillRect(0, 0, W, H);
@@ -287,17 +287,28 @@
       "geometry-builder.html": "Build shapes like the Leaning Tower of Pisa 🗼",
       "length-lab.html": "Measure things all around Pisa 📏",
       "capacity-lab.html": "Fill the gelato cups and water jugs 🍨",
-      "weight-mass-lab.html": "Weigh the ingredients for Nini's pizza 🍕" } }
+      "weight-mass-lab.html": "Weigh the ingredients for Nini's pizza 🍕" } },
+    5: { place: "Underwater", emoji: "🐬", photo: "/adv-reef.webp", games: {
+      "math-detective.html": "Solve the mysteries of the deep sea 🐙",
+      "number-battle.html": "Which school of fish is bigger? 🐠",
+      "fraction-builder.html": "Share the treasure fairly with the dolphins 🐬" } },
+    6: { place: "the Horse Ranch", emoji: "🐴", photo: "/adv-ranch.webp", games: {
+      "money-match.html": "Buy carrots and hay for the horses 🥕",
+      "time-match.html": "Don't be late for the trail ride! ⏰",
+      "division-dash.html": "Share the apples between the horses 🍎",
+      "geometry-builder.html": "Build fences and barns on the ranch 🪵" } }
   };
   // Every game belongs to one trip, so its Nini photo shows her at that place
   var FOCUS = { 1: "center 62%", 2: "center 62%", 3: "center 62%", 4: "center 66%" };
   function tripPhoto() {
-    for (var u in TRIPS) if (TRIPS[u].games[page]) {
+    var t = null; try { t = JSON.parse(sessionStorage.getItem("lwn-trip") || "null"); } catch (e) {}
+    var order = Object.keys(TRIPS); if (t && t.page === page && TRIPS[t.u] && TRIPS[t.u].games[page]) order.unshift(String(t.u));
+    for (var oi = 0; oi < order.length; oi++) { var u = order[oi]; if (TRIPS[u].games[page]) {
       document.querySelectorAll('img[src$="nini-hero.webp"]').forEach(function (im) {
-        im.src = TRIPS[u].photo; im.alt = "Nini in " + TRIPS[u].place; im.style.setProperty("object-position", FOCUS[u], "important");
+        im.src = TRIPS[u].photo; im.alt = "Nini in " + TRIPS[u].place; im.style.setProperty("object-position", FOCUS[u] || "center 60%", "important");
       });
       return;
-    }
+    } }
   }
   function tripBanner() {
     var t = null; try { t = JSON.parse(sessionStorage.getItem("lwn-trip") || "null"); } catch (e) {}
@@ -350,6 +361,27 @@
     }).observe(done, { attributes: true, attributeFilter: ["class"] });
   }
 
+  /* ---------- "What's new" pop-up, once, for families who visited before ---------- */
+  var NEWS_ID = "2026-10-20";
+  function whatsNew() {
+    if (page !== "index.html") return;
+    if (get("lwn-news-seen", "") === NEWS_ID) return;
+    var returning = (get("dm-log", []) || []).length || localStorage.getItem("lwn-xp-v1") || localStorage.getItem("lwn-badges-v1");
+    if (!returning) { set("lwn-news-seen", NEWS_ID); return; } // brand-new visitors already see everything fresh
+    if (document.querySelector(".lwn-modal,#lwnWelcome,#lwnProfile")) { setTimeout(whatsNew, 2500); return; }
+    set("lwn-news-seen", NEWS_ID);
+    modal('<div style="font-weight:900;color:#1E6FD9;letter-spacing:.06em;font-size:13px">WHAT\'S NEW</div><h2>Big update! 🎉</h2>' +
+      '<div style="text-align:left;margin:10px 0 4px;display:grid;gap:9px;font-weight:800;color:#3c4566;line-height:1.35">' +
+      "<div>🗺️ <b>Travel with Nini</b> to Hawaii, Alaska, China, Italy, under the sea and a horse ranch</div>" +
+      "<div>⚔️ <b>Boss battles</b> and passport stamps with postcards from Nini</div>" +
+      "<div>🎁 <b>A treasure chest every day</b> you play</div>" +
+      "<div>🦭 <b>20 icons</b> plus rare ones to collect</div>" +
+      "<div>🏆 <b>Weekly leagues</b> from Bronze to Diamond</div>" +
+      "<div>👨‍👩‍👧 <b>For parents:</b> a weekly progress page</div></div>" +
+      '<a class="btn" href="/path.html">Start the adventure →</a><button type="button" class="btn ghost" data-close>Maybe later</button>');
+    burst(null, null, { count: 120, emoji: ["🎉", "⭐", "🗺️", "🎁"] });
+  }
+
   window.LWNIcons = { locked: LOCKED, unlocked: unlocked, isUnlocked: function (i) { return unlocked().indexOf(i) >= 0; }, unlock: unlock, check: checkUnlocks, openChest: openChest };
 
   function start() {
@@ -359,6 +391,7 @@
     dailyHelper();
     setTimeout(function () { checkUnlocks(); chestButton(); }, 1200);
     setTimeout(leagueRecap, 2500);
+    setTimeout(whatsNew, 1800);
     // hide the chest button while a Daily Challenge round is on screen
     var game = document.getElementById("game");
     if (game) new MutationObserver(function () { var b = document.getElementById("lwnChestBtn"); if (game.classList.contains("on")) { if (b) b.remove(); } else chestButton(); }).observe(game, { attributes: true, attributeFilter: ["class"] });

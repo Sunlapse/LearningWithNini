@@ -82,6 +82,9 @@ h1{font-family:"Fredoka",system-ui,sans-serif;font-size:clamp(34px,8vw,48px);lin
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){.stop.cur .node,.start{animation:none}}
 .u4 img{object-position:center 72%}
+.u5{background:linear-gradient(135deg,#0E7490,#22D3EE)}.u6{background:linear-gradient(135deg,#92400E,#F59E0B)}
+.u5 img{object-position:center 60%}.u6 img{object-position:center 65%}
+@media(max-width:420px){.passport{gap:5px}.stamp{width:50px;height:50px;font-size:21px}.stamp small{font-size:7px}}
 button.stamp{font:inherit;cursor:pointer;padding:0}
 .stop.boss .node{width:96px;height:96px;font-size:42px;background:linear-gradient(145deg,#FF9B7A,#E5533A);box-shadow:0 7px 0 #B23B26}
 .stop.boss.lock .node{background:#E4EBF3;box-shadow:0 7px 0 #C7D2E0}
@@ -114,7 +117,7 @@ button.stamp{font:inherit;cursor:pointer;padding:0}
 <body>
 <header class="top">
   <a href="/">🏠 Home</a>
-  <div class="stats"><span id="xpStat">⚡ 0 XP</span><span id="lvlStat">🗺️ 0/21</span></div>
+  <div class="stats"><span id="xpStat">⚡ 0 XP</span><span id="lvlStat">🗺️ 0/32</span></div>
 </header>
 <main>
   <h1>My Math Adventure</h1>
@@ -155,15 +158,31 @@ button.stamp{font:inherit;cursor:pointer;padding:0}
       {id:"capacity", icon:"🥤", name:"Capacity Lab", url:"capacity-lab.html"},
       {id:"weight_mass", icon:"⚖️", name:"Weight & Mass Lab", url:"weight-mass-lab.html"},
       {boss:4},
-      {chk:4}]}
+      {chk:4}]},
+    // Level 2 units: the same games again, now needing 60 XP each
+    {cls:"u5", n:5, place:"Underwater", emoji:"🐬", photo:"/adv-reef.webp", trip:"Swim with Nini", title:"Deep-Sea Mix ⭐⭐", steps:[
+      {id:"detective", icon:"🔎", name:"Math Detective ⭐⭐", url:"math-detective.html", goal:60},
+      {id:"number_battle", icon:"⚔️", name:"Number Battle ⭐⭐", url:"number-battle.html", goal:60},
+      {id:"fraction", icon:"🍕", name:"Fraction Builder ⭐⭐", url:"fraction-builder.html", goal:60},
+      {boss:5},
+      {chk:5}]},
+    {cls:"u6", n:6, place:"Horse Ranch", emoji:"🐴", photo:"/adv-ranch.webp", trip:"Ride with Nini", title:"Ranch Round-Up ⭐⭐", steps:[
+      {id:"money", icon:"🪙", name:"Money Match ⭐⭐", url:"money-match.html", goal:60},
+      {id:"time", icon:"⏰", name:"Time Match ⭐⭐", url:"time-match.html", goal:60},
+      {id:"division", icon:"➗", name:"Division Dash ⭐⭐", url:"division-dash.html", goal:60},
+      {id:"geometry", icon:"📐", name:"Geometry Builder ⭐⭐", url:"geometry-builder.html", goal:60},
+      {boss:6},
+      {chk:6}]}
   ];
   var OFFSETS = [0, 70, 100, 70, 0, -70, -100, -70];
-  var BOSS = {1:{icon:"🌊",name:"The Big Wave"},2:{icon:"🏔️",name:"The Snow Mountain"},3:{icon:"🐉",name:"The Great Wall Dragon"},4:{icon:"🗼",name:"The Leaning Tower"}};
+  var BOSS = {1:{icon:"🌊",name:"The Big Wave"},2:{icon:"🏔️",name:"The Snow Mountain"},3:{icon:"🐉",name:"The Great Wall Dragon"},4:{icon:"🗼",name:"The Leaning Tower"},5:{icon:"🦈",name:"The Giant Shark"},6:{icon:"🐎",name:"The Wild Stallion"}};
   var POSTCARDS = {
     1:"Aloha from Hawaii! 🌺 I learned to surf right here. You finished Number Sense, that's like catching your very first wave! Next stop: Alaska ⛷️",
     2:"Brrr, greetings from the snow in Alaska! ❄️ Skiing takes practice, just like times tables, and you did it! Next stop: China 🏯",
     3:"Nǐ hǎo from the Great Wall of China! It is SO long, like a giant number line. You crushed Puzzles & Fractions! Next stop: Italy 🍕",
-    4:"Ciao from the Leaning Tower of Pisa! 🇮🇹 It leans almost 4 degrees, that's geometry! You finished the whole adventure. I'm so proud of you! 🏆"
+    4:"Ciao from the Leaning Tower of Pisa! 🇮🇹 It leans almost 4 degrees, that's geometry! You finished the first four trips! Next stop: under the sea 🐬",
+    5:"Bloop bloop! Greetings from under the water! 🐠 Swimming takes lots of practice, just like math. You beat the Giant Shark! Next stop: the horse ranch 🐴",
+    6:"Yee-haw from the horse ranch! 🤠 You rode all the way through the whole adventure. You're a real math champion and I'm so proud of you! 🏆"
   };
   function getJ(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
   // Daily Challenges finished: XP counter, or the days saved in the challenge history (whichever is more)
@@ -196,8 +215,8 @@ button.stamp{font:inherit;cursor:pointer;padding:0}
         st.icon=u.emoji; st.name=u.place+" Stamp"; st.url="daily-challenge.html";
         sub=done?"Stamp collected!":(daily>=st.chk?"Finish this unit's levels and boss first":"Finish "+st.chk+" Daily Challenge"+(st.chk>1?"s":"")+" ("+Math.min(daily,st.chk)+"/"+st.chk+")");
       }else{
-        var xp=games[st.id]||0; progress=Math.min(1,xp/GOAL); done=xp>=GOAL;
-        sub=done?"Complete!":Math.min(xp,GOAL)+" / "+GOAL+" XP";
+        var goal=st.goal||GOAL, xp=games[st.id]||0; progress=Math.min(1,xp/goal); done=xp>=goal;
+        sub=done?"Complete!":Math.min(xp,goal)+" / "+goal+" XP";
       }
       var status = done ? "done" : (!foundCurrent ? (foundCurrent=true,"cur") : "lock");
       if(done) doneCount++; else unitOk=false;
@@ -243,7 +262,7 @@ button.stamp{font:inherit;cursor:pointer;padding:0}
     var el=document.getElementById("path"); el.innerHTML=html;
     el.querySelectorAll(".node").forEach(function(b){ b.addEventListener("click",function(){ openTip(steps[+b.dataset.i]); }); });
     var cur=el.querySelector(".stop.cur");
-    var target=/^#u[1-4]$/.test(location.hash)?document.querySelector(location.hash):cur;
+    var target=/^#u[1-6]$/.test(location.hash)?document.querySelector(location.hash):cur;
     if(target && !render.scrolled){ render.scrolled=true; setTimeout(function(){ target.scrollIntoView({block:target===cur?"center":"start",behavior:"smooth"}); },300); }
   }
 
@@ -255,7 +274,7 @@ button.stamp{font:inherit;cursor:pointer;padding:0}
         ? (st.boss ? "🏆 You beat <b>"+esc(BOSS[st.boss].name)+"</b>! Battle again anytime for more XP." : st.chk ? "🛂 <b>"+esc(st.name)+"</b> collected!"+(UNITS[x.u.n]?" Nini says: Next stop, "+esc(UNITS[x.u.n].place)+" "+UNITS[x.u.n].emoji+"!":" You finished the whole trip!") : "✅ <b>"+esc(st.name)+"</b> is complete! Play again anytime for more XP.")
         : st.boss ? "⚔️ <b>"+esc(st.name)+"</b><br>A boss blocks the way to the "+esc(x.u.place)+" stamp! Get 8 of 10 mixed questions right in 3 minutes to beat it."
         : st.chk ? x.u.emoji+" <b>"+esc(st.name)+"</b><br>"+esc(x.sub)+" to get your passport stamp!"+(UNITS[x.u.n]?"<br>Next stop: "+esc(UNITS[x.u.n].place)+" "+UNITS[x.u.n].emoji:"")
-                 : "<b>"+esc(st.icon+" "+st.name)+"</b><br>Earn "+GOAL+" XP in this game to finish the level. ("+esc(x.sub)+")";
+                 : "<b>"+esc(st.icon+" "+st.name)+"</b><br>Earn "+(st.goal||GOAL)+" XP in this game to finish the level. ("+esc(x.sub)+")";
     t.innerHTML='<button type="button" aria-label="Close">×</button>'+msg+(x.status!=="lock" ? '<br><a class="go" href="'+st.url+'">'+(x.status==="done"?"Play again →":"Let's go! →")+'</a>' : "");
     t.classList.add("on");
     t.querySelector("button").onclick=function(){ t.classList.remove("on"); };

@@ -74,9 +74,11 @@ ul.rules{text-align:left;font-weight:800;color:#3f4a6b;line-height:1.6;padding-l
     1:{place:"Hawaii",emoji:"🏄‍♀️",photo:"/adv-hawaii.webp",name:"The Big Wave",boss:"🌊",topic:"Number Sense"},
     2:{place:"Alaska",emoji:"⛷️",photo:"/adv-alaska.webp",name:"The Snow Mountain",boss:"🏔️",topic:"Time, Times & Sharing"},
     3:{place:"China",emoji:"🏯",photo:"/adv-china.webp",name:"The Great Wall Dragon",boss:"🐉",topic:"Puzzles & Fractions"},
-    4:{place:"Italy",emoji:"🍕",photo:"/adv-italy.webp",name:"The Leaning Tower",boss:"🗼",topic:"Shapes & Measuring"}
+    4:{place:"Italy",emoji:"🍕",photo:"/adv-italy.webp",name:"The Leaning Tower",boss:"🗼",topic:"Shapes & Measuring"},
+    5:{place:"Underwater",emoji:"🐬",photo:"/adv-reef.webp",name:"The Giant Shark",boss:"🦈",topic:"Word problems, numbers & fractions"},
+    6:{place:"Horse Ranch",emoji:"🐴",photo:"/adv-ranch.webp",name:"The Wild Stallion",boss:"🐎",topic:"Money, time, sharing & shapes"}
   };
-  var u=Math.max(1,Math.min(4,parseInt(new URLSearchParams(location.search).get("u"),10)||1)), B=BOSSES[u];
+  var u=Math.max(1,Math.min(6,parseInt(new URLSearchParams(location.search).get("u"),10)||1)), B=BOSSES[u];
   var TOTAL=10, NEED=8, SECS=180;
   function $(s){return document.querySelector(s)}
   function R(a,b){return a+Math.floor(Math.random()*(b-a+1))}
@@ -132,6 +134,25 @@ ul.rules{text-align:left;font-weight:800;color:#3f4a6b;line-height:1.6;padding-l
       function(){var k=R(2,6);return{q:"🍝 The chef used "+k+" kilograms of pasta.<br><small>How many grams is that?</small>",a:fmt(k*1000),o:[fmt(k*1000),fmt(k*100),fmt(k*10),fmt(k*1000+100)].sort(function(){return Math.random()-.5})}},
       function(){var f=R(2,5);return{q:"🛵 A scooter is "+f+" feet long.<br><small>How many inches is that?</small>",a:f*12,o:num(f*12,4)}},
       function(){return pick([{q:"📐 The corner of a pizza box is a right angle.<br><small>How many degrees?</small>",a:90,o:[90,45,180,100]},{q:"🍨 A gelato shop fills a 1 liter tub.<br><small>How many milliliters is that?</small>",a:"1,000",o:["1,000","100","10","500"]}])}
+    ],
+    // Unit 5 · Underwater — mixed word problems, numbers & fractions
+    5:[
+      function(){var a=R(12,48),b=R(12,48);return{q:"🐠 "+a+" clownfish and "+b+" tang fish swim by.<br><small>How many fish in all?</small>",a:a+b,o:num(a+b,6)}},
+      function(){var a=R(3,9),b=R(4,9);return{q:"🐙 An octopus has 8 arms. How many arms do "+a+" octopuses have?",a:a*8,o:choices(a*8,function(){return pick([a*8+pick([-8,8]),a+8,a*7,a*9])})}},
+      function(){var d=pick([2,3,4,5]),n=R(2,7);return{q:"🐚 Nini found "+(d*n)+" shells. She gave 1/"+d+" to her friend.<br><small>How many did she give away?</small>",a:n,o:num(n,3)}},
+      function(){var a=R(1000,9999),b=R(1000,9999);if(a===b)b++;return{q:"🐋 A blue whale swam "+fmt(a)+" meters. A dolphin swam "+fmt(b)+" meters.<br>"+fmt(a)+" ⬜ "+fmt(b)+"<small>Which sign goes in the box?</small>",a:a>b?">":"<",o:[">","<","="]}},
+      function(){var p=pick([[3,8,5,8],[2,6,5,6],[1,4,3,4],[4,10,7,10],[2,5,3,5]]),big=p[0]/p[1]>p[2]/p[3]?p[0]+"/"+p[1]:p[2]+"/"+p[3];return{q:"🐢 Turtle A swam "+p[0]+"/"+p[1]+" of the reef. Turtle B swam "+p[2]+"/"+p[3]+".<br><small>Which turtle swam farther?</small>",a:big,o:[p[0]+"/"+p[1],p[2]+"/"+p[3],"They're equal"]}},
+      function(){var t=R(40,95),g=R(10,t-10);return{q:"🫧 A diver had "+t+" minutes of air. She used "+g+" minutes.<br><small>How many minutes are left?</small>",a:t-g,o:num(t-g,6)}}
+    ],
+    // Unit 6 · Horse Ranch — money, time, sharing & shapes
+    6:[
+      function(){var q=R(1,3),d=R(1,5),n=R(0,4),c=q*25+d*10+n*5;return{q:"🥕 Nini buys carrots for her horse with "+q+" quarter"+(q>1?"s":"")+", "+d+" dime"+(d>1?"s":"")+(n?" and "+n+" nickel"+(n>1?"s":""):"")+".<br><small>How many cents?</small>",a:c+"¢",o:choices(c+"¢",function(){return (c+pick([-15,-10,-5,5,10,15]))+"¢"})}},
+      function(){var p=R(2,9),k=R(2,6),c=100*k-0;var cost=p*k;return{q:"🐴 A pony ride costs $"+p+". How much do "+k+" rides cost?",a:"$"+cost,o:choices("$"+cost,function(){return "$"+pick([cost+p,cost-p,p+k,cost+pick([1,-1,2])])})}},
+      function(){var h=R(7,10),m=pick([0,15,30,45]),add=pick([45,60,75,90]),t=h*60+m+add,H=Math.floor(t/60),M=t%60;if(H>12)H-=12;var a=clock(H,M);
+        return{q:"⏰ The trail ride starts at "+clock(h,m)+" and lasts "+add+" minutes.<br><small>What time does it end?</small>",a:a,o:choices(a,function(){var x=t+pick([-15,15,30,-30]),hh=Math.floor(x/60),mm=((x%60)+60)%60;if(hh>12)hh-=12;if(hh<1)hh+=12;return clock(hh,mm)})}},
+      function(){var k=R(3,8),each=R(3,9);return{q:"🍎 "+(k*each)+" apples shared by "+k+" horses.<br><small>How many apples does each horse get?</small>",a:each,o:num(each,3)}},
+      function(){var l=R(5,15),w=R(3,10);return{q:"🪵 A paddock fence is "+l+" m long and "+w+" m wide.<br><small>How much fence goes all the way around?</small>",a:2*(l+w)+" m",o:choices(2*(l+w)+" m",function(){return pick([l*w,l+w,2*(l+w)+pick([-2,2,4])])+" m"})}},
+      function(){var s=pick([["triangle",3],["square",4],["pentagon",5],["hexagon",6]]);return{q:"🪧 The ranch sign is shaped like a "+s[0]+".<br><small>How many corners does it have?</small>",a:s[1],o:num(s[1],2)}}
     ]
   };
   // build 10 questions, using each question type before repeating
