@@ -129,10 +129,11 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
 <script src="fun.js"></script>
 <script>
 (function(){
-  /* ===== Cases: add a new one to the top each week ===== */
+  /* ===== Cases: add each new case to the TOP of this list, with live = its Monday (YYYY-MM-DD). ===== */
   var CASES = [{
     id: "c1-pumpkin-candy",
     num: 1,
+    live: "2026-10-21",
     title: "The Missing Pumpkin Candy 🎃",
     next: "Case #2 drops Monday, Nov 2",
     intro: "Detective, we have a new case! 🎃 At our class Halloween party, Ms. Lee filled the pumpkin bowl with candy. When we came back, the bowl was EMPTY! Solve each math problem to unlock a clue. Then tell me who took the candy.",
@@ -177,7 +178,9 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
     }
   }];
 
-  var C = CASES[0], KEY = "lwn-cases-v1";
+  // newest case whose "live" date (Hawaii time) has arrived; future cases stay hidden until their Monday
+  var today = (function(){ try { return new Intl.DateTimeFormat("en-CA", { timeZone: "Pacific/Honolulu" }).format(new Date()); } catch(e) { return new Date().toISOString().slice(0, 10); } })();
+  var C = CASES.filter(function(c){ return !c.live || c.live <= today; })[0] || CASES[CASES.length - 1], KEY = "lwn-cases-v1";
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
   function save(s){ try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){} }
   var all = load(), st = all[C.id] || {}, band = st.band || "g23";
