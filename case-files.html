@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Nini's Case Files – Math Mystery Game for Grades 2–5 | Learn With Nini</title>
+<meta name="description" content="Solve a new math mystery with Nini every week. Each word problem unlocks a clue. Use the clues to find who did it! Free for grades 2–5.">
+<link rel="canonical" href="https://learnwithnini.com/case-files.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Learn With Nini">
+<meta property="og:title" content="Nini's Case Files – a new math mystery every week">
+<meta property="og:description" content="Each word problem unlocks a clue. Use the clues to find who did it! Free for grades 2–5.">
+<meta property="og:url" content="https://learnwithnini.com/case-files.html">
+<meta property="og:image" content="https://learnwithnini.com/social-preview.png?v=3">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nini Math">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#203D61;--muted:#61708A;--blue:#2E86DE;--deep:#1E5FA8;--line:#E3ECF7;--accent:#F07E22;--accent2:#5B2A86;--soft:#FFF4E8;--good:#1F9D55;--bad:#C2410C}
+html,body{margin:0}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#F3F8FF,#fff 40%,#FFF9F3)}
+button,input{font:inherit}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top a{color:var(--deep);font-weight:900;text-decoration:none;background:#EEF5FF;border-radius:999px;padding:8px 14px;font-size:15px}
+.top .brand{font-family:"Fredoka",sans-serif;font-size:20px;background:none;padding:0}
+.top .brand b{color:#EF6D4D}
+.wrap{width:min(860px,calc(100% - 32px));margin:18px auto 60px}
+.hero{display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,#3B1F5C,#5B2A86);color:#fff;border-radius:26px;padding:20px;box-shadow:0 16px 40px rgba(59,31,92,.25)}
+.hero img{width:88px;height:88px;border-radius:50%;border:4px solid #FFB25B;background:#fff;flex:none;object-fit:cover}
+.hero .k{font-weight:900;font-size:13px;letter-spacing:.08em;color:#FFB25B}
+.hero h1{font-family:"Fredoka",sans-serif;font-size:clamp(24px,5vw,34px);margin:2px 0 4px;line-height:1.1}
+.hero p{margin:0;font-weight:700;opacity:.92}
+.grades{display:flex;gap:8px;margin:16px 0 4px;flex-wrap:wrap}
+.grades button{flex:1;min-width:140px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px;font-weight:900;color:var(--deep);cursor:pointer}
+.grades button.on{border-color:var(--blue);background:#EAF3FF}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;margin-top:14px;box-shadow:0 10px 28px rgba(40,76,120,.07)}
+.say{display:flex;gap:12px;align-items:flex-start}
+.say img{width:46px;height:46px;border-radius:50%;flex:none;border:3px solid #FFE1B8}
+.say .b{background:var(--soft);border-radius:4px 18px 18px 18px;padding:12px 14px;font-weight:700;line-height:1.5}
+h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-size:22px}
+.suspects{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.sus{position:relative;text-align:center;border:2px solid var(--line);border-radius:18px;padding:10px 6px;background:#fff;transition:.25s}
+.sus .e{font-size:40px;line-height:1.1}
+.sus b{display:block;font-size:14px;margin-top:4px}
+.sus small{display:block;color:var(--muted);font-weight:700;font-size:12px;line-height:1.25}
+.sus.out{opacity:.45;filter:grayscale(1)}
+.sus.out:after{content:"✗ cleared";position:absolute;top:8px;right:8px;background:var(--good);color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:2px 7px;filter:none}
+.sus.pick{cursor:pointer}.sus.pick:hover{border-color:var(--accent)}
+.sus.sel{border-color:var(--accent);background:var(--soft)}
+.progress{display:flex;gap:6px;margin:4px 0 12px}
+.progress i{flex:1;height:8px;border-radius:999px;background:#E6EEF8}
+.progress i.done{background:var(--accent)}.progress i.now{background:#FFC58F}
+.chap .n{font-weight:900;color:var(--accent);font-size:13px;letter-spacing:.06em}
+.chap .story{font-size:17px;line-height:1.55;font-weight:700;margin:6px 0 10px}
+.chap .q{font-size:19px;font-weight:900;color:var(--deep);margin-bottom:10px}
+.ans{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ans input{width:130px;border:2px solid #CFE0F3;border-radius:14px;padding:12px;font-size:20px;font-weight:900;color:var(--ink);text-align:center}
+.ans input:focus{outline:none;border-color:var(--blue)}
+.ans .u{font-weight:900;color:var(--muted)}
+.btn{border:0;border-radius:14px;padding:13px 20px;background:linear-gradient(135deg,#45B8ED,#2F7FD6);color:#fff;font-weight:900;font-size:17px;cursor:pointer}
+.btn.alt{background:#fff;color:var(--deep);border:2px solid var(--line)}
+.btn.orange{background:linear-gradient(135deg,#FF9B45,#E8711A)}
+.msg{margin-top:10px;font-weight:800;min-height:22px}
+.msg.good{color:var(--good)}.msg.bad{color:var(--bad)}
+.hint{margin-top:8px;background:#F3F8FF;border-radius:12px;padding:10px 12px;font-weight:700;color:var(--muted)}
+.clues{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.clues li{background:#FFFBEA;border:1px dashed #F3D27A;border-radius:14px;padding:10px 12px;font-weight:700;line-height:1.45}
+.clues li b{color:var(--accent)}
+.clues .empty{background:none;border:0;color:var(--muted);padding:0}
+.reveal{text-align:center}
+.reveal .big{font-size:64px}
+.reveal h2{font-size:28px}
+.reveal p{font-size:17px;line-height:1.55;font-weight:700}
+.next{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#EEF9F3;border-radius:16px;padding:12px 14px;font-weight:800;color:#17643A;margin-top:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.foot{text-align:center;color:var(--muted);font-weight:700;font-size:13px;margin-top:24px}
+.foot a{color:var(--deep)}
+@media(max-width:560px){.suspects{grid-template-columns:repeat(2,1fr)}.hero{padding:16px}.hero img{width:68px;height:68px}}
+</style>
+<script src="/install-banner.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <a href="/" class="brand">Learn<b>WithNini</b> ⭐</a>
+  <a href="math-detective.html">🔎 Math Detective</a>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <img src="nini-face.webp" alt="Nini">
+    <div>
+      <div class="k" id="caseKicker">NINI'S CASE FILES · CASE #1</div>
+      <h1 id="caseTitle">The Missing Pumpkin Candy 🎃</h1>
+      <p>Solve the math. Collect the clues. Find who did it!</p>
+    </div>
+  </section>
+
+  <div class="grades" role="group" aria-label="Choose your level">
+    <button type="button" data-band="g23">Grades 2–3</button>
+    <button type="button" data-band="g45">Grades 4–5</button>
+  </div>
+
+  <section class="card"><div class="say"><img src="nini-face.webp" alt=""><div class="b" id="intro"></div></div></section>
+
+  <section class="card">
+    <h2>🕵️ The suspects</h2>
+    <div class="suspects" id="suspects"></div>
+  </section>
+
+  <section class="card" id="play"></section>
+
+  <section class="card">
+    <h2>📌 Clue board</h2>
+    <ul class="clues" id="clues"></ul>
+  </section>
+
+  <div class="next" id="nextCase"></div>
+  <p class="foot">A new case every Monday. Play more word problems in <a href="math-detective.html">Math Detective</a> · <a href="/">All games</a></p>
+</div>
+
+<script src="fun.js"></script>
+<script>
+(function(){
+  /* ===== Cases: add a new one to the top each week ===== */
+  var CASES = [{
+    id: "c1-pumpkin-candy",
+    num: 1,
+    title: "The Missing Pumpkin Candy 🎃",
+    next: "Case #2 drops Monday, Nov 2",
+    intro: "Detective, we have a new case! 🎃 At our class Halloween party, Ms. Lee filled the pumpkin bowl with candy. When we came back, the bowl was EMPTY! Solve each math problem to unlock a clue. Then tell me who took the candy.",
+    suspects: [
+      { id: "kai", e: "🧛", name: "Kai", note: "dressed as a vampire" },
+      { id: "mochi", e: "🐱", name: "Mochi", note: "the orange class cat" },
+      { id: "leilani", e: "👻", name: "Leilani", note: "dressed as a ghost" },
+      { id: "bandit", e: "🦝", name: "Bandit", note: "the raccoon from the yard" }
+    ],
+    culprit: "bandit",
+    solved: "It was <b>Bandit the raccoon</b>! 🦝 He climbed in through the open window, carried the candy out one handful at a time, and hid it in the hollow log. Ms. Lee closed the window, Bandit got a few apple slices instead, and the class got a brand-new bowl of candy. Case closed! 🎃",
+    wrong: "Not this one! Look at clues 3 and 6 again: tiny-hand paw prints and a gray-and-black striped hair. 🔎",
+    chapters: {
+      g23: [
+        { story: "Ms. Lee opened 4 bags of candy. Each bag had 12 candies.", q: "How many candies were in the pumpkin bowl?", a: 48, unit: "candies", hint: "4 groups of 12. Try 12 + 12 + 12 + 12.",
+          clue: "There were <b>48 candies</b> in the bowl at 2:00. At 3:00 the bowl was empty! 😱" },
+        { story: "Kai walked in the costume parade. The parade started at 2:15 and ended at 2:50.", q: "How many minutes was Kai in the parade?", a: 35, unit: "minutes", hint: "Count from 2:15 to 2:50 by 5s.",
+          clue: "Kai was in the parade for <b>35 minutes</b>, the whole time the candy went missing. Kai is cleared! 🧛", clear: "kai" },
+        { story: "We found paw prints next to the bowl. There were 8 prints in a row, and each print was 3 cm long.", q: "How long was the row of paw prints?", a: 24, unit: "cm", hint: "8 prints × 3 cm each.",
+          clue: "The <b>24 cm</b> trail has prints with 5 long fingers, like tiny hands. 🐾 Which suspect has paws like that?" },
+        { story: "Leilani brought her own bag of 20 candies. She gave 4 candies to each friend.", q: "How many friends got candy from Leilani?", a: 5, unit: "friends", hint: "How many groups of 4 make 20?",
+          clue: "Leilani gave her own candy to <b>5 friends</b> and never touched the bowl. Her ghost sheet has no chocolate on it. Leilani is cleared! 👻", clear: "leilani" },
+        { story: "Candy wrappers made a trail across the floor. The piles had 3, 6, 9, 12 wrappers...", q: "How many wrappers are in the next pile?", a: 15, unit: "wrappers", hint: "Each pile has 3 more than the one before.",
+          clue: "The next pile had <b>15 wrappers</b>, and the trail goes right out the <b>open window</b>! 🪟" },
+        { story: "Outside, we found a hollow log. 35 of the 48 candies had been eaten.", q: "How many candies were still hiding in the log?", a: 13, unit: "candies", hint: "48 − 35. Take away 30, then 5.",
+          clue: "<b>13 candies</b> were in the hollow log, next to a gray-and-black <b>striped hair</b>! 🪵" }
+      ],
+      g45: [
+        { story: "Ms. Lee opened 6 bags of candy. Each bag had 24 candies.", q: "How many candies were in the pumpkin bowl?", a: 144, unit: "candies", hint: "6 × 24 = 6 × 20 + 6 × 4.",
+          clue: "There were <b>144 candies</b> in the bowl at 2:00. At 3:00 the bowl was empty! 😱" },
+        { story: "Kai walked in the costume parade. It started at 2:10 and ended at 2:55.", q: "How many minutes was Kai in the parade?", a: 45, unit: "minutes", hint: "2:10 to 2:55. Subtract the minutes: 55 − 10.",
+          clue: "Kai was in the parade for <b>45 minutes</b>, the whole time the candy went missing. Kai is cleared! 🧛", clear: "kai" },
+        { story: "A trail of paw prints is 2.4 meters long. Each step is 30 cm.", q: "How many steps are in the trail?", a: 8, unit: "steps", hint: "2.4 m = 240 cm. How many 30s are in 240?",
+          clue: "The trail has <b>8 steps</b>. Each print has 5 long fingers, like tiny hands. 🐾 Which suspect has paws like that?" },
+        { story: "Leilani brought her own bag of 96 candies. She gave 8 candies to each classmate.", q: "How many classmates got candy from Leilani?", a: 12, unit: "classmates", hint: "96 ÷ 8. Think: 8 × 12.",
+          clue: "Leilani shared her own candy with <b>12 classmates</b> and never touched the bowl. Leilani is cleared! 👻", clear: "leilani" },
+        { story: "We found wrappers for 3/4 of the 144 candies outside the classroom.", q: "How many wrappers were outside?", a: 108, unit: "wrappers", hint: "144 ÷ 4 = 36. Then 36 × 3.",
+          clue: "<b>108 wrappers</b> make a trail right out the <b>open window</b>! 🪟" },
+        { story: "Outside, a hollow log held all the candies that were not eaten yet.", q: "How many candies were still hiding in the log?", a: 36, unit: "candies", hint: "Start with 144. Take away the 108 that were eaten.",
+          clue: "<b>36 candies</b> were in the hollow log, next to a gray-and-black <b>striped hair</b>! 🪵" }
+      ]
+    }
+  }];
+
+  var C = CASES[0], KEY = "lwn-cases-v1";
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
+  function save(s){ try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){} }
+  var all = load(), st = all[C.id] || {}, band = st.band || "g23";
+  function prog(){ st[band] = st[band] || { step: 0, tries: 0, solved: null }; return st[band]; }
+  function persist(){ st.band = band; all[C.id] = st; save(all); }
+  function $(id){ return document.getElementById(id); }
+  function fun(fn){ try{ if(window.LWNFun) LWNFun[fn].apply(null, [].slice.call(arguments,1)); }catch(e){} }
+
+  $("caseKicker").textContent = "NINI'S CASE FILES · CASE #" + C.num;
+  $("caseTitle").textContent = C.title;
+  $("intro").innerHTML = C.intro;
+  $("nextCase").innerHTML = "<span>🗓️ " + C.next + "</span><span>Come back to solve it!</span>";
+
+  function cleared(){ var p = prog(), ch = C.chapters[band], out = {}; for (var i = 0; i < p.step && i < ch.length; i++) if (ch[i].clear) out[ch[i].clear] = 1; return out; }
+
+  function renderSuspects(picking){
+    var out = cleared();
+    $("suspects").innerHTML = C.suspects.map(function(s){
+      return '<div class="sus' + (out[s.id] ? " out" : "") + (picking && !out[s.id] ? " pick" : "") + '" data-id="' + s.id + '"' + (picking && !out[s.id] ? ' role="button" tabindex="0"' : "") + '><div class="e">' + s.e + '</div><b>' + s.name + '</b><small>' + s.note + '</small></div>';
+    }).join("");
+  }
+  function renderClues(){
+    var p = prog(), ch = C.chapters[band], li = [];
+    for (var i = 0; i < p.step && i < ch.length; i++) li.push("<li>🔎 <b>Clue " + (i + 1) + ":</b> " + ch[i].clue + "</li>");
+    $("clues").innerHTML = li.length ? li.join("") : '<li class="empty">Solve Chapter 1 to find your first clue.</li>';
+  }
+  function bar(){ var p = prog(), n = C.chapters[band].length, h = '<div class="progress">'; for (var i = 0; i <= n; i++) h += '<i class="' + (i < p.step ? "done" : i === p.step ? "now" : "") + '"></i>'; return h + "</div>"; }
+
+  function render(){
+    document.querySelectorAll(".grades button").forEach(function(b){ b.classList.toggle("on", b.dataset.band === band); });
+    var p = prog(), ch = C.chapters[band];
+    $("intro").closest(".card").hidden = p.step > 0 && !p.solved; // story intro only before the case starts
+    renderClues();
+    if (p.solved) { renderSuspects(false); return showSolved(); }
+    if (p.step < ch.length) { renderSuspects(false); return showChapter(p.step); }
+    renderSuspects(true); showAccuse();
+  }
+
+  function showChapter(i){
+    var c = C.chapters[band][i], misses = 0;
+    $("play").innerHTML = bar() + '<div class="chap"><div class="n">CHAPTER ' + (i + 1) + ' OF ' + C.chapters[band].length + '</div>' +
+      '<div class="story">' + c.story + '</div><div class="q">' + c.q + '</div>' +
+      '<form class="ans" id="ansForm"><input id="ans" inputmode="numeric" autocomplete="off" aria-label="Your answer"><span class="u">' + c.unit + '</span><button class="btn" type="submit">Check ✓</button></form>' +
+      '<div class="msg" id="msg" aria-live="polite"></div><div id="hint"></div></div>';
+    var inp = $("ans");
+    $("ansForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      var v = Number(String(inp.value).replace(/[, ]/g, ""));
+      if (inp.value.trim() === "" || isNaN(v)) { $("msg").className = "msg bad"; $("msg").textContent = "Type a number first 🙂"; return; }
+      if (v === c.a) {
+        fun("play", "right");
+        var p = prog(); p.step = i + 1; persist();
+        try { if (window.LWNXP && misses === 0) LWNXP.add(5, "Clue found"); } catch(e){}
+        $("msg").className = "msg good"; $("msg").textContent = "Yes! " + c.a + " " + c.unit + ". New clue unlocked! 🔎";
+        setTimeout(function(){ render(); var cb = document.querySelector(".clues li:last-child"); if (cb) cb.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(function(){ var pl = $("play"); if (pl) pl.scrollIntoView({ behavior: "smooth", block: "start" }); }, 1400); }, 700);
+      } else {
+        misses++; fun("play", "wrong");
+        $("msg").className = "msg bad"; $("msg").textContent = misses > 1 ? "Not yet. Use the hint and try again!" : "Not quite. Check your math and try again!";
+        if (misses >= 1) $("hint").innerHTML = '<div class="hint">💡 Hint: ' + c.hint + "</div>";
+        inp.select();
+      }
+    });
+  }
+
+  function showAccuse(){
+    $("play").innerHTML = bar() + '<div class="chap"><div class="n">FINAL STEP</div><div class="story">You found all the clues! 🔎 Two suspects are left. Read the clue board, then tap the one who took the candy.</div><div class="msg" id="msg" aria-live="polite"></div></div>';
+    document.querySelectorAll(".sus.pick").forEach(function(el){
+      function go(){
+        var p = prog(); p.tries = (p.tries || 0) + 1;
+        if (el.dataset.id === C.culprit) {
+          p.solved = new Date().toISOString().slice(0, 10); persist();
+          try { if (window.LWNXP) LWNXP.add(p.tries === 1 ? 25 : 15, "Case closed"); } catch(e){}
+          try { if (window.LWNStats) LWNStats.track("case_solved", { id: C.id, band: band, tries: p.tries }); } catch(e){}
+          fun("play", "win"); fun("confetti", 160);
+          render(); window.scrollTo({ top: $("play").offsetTop - 90, behavior: "smooth" });
+        } else {
+          persist(); fun("play", "wrong"); el.classList.add("out");
+          $("msg").className = "msg bad"; $("msg").textContent = C.wrong;
+        }
+      }
+      el.addEventListener("click", go);
+      el.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+  }
+
+  function showSolved(){
+    var p = prog(), culprit = C.suspects.filter(function(s){ return s.id === C.culprit; })[0];
+    document.querySelectorAll(".sus").forEach(function(el){ if (el.dataset.id === C.culprit) el.classList.add("sel"); });
+    var other = band === "g23" ? "g45" : "g23", otherLabel = band === "g23" ? "Grades 4–5" : "Grades 2–3";
+    $("play").innerHTML = '<div class="reveal"><div class="big">' + culprit.e + '</div><h2>Case closed! 🎉</h2><p>' + C.solved + '</p>' +
+      '<p style="color:var(--good)">🏅 Detective badge earned' + (p.tries === 1 ? " on your first guess!" : "!") + '</p>' +
+      '<div class="row"><button class="btn orange" type="button" id="share">📣 Challenge a friend</button>' +
+      (st[other] && st[other].solved ? "" : '<button class="btn alt" type="button" id="other">Try the ' + otherLabel + ' case</button>') +
+      '<a class="btn alt" href="math-detective.html" style="text-decoration:none">More word problems →</a></div></div>';
+    var sh = $("share");
+    if (sh) sh.onclick = function(){
+      var text = "I solved Nini's math mystery: " + C.title + " Can you find who did it?", url = "https://learnwithnini.com/case-files.html";
+      if (navigator.share) navigator.share({ title: "Nini's Case Files", text: text, url: url }).catch(function(){});
+      else { try { navigator.clipboard.writeText(text + " " + url); sh.textContent = "✓ Link copied!"; } catch(e){} }
+    };
+    var ot = $("other"); if (ot) ot.onclick = function(){ band = other; persist(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  }
+
+  document.querySelectorAll(".grades button").forEach(function(b){
+    b.addEventListener("click", function(){ band = b.dataset.band; persist(); render(); });
+  });
+  render();
+})();
+</script>
+</body>
+</html>
