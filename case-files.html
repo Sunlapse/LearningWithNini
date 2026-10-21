@@ -251,7 +251,7 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
       function go(){
         var p = prog(); p.tries = (p.tries || 0) + 1;
         if (el.dataset.id === C.culprit) {
-          p.solved = new Date().toISOString().slice(0, 10); persist();
+          p.solved = new Date().toISOString().slice(0, 10); persist(); try { localStorage.setItem("lwn-case-solved-week", C.live || today); } catch(e){}
           try { if (window.LWNXP) LWNXP.add(p.tries === 1 ? 25 : 15, "Case closed"); } catch(e){}
           try { if (window.LWNStats) LWNStats.track("case_solved", { id: C.id, band: band, tries: p.tries }); } catch(e){}
           fun("play", "win"); fun("confetti", 160);
