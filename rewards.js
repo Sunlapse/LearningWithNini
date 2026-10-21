@@ -363,17 +363,22 @@
 
   /* ---------- "What's new" pop-up, once, for families who visited before ---------- */
   var NEWS_ID = "2026-10-20", NEWS_UNTIL = "2026-11-03", newsTries = 0; // shown once per family, and not at all after NEWS_UNTIL
-  function whatsNew() {
+  function whatsNew(force) {
     if (page !== "index.html") return;
+    var today = new Date().toLocaleDateString("en-CA");
+    var later = get("lwn-news-later", {}) || {};
+    if (force !== true) {
     if (get("lwn-news-seen", "") === NEWS_ID) return;
     if (new Date().toISOString().slice(0, 10) > NEWS_UNTIL) return;
+    // "Read later": wait until tomorrow, at most 3 showings
+    if (later.id === NEWS_ID && (later.day === today || (later.n || 0) >= 3)) return;
     // signed-in parent: wait until this device has pulled the account, so a pop-up seen on another device counts here too
     try { if (localStorage.getItem("sb-lwn-auth") && !sessionStorage.getItem("lwn-sync-pulled") && ++newsTries < 6) { setTimeout(whatsNew, 1500); return; } } catch (e) {}
     var returning = (get("dm-log", []) || []).length || localStorage.getItem("lwn-xp-v1") || localStorage.getItem("lwn-badges-v1");
     if (!returning) { set("lwn-news-seen", NEWS_ID); return; } // brand-new visitors already see everything fresh
     if (document.querySelector(".lwn-modal,#lwnWelcome,#lwnProfile")) { setTimeout(whatsNew, 2500); return; }
-    set("lwn-news-seen", NEWS_ID);
-    modal('<div style="font-weight:900;color:#1E6FD9;letter-spacing:.06em;font-size:13px">WHAT\'S NEW</div><h2>Big update! 🎉</h2>' +
+    }
+    var m = modal('<div style="font-weight:900;color:#1E6FD9;letter-spacing:.06em;font-size:13px">WHAT\'S NEW</div><h2>Big update! 🎉</h2>' +
       '<div style="text-align:left;margin:10px 0 4px;display:grid;gap:9px;font-weight:800;color:#3c4566;line-height:1.35">' +
       "<div>🗺️ <b>Travel with Nini</b> to Hawaii, Alaska, China, Italy, under the sea and a horse ranch</div>" +
       "<div>⚔️ <b>Boss battles</b> and passport stamps with postcards from Nini</div>" +
@@ -381,7 +386,20 @@
       "<div>🦭 <b>20 icons</b> plus rare ones to collect</div>" +
       "<div>🏆 <b>Weekly leagues</b> from Bronze to Diamond</div>" +
       "<div>👨‍👩‍👧 <b>For parents:</b> a weekly progress page</div></div>" +
-      '<a class="btn" href="/path.html">Start the adventure →</a><button type="button" class="btn ghost" data-close>Maybe later</button>');
+      '<a class="btn" href="/path.html" data-news="read">Start the adventure →</a>' +
+      '<div style="display:flex;gap:8px;margin-top:8px"><button type="button" class="btn ghost" data-close data-news="later" style="flex:1;margin:0;border:2px solid #E3EEFA;border-radius:14px;padding:11px 6px">⏰ Read later</button>' +
+      '<button type="button" class="btn ghost" data-close data-news="read" style="flex:1;margin:0;border:2px solid #E3EEFA;border-radius:14px;padding:11px 6px">✓ I\'ve read this</button></div>');
+    if (force !== true) {
+      var lastLater = later.id === NEWS_ID ? (later.n || 0) : 0;
+      // closing by tapping outside counts as "read later"
+      set("lwn-news-later", { id: NEWS_ID, day: today, n: lastLater + 1 });
+    }
+    m.querySelectorAll("[data-news]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (b.getAttribute("data-news") === "read") set("lwn-news-seen", NEWS_ID);
+        try { if (window.LWNAccount) LWNAccount.push(true).catch(function () {}); } catch (e) {}
+      });
+    });
     burst(null, null, { count: 120, emoji: ["🎉", "⭐", "🗺️", "🎁"] });
   }
 
@@ -395,6 +413,13 @@
     setTimeout(function () { checkUnlocks(); chestButton(); }, 1200);
     setTimeout(leagueRecap, 2500);
     setTimeout(whatsNew, 1800);
+    // "What's new" link in the homepage footer, so families can open it again anytime
+    if (page === "index.html") {
+      var fl = document.querySelector(".footer-links");
+      if (fl && !document.getElementById("lwnNewsLink")) { var a = document.createElement("a"); a.id = "lwnNewsLink"; a.href = "#whats-new"; a.textContent = "🎉 What’s new"; fl.appendChild(a); }
+      var openNews = function () { if (location.hash === "#whats-new") { history.replaceState(null, "", location.pathname); if (!document.querySelector(".lwn-modal")) whatsNew(true); } };
+      addEventListener("hashchange", openNews); openNews();
+    }
     // hide the chest button while a Daily Challenge round is on screen
     var game = document.getElementById("game");
     if (game) new MutationObserver(function () { var b = document.getElementById("lwnChestBtn"); if (game.classList.contains("on")) { if (b) b.remove(); } else chestButton(); }).observe(game, { attributes: true, attributeFilter: ["class"] });
