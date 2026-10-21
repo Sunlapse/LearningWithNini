@@ -29,7 +29,7 @@ html,body{margin:0}
 body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#F3F8FF,#fff 40%,#FFF9F3)}
 button,input{font:inherit}
 .top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.top a{color:var(--deep);font-weight:900;text-decoration:none;background:#EEF5FF;border-radius:999px;padding:8px 14px;font-size:15px}
+.top a{display:inline-flex;align-items:center;min-height:44px;color:var(--deep);font-weight:900;text-decoration:none;background:#EEF5FF;border-radius:999px;padding:8px 14px;font-size:15px}
 .top .brand{font-family:"Fredoka",sans-serif;font-size:20px;background:none;padding:0}
 .top .brand b{color:#EF6D4D}
 .wrap{width:min(860px,calc(100% - 32px));margin:18px auto 60px}
@@ -82,7 +82,7 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
 .next{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#EEF9F3;border-radius:16px;padding:12px 14px;font-weight:800;color:#17643A;margin-top:14px}
 .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
 .foot{text-align:center;color:var(--muted);font-weight:700;font-size:13px;margin-top:24px}
-.foot a{color:var(--deep)}
+.foot a{color:var(--deep);display:inline-flex;align-items:center;min-height:44px;padding:0 6px}
 @media(max-width:560px){.suspects{grid-template-columns:repeat(2,1fr)}.hero{padding:16px}.hero img{width:68px;height:68px}}
 </style>
 <script src="/install-banner.js" defer></script>
@@ -113,6 +113,7 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
   <section class="card">
     <h2>🕵️ The suspects</h2>
     <div class="suspects" id="suspects"></div>
+    <div class="msg" id="susMsg" aria-live="polite"></div>
   </section>
 
   <section class="card" id="play"></section>
@@ -136,7 +137,7 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
     live: "2026-10-21",
     title: "The Missing Pumpkin Candy 🎃",
     next: "Case #2 drops Monday, Nov 2",
-    intro: "Detective, we have a new case! 🎃 At our class Halloween party, Ms. Lee filled the pumpkin bowl with candy. When we came back, the bowl was EMPTY! Solve each math problem to unlock a clue. Then tell me who took the candy.",
+    intro: "Detective, we have a new case! 🎃 At our class Halloween party, Ms. Lee checked the pumpkin bowl at 2:15 and it was full of candy. At 2:50 it was EMPTY! Solve each math problem to unlock a clue. Then tell me who took the candy.",
     suspects: [
       { id: "kai", e: "🧛", name: "Kai", note: "dressed as a vampire" },
       { id: "mochi", e: "🐱", name: "Mochi", note: "the orange class cat" },
@@ -144,35 +145,35 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
       { id: "bandit", e: "🦝", name: "Bandit", note: "the raccoon from the yard" }
     ],
     culprit: "bandit",
-    solved: "It was <b>Bandit the raccoon</b>! 🦝 He climbed in through the open window, carried the candy out one handful at a time, and hid it in the hollow log. Ms. Lee closed the window, Bandit got a few apple slices instead, and the class got a brand-new bowl of candy. Case closed! 🎃",
+    solved: "It was <b>Bandit the raccoon</b>! 🦝 He climbed in through the open window, carried the candy out a handful at a time, and hid it in the hollow log. Ms. Lee closed and latched the window, and the school called the animal control office, who helped Bandit get safely back to the woods. Remember, detectives: never touch or feed wild animals. Tell a grown-up instead! The class got a brand-new bowl of candy. Case closed! 🎃",
     wrong: "Not this one! Look at clues 3 and 6 again: tiny-hand paw prints and a gray-and-black striped hair. 🔎",
     chapters: {
       g23: [
         { story: "Ms. Lee opened 4 bags of candy. Each bag had 12 candies.", q: "How many candies were in the pumpkin bowl?", a: 48, unit: "candies", hint: "4 groups of 12. Try 12 + 12 + 12 + 12.",
-          clue: "There were <b>48 candies</b> in the bowl at 2:00. At 3:00 the bowl was empty! 😱" },
+          clue: "There were <b>48 candies</b> in the bowl at 2:15. By 2:50 the bowl was empty, so the candy vanished between 2:15 and 2:50! 😱" },
         { story: "Kai walked in the costume parade. The parade started at 2:15 and ended at 2:50.", q: "How many minutes was Kai in the parade?", a: 35, unit: "minutes", hint: "Count from 2:15 to 2:50 by 5s.",
-          clue: "Kai was in the parade for <b>35 minutes</b>, the whole time the candy went missing. Kai is cleared! 🧛", clear: "kai" },
-        { story: "We found paw prints next to the bowl. There were 8 prints in a row, and each print was 3 cm long.", q: "How long was the row of paw prints?", a: 24, unit: "cm", hint: "8 prints × 3 cm each.",
+          clue: "Kai marched in the parade for <b>35 minutes</b>, from 2:15 to 2:50, with teachers watching. That is the whole time the candy went missing. Kai is cleared! 🧛", clear: "kai" },
+        { story: "We found a trail of paw prints next to the bowl. The trail has 8 steps, and each step is 3 cm long.", q: "How long is the trail?", a: 24, unit: "cm", hint: "8 steps × 3 cm each. Try 3 + 3 + 3... eight times.",
           clue: "The <b>24 cm</b> trail has prints with 5 long fingers, like tiny hands. 🐾 Which suspect has paws like that?" },
         { story: "Leilani brought her own bag of 20 candies. She gave 4 candies to each friend.", q: "How many friends got candy from Leilani?", a: 5, unit: "friends", hint: "How many groups of 4 make 20?",
-          clue: "Leilani gave her own candy to <b>5 friends</b> and never touched the bowl. Her ghost sheet has no chocolate on it. Leilani is cleared! 👻", clear: "leilani" },
+          clue: "Leilani was in the library giving her own candy to <b>5 friends</b> from 2:15 to 2:50, and the librarian saw her the whole time. Leilani is cleared! 👻", clear: "leilani" },
         { story: "Candy wrappers made a trail across the floor. The piles had 3, 6, 9, 12 wrappers...", q: "How many wrappers are in the next pile?", a: 15, unit: "wrappers", hint: "Each pile has 3 more than the one before.",
           clue: "The next pile had <b>15 wrappers</b>, and the trail goes right out the <b>open window</b>! 🪟" },
-        { story: "Outside, we found a hollow log. 35 of the 48 candies had been eaten.", q: "How many candies were still hiding in the log?", a: 13, unit: "candies", hint: "48 − 35. Take away 30, then 5.",
+        { story: "Outside, we found a hollow log. 35 of the 48 candies had been eaten, and all the rest were hiding in the log.", q: "How many candies were still hiding in the log?", a: 13, unit: "candies", hint: "48 − 35. Take away 30, then 5.",
           clue: "<b>13 candies</b> were in the hollow log, next to a gray-and-black <b>striped hair</b>! 🪵" }
       ],
       g45: [
         { story: "Ms. Lee opened 6 bags of candy. Each bag had 24 candies.", q: "How many candies were in the pumpkin bowl?", a: 144, unit: "candies", hint: "6 × 24 = 6 × 20 + 6 × 4.",
-          clue: "There were <b>144 candies</b> in the bowl at 2:00. At 3:00 the bowl was empty! 😱" },
+          clue: "There were <b>144 candies</b> in the bowl at 2:15. By 2:50 the bowl was empty, so the candy vanished between 2:15 and 2:50! 😱" },
         { story: "Kai walked in the costume parade. It started at 2:10 and ended at 2:55.", q: "How many minutes was Kai in the parade?", a: 45, unit: "minutes", hint: "2:10 to 2:55. Subtract the minutes: 55 − 10.",
-          clue: "Kai was in the parade for <b>45 minutes</b>, the whole time the candy went missing. Kai is cleared! 🧛", clear: "kai" },
+          clue: "Kai marched in the parade for <b>45 minutes</b>, from 2:10 to 2:55, with teachers watching. The candy went missing between 2:15 and 2:50, while he was still marching. Kai is cleared! 🧛", clear: "kai" },
         { story: "A trail of paw prints is 2.4 meters long. Each step is 30 cm.", q: "How many steps are in the trail?", a: 8, unit: "steps", hint: "2.4 m = 240 cm. How many 30s are in 240?",
           clue: "The trail has <b>8 steps</b>. Each print has 5 long fingers, like tiny hands. 🐾 Which suspect has paws like that?" },
         { story: "Leilani brought her own bag of 96 candies. She gave 8 candies to each classmate.", q: "How many classmates got candy from Leilani?", a: 12, unit: "classmates", hint: "96 ÷ 8. Think: 8 × 12.",
-          clue: "Leilani shared her own candy with <b>12 classmates</b> and never touched the bowl. Leilani is cleared! 👻", clear: "leilani" },
-        { story: "We found wrappers for 3/4 of the 144 candies outside the classroom.", q: "How many wrappers were outside?", a: 108, unit: "wrappers", hint: "144 ÷ 4 = 36. Then 36 × 3.",
-          clue: "<b>108 wrappers</b> make a trail right out the <b>open window</b>! 🪟" },
-        { story: "Outside, a hollow log held all the candies that were not eaten yet.", q: "How many candies were still hiding in the log?", a: 36, unit: "candies", hint: "Start with 144. Take away the 108 that were eaten.",
+          clue: "Leilani was in the library sharing her own candy with <b>12 classmates</b> from 2:15 to 2:50, and the librarian saw her the whole time. Leilani is cleared! 👻", clear: "leilani" },
+        { story: "Each eaten candy left exactly one wrapper. Outside the classroom we found wrappers for 3/4 of the 144 candies.", q: "How many wrappers were outside?", a: 108, unit: "wrappers", hint: "144 ÷ 4 = 36. Then 36 × 3.",
+          clue: "<b>108 wrappers</b>, one for each eaten candy, make a trail right out the <b>open window</b>! 🪟" },
+        { story: "Outside, a hollow log held every one of the 144 candies that was not eaten.", q: "How many candies were still hiding in the log?", a: 36, unit: "candies", hint: "Start with 144. Take away the 108 that were eaten.",
           clue: "<b>36 candies</b> were in the hollow log, next to a gray-and-black <b>striped hair</b>! 🪵" }
       ]
     }
@@ -213,7 +214,7 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
     document.querySelectorAll(".grades button").forEach(function(b){ b.classList.toggle("on", b.dataset.band === band); });
     var p = prog(), ch = C.chapters[band];
     $("intro").closest(".card").hidden = p.step > 0 && !p.solved; // story intro only before the case starts
-    renderClues();
+    renderClues(); $("susMsg").textContent = "";
     if (p.solved) { renderSuspects(false); return showSolved(); }
     if (p.step < ch.length) { renderSuspects(false); return showChapter(p.step); }
     renderSuspects(true); showAccuse();
@@ -235,7 +236,7 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
         var p = prog(); p.step = i + 1; persist();
         try { if (window.LWNXP && misses === 0) LWNXP.add(5, "Clue found"); } catch(e){}
         $("msg").className = "msg good"; $("msg").textContent = "Yes! " + c.a + " " + c.unit + ". New clue unlocked! 🔎";
-        setTimeout(function(){ render(); var cb = document.querySelector(".clues li:last-child"); if (cb) cb.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(function(){ var pl = $("play"); if (pl) pl.scrollIntoView({ behavior: "smooth", block: "start" }); }, 1400); }, 700);
+        setTimeout(function(){ render(); var cb = document.querySelector(".clues li:last-child"); if (cb) cb.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(function(){ var last = prog().step >= C.chapters[band].length, el = last ? $("suspects").closest(".card") : $("play"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 1400); }, 700);
       } else {
         misses++; fun("play", "wrong");
         $("msg").className = "msg bad"; $("msg").textContent = misses > 1 ? "Not yet. Use the hint and try again!" : "Not quite. Check your math and try again!";
@@ -258,7 +259,7 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
           render(); window.scrollTo({ top: $("play").offsetTop - 90, behavior: "smooth" });
         } else {
           persist(); fun("play", "wrong"); el.classList.add("out");
-          $("msg").className = "msg bad"; $("msg").textContent = C.wrong;
+          $("msg").className = "msg bad"; $("msg").textContent = C.wrong; $("susMsg").className = "msg bad"; $("susMsg").textContent = C.wrong;
         }
       }
       el.addEventListener("click", go);
