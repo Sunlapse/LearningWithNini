@@ -362,10 +362,13 @@
   }
 
   /* ---------- "What's new" pop-up, once, for families who visited before ---------- */
-  var NEWS_ID = "2026-10-20";
+  var NEWS_ID = "2026-10-20", NEWS_UNTIL = "2026-11-03", newsTries = 0; // shown once per family, and not at all after NEWS_UNTIL
   function whatsNew() {
     if (page !== "index.html") return;
     if (get("lwn-news-seen", "") === NEWS_ID) return;
+    if (new Date().toISOString().slice(0, 10) > NEWS_UNTIL) return;
+    // signed-in parent: wait until this device has pulled the account, so a pop-up seen on another device counts here too
+    try { if (localStorage.getItem("sb-lwn-auth") && !sessionStorage.getItem("lwn-sync-pulled") && ++newsTries < 6) { setTimeout(whatsNew, 1500); return; } } catch (e) {}
     var returning = (get("dm-log", []) || []).length || localStorage.getItem("lwn-xp-v1") || localStorage.getItem("lwn-badges-v1");
     if (!returning) { set("lwn-news-seen", NEWS_ID); return; } // brand-new visitors already see everything fresh
     if (document.querySelector(".lwn-modal,#lwnWelcome,#lwnProfile")) { setTimeout(whatsNew, 2500); return; }
