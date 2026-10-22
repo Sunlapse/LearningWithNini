@@ -81,6 +81,15 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
 .reveal p{font-size:17px;line-height:1.55;font-weight:700}
 .next{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#EEF9F3;border-radius:16px;padding:12px 14px;font-weight:800;color:#17643A;margin-top:14px}
 .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.past-sub{margin:-4px 0 10px;color:var(--muted);font-weight:700}
+.past{display:grid;gap:8px}
+.past a{display:flex;align-items:center;gap:10px;min-height:52px;border:2px solid var(--line);border-radius:16px;padding:10px 12px;color:var(--ink);text-decoration:none;font-weight:800;line-height:1.3}
+.past a:hover{border-color:var(--accent)}
+.past a.on{border-color:var(--blue);background:#EAF3FF}
+.past a .t{flex:1;min-width:0}
+.past a small{display:block;color:var(--muted);font-weight:800;font-size:12px}
+.past a .s{flex:none;font-size:12px;font-weight:900;border-radius:999px;padding:3px 8px;background:#FFF4E8;color:var(--accent)}
+.past a .s.ok{background:#E7F7EE;color:var(--good)}
 .foot{text-align:center;color:var(--muted);font-weight:700;font-size:13px;margin-top:24px}
 .foot a{color:var(--deep);display:inline-flex;align-items:center;min-height:44px;padding:0 6px}
 @media(max-width:560px){.suspects{grid-template-columns:repeat(2,1fr)}.hero{padding:16px}.hero img{width:68px;height:68px}}
@@ -123,6 +132,12 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
     <ul class="clues" id="clues"></ul>
   </section>
 
+  <section class="card" id="pastCard" hidden>
+    <h2>📁 All case files</h2>
+    <p class="past-sub">Missed one? Old cases stay open. Tap any case to solve it!</p>
+    <div class="past" id="pastCases"></div>
+  </section>
+
   <div class="next" id="nextCase"></div>
   <p class="foot">A new case every Monday. Play more word problems in <a href="math-detective.html">Math Detective</a> · <a href="/">All games</a></p>
 </div>
@@ -132,11 +147,57 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
 (function(){
   /* ===== Cases: add each new case to the TOP of this list, with live = its Monday (YYYY-MM-DD). ===== */
   var CASES = [{
+    id: "c2-blue-ribbon",
+    num: 2,
+    live: "2026-10-26",
+    title: "The Missing Blue Ribbon 🐴",
+    next: "Case #3 drops Monday, Nov 2",
+    intro: "Detective, we have a new case! 🐴 At the Sunny Hill Ranch Fall Fair, Judge Ruby set a shiny blue ribbon on the pie table for the best pie in the contest. She saw it there at 10:20. At 11:05 it was GONE! Solve each math problem to unlock a clue. Then tell me who took the ribbon.",
+    suspects: [
+      { id: "theo", e: "🤠", name: "Theo", note: "in a cowboy hat" },
+      { id: "biscuit", e: "🐴", name: "Biscuit", note: "the brown pony" },
+      { id: "maile", e: "👒", name: "Maile", note: "in a straw sun hat" },
+      { id: "rosie", e: "🐑", name: "Rosie", note: "the fluffy white sheep" }
+    ],
+    culprit: "rosie",
+    solved: "It was <b>Rosie the sheep</b>! 🐑 Her pen gate was not latched, so she wandered out, grabbed the shiny ribbon from the pie table, and trotted back to the barn to hide it behind the hay. Rancher Sam found the ribbon, a little wrinkled but fine, and checked on Rosie. She was happy and healthy! Sam latched the gate, and the pie contest winner got the blue ribbon after all. Remember, detectives: ranch animals are curious, so ask a grown-up before you open a gate or go near the animals. Case closed! 🏅",
+    wrong: "Not this one! Look at clues 3 and 6 again: hoofprints split into two halves and a tuft of white wool. 🔎",
+    chapters: {
+      g23: [
+        { story: "Judge Ruby lined up all the contest pies in 6 rows. Each row had 5 pies.", q: "How many pies were in the contest?", a: 30, unit: "pies", hint: "6 groups of 5. Count by 5s six times.",
+          clue: "Judge Ruby judged all <b>30 pies</b> and set the blue ribbon on the table. She saw it there at 10:20. At 11:05 it was gone, so the ribbon vanished between 10:20 and 11:05! 😱" },
+        { story: "Theo rode the hayride wagon. It left the barn at 10:15 and came back at 11:10.", q: "How many minutes was Theo on the hayride?", a: 55, unit: "minutes", hint: "From 10:15 to 11:00 is 45 minutes. Then add 10 more minutes.",
+          clue: "Theo rode the hayride for <b>55 minutes</b>, from 10:15 to 11:10. The wagon driver and the other riders saw him the whole time. That covers all of 10:20 to 11:05. Theo is cleared! 🤠", clear: "theo" },
+        { story: "We found a trail of hoofprints leading away from the pie table. The trail has 6 steps, and each step is 40 cm long.", q: "How long is the trail?", a: 240, unit: "cm", hint: "6 steps × 40 cm each. 6 × 4 tens = 24 tens.",
+          clue: "The <b>240 cm</b> trail has small hoofprints, and each print is split into two halves, like two toes. 🐾 A pony's hoof is one round piece. Hmm!" },
+        { story: "Maile helped at the bake stand. She put all 24 apple muffins into bags, with 3 muffins in each bag.", q: "How many bags did Maile fill?", a: 8, unit: "bags", hint: "How many groups of 3 make 24?",
+          clue: "Maile filled <b>8 bags</b> at the bake stand. She worked there from 10:00 to 11:30, and the grown-ups at the stand saw her the whole time. That covers all of 10:20 to 11:05. Maile is cleared! 👒", clear: "maile" },
+        { story: "The hoofprints went past piles of pumpkins along the fence. The piles had 25, 50, 75, ... pumpkins.", q: "How many pumpkins are in the next pile?", a: 100, unit: "pumpkins", hint: "Each pile has 25 more pumpkins than the one before.",
+          clue: "Right after the pile of <b>100 pumpkins</b>, the hoofprints go through an <b>open gate</b> to the barn. Someone forgot to latch it! 🚪" },
+        { story: "Rancher Sam has 250 hay bales in the barn. 175 bales are in the big stack, and all the rest are in the small stack.", q: "How many bales are in the small stack?", a: 75, unit: "bales", hint: "250 − 175. Take away 100, then take away 75.",
+          clue: "Behind the small stack of <b>75 bales</b>, we found the blue ribbon, a little wrinkled, and a tuft of soft <b>white wool</b>! 🌾" }
+      ],
+      g45: [
+        { story: "Judge Ruby lined up all the contest pies in 12 rows. Each row had 15 pies.", q: "How many pies were in the contest?", a: 180, unit: "pies", hint: "12 × 15 = 12 × 10 + 12 × 5.",
+          clue: "Judge Ruby judged all <b>180 pies</b> and set the blue ribbon on the table. She saw it there at 10:20. At 11:05 it was gone, so the ribbon vanished between 10:20 and 11:05! 😱" },
+        { story: "Theo rode the hayride wagon. It left the barn at 10:05 and came back at 11:20.", q: "How many minutes was Theo on the hayride?", a: 75, unit: "minutes", hint: "From 10:05 to 11:05 is 60 minutes. Then add 15 more minutes.",
+          clue: "Theo rode the hayride for <b>75 minutes</b>, from 10:05 to 11:20. The wagon driver and the other riders saw him the whole time. The ribbon went missing between 10:20 and 11:05, while he was still riding. Theo is cleared! 🤠", clear: "theo" },
+        { story: "A trail of hoofprints leads away from the pie table. The trail is 3.6 meters long, and each step is 45 cm long.", q: "How many steps are in the trail?", a: 8, unit: "steps", hint: "3.6 m = 360 cm. Then 360 ÷ 45. (45 + 45 = 90, and 90 × 4 = 360.)",
+          clue: "The trail has <b>8 steps</b>. Each hoofprint is split into two halves, like two toes. 🐾 A pony's hoof is one round piece. Hmm!" },
+        { story: "Maile helped at the bake stand. She put all 156 apple muffins into boxes, with 6 muffins in each box.", q: "How many boxes did Maile fill?", a: 26, unit: "boxes", hint: "156 ÷ 6. Split it: 120 ÷ 6 = 20 and 36 ÷ 6 = 6.",
+          clue: "Maile filled <b>26 boxes</b> at the bake stand. She worked there from 10:00 to 11:30, and the grown-ups at the stand saw her the whole time. That covers all of 10:20 to 11:05. Maile is cleared! 👒", clear: "maile" },
+        { story: "The fence along the field has 64 posts. The hoofprints went past 3/8 of the posts, then through a gate.", q: "How many posts did the hoofprints go past?", a: 24, unit: "posts", hint: "64 ÷ 8 = 8. Then 8 × 3.",
+          clue: "The hoofprints went past <b>24 posts</b>, then right through an <b>open gate</b> to the barn. Someone forgot to latch it! 🚪" },
+        { story: "Rancher Sam has 400 hay bales in the barn. 3/5 of the bales are in the big stack, and all the rest are in the small stack.", q: "How many bales are in the small stack?", a: 160, unit: "bales", hint: "First find 3/5 of 400: 400 ÷ 5 = 80, and 80 × 3 = 240. Then 400 − 240.",
+          clue: "Behind the small stack of <b>160 bales</b>, we found the blue ribbon, a little wrinkled, and a tuft of soft <b>white wool</b>! 🌾" }
+      ]
+    }
+  }, {
     id: "c1-pumpkin-candy",
     num: 1,
     live: "2026-10-21",
     title: "The Missing Pumpkin Candy 🎃",
-    next: "Case #2 drops Monday, Nov 2",
+    next: "Case #2 drops Monday, Oct 26",
     intro: "Detective, we have a new case! 🎃 At our class Halloween party, Ms. Lee checked the pumpkin bowl at 2:15 and it was full of candy. At 2:50 it was EMPTY! Solve each math problem to unlock a clue. Then tell me who took the candy.",
     suspects: [
       { id: "kai", e: "🧛", name: "Kai", note: "dressed as a vampire" },
@@ -181,7 +242,11 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
 
   // newest case whose "live" date (Hawaii time) has arrived; future cases stay hidden until their Monday
   var today = (function(){ try { return new Intl.DateTimeFormat("en-CA", { timeZone: "Pacific/Honolulu" }).format(new Date()); } catch(e) { return new Date().toISOString().slice(0, 10); } })();
-  var C = CASES.filter(function(c){ return !c.live || c.live <= today; })[0] || CASES[CASES.length - 1], KEY = "lwn-cases-v1";
+  // every case whose Monday has arrived stays playable; ?case=<id> opens an older one, otherwise the newest
+  var LIVE = CASES.filter(function(c){ return !c.live || c.live <= today; });
+  if (!LIVE.length) LIVE = [CASES[CASES.length - 1]];
+  var NEWEST = LIVE[0], want = (function(){ try { return new URLSearchParams(location.search).get("case"); } catch(e) { return null; } })();
+  var C = LIVE.filter(function(c){ return c.id === want; })[0] || NEWEST, KEY = "lwn-cases-v1";
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
   function save(s){ try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){} }
   var all = load(), st = all[C.id] || {}, band = st.band || "g23";
@@ -193,7 +258,18 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
   $("caseKicker").textContent = "NINI'S CASE FILES · CASE #" + C.num;
   $("caseTitle").textContent = C.title;
   $("intro").innerHTML = C.intro;
-  $("nextCase").innerHTML = "<span>🗓️ " + C.next + "</span><span>Come back to solve it!</span>";
+  if (C === NEWEST) $("nextCase").innerHTML = "<span>🗓️ " + C.next + "</span><span>Come back to solve it!</span>";
+  else $("nextCase").innerHTML = "<span>🆕 This week's case: " + NEWEST.title + "</span><a href=\"case-files.html\" style=\"color:inherit\">Play it →</a>";
+  function renderPast(){
+    if (LIVE.length < 2) return;
+    $("pastCard").hidden = false;
+    $("pastCases").innerHTML = LIVE.map(function(c){
+      var s = all[c.id] || {}, done = (s.g23 && s.g23.solved) || (s.g45 && s.g45.solved);
+      return '<a href="case-files.html' + (c === NEWEST ? "" : "?case=" + c.id) + '"' + (c === C ? ' class="on" aria-current="page"' : "") + '><span class="t">Case #' + c.num + ": " + c.title +
+        "<small>" + (c === NEWEST ? "This week's case" : "") + (c === C ? (c === NEWEST ? " · " : "") + "Playing now" : "") + "</small></span>" +
+        (done ? '<span class="s ok">✓ Solved</span>' : '<span class="s">Open</span>') + "</a>";
+    }).join("");
+  }
 
   function cleared(){ var p = prog(), ch = C.chapters[band], out = {}; for (var i = 0; i < p.step && i < ch.length; i++) if (ch[i].clear) out[ch[i].clear] = 1; return out; }
 
@@ -214,7 +290,7 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
     document.querySelectorAll(".grades button").forEach(function(b){ b.classList.toggle("on", b.dataset.band === band); });
     var p = prog(), ch = C.chapters[band];
     $("intro").closest(".card").hidden = p.step > 0 && !p.solved; // story intro only before the case starts
-    renderClues(); $("susMsg").textContent = "";
+    renderClues(); renderPast(); $("susMsg").textContent = "";
     if (p.solved) { renderSuspects(false); return showSolved(); }
     if (p.step < ch.length) { renderSuspects(false); return showChapter(p.step); }
     renderSuspects(true); showAccuse();
@@ -247,12 +323,12 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
   }
 
   function showAccuse(){
-    $("play").innerHTML = bar() + '<div class="chap"><div class="n">FINAL STEP</div><div class="story">You found all the clues! 🔎 Two suspects are left. Read the clue board, then tap the one who took the candy.</div><div class="msg" id="msg" aria-live="polite"></div></div>';
+    $("play").innerHTML = bar() + '<div class="chap"><div class="n">FINAL STEP</div><div class="story">You found all the clues! 🔎 Two suspects are left. Read the clue board, then tap the one who did it.</div><div class="msg" id="msg" aria-live="polite"></div></div>';
     document.querySelectorAll(".sus.pick").forEach(function(el){
       function go(){
         var p = prog(); p.tries = (p.tries || 0) + 1;
         if (el.dataset.id === C.culprit) {
-          p.solved = new Date().toISOString().slice(0, 10); persist(); try { localStorage.setItem("lwn-case-solved-week", C.live || today); } catch(e){}
+          p.solved = new Date().toISOString().slice(0, 10); persist(); try { if (C === NEWEST) localStorage.setItem("lwn-case-solved-week", C.live || today); } catch(e){}
           try { if (window.LWNXP) LWNXP.add(p.tries === 1 ? 25 : 15, "Case closed"); } catch(e){}
           try { if (window.LWNStats) LWNStats.track("case_solved", { id: C.id, band: band, tries: p.tries }); } catch(e){}
           fun("play", "win"); fun("confetti", 160);
