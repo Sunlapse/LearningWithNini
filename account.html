@@ -92,13 +92,33 @@ a.go.play{display:block;text-align:center;text-decoration:none}
       <input id="email" type="email" autocomplete="email" required placeholder="parent@example.com">
       <label for="pw">Password <span id="pwHint" style="font-weight:700;color:#7a7191">(8+ characters)</span></label>
       <input id="pw" type="password" autocomplete="new-password" minlength="8" required>
+      <button type="button" class="ghost" id="forgotPassword" hidden>Forgot password?</button>
       <div class="check" id="adultRow"><input type="checkbox" id="adult"><label for="adult" style="margin:0">I’m a parent or guardian (18+). Kids: please ask a grown-up to set this up.</label></div>
       <div class="check" id="reportRow"><input type="checkbox" id="report1" checked><label for="report1" style="margin:0">📊 Email me a weekly progress report about my child's practice. <span style="color:#7a7191;font-weight:700">(Turn off anytime.)</span></label></div>
       <div class="check" id="newsRow"><input type="checkbox" id="news"><label for="news" style="margin:0">📬 Email me occasional Learn With Nini news: new games, adventures and tips. <span style="color:#7a7191;font-weight:700">(Optional. Unsubscribe anytime.)</span></label></div>
       <button class="go" id="go" type="submit">Create account</button>
       <div class="msg" id="msg" role="status"></div>
     </form>
-    <p class="small">We only store your email and your child’s game progress on this site (nickname, scores, streak, badges). No child names, photos or ads. Forgot your password? Email <a href="mailto:hello@learnwithnini.com">hello@learnwithnini.com</a>. See our <a href="privacy.html">Privacy Policy</a>.</p>
+    <p class="small">We only store your email and your child’s game progress on this site (nickname, scores, streak, badges). No child names, photos or ads. See our <a href="privacy.html">Privacy Policy</a>.</p>
+  </section>
+
+  <section class="card" id="reset" hidden>
+    <h2 id="resetTitle">Reset your password</h2>
+    <p id="resetHelp">Enter your parent account email and we’ll send you a reset link.</p>
+    <form id="resetEmailForm">
+      <label for="resetEmail">Parent’s email</label>
+      <input id="resetEmail" type="email" autocomplete="email" required>
+      <button class="go" id="sendReset" type="submit">Send reset link</button>
+    </form>
+    <form id="newPasswordForm" hidden>
+      <label for="newPassword">New password (8+ characters)</label>
+      <input id="newPassword" type="password" autocomplete="new-password" minlength="8" required>
+      <label for="confirmPassword">Confirm new password</label>
+      <input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required>
+      <button class="go" id="savePassword" type="submit">Save new password</button>
+    </form>
+    <div class="msg" id="resetMsg" role="status" aria-live="polite"></div>
+    <button class="ghost" id="backToSignIn" type="button">Back to sign in</button>
   </section>
 
   <section class="card" id="in" hidden>
@@ -129,6 +149,7 @@ a.go.play{display:block;text-align:center;text-decoration:none}
   function when(iso){if(!iso)return "not yet";var d=new Date(iso);return d.toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}
 
   function setMode(m){
+    $("forgotPassword").hidden=m!=="in";
     mode=m;$("tabUp").classList.toggle("on",m==="up");$("tabIn").classList.toggle("on",m==="in");
     $("go").textContent=m==="up"?"Create account":"Sign in";
     $("adultRow").style.display=m==="up"?"flex":"none";
@@ -139,6 +160,50 @@ a.go.play{display:block;text-align:center;text-decoration:none}
     $("msg").className="msg";
   }
   $("tabUp").onclick=function(){setMode("up")};$("tabIn").onclick=function(){setMode("in")};
+
+
+  var recoveryActive = LWNAccount.isRecovering();
+  function resetView(recovery) {
+    recoveryActive = !!recovery;
+    $("out").hidden=true; $("in").hidden=true; $("reset").hidden=false;
+    $("resetEmailForm").hidden=!!recovery; $("newPasswordForm").hidden=!recovery;
+    $("resetTitle").textContent=recovery?"Choose a new password":"Reset your password";
+    $("resetHelp").textContent=recovery?"Enter and confirm your new password below.":"Enter your parent account email and we’ll send you a reset link.";
+    $("backToSignIn").textContent=recovery?"Cancel":"Back to sign in";
+    $("resetMsg").className="msg";
+    (recovery?$("newPassword"):$("resetEmail")).focus();
+  }
+  $("forgotPassword").onclick=function(){ $("resetEmail").value=$("email").value.trim(); resetView(false); };
+  $("backToSignIn").onclick=function(){
+    if(recoveryActive) { location.href="/account.html"; return; }
+    $("reset").hidden=true; setMode("in"); showOut();
+  };
+  $("resetEmailForm").onsubmit=function(e){
+    e.preventDefault(); var email=$("resetEmail").value.trim(), msg=$("resetMsg");
+    if(!$("resetEmail").checkValidity()){say(msg,"Please enter a valid email address.","bad");return}
+    $("sendReset").disabled=true; say(msg,"Sending reset link…","info");
+    LWNAccount.sdk().then(function(c){return c.auth.resetPasswordForEmail(email,{redirectTo:"https://learnwithnini.com/account.html"});})
+      .then(function(r){if(r.error)throw r.error;say(msg,"If an account exists for that email, you’ll receive a reset link. Check your inbox and spam folder.","good");})
+      .catch(function(err){say(msg,/rate|too many/i.test(String(err&&err.message))?"Too many requests. Please wait a few minutes and try again.":"Couldn’t send the reset link. Check your connection and try again.","bad");})
+      .then(function(){$("sendReset").disabled=false;});
+  };
+  $("newPasswordForm").onsubmit=function(e){
+    e.preventDefault(); var pw=$("newPassword").value, msg=$("resetMsg");
+    if(pw.length<8){say(msg,"Password needs at least 8 characters.","bad");return}
+    if(pw!==$("confirmPassword").value){say(msg,"The passwords don’t match. Please try again.","bad");return}
+    $("savePassword").disabled=true; say(msg,"Saving your new password…","info");
+    LWNAccount.sdk().then(function(c){return c.auth.updateUser({password:pw});})
+      .then(function(r){
+        if(r.error)throw r.error;
+        $("newPassword").value=""; $("confirmPassword").value="";
+        $("newPasswordForm").hidden=true;
+        say(msg,"Your password has been updated. You can now return to your account.","good");
+        $("backToSignIn").textContent="Continue to my account";
+      })
+      .catch(function(err){
+        say(msg,/session|token|expired/i.test(String(err&&err.message))?"This reset link has expired. Request a new link and try again.":String(err&&err.message||"Couldn’t update your password. Please try again."),"bad");
+      }).then(function(){$("savePassword").disabled=false;});
+  };
 
   function showIn(s){
     $("out").hidden=true;$("in").hidden=false;
@@ -215,7 +280,19 @@ a.go.play{display:block;text-align:center;text-decoration:none}
     LWNAccount.signOut().then(function(){ try{sessionStorage.removeItem("lwn-sync-pulled")}catch(e){} location.reload(); });
   };
 
-  LWNAccount.session().then(function(s){ s?showIn(s):showOut(); }).catch(function(){ showOut(); say($("msg"),"Can’t reach the account service right now. Check your internet.","bad"); });
+  var authError = /(?:^|[&#])error(?:_code)?=/.test(location.hash);
+  LWNAccount.sdk().then(function(c){
+    c.auth.onAuthStateChange(function(event){ if(event==="PASSWORD_RECOVERY") resetView(true); });
+    return LWNAccount.session();
+  }).then(function(s){
+    if(authError || (LWNAccount.isRecovering() && !s)){
+      resetView(false);
+      say($("resetMsg"),"This reset link has expired or is invalid. Request a new link below.","bad");
+      history.replaceState(null,"",location.pathname); return;
+    }
+    if(recoveryActive || LWNAccount.isRecovering()){resetView(true);return}
+    s?showIn(s):showOut();
+  }).catch(function(){ showOut(); say($("msg"),"Can’t reach the account service right now. Check your internet.","bad"); });
 })();
 </script>
 </body>
