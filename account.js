@@ -9,6 +9,7 @@
   // Keys that are about this device only and should never be copied between devices.
   var SKIP = /^(sb-|lwnGlobalDeviceId$|niniBannerClosed$|lwn-sync-)/;
 
+  var recovering = /(?:^|[&#])type=recovery(?:&|$)/.test(location.hash);
   var client = null, readyP = null;
   function sdk() {
     if (readyP) return readyP;
@@ -17,6 +18,7 @@
       var s = document.createElement("script"); s.src = SDK; s.onload = res; s.onerror = rej; document.head.appendChild(s);
     }).then(function () {
       client = window.supabase.createClient(URL, KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "sb-lwn-auth" } });
+      client.auth.onAuthStateChange(function (event) { if (event === "PASSWORD_RECOVERY") recovering = true; });
       return client;
     });
     return readyP;
@@ -134,6 +136,7 @@
 
   // Background sync on every page for signed-in families (cheap: one small request).
   function auto() {
+    if (recovering) return;
     if (!get("sb-lwn-auth")) return; // never signed in on this device — don't even load the SDK
     var key = "lwn-sync-pulled";
     var first = !sessionStorage.getItem(key);
@@ -210,7 +213,7 @@
     }
   }
 
-  window.LWNAccount = { sdk: sdk, session: session, signUp: signUp, signIn: signIn, signOut: signOut, setEmailUpdates: setEmailUpdates, setPrefs: setPrefs, pullMerge: pullMerge, push: push,
+  window.LWNAccount = { isRecovering: function () { return recovering; }, sdk: sdk, session: session, signUp: signUp, signIn: signIn, signOut: signOut, setEmailUpdates: setEmailUpdates, setPrefs: setPrefs, pullMerge: pullMerge, push: push,
     lastSync: function () { return get("lwn-sync-at"); }, _merge: merge };
   function boot() { auto(); try { prompts(); } catch (e) {} }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
