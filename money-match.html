@@ -1425,6 +1425,7 @@ playClickSound();
         }
 
         showToast('warning', pickOne(['Oops, try again!', 'Almost!', 'Not quite!']));
+        if (window.LWNFun) LWNFun.play('wrong');
         return;
       }
 
@@ -1482,6 +1483,7 @@ playClickSound();
       const learningSummary = (lessonQuestion || gameMode === 'change') ? '' : (pieceSummary ? pieceSummary + ' = ' + formatCents(target) + '. ' : '');
       setMessage(`${feedback} ${learningSummary}You earned ${pointsEarned} star${pointsEarned === 1 ? '' : 's'}.`, 'success');
       showToast('success', pickOne(['Great job!', 'Awesome!', 'You got it!', 'Perfect!']));
+      if (window.LWNFun) LWNFun.play('right');
       triggerTargetSparkles();
       triggerPageCelebration();
     }
@@ -1781,5 +1783,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 <script src="game-round-ui.js"></script>
+<script src="/fun.js"></script>
+<script>try { LWNFun.sound(); } catch (e) {}</script>
 </body>
 </html>

@@ -133,6 +133,23 @@
     }, true);
   }
 
-  function start() { css(); try { levelDropdown(); } catch (e) {} try { autoNext(); } catch (e) {} try { nextScroll(); } catch (e) {} }
+  /* ---------- 4. right / wrong answer sounds ----------
+     Games show feedback in #status ("status good" / "status bad"). Each time a game sets that class we play
+     the matching sound from fun.js. Pages that already load fun.js call the sounds themselves. */
+  function answerSounds() {
+    if (window.LWNFun) return;
+    var box = document.getElementById("status");
+    if (!box || !box.classList.contains("status")) return;
+    var s = document.createElement("script"); s.src = "/fun.js";
+    s.onload = function () { try { LWNFun.sound(); } catch (e) {} };
+    document.head.appendChild(s);
+    new MutationObserver(function () {
+      if (!window.LWNFun || /saved|could not save/i.test(box.textContent || "")) return;
+      if (box.classList.contains("good")) LWNFun.play("right");
+      else if (box.classList.contains("bad")) LWNFun.play("wrong");
+    }).observe(box, { attributes: true, attributeFilter: ["class"] });
+  }
+
+  function start() { css(); try { levelDropdown(); } catch (e) {} try { autoNext(); } catch (e) {} try { nextScroll(); } catch (e) {} try { answerSounds(); } catch (e) {} }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
 })();

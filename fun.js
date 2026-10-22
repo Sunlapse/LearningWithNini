@@ -21,8 +21,8 @@ window.LWNFun = (function () {
     o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + len + 0.02);
   }
   var sfx = {
-    right: function () { tone(880, 0, 0.12, "triangle"); tone(1320, 0.09, 0.2, "triangle"); },
-    wrong: function () { tone(220, 0, 0.18, "sine", 0.12); tone(185, 0.12, 0.22, "sine", 0.1); },
+    right: function () { tone(784, 0, 0.12, "triangle", 0.2); tone(1047, 0.08, 0.12, "triangle", 0.2); tone(1568, 0.16, 0.26, "triangle", 0.2); },
+    wrong: function () { tone(311, 0, 0.16, "square", 0.06); tone(233, 0.15, 0.3, "square", 0.06); },
     combo: function () { [784, 988, 1175, 1568].forEach(function (f, i) { tone(f, i * 0.07, 0.18, "triangle", 0.16); }); },
     win:   function () { [523, 659, 784, 1047, 784, 1047].forEach(function (f, i) { tone(f, i * 0.11, 0.26, "triangle", 0.17); }); },
     badge: function () { [1047, 1319, 1568, 2093].forEach(function (f, i) { tone(f, i * 0.08, 0.3, "sine", 0.14); }); }
@@ -186,6 +186,6 @@ window.LWNFun = (function () {
            : "🧊 Reach a 7-day streak to earn a streak freeze.";
   }
 
-  return { start: start, right: right, wrong: wrong, skipped: skipped, finish: finish, say: say, confetti: confetti, play: play,
+  return { start: start, sound: soundButton, right: right, wrong: wrong, skipped: skipped, finish: finish, say: say, confetti: confetti, play: play,
            frozenDates: frozenDates, applyFreezes: applyFreezes, maybeEarn: maybeEarn, freezeNote: freezeNote };
 })();
