@@ -18,6 +18,8 @@
   var NINI = "Graceful sealion";
   var HUBS = ["index.html", "path.html", "leaderboard.html", "daily-challenge.html", "games.html", "account.html"];
 
+  function chestArt() { return "<svg class=\"lwn-chest-art\" viewBox=\"0 0 120 100\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14 48V34C14 8 106 8 106 34V48Z\" fill=\"#A85A24\" stroke=\"#623414\" stroke-width=\"4\"/><path d=\"M20 34C20 15 100 15 100 34\" fill=\"none\" stroke=\"#D98A3D\" stroke-width=\"7\"/><rect x=\"12\" y=\"46\" width=\"96\" height=\"44\" rx=\"7\" fill=\"#A85A24\" stroke=\"#623414\" stroke-width=\"4\"/><path d=\"M20 65H100M20 78H100\" stroke=\"#7C411B\" stroke-width=\"3\"/><path d=\"M30 22V89M90 22V89\" stroke=\"#FFD24A\" stroke-width=\"10\"/><path d=\"M13 48H107\" stroke=\"#FFD24A\" stroke-width=\"8\"/><rect x=\"49\" y=\"42\" width=\"22\" height=\"25\" rx=\"4\" fill=\"#FFD24A\" stroke=\"#B7791F\" stroke-width=\"3\"/><path d=\"M60 51a3 3 0 0 0-2 5v5h4v-5a3 3 0 0 0-2-5\" fill=\"#623414\"/><path d=\"m9 10 2 5 5 2-5 2-2 5-2-5-5-2 5-2Zm100 9 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z\" fill=\"#FFD24A\"/></svg>"; }
+
   /* ---------- shared look ---------- */
   function css() {
     if (document.getElementById("lwnRewardsCss")) return;
@@ -31,6 +33,7 @@
       ".lwn-modal .btn{display:block;width:100%;margin-top:16px;border:0;border-radius:16px;padding:14px;background:linear-gradient(135deg,#45b8ed,#1E6FD9);color:#fff;font:700 19px/1 'Fredoka',sans-serif;cursor:pointer;text-decoration:none}" +
       ".lwn-modal .ghost{background:none;color:#6B7392;font:900 15px 'Nunito',sans-serif;margin-top:6px}" +
       ".lwn-chest-tap{cursor:pointer;animation:lwnWiggle 1.2s ease-in-out infinite;display:inline-block;border:0;background:none;font-size:96px;line-height:1}" +
+      ".lwn-chest-art{display:inline-block;width:1.2em;height:1em;vertical-align:middle}.lwn-chest-tap .lwn-chest-art{width:120px;height:100px}" +
       ".lwn-chest-open{animation:lwnShake .5s ease-in-out}" +
       "#lwnChestBtn{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:9990;border:0;border-radius:22px;background:linear-gradient(135deg,#FFD84D,#F7A400);box-shadow:0 10px 24px rgba(160,100,0,.35);padding:10px 14px 9px;font:800 13px/1.1 'Nunito',sans-serif;color:#4a3300;cursor:pointer;display:flex;flex-direction:column;align-items:center;animation:lwnBob 1.6s ease-in-out infinite}" +
       "#lwnChestBtn b{font-size:30px;line-height:1}" +
@@ -140,7 +143,7 @@
     { i: "🌋", how: "Beat all 4 bosses on My Path", t: function (s) { return s.bosses >= 4; } }
   ];
   var LOCKED = MILESTONES.map(function (m) { return { i: m.i, how: m.how }; })
-    .concat(CHEST_ICONS.map(function (i) { return { i: i, how: "Find it in a daily treasure chest 🎁" }; }));
+    .concat(CHEST_ICONS.map(function (i) { return { i: i, how: "Find it in a daily treasure chest" }; }));
 
   function stats() {
     var xp = get("lwn-xp-v1", {}), games = xp.games || {}, total = 0;
@@ -174,7 +177,7 @@
     if (b || page === "daily-challenge.html" && document.querySelector("#game.on")) return;
     css();
     b = document.createElement("button"); b.id = "lwnChestBtn"; b.type = "button";
-    b.innerHTML = "<b>🎁</b>Open!"; b.setAttribute("aria-label", "Open your daily treasure chest");
+    b.innerHTML = "<b>" + chestArt() + "</b>Open!"; b.setAttribute("aria-label", "Open your daily treasure chest");
     b.onclick = openChest; document.body.appendChild(b);
   }
   function pickReward() {
@@ -189,7 +192,7 @@
     if (!chestReady()) return;
     var b = document.getElementById("lwnChestBtn"); if (b) b.remove();
     var m = modal('<div style="font-weight:900;color:#B7791F;letter-spacing:.06em;font-size:13px">DAILY TREASURE CHEST</div>' +
-      '<h2>Tap the chest!</h2><button type="button" class="lwn-chest-tap" aria-label="Open chest">🎁</button>' +
+      '<h2>Tap the chest!</h2><button type="button" class="lwn-chest-tap" aria-label="Open chest">' + chestArt() + '</button>' +
       '<p>You earned it by playing today ⭐</p>');
     var chest = m.querySelector(".lwn-chest-tap");
     chest.onclick = function () {
@@ -205,7 +208,7 @@
           big = "🧊"; title = "Streak freeze!"; text = "If you miss a day, this freeze saves your Daily Challenge streak."; }
         else { big = "⚡"; title = "+" + rw.xp + " bonus XP!"; text = "Added to today's goal ring."; try { if (window.LWNXP) LWNXP.add(rw.xp, "treasure chest"); } catch (e) {} }
         card.innerHTML = '<div style="font-weight:900;color:#B7791F;letter-spacing:.06em;font-size:13px">DAILY TREASURE CHEST</div>' +
-          '<div class="big">' + big + '</div><h2>' + esc(title) + "</h2><p>" + esc(text) + '</p><p style="color:#8A8199;font-size:13px">A new chest is waiting tomorrow 🎁</p>' +
+          '<div class="big">' + big + '</div><h2>' + esc(title) + "</h2><p>" + esc(text) + '</p><p style="color:#8A8199;font-size:13px">A new chest is waiting tomorrow</p>' +
           '<button type="button" class="btn" data-close>Yay! ✓</button>';
         var em = rw.type === "icon" ? [rw.icon, "✨", "⭐", "💎"] : rw.type === "freeze" ? ["🧊", "❄️", "✨", "⭐"] : ["⚡", "⭐", "✨", "🪙"];
         burst(cx, cy, { count: 200, emoji: em }); fanfare();
@@ -217,7 +220,7 @@
   window.addEventListener("lwn:xp", function (e) {
     var why = e.detail && e.detail.why; if (why === "treasure chest") { setTimeout(checkUnlocks, 600); return; }
     var c = chestState();
-    if (c.ready !== hiToday()) { c.ready = hiToday(); set("lwn-chest-v1", c); toast("🎁 You earned today's treasure chest! " + (HUBS.indexOf(page) >= 0 ? "Tap the 🎁 to open it." : "Open it on the home page.")); }
+    if (c.ready !== hiToday()) { c.ready = hiToday(); set("lwn-chest-v1", c); toast("You earned today's treasure chest! " + (HUBS.indexOf(page) >= 0 ? "Tap the treasure chest to open it." : "Open it on the home page.")); }
     setTimeout(function () { chestButton(); checkUnlocks(); }, 600);
   });
 
@@ -382,7 +385,7 @@
       '<div style="text-align:left;margin:10px 0 4px;display:grid;gap:9px;font-weight:800;color:#3c4566;line-height:1.35">' +
       "<div>🗺️ <b>Travel with Nini</b> to Hawaii, Alaska, China, Italy, under the sea and a horse ranch</div>" +
       "<div>⚔️ <b>Boss battles</b> and passport stamps with postcards from Nini</div>" +
-      "<div>🎁 <b>A treasure chest every day</b> you play</div>" +
+      "<div>" + chestArt() + " <b>A treasure chest every day</b> you play</div>" +
       "<div>🦭 <b>20 icons</b> plus rare ones to collect</div>" +
       "<div>🏆 <b>Weekly leagues</b> from Bronze to Diamond</div>" +
       "<div>👨‍👩‍👧 <b>For parents:</b> a weekly progress page</div></div>" +
@@ -400,7 +403,7 @@
         try { if (window.LWNAccount) LWNAccount.push(true).catch(function () {}); } catch (e) {}
       });
     });
-    burst(null, null, { count: 120, emoji: ["🎉", "⭐", "🗺️", "🎁"] });
+    burst(null, null, { count: 120, emoji: ["🎉", "⭐", "🗺️", "🪙"] });
   }
 
   window.LWNIcons = { locked: LOCKED, unlocked: unlocked, isUnlocked: function (i) { return unlocked().indexOf(i) >= 0; }, unlock: unlock, check: checkUnlocks, openChest: openChest };
