@@ -1414,6 +1414,26 @@
   .games-organized.lwn-tabbed .topic-heading{margin-top:2px}
 }
 @keyframes lwnTabIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    .daily-treasure-banner{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;gap:18px;margin:16px 0 22px;padding:20px 24px;border:3px solid #F5BB31;border-radius:24px;background:linear-gradient(120deg,#FFF9D8,#FFE6A4);box-shadow:0 7px 0 #F2CF76;text-align:left;color:#633A14}
+    .daily-treasure-banner .treasure-picture{flex:0 0 110px;position:relative;transform:rotate(-6deg)}
+    .treasure-picture svg{display:block;width:110px;height:100px;filter:drop-shadow(0 6px 0 rgba(113,61,13,.15))}
+    .daily-treasure-banner .treasure-copy{position:relative;z-index:1}
+    .daily-treasure-banner .treasure-label{display:block;font-weight:900;font-size:12px;letter-spacing:.1em;color:#8C4F16}
+    .daily-treasure-banner strong{display:block;margin:4px 0;font-family:'Fredoka',system-ui,sans-serif;font-size:clamp(23px,3vw,32px);line-height:1.12;color:#75400E}
+    .daily-treasure-banner p{margin:6px 0 0;font-size:16px;line-height:1.4;font-weight:800}
+    .treasure-confetti{position:absolute;inset:0;z-index:-1;pointer-events:none}
+    .treasure-confetti i{position:absolute;width:8px;height:15px;border-radius:2px;background:#FF6B8A;transform:rotate(25deg)}
+    .treasure-confetti i:nth-child(1){left:3%;top:12%;background:#45B8ED;transform:rotate(-25deg)}
+    .treasure-confetti i:nth-child(2){left:24%;top:8%;background:#B794F4}
+    .treasure-confetti i:nth-child(3){right:8%;top:13%;background:#2BB673;transform:rotate(65deg)}
+    .treasure-confetti i:nth-child(4){right:3%;top:65%;background:#FF6B8A;transform:rotate(-35deg)}
+    .treasure-confetti i:nth-child(5){left:5%;bottom:9%;background:#B794F4;transform:rotate(65deg)}
+    .treasure-confetti i:nth-child(6){right:22%;bottom:7%;background:#45B8ED;transform:rotate(-25deg)}
+    .treasure-confetti i:nth-child(7){right:30%;top:7%;background:#FF9F1C;width:7px;height:7px}
+    .treasure-confetti i:nth-child(8){left:20%;bottom:5%;background:#2BB673;width:7px;height:7px}
+    @media(max-width:520px){.daily-treasure-banner{gap:12px;padding:18px 14px}.daily-treasure-banner .treasure-picture{flex-basis:76px}.treasure-picture svg{width:76px;height:76px}.daily-treasure-banner p{font-size:14px}.daily-treasure-banner .treasure-label{font-size:10px}}
+
 </style>
 <!-- Learn With Nini app (Add to Home Screen) -->
 <link rel="manifest" href="/manifest.json">
@@ -1528,7 +1548,8 @@
 
         <section class="games-organized" id="skill-games">
           <h2 class="section-title">Choose a Math Skill</h2>
-          <p class="games-subtitle"><strong>Earn a treasure chest by playing a game today!</strong><br>Pick a topic, choose a game, and practice at your own pace.</p>
+          <div class="daily-treasure-banner" role="note" aria-label="Daily treasure chest reward"><span class="treasure-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><div class="treasure-picture"><svg viewBox="0 0 120 100" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M14 48V34C14 8 106 8 106 34V48Z" fill="#A85A24" stroke="#623414" stroke-width="4"/><path d="M20 34C20 15 100 15 100 34" fill="none" stroke="#D98A3D" stroke-width="7"/><rect x="12" y="46" width="96" height="44" rx="7" fill="#A85A24" stroke="#623414" stroke-width="4"/><path d="M20 65H100M20 78H100" stroke="#7C411B" stroke-width="3"/><path d="M30 22V89M90 22V89" stroke="#FFD24A" stroke-width="10"/><path d="M13 48H107" stroke="#FFD24A" stroke-width="8"/><rect x="49" y="42" width="22" height="25" rx="4" fill="#FFD24A" stroke="#B7791F" stroke-width="3"/><path d="M60 51a3 3 0 0 0-2 5v5h4v-5a3 3 0 0 0-2-5" fill="#623414"/></svg></div><div class="treasure-copy"><span class="treasure-label">YOUR DAILY TREASURE</span><strong>Play today. Open your treasure!</strong><p>Earn a treasure chest by playing a game today!</p></div></div>
+          <p class="games-subtitle">Pick a topic, choose a game, and practice at your own pace.</p>
 
           <nav class="category-nav" aria-label="Game topics">
             <a href="#operations">Operations</a>
