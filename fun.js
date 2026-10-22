@@ -9,6 +9,8 @@ window.LWNFun = (function () {
   var muted = load("lwn-sound-muted", false), ctx = null;
   function ac() {
     if (muted) return null;
+    // iPhone/iPad: play like a video does, so sounds still work when the silent switch is on (Safari 16.4+)
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
     try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === "suspended") ctx.resume(); } catch (e) { return null; }
     return ctx;
   }

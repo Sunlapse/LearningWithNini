@@ -150,6 +150,9 @@
     }).observe(box, { attributes: true, attributeFilter: ["class"] });
   }
 
+  // iPhone/iPad: let game sounds play even when the silent switch is on (Safari 16.4+)
+  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+
   function start() { css(); try { levelDropdown(); } catch (e) {} try { autoNext(); } catch (e) {} try { nextScroll(); } catch (e) {} try { answerSounds(); } catch (e) {} }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
 })();
