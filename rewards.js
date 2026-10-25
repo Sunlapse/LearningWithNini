@@ -341,9 +341,10 @@
     var go = document.getElementById("goBtn"), grade = document.getElementById("gradeSeg");
     if (!log.length && grade && !document.getElementById("lwnFirstTip")) {
       var tip = document.createElement("div"); tip.id = "lwnFirstTip"; tip.className = "lwn-tipcard";
-      tip.innerHTML = "<b>👋 First time? Here's how to start</b><span>Pick the grade you're in now and try <b>10 minutes</b>. Too easy? Move up a grade next time!</span><span class='pts'>⭐ " + esc(POINTS_LINE) + "</span>";
+      var dashOn = document.getElementById("dashBtn") && !document.getElementById("dashBtn").hidden;
+      tip.innerHTML = "<b>👋 First time? It's easy!</b><span><b>1.</b> Tap the grade you're in now. <b>2.</b> Tap " + (dashOn ? "<b>⚡ Quick Dash</b> for a 3-minute warm-up" : "<b>📝 Daily Challenge</b> to start the 10-minute timer") + ". Too easy? Move up a grade next time!</span>";
       var field = grade.closest(".field") || grade; field.parentNode.insertBefore(tip, field);
-      var ten = document.querySelector('#minSeg button[data-v="10"]'); if (ten) setTimeout(function () { ten.click(); }, 50);
+      var ten = document.querySelector('#minSeg button[data-v="10"]'); if (ten && ten.getAttribute("aria-pressed") !== "true") setTimeout(function () { ten.click(); }, 50);
     }
     var done = document.getElementById("done"); if (!done) return;
     new MutationObserver(function () {
@@ -352,7 +353,8 @@
         var L = get("dm-log", []) || [], r = L[L.length - 1]; if (!r || r.date !== hiToday()) return;
         var old = document.getElementById("lwnAfterTip"); if (old) old.remove();
         var att = Number(r.attempted) || 0, acc = att ? (Number(r.correct) || 0) / att : 0, g = String(r.grade), gn = parseInt(g, 10), msg = "";
-        if (att < 5) msg = "You answered <b>" + att + "</b> question" + (att === 1 ? "" : "s") + ". The timer keeps running, so keep going until the end next time for lots more points! 💪";
+        if (r.dash) msg = att >= 6 && acc >= 0.7 ? "Great Dash! ⚡ <b>" + Math.round(acc * 100) + "%</b> right. Ready for the full <b>10-minute Daily Challenge</b>? It's the same problems as Nini's video!" : "Nice Dash! ⚡ Come back tomorrow to keep your streak, or try another Dash now.";
+        else if (att < 5) msg = "You answered <b>" + att + "</b> question" + (att === 1 ? "" : "s") + ". The timer keeps running, so keep going until the end next time for lots more points! 💪";
         else if (acc < 0.5 && gn > 2) msg = "That one was tricky! 🧗 Try <b>Grade " + (gn - 1) + "</b> next time, then move back up when it feels easy.";
         else if (acc >= 0.9 && att >= 15 && gn < 5) msg = "Wow, <b>" + Math.round(acc * 100) + "%</b> right! 🚀 Ready to try <b>Grade " + (gn + 1) + "</b>?";
         else if (acc >= 0.7) msg = "Great job! <b>" + Math.round(acc * 100) + "%</b> right. 🌟 Come back tomorrow to grow your streak!";
@@ -362,6 +364,87 @@
         var stats = document.getElementById("stats"); if (stats) stats.insertAdjacentElement("afterend", box);
       }, 400);
     }).observe(done, { attributes: true, attributeFilter: ["class"] });
+  }
+
+
+  /* ---------- "Your Math Adventure" card after every Daily Challenge / Quick Dash ---------- */
+  var PATH_UNITS = [
+    [["place_value", 30], ["number_battle", 30], ["money", 30]], [["time", 30], ["multiplication", 30], ["division", 30]],
+    [["math_maze", 30], ["fraction", 30], ["detective", 30]], [["geometry", 30], ["length", 30], ["capacity", 30], ["weight_mass", 30]],
+    [["detective", 60], ["number_battle", 60], ["fraction", 60]], [["money", 60], ["time", 60], ["division", 60], ["geometry", 60]]
+  ];
+  function pathLevels(xp, dailyCount) {
+    var games = xp.games || {}, bosses = get("lwn-boss-v1", {}) || {}, done = 0, total = 0;
+    PATH_UNITS.forEach(function (u, i) {
+      var ok = true;
+      u.forEach(function (g) { total++; if ((Number(games[g[0]]) || 0) >= g[1]) done++; else ok = false; });
+      total++; if (bosses["u" + (i + 1)]) done++; else ok = false;
+      total++; if (ok && dailyCount >= i + 1) done++;
+    });
+    var level = 1; PATH_UNITS.forEach(function (u, i) { var ok = u.every(function (g) { return (Number(games[g[0]]) || 0) >= g[1]; }) && bosses["u" + (i + 1)] && dailyCount >= i + 1; if (ok && level === i + 1) level = i + 2; });
+    return { done: done, total: total, level: Math.min(level, PATH_UNITS.length) };
+  }
+  var roundXP = 0;
+  function adventureCard() {
+    var done = document.getElementById("done"); if (!done || !done.classList.contains("on")) return;
+    var stats = document.getElementById("stats"); if (!stats) return;
+    var xp = get("lwn-xp-v1", {}) || {}, days = xp.days || {}, log = get("dm-log", []) || [];
+    var weekXP = 0; for (var i = 0; i < 7; i++) { var d = new Date(Date.now() - i * 864e5); weekXP += Number(days[new Intl.DateTimeFormat("en-CA", { timeZone: "Pacific/Honolulu" }).format(d)]) || 0; }
+    var P = null; try { if (typeof window.deviceProgress === "function") P = window.deviceProgress(); } catch (e) {}
+    var dates = {}; log.forEach(function (x) { if (x && x.date) dates[x.date] = 1; });
+    P = P || { current: 0, best: 0, completed: Object.keys(dates).length, totalCorrect: log.reduce(function (a, x) { return a + (Number(x && x.correct) || 0); }, 0) };
+    var path = pathLevels(xp, Math.max(Number(xp.dailyDone) || 0, P.completed || 0));
+    var earned = get("lwn-badges-v1", {}) || {};
+    var C = [
+      { id: "streak3", i: "🔥", n: "On a Roll", have: P.current, need: 3, how: "Come back tomorrow to grow your streak!" },
+      { id: "streak7", i: "⭐", n: "One Week", have: P.current, need: 7, how: "Come back tomorrow to grow your streak!" },
+      { id: "streak14", i: "🌟", n: "Two Weeks", have: P.current, need: 14, how: "Come back tomorrow to grow your streak!" },
+      { id: "streak30", i: "🏆", n: "Math Month", have: P.current, need: 30, how: "Come back tomorrow to grow your streak!" },
+      { id: "days10", i: "📅", n: "10 Challenges", have: P.completed, need: 10, how: "Play on another day to unlock it!" },
+      { id: "days50", i: "🗓️", n: "50 Challenges", have: P.completed, need: 50, how: "Play on another day to unlock it!" },
+      { id: "correct100", i: "🧠", n: "100 Correct", have: P.totalCorrect, need: 100, how: "" },
+      { id: "correct500", i: "🚀", n: "500 Correct", have: P.totalCorrect, need: 500, how: "" },
+      { id: "correct1000", i: "💎", n: "1,000 Correct", have: P.totalCorrect, need: 1000, how: "" }
+    ].filter(function (c) { return !earned[c.id] && c.have < c.need; })
+     .sort(function (a, b) { return b.have / b.need - a.have / a.need; });
+    var next = C[0], bar = "";
+    if (next) {
+      var left = next.need - next.have, pct = Math.max(4, Math.round(next.have / next.need * 100));
+      var how = next.how || ("Only " + left + " more correct answer" + (left === 1 ? "" : "s") + " until your next reward!");
+      bar = '<div class="adv-next">Next unlock: <b>' + next.i + " " + esc(next.n) + '</b></div><div class="adv-barrow"><div class="adv-bar"><i style="width:' + pct + '%"></i></div><span>' + next.have + "/" + next.need + '</span></div><div class="adv-how">' + esc(how) + "</div>";
+    } else bar = '<div class="adv-how">🏅 You unlocked every badge on this list. Amazing!</div>';
+    var old = document.getElementById("lwnAdventure"); if (old) old.remove();
+    var box = document.createElement("section"); box.id = "lwnAdventure";
+    var best = Math.max(P.best || 0, P.current || 0);
+    box.innerHTML = '<div class="adv-h"><span>Your Math Adventure</span><span aria-hidden="true">🏆</span></div><div class="adv-tiles">' +
+      '<div><i>⚡</i><b>+' + roundXP + '</b><span>XP earned</span></div>' +
+      '<div><i>🔥</i><b>' + best + ' day' + (best === 1 ? "" : "s") + '</b><span>Best streak</span></div>' +
+      '<a href="/path.html"><i>🗺️</i><b>Level ' + path.level + '</b><span>Adventure path</span></a></div>' + bar;
+    stats.insertAdjacentElement("afterend", box);
+    if (!adventureCard.tracked) { adventureCard.tracked = 1; try { if (window.LWNStats) LWNStats.track("adventure_card", { level: path.level, next: next ? next.id : null }); } catch (e) {} }
+  }
+  function adventureWatch() {
+    if (page !== "daily-challenge.html") return;
+    css();
+    var s = document.createElement("style");
+    s.textContent = "#lwnAdventure{margin:14px 0 4px;background:linear-gradient(135deg,#1F2456,#2C3C7A);color:#fff;border-radius:22px;padding:16px 16px 14px;box-shadow:0 12px 28px rgba(31,36,86,.25);text-align:left}" +
+      "#lwnAdventure .adv-h{display:flex;justify-content:space-between;align-items:center;font:700 21px/1.2 'Fredoka',system-ui,sans-serif;margin-bottom:12px}" +
+      "#lwnAdventure .adv-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}" +
+      "#lwnAdventure .adv-tiles>*{background:rgba(255,255,255,.09);border-radius:16px;padding:10px 6px;text-align:center;color:#fff;text-decoration:none;display:block}" +
+      "#lwnAdventure .adv-tiles i{display:block;font-style:normal;font-size:20px;line-height:1.2}" +
+      "#lwnAdventure .adv-tiles b{display:block;font:700 22px/1.2 'Fredoka',system-ui,sans-serif;white-space:nowrap}" +
+      "#lwnAdventure .adv-tiles span{display:block;font-size:12px;font-weight:800;opacity:.75}" +
+      "#lwnAdventure .adv-next{font-weight:800;font-size:16px}#lwnAdventure .adv-next b{font-family:'Fredoka',system-ui,sans-serif}" +
+      "#lwnAdventure .adv-barrow{display:flex;align-items:center;gap:10px;margin:8px 0 8px;font-weight:800;font-size:14px}" +
+      "#lwnAdventure .adv-bar{flex:1;height:12px;border-radius:999px;background:rgba(255,255,255,.15);overflow:hidden}" +
+      "#lwnAdventure .adv-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#3FBF73,#4E9E6A);transition:width .8s}" +
+      "#lwnAdventure .adv-how{font-size:13px;font-weight:700;opacity:.85}";
+    document.head.appendChild(s);
+    var done = document.getElementById("done"); if (!done) return;
+    new MutationObserver(function () { if (done.classList.contains("on")) setTimeout(adventureCard, 900); }).observe(done, { attributes: true, attributeFilter: ["class"] });
+    window.addEventListener("lwn:xp", function (e) { roundXP += (e.detail && Number(e.detail.xp)) || 0; setTimeout(adventureCard, 300); });
+    var game = document.getElementById("game");
+    if (game) new MutationObserver(function () { if (game.classList.contains("on")) { roundXP = 0; adventureCard.tracked = 0; } }).observe(game, { attributes: true, attributeFilter: ["class"] });
   }
 
   /* ---------- "What's new" pop-up, once, for families who visited before ---------- */
@@ -413,6 +496,7 @@
     tripBanner();
     tripPhoto();
     dailyHelper();
+    adventureWatch();
     setTimeout(function () { checkUnlocks(); chestButton(); }, 1200);
     setTimeout(leagueRecap, 2500);
     setTimeout(whatsNew, 1800);

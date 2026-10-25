@@ -77,6 +77,28 @@ button:disabled{opacity:.28;cursor:default}
 .hist ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .hist li{display:flex;justify-content:space-between;font-size:16px}
 .hist .empty{color:var(--muted)}
+.step-h{display:flex;align-items:center;gap:8px;font-family:"Fredoka",system-ui,sans-serif;font-size:20px!important;color:#1F2456}
+.step-h i{font-style:normal;width:30px;height:30px;border-radius:50%;background:#2F9DF5;color:#fff;display:grid;place-items:center;font-size:16px;flex:none}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#gradeSeg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}#gradeSeg button{min-width:0;padding:14px 4px;font-size:17px}@media(max-width:360px){#gradeSeg{grid-template-columns:repeat(2,1fr)}}
+.pick.solo{grid-template-columns:1fr}.pick-card[hidden]{display:none}
+.pick-card{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:18px 12px 16px;border-radius:20px;border:3px solid transparent;cursor:pointer;font-family:"Nunito",system-ui,sans-serif;min-height:170px;justify-content:center}
+.pick-card.dash{background:linear-gradient(135deg,#FFE27A,#FFB938);color:#4A3300;box-shadow:0 4px 0 #D99A1E}
+.pick-card.full{background:linear-gradient(135deg,#44B8EE,#468ADE);color:#fff;box-shadow:0 4px 0 #2F72C4;font-size:inherit;padding:18px 12px 16px}
+.pick-card:active{transform:translateY(3px)}
+.pk-ic{font-size:38px;line-height:1}
+.pk-t{font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:24px;line-height:1.1}
+.pk-s{font-weight:900;font-size:15px;opacity:.95}
+.pk-n{font-weight:700;font-size:13px;line-height:1.3;opacity:.92;margin-top:2px}
+.pk-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#E5484D;color:#fff;font-weight:900;font-size:12px;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.pk-tag[hidden]{display:none}
+.more{border:2px solid var(--line);border-radius:16px;padding:0 14px;background:#fff}
+.more summary{cursor:pointer;font-weight:900;color:#345277;padding:14px 0;min-height:44px;list-style:none}
+.more summary::-webkit-details-marker{display:none}
+.more summary small{color:var(--muted);font-weight:700}
+.more[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
+.more-in{display:flex;flex-direction:column;gap:16px;padding-bottom:14px}
+@media(max-width:420px){.pick{grid-template-columns:1fr}.pick-card{min-height:0;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;text-align:left;column-gap:10px;padding:16px}.pk-ic{font-size:34px}.pk-t,.pk-s,.pk-n{flex-basis:calc(100% - 50px)}.pk-ic{flex-basis:40px;align-self:center}.pick-card{display:grid;grid-template-columns:44px 1fr;align-items:center;row-gap:2px}.pk-ic{grid-row:1/4}.pk-tag{left:auto;right:12px;transform:none}}
 .tip{background:#F0F7FF;border:2px solid #DCE9F8;border-radius:16px;padding:12px 14px;font-size:15px;color:#556B86;line-height:1.45;font-weight:700}
 .challenge-badge{display:inline-flex;width:max-content;max-width:100%;padding:7px 11px;border-radius:999px;background:#FFFBF0;color:#C6583D;font-weight:900;font-size:13px;letter-spacing:.02em}
 .hawaii-clock{display:flex;align-items:center;gap:8px;width:max-content;max-width:100%;margin-top:10px;padding:8px 12px;border-radius:999px;background:#EEF4FF;border:1px solid #DCE6FA;color:#425E81;font-weight:900;font-size:13px}
@@ -349,27 +371,46 @@ button:disabled{opacity:.28;cursor:default}
       <div class="challenge-badge">📝 NINI'S DAILY CHALLENGE</div>
       <div class="hawaii-clock" aria-live="polite"><span class="clock-dot"></span><span id="hawaiiDateTime">Hawaiʻi time</span></div>
       <h1 id="dayTitle">Day 1</h1>
-      <p style="margin:6px 0 0;font-weight:800;color:#345277">Daily 20-Minute Challenge ⭐</p>
-      <p style="margin:8px 0 0">Do the same dated problem set Nini uses in her videos. Work it out on the scratch pad and race the clock if you want.</p>
+      <p style="margin:6px 0 0;font-weight:800;color:#345277">Nini’s Daily Math Challenge ⭐</p>
+      <p style="margin:8px 0 0">Pick your grade, then tap a challenge. Use the scratch pad to work it out!</p>
       <p id="streakLine">Let's warm up that brain.</p>
     </div>
 
-    <section class="progress-panel" aria-label="Daily Challenge progress saved on this device">
-      <div class="progress-top">
-        <div class="streak-fire">🔥</div>
-        <div>
-          <div class="progress-title"><span id="deviceStreak">0</span>-day streak</div>
-          <div class="progress-sub" id="progressMessage">Finish today’s challenge to start your streak.</div>
-        </div>
-      </div>
-      <div class="progress-stats">
-        <div class="progress-stat"><b id="deviceCompleted">0</b><span>Days done</span></div>
-        <div class="progress-stat"><b id="deviceBest">0</b><span>Best streak</span></div>
-        <div class="progress-stat"><b id="deviceTotalCorrect">0</b><span>Questions correct</span></div>
-      </div>
-      <div class="week-strip" id="weekStrip" aria-label="Last seven days"></div>
-    </section>
 
+    <div class="field"><span class="step-h"><i>1</i> What grade are you in?</span>
+      <div class="seg" id="gradeSeg">
+        <button data-v="2">Grade 2</button><button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="5">Grade 5</button>
+      </div></div>
+    <div class="field"><span class="step-h"><i>2</i> Pick your challenge</span>
+      <div class="pick">
+        <button type="button" class="pick-card dash" id="dashBtn">
+          <span class="pk-tag" id="dashTag">Start here!</span>
+          <span class="pk-ic">⚡</span>
+          <span class="pk-t">Quick Dash</span>
+          <span class="pk-s">3 minutes · 8 questions</span>
+          <span class="pk-n">Quick warm-up. Counts for your streak!</span>
+        </button>
+        <button type="button" class="pick-card full go" id="goBtn">
+          <span class="pk-ic">📝</span>
+          <span class="pk-t">Daily Challenge</span>
+          <span class="pk-s" id="fullLen">10 minutes</span>
+          <span class="pk-n">Same problems as Nini's video. Beat Nini &amp; the leaderboard!</span>
+        </button>
+      </div>
+    </div>
+    <details class="more" id="moreOpts">
+      <summary>⚙️ More options <small>(length, mode, nickname)</small></summary>
+      <div class="more-in">
+    <div class="field"><span>Daily Challenge length (minutes)</span>
+      <div class="seg" id="minSeg">
+        <button data-v="10">10</button><button data-v="15">15</button><button data-v="20">20</button>
+      </div></div>
+    <div class="field"><span>Mode</span>
+      <div class="seg" id="modeSeg">
+        <button data-v="standard">Standard</button><button data-v="review">Review</button><button data-v="challenge">Challenge</button>
+      </div>
+      <div class="mode-help" id="modeHelp">Balanced practice from your selected grade.</div>
+    </div>
     <label class="field"><span>Player nickname</span>
       <input id="name" maxlength="24" placeholder="Nickname for the leaderboard (optional)" autocomplete="off"></label>
     <div class="field"><span>Choose an icon</span>
@@ -396,21 +437,23 @@ button:disabled{opacity:.28;cursor:default}
         <button type="button" data-av="⛷️">⛷️</button>
       </div>
     </div>
-    <div class="field"><span>Grade</span>
-      <div class="seg" id="gradeSeg">
-        <button data-v="2">Grade 2</button><button data-v="3">Grade 3</button><button data-v="4">Grade 4</button><button data-v="5">Grade 5</button>
-      </div></div>
-    <div class="field"><span>Mode</span>
-      <div class="seg" id="modeSeg">
-        <button data-v="standard">Standard</button><button data-v="review">Review</button><button data-v="challenge">Challenge</button>
       </div>
-      <div class="mode-help" id="modeHelp">Balanced practice from your selected grade.</div>
-    </div>
-    <div class="field"><span>Minutes</span>
-      <div class="seg" id="minSeg">
-        <button data-v="10">10</button><button data-v="15">15</button><button data-v="20">20</button>
-      </div></div>
-    <button class="go" id="goBtn">Start</button>
+    </details>
+    <section class="progress-panel" aria-label="Daily Challenge progress saved on this device">
+      <div class="progress-top">
+        <div class="streak-fire">🔥</div>
+        <div>
+          <div class="progress-title"><span id="deviceStreak">0</span>-day streak</div>
+          <div class="progress-sub" id="progressMessage">Finish today’s challenge to start your streak.</div>
+        </div>
+      </div>
+      <div class="progress-stats">
+        <div class="progress-stat"><b id="deviceCompleted">0</b><span>Days done</span></div>
+        <div class="progress-stat"><b id="deviceBest">0</b><span>Best streak</span></div>
+        <div class="progress-stat"><b id="deviceTotalCorrect">0</b><span>Questions correct</span></div>
+      </div>
+      <div class="week-strip" id="weekStrip" aria-label="Last seven days"></div>
+    </section>
     <a class="setup-watch-link" id="setupWatchLink" href="https://www.youtube.com/playlist?list=PLOeN8KaQujJo" target="_blank" rel="noopener">▶ Watch Nini’s challenge instead</a>
     <div class="row"><span id="setLabel">Today's shared problem set</span><a class="link" href="leaderboard.html">Global leaderboard →</a></div>
     <div class="tip">Everyone choosing the same grade, mode, and Hawaiʻi date gets the same challenge. Review stays on foundational and core skills from the selected grade. Challenge uses harder stretch and multi-step work from that same grade — it does not jump to a higher grade. Your best score can appear on the global leaderboard.</div>
@@ -587,6 +630,7 @@ function queueTodayLocalResultIfNeeded(){
   if(!todays.length)return;
   const bestBySession=new Map();
   todays.forEach(item=>{
+    if(item.dash||Number(item.mins)<10)return; // Quick Dash never goes to the leaderboard
     const mins=Number(item.mins)||20;
     const mode=String(item.mode||'standard');
     const grade=String(item.grade||settings.grade);
@@ -1485,12 +1529,14 @@ function renderStart(){
   document.querySelectorAll('#modeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.mode));
   $('#modeHelp').textContent=modeHelpText(settings.mode);
   document.querySelectorAll('#minSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+settings.mins));
+  if($('#fullLen'))$('#fullLen').textContent=(Number(settings.mins)||10)+' minutes';
+  if($('#dashTag'))$('#dashTag').hidden=log.length>0;
   $('#setLabel').textContent="Today's shared "+gradeLabel(settings.grade)+" · "+modeLabel(settings.mode)+" set · Hawaiʻi date";
   const ul=$('#histList');ul.innerHTML='';
   const recent=log.slice(-7).reverse();
   if(!recent.length){ul.innerHTML='<li class="empty">No sessions yet. Your first one shows up here.</li>'}
   recent.forEach(x=>{const li=document.createElement('li');
-    li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)} · ${modeLabel(x.mode||'standard')}</span><span><b>${Number(x.points)||Number(x.correct)||0}</b> pts · ${x.correct}/${x.attempted} correct</span>`;ul.appendChild(li)});
+    li.innerHTML=`<span>${x.date.slice(5).replace('-','/')} · ${gradeLabel(x.grade)} · ${x.dash||Number(x.mins)<10?'⚡ Quick Dash':modeLabel(x.mode||'standard')}</span><span><b>${Number(x.points)||Number(x.correct)||0}</b> pts · ${x.correct}/${x.attempted} correct</span>`;ul.appendChild(li)});
 }
 $('#avatarPick').addEventListener('click',e=>{const b=e.target.closest('button[data-av]');if(!b)return;sharedProfile.avatar=b.dataset.av;sharedProfile.updatedAt=Date.now();LS.set('learningWithNiniProfileV1',sharedProfile);renderStart()});
 $('#gradeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.grade=b.dataset.v;LS.set('dm-settings',settings);renderStart()});
@@ -1501,16 +1547,16 @@ $('#name').addEventListener('input',e=>{settings.name=e.target.value.trim();shar
 /* ---------- session ---------- */
 let S=null,tick=null,finishTimeout=null,finishing=false;
 function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
-function startSession(testMinute=false){
+function startSession(testMinute=false,dash=false){
   updateHawaiiClock();
   setMobilePad(false);
   finishing=false;
   clearInterval(tick);clearTimeout(finishTimeout);tick=null;finishTimeout=null;
   R=mulberry32(hashStr(today()+'|'+settings.grade+'|'+settings.mode+'|'+salt));
   lastType='';recentTypes=[];phaseQueues={};usedQuestionText=new Set();usedFactKeys=new Set();
-  const sessionMins=testMinute?1:(Number(settings.mins)||20);
-  S={testMinute,items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,mins:sessionMins,grade:String(settings.grade),mode:String(settings.mode),msLeft:sessionMins*60000,end:0,paused:false,started:Date.now()};
-  $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+'Math · Day '+dayNumber()+`<small>${gradeLabel(settings.grade)} · ${modeLabel(settings.mode)}</small>`;
+  const sessionMins=testMinute?1:dash?3:(Number(settings.mins)||20);
+  S={testMinute,dash,maxQ:dash?8:0,items:[],correct:0,points:0,idx:0,cur:null,input:'',tries:0,wrongChoices:new Set(),revealed:false,locked:false,mins:sessionMins,grade:String(settings.grade),mode:String(settings.mode),msLeft:sessionMins*60000,end:0,paused:false,started:Date.now()};
+  $('#who').innerHTML=(settings.name?escapeHTML(settings.name)+"'s ":'')+(dash?'⚡ Quick Dash':'Math · Day '+dayNumber())+`<small>${gradeLabel(settings.grade)} · ${dash?'8 questions':modeLabel(settings.mode)}</small>`;
   $('#score').textContent='0';
   show('game');requestAnimationFrame(()=>{sizeCanvas();nextProblem();resume()});
   fun('start');
@@ -1542,6 +1588,7 @@ function updTimer(){
 }
 function nextProblem(){
   if(!S||finishing)return;
+  if(S.dash&&S.items.length>=S.maxQ){finish();return}
   S.cur=genProblem(S.idx+1);S.idx++;S.input='';S.tries=0;S.wrongChoices=new Set();S.revealed=false;S.locked=false;
   $$('#cmp button').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct')});
   const q=$('#q');q.innerHTML=S.cur.html;q.classList.toggle('long',S.cur.text.length>34);
@@ -1637,7 +1684,9 @@ function finish(){
   const sessionMode=String(done.mode||settings.mode);
   const secs=Math.max(0,Math.min(sessionMins*60,Math.round(sessionMins*60-(Number(done.msLeft)||0)/1000)));
   const finalPoints=Math.round(done.points*100)/100;
-  if(attempted>0&&!done.testMinute){try{log.push({date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs});LS.set('dm-log',log)}catch(e){console.error('Saving local progress failed',e)}}
+  const dashToday=done.dash&&log.some(x=>x&&x.date===today()&&x.dash);
+  if(attempted>0&&!done.testMinute){try{const entry={date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs};if(done.dash)entry.dash=true;log.push(entry);LS.set('dm-log',log)}catch(e){console.error('Saving local progress failed',e)}}
+  if(done.dash&&attempted>0){try{if(window.LWNXP)LWNXP.add(dashToday?3:Math.min(20,5+done.correct*2),'Quick Dash')}catch(e){}try{if(window.LWNStats)LWNStats.track('dash_finish',{correct:done.correct,attempted,grade:sessionGrade})}catch(e){}}
   if(!done.testMinute)try{renderDeviceProgress()}catch(e){console.error('Progress display failed',e)}
   try{if(window.LWNBadges)LWNBadges.afterFinish({test:!!done.testMinute,attempted,points:finalPoints,correct:done.correct,grade:sessionGrade,mode:sessionMode,mins:sessionMins,date:today(),player:globalName(),progress:deviceProgress()})}catch(e){console.error('Badges failed without affecting results',e)}
   const maxPoints=done.items.length;
@@ -1650,7 +1699,8 @@ function finish(){
   try{sessionStorage.setItem('lwn-last-question-review',JSON.stringify(done.items||[]))}catch(e){}
   try{
   const globalStatus=$('#globalSaveStatus');
-  if(attempted>0&&!done.testMinute&&window.LWNLeaderboard){
+  if(done.dash){globalStatus.textContent=attempted>0?'⚡ Quick Dash done! It counts for your streak. Try the full Daily Challenge to get on the leaderboard and beat Nini.':'Answer at least one question to save your Dash.'}
+  else if(attempted>0&&!done.testMinute&&window.LWNLeaderboard){
     const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:sessionGrade+'|'+sessionMode+'|'+sessionMins+'min|'+today(),best_streak:streak()};
     queueGlobalScore(payload);
     globalStatus.textContent='Saving '+globalName()+"'s score to the global leaderboard…";
@@ -1673,6 +1723,12 @@ function finish(){
 }
 
 $('#goBtn').addEventListener('click',()=>startSession(false));
+window.deviceProgress=deviceProgress; // read by the end-of-round adventure card
+window.__lwnTest={answer:()=>{if(S&&S.cur)submit(String(showAns(S.cur)))}};
+if($('#dashBtn'))$('#dashBtn').addEventListener('click',()=>startSession(false,true));
+// Quick Dash launches on its own date so its effect on returning players can be measured separately (?dash=1 previews it early)
+const DASH_LIVE='2026-11-03';
+if($('#dashBtn')&&today()<DASH_LIVE&&!/[?&]dash=1/.test(location.search)){$('#dashBtn').hidden=true;$('#dashBtn').closest('.pick').classList.add('solo')}
 if($('#oneMinuteTestBtn'))$('#oneMinuteTestBtn').addEventListener('click',()=>startSession(true));
 $('#keys').addEventListener('click',e=>{const b=e.target.closest('.key');if(b)press(b.dataset.k)});
 $('#cmp').addEventListener('click',e=>{const b=e.target.closest('button');if(b)submit(b.dataset.c)});
