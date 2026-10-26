@@ -1727,7 +1727,7 @@ window.deviceProgress=deviceProgress; // read by the end-of-round adventure card
 window.__lwnTest={answer:()=>{if(S&&S.cur)submit(String(showAns(S.cur)))}};
 if($('#dashBtn'))$('#dashBtn').addEventListener('click',()=>startSession(false,true));
 // Quick Dash launches on its own date so its effect on returning players can be measured separately (?dash=1 previews it early)
-const DASH_LIVE='2026-11-03';
+const DASH_LIVE='2026-10-25';
 if($('#dashBtn')&&today()<DASH_LIVE&&!/[?&]dash=1/.test(location.search)){$('#dashBtn').hidden=true;$('#dashBtn').closest('.pick').classList.add('solo')}
 if($('#oneMinuteTestBtn'))$('#oneMinuteTestBtn').addEventListener('click',()=>startSession(true));
 $('#keys').addEventListener('click',e=>{const b=e.target.closest('.key');if(b)press(b.dataset.k)});
