@@ -221,9 +221,13 @@
     var pts = mine ? mine.points : 0, tier = tierFor(pts), idx = LEAGUES.indexOf(tier), next = idx > 0 ? LEAGUES[idx - 1] : null;
     var group = players.filter(function (p) { return tierFor(p.points) === tier; });
     var rank = mine ? group.indexOf(mine) + 1 : 0;
-    var head = "<div class='tier' style='color:" + tier.color + "'>" + tier.icon + " " + tier.name + " League</div>" +
-      "<div class='muted'>" + (mine ? "You have " + pts + " points this week" + (rank ? " · #" + rank + " in " + tier.name : "") : "Finish a Daily Challenge this week to join") +
-      (next ? " · " + Math.ceil(next.min - pts) + " more to reach " + next.icon + " " + next.name : " · Top league! 🏆") + "</div>";
+    var who = myName() ? esc(myName()) : "You";
+    var head = mine
+      ? "<div class='tier' style='color:" + tier.color + "'>" + tier.icon + " " + who + ": " + tier.name + " League</div>" +
+        "<div class='muted'>" + pts + " points this week" + (rank ? " · #" + rank + " in " + tier.name : "") +
+        (next ? " · " + Math.ceil(next.min - pts) + " more to reach " + next.icon + " " + next.name : " · Top league! 🏆") + "</div>"
+      : "<div class='tier' style='color:#24446c'>🎯 " + who + ": not in a league yet</div>" +
+        "<div class='muted'>Finish a Daily Challenge this week to join. Each player's league is the medal next to their name.</div>";
     if (id === "lwnLeagueP") {
       var lad = document.getElementById("lwnLadder");
       if (lad) lad.innerHTML = LEAGUES.slice().reverse().map(function (L) { return "<div class='" + (L === tier && mine ? "on" : "") + "'><span>" + L.icon + "</span><b>" + L.name + "</b>" + L.min + "+ pts</div>"; }).join("");
