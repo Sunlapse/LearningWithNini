@@ -29,6 +29,10 @@
   if (!document.querySelector('script[src="/welcome.js"]')) {
     var ws = document.createElement("script"); ws.src = "/welcome.js"; ws.defer = true; document.head.appendChild(ws);
   }
+  // Welcome-back card and grown-up email invites.
+  if (!document.querySelector('script[src="/retain.js"]')) {
+    var rt = document.createElement("script"); rt.src = "/retain.js"; rt.defer = true; document.head.appendChild(rt);
+  }
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch(function () {});
   }

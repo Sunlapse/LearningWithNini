@@ -144,6 +144,8 @@ a.go.play{display:block;text-align:center;text-decoration:none}
 (function(){
   var mode="up";
   function $(id){return document.getElementById(id)}
+  // Arrived from the "Want progress by email?" invite: pre-tick the email boxes (the parent can still untick them).
+  try{ if(/[?&]updates=1\b/.test(location.search)){ document.addEventListener("DOMContentLoaded",function(){ if($("news"))$("news").checked=true; if($("report1"))$("report1").checked=true; }); if($("news"))$("news").checked=true; if($("report1"))$("report1").checked=true; } }catch(e){}
   function say(el,text,kind){el.textContent=text;el.className="msg on "+kind}
   function nick(){try{var p=JSON.parse(localStorage.getItem("learningWithNiniProfileV1")||"null");return p&&p.name?(p.avatar||"⭐")+" "+p.name:""}catch(e){return ""}}
   function when(iso){if(!iso)return "not yet";var d=new Date(iso);return d.toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}
