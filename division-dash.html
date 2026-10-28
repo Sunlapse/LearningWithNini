@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Learn With Nini">
 <meta property="og:title" content="Division Dash – Free Division Game for Grades 3–5 | Learn With Nini">
-<meta property="og:description" content="Free division game for grades 3–5. Practice division facts, equal groups, bar models, mystery numbers, 0 and 1 rules, and remainders with Nini.">
+<meta property="og:description" content="Free division game for grades 3–5. Practice division facts, equal groups, bar models, mystery numbers, 0 and 1 rules, select-all divisibility, explaining your thinking, and remainders with Nini.">
 <meta property="og:url" content="https://learnwithnini.com/division-dash.html">
 <meta property="og:image" content="https://learnwithnini.com/social-preview.png?v=3">
 <meta property="og:image:width" content="1200">
@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="canonical" href="https://learnwithnini.com/division-dash.html">
-<meta name="description" content="Free division game for grades 3–5. Practice division facts, equal groups, bar models, mystery numbers, 0 and 1 rules, and remainders with Nini." />
+<meta name="description" content="Free division game for grades 3–5. Practice division facts, equal groups, bar models, mystery numbers, 0 and 1 rules, select-all divisibility, explaining your thinking, and remainders with Nini." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -59,6 +59,8 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 .claim{display:flex;gap:12px;align-items:center;justify-content:center;text-align:left;background:#fff;border-radius:20px;padding:12px 16px;font-weight:900;color:#3d5a80;line-height:1.35}.claim .face{font-size:2.4rem}
 @media(max-width:520px){.dots .dot{width:18px;height:18px}.dots,.dots .row-g{gap:6px}.bars div{min-height:48px;font-size:1.2rem}}
 
+.choices{display:none;gap:10px}.answer-card.choice-mode .answer-fields,.answer-card.choice-mode .keypad{display:none}.answer-card.choice-mode .choices{display:grid;grid-template-columns:repeat(3,1fr)}.answer-card.choice-mode .choices.list{grid-template-columns:1fr}
+.choice{border:2px solid #dce8f7;border-radius:18px;min-height:64px;background:#fff;font-weight:900;color:#2a5284;cursor:pointer;padding:12px 14px;line-height:1.35;box-shadow:0 7px 16px rgba(54,98,151,.08)}.choice.num{font-family:"Fredoka",sans-serif;font-size:2rem;min-height:84px}.choices.list .choice{text-align:left;font-size:1.05rem}.choice.on{border-color:#4088df;background:#e9f3ff;box-shadow:0 0 0 4px rgba(64,136,223,.12)}.choice.right{border-color:#23b978;background:#e9fbf0;color:#168354}
 .parent-game-intro{margin:18px 0 4px;font-size:.95rem;line-height:1.55}.parent-game-intro p{margin:0 0 8px}.parent-game-intro a{font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px}
 </style>
   <link rel="stylesheet" href="mobile-touch.css?v=20260930-2">
@@ -89,12 +91,14 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 <button class="level-card" data-level="bars"><div class="level-num">5</div><h3>Bar Models <span class="new-tag">NEW</span></h3><p>Read a bar diagram and find the size of each equal part.</p></button>
 <button class="level-card" data-level="mystery"><div class="level-num">6</div><h3>Mystery Number <span class="new-tag">NEW</span></h3><p>Find the one number n that makes all three equations true.</p></button>
 <button class="level-card" data-level="zeroone"><div class="level-num">7</div><h3>Who’s Right? <span class="new-tag">NEW</span></h3><p>Spot mistakes with 0 and 1 rules, then give the real answer.</p></button>
+<button class="level-card" data-level="divisible"><div class="level-num">8</div><h3>Select All <span class="new-tag">NEW</span></h3><p>Tap every number that divides evenly with none left over.</p></button>
+<button class="level-card" data-level="explain"><div class="level-num">9</div><h3>Explain It <span class="new-tag">NEW</span></h3><p>Pick the explanation that really proves the answer, like on a test.</p></button>
 </div></section>
 
 <section class="progress"><div class="qtext" id="questionText">Question 1 of 10</div><div class="track"><div class="fill" id="progressFill"></div></div><div class="stars" id="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span></div></section>
 <section class="question-card"><div class="level-pill" id="levelName">Division Foundations</div><div class="equation" id="equation"><span id="dividend">24</span> <span class="divide">÷</span> <span id="divisor">4</span> = ?</div><div class="visual" id="visual"></div><div class="streak" id="streakText">⚡ Streak: 0</div></section>
 <div class="answer-grid">
-<section class="answer-card">
+<section class="answer-card" id="answerCard">
 <div class="answer-fields" id="answerFields">
   <div class="answer-box active" id="quotientBox" data-field="quotient"><small id="ansLabel">Quotient</small><div class="answer-value placeholder" id="quotientValue">Type answer</div></div>
   <div class="answer-box" id="remainderBox" data-field="remainder" style="display:none"><small>Remainder</small><div class="answer-value placeholder" id="remainderValue">R</div></div>
@@ -105,6 +109,7 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 <button class="key" data-n="7">7</button><button class="key" data-n="8">8</button><button class="key" data-n="9">9</button>
 <button class="key clear" id="clearBtn">Clear</button><button class="key" data-n="0">0</button><button class="key back" id="backBtn">←</button>
 </div>
+<div class="choices" id="choices"></div>
 </section>
 <section class="side">
 <div class="status" id="status">Enter the quotient, then check your answer.</div>
@@ -119,7 +124,7 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 <section class="leader"><details><summary>🏆 Division Dash global leaderboard</summary><div id="board" class="board"></div></details></section>
 
 <section class="parent-game-intro" aria-label="For parents">
-  <p><strong>For parents:</strong> Division Dash practices division facts, fact families, equal groups, bar diagrams, unknown numbers, the rules for 0 and 1, and remainders for students in grades 3–5. These match the division facts unit taught in most 3rd grade classes. Short rounds help kids connect multiplication and division while building fluency.</p>
+  <p><strong>For parents:</strong> Division Dash practices division facts, fact families, equal groups, bar diagrams, unknown numbers, the rules for 0 and 1, divisibility, explaining reasoning, and remainders for students in grades 3–5. These match the division facts unit taught in most 3rd grade classes. Short rounds help kids connect multiplication and division while building fluency.</p>
   <p><a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Watch Nini practice on YouTube</a></p>
 </section>
 </main>
@@ -134,7 +139,7 @@ let divisor=4,quotient=6,remainder=0,dividend=24,answers={quotient:"",remainder:
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-const NAMES={foundation:"Division Foundations",power:"Power Division",remainder:"Remainder Rush",groups:"Equal Groups",bars:"Bar Models",mystery:"Mystery Number",zeroone:"Who’s Right?"};
+const NAMES={foundation:"Division Foundations",power:"Power Division",remainder:"Remainder Rush",groups:"Equal Groups",bars:"Bar Models",mystery:"Mystery Number",zeroone:"Who’s Right?",divisible:"Select All",explain:"Explain It"};
 const KIDS=["Kai","Leilani","Max","Ava","Noah","Mia","Keoni","Lily"],FACES=["🧒","👧","👦","🧑"];
 let answer=6,mode={};
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -150,6 +155,16 @@ function makeProblem(){
     else if(level==="groups"){divisor=rnd(2,Math.min(6,4+boost));quotient=rnd(2,Math.min(9,6+boost));mode.ask=Math.random()<.5?"each":"groups"}
     else if(level==="bars"){divisor=rnd(2,Math.min(8,5+boost));quotient=rnd(2,Math.min(12,9+boost))}
     else if(level==="mystery"){quotient=rnd(2,Math.min(12,9+boost));const f=shuffle([2,3,4,5,6,7,8,9]);mode.b=f[0];mode.d=f[1];mode.f=f[2];mode.order=shuffle([0,1,2]);divisor=mode.b}
+    else if(level==="divisible"){const d=rnd(3,Math.min(9,6+boost)),want=rnd(2,4),mx=Math.min(10+boost,Math.floor(100/d));
+      const nums=shuffle(Array.from({length:mx-1},(_,i)=>i+2)).slice(0,want).map(x=>x*d);
+      while(nums.length<6){const n=d*rnd(2,Math.min(9+boost,Math.floor(99/d)))+rnd(1,d-1);if(n<=100&&!nums.includes(n))nums.push(n)}
+      mode.nums=shuffle(nums);mode.sel=new Set();divisor=d;quotient=0;mode.key=mode.nums.join(",")}
+    else if(level==="explain"){const d=rnd(3,9),q=rnd(2,9),n=d*q,t=rnd(0,3),nm=KIDS[rnd(0,KIDS.length-1)];let best,vague,wrong;
+      if(t===0){mode.prompt=n+" ÷ "+d+" = "+q+". How do you know?";best="Because "+d+" × "+q+" = "+n+".";vague="I just know it.";wrong="Because "+d+" + "+q+" = "+n+"."}
+      else if(t===1){mode.prompt="Can "+n+" be divided by "+d+" with none left over? Yes. Why?";best="Because "+d+" × "+q+" = "+n+", so nothing is left over.";vague="I used my multiplication skills.";wrong="Because "+n+" is a big number."}
+      else if(t===2){mode.prompt="n × "+d+" = "+n+". Why is n = "+q+"?";best="Because "+d+" × "+q+" = "+n+", so "+n+" ÷ "+d+" = "+q+".";vague="I guessed and it looked right.";wrong="Because "+n+" − "+d+" = "+q+"."}
+      else{mode.prompt=nm+" says "+n+" ÷ 1 = 1. Why is "+nm+" wrong?";best="Because "+n+" × 1 = "+n+", so "+n+" ÷ 1 = "+n+".";vague=nm+" just made a mistake.";wrong="Because dividing always makes a number smaller."}
+      mode.opts=shuffle([{t:best,kind:"best"},{t:vague,kind:"vague"},{t:wrong,kind:"wrong"}]);mode.sel=new Set();divisor=d;quotient=q;mode.key=t+"|"+n}
     else{const kind=rnd(0,2),a=rnd(2,Math.min(12,9+boost));mode.kind=kind;mode.name=KIDS[rnd(0,KIDS.length-1)];mode.face=FACES[rnd(0,FACES.length-1)];
       if(kind===0){mode.a=a;mode.b=1;quotient=a;mode.wrong=1}
       else if(kind===1){mode.a=a;mode.b=a;quotient=1;mode.wrong=Math.random()<.5?0:a}
@@ -158,7 +173,7 @@ function makeProblem(){
     dividend=level==="zeroone"?mode.a:divisor*quotient+remainder;
     answer=quotient;
     if(level==="groups"&&mode.ask==="groups")answer=divisor;
-    key=level+"|"+dividend+"|"+divisor+"|"+remainder+"|"+(mode.ask||"")+(mode.kind||"");
+    key=level+"|"+dividend+"|"+divisor+"|"+remainder+"|"+(mode.ask||"")+(mode.kind||"")+(mode.key||"");
     tries++;
   }while(key===lastProblemKey&&tries<20);
   lastProblemKey=key;
@@ -188,16 +203,25 @@ function makeProblem(){
     vis.innerHTML='<div class="claim"><span class="face">'+mode.face+'</span><span>'+mode.name+" says "+dividend+" ÷ "+divisor+" = "+mode.claim+". Is that right? Type the real answer.</span></div>";
     vis.classList.add("show");label="Real answer";
     clue="Check with multiplication: "+divisor+" × ? = "+dividend+".";
+  }else if(level==="divisible"){
+    eq.className="equation small";eq.innerHTML="Which numbers can be divided by <b>"+divisor+"</b> with none left over?<br>Tap all that apply.";
+    clue="Think: "+divisor+" × ? = the number. If no whole number works, there is a leftover.";
+  }else if(level==="explain"){
+    eq.className="equation small";eq.innerHTML=mode.prompt+'<br><span style="font-size:.72em;color:#695f88">Which explanation proves it best?</span>';
+    clue="The best explanation uses a real multiplication or division fact.";
   }else{
     eq.innerHTML='<span id="dividend">'+dividend+'</span> <span class="divide">÷</span> <span id="divisor">'+divisor+'</span> = ?';
   }
   el("ansLabel").textContent=label;
+  const choiceMode=level==="divisible"||level==="explain",ch=el("choices");
+  el("answerCard").classList.toggle("choice-mode",choiceMode);ch.innerHTML="";ch.classList.toggle("list",level==="explain");
+  if(choiceMode)(level==="divisible"?mode.nums.map(String):mode.opts.map(o=>o.t)).forEach((t,i)=>{const b=document.createElement("button");b.className="choice"+(level==="divisible"?" num":"");b.textContent=t;b.onclick=()=>pickChoice(i);ch.appendChild(b)});
   const remMode=level==="remainder";
   el("remainderBox").style.display=remMode?"flex":"none";
   el("answerFields").classList.toggle("remainder-mode",remMode);
   el("quotientBox").classList.add("active");el("remainderBox").classList.remove("active");
   renderAnswer();
-  el("status").textContent=remMode?"Enter the quotient and remainder.":"Type your answer, then check it.";
+  el("status").textContent=remMode?"Enter the quotient and remainder.":level==="divisible"?"Tap every number that works, then check.":level==="explain"?"Tap the best explanation, then check.":"Type your answer, then check it.";
   el("status").className="status";el("checkBtn").textContent="Check Answer →";el("checkBtn").className="check";el("hintBtn").disabled=false;
   el("factFamily").innerHTML="<strong>Division clue</strong><br>"+clue;
   updateUI();
@@ -217,12 +241,13 @@ function renderAnswer(){
   rv.textContent=answers.remainder||"R";rv.classList.toggle("placeholder",!answers.remainder);
 }
 function setActive(field){if(solved)return;if(field==="remainder"&&level!=="remainder")return;activeField=field;el("quotientBox").classList.toggle("active",field==="quotient");el("remainderBox").classList.toggle("active",field==="remainder")}
-function typeDigit(n){if(solved)return;let v=answers[activeField];if(v.length>=3)return;v=(v==="0"?"":v)+n;answers[activeField]=String(Number(v));renderAnswer()}
+function typeDigit(n){if(solved||level==="divisible"||level==="explain")return;let v=answers[activeField];if(v.length>=3)return;v=(v==="0"?"":v)+n;answers[activeField]=String(Number(v));renderAnswer()}
 function clearActive(){if(solved)return;answers[activeField]="";renderAnswer()}
 function backspace(){if(solved)return;answers[activeField]=answers[activeField].slice(0,-1);renderAnswer()}
 function updateUI(){el("questionText").textContent="Round "+round+" · Question "+q+" of 10";el("progressFill").style.width=(q*10)+"%";el("stars").innerHTML=[0,1,2].map(i=>'<span class="'+(i<stars?'on':'')+'">★</span>').join("");el("score").textContent=score;el("topScore").textContent="⭐ Score: "+score;el("streakText").textContent="⚡ Streak: "+streak;el("bestStreak").textContent=bestStreak;el("roundStat").textContent=q+"/10"}
 function check(){
   if(solved){next();return}
+  if(level==="divisible"||level==="explain"){checkChoice();return}
   if(!answers.quotient){el("status").textContent="Enter the quotient first.";el("status").className="status info";return}
   if(level==="remainder"&&answers.remainder===""){el("status").textContent="Enter the remainder too.";el("status").className="status info";setActive("remainder");return}
   const qOk=Number(answers.quotient)===answer, rOk=level!=="remainder"||Number(answers.remainder)===remainder;
@@ -245,12 +270,38 @@ function check(){
 }
 function hint(){
   if(solved)return;stars=Math.max(1,stars-1);
+  if(level==="divisible"){const i=mode.nums.findIndex((n,k)=>(n%divisor===0)!==mode.sel.has(k)),n=mode.nums[i<0?0:i],w=Math.floor(n/divisor),r=n%divisor;
+    el("factFamily").innerHTML="<strong>Hint</strong><br>Look at "+n+": "+divisor+" × "+w+" = "+divisor*w+(r?", leaving "+r+" left over.":", none left over!");el("status").textContent="Check each number with a "+divisor+"s fact.";el("status").className="status info";updateUI();return}
+  if(level==="explain"){el("factFamily").innerHTML="<strong>Hint</strong><br>Cross out any answer with no math fact. Then check the math in the others.";el("status").textContent="A strong explanation shows WHY with a true fact.";el("status").className="status info";updateUI();return}
   if(level==="remainder")el("factFamily").innerHTML="<strong>Hint</strong><br>"+divisor+" × "+quotient+" = "+(divisor*quotient)+". Then "+dividend+" − "+(divisor*quotient)+" leaves the remainder.";
   else if(level==="mystery")el("factFamily").innerHTML="<strong>Hint</strong><br>Start with "+(quotient*mode.d)+" ÷ "+mode.d+". Think "+mode.d+" × ? = "+(quotient*mode.d)+".";
   else if(level==="zeroone")el("factFamily").innerHTML="<strong>Hint</strong><br>"+ruleText();
   else if(level==="groups"&&mode.ask==="groups")el("factFamily").innerHTML="<strong>Hint</strong><br>Think multiplication: ? × "+quotient+" = "+dividend+".";
   else el("factFamily").innerHTML="<strong>Hint</strong><br>Think multiplication: "+divisor+" × ? = "+dividend+".";
   el("status").textContent="Use the multiplication fact family to solve division.";el("status").className="status info";updateUI()
+}
+function pickChoice(i){if(solved)return;if(level==="explain")mode.sel=new Set([i]);else mode.sel.has(i)?mode.sel.delete(i):mode.sel.add(i);[...el("choices").children].forEach((b,k)=>b.classList.toggle("on",mode.sel.has(k)))}
+function isRight(i){return level==="divisible"?mode.nums[i]%divisor===0:mode.opts[i].kind==="best"}
+function checkChoice(){
+  if(!mode.sel.size){el("status").textContent=level==="divisible"?"Tap at least one number first.":"Tap an explanation first.";el("status").className="status info";return}
+  const btns=[...el("choices").children],ok=btns.every((b,i)=>isRight(i)===mode.sel.has(i));
+  if(ok){
+    solved=true;score+=stars;streak++;bestStreak=Math.max(bestStreak,streak);
+    btns.forEach((b,i)=>{b.classList.remove("on");if(isRight(i))b.classList.add("right")});
+    if(level==="divisible"){const yes=mode.nums.filter(n=>n%divisor===0),no=mode.nums.filter(n=>n%divisor);
+      el("status").textContent="Great job! "+yes.map(n=>divisor+" × "+n/divisor+" = "+n).join(", ")+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
+      el("factFamily").innerHTML="<strong>Why the others don’t work</strong><br>"+no.map(n=>n+" ÷ "+divisor+" = "+Math.floor(n/divisor)+" R"+n%divisor).join(" · ")}
+    else{el("status").textContent="Great job! That one names the exact fact that proves it. You earned "+stars+" star"+(stars===1?"":"s")+"!";
+      el("factFamily").innerHTML="<strong>Test tip</strong><br>Always write the fact that proves your answer, not just “I know it.”"}
+    el("checkBtn").textContent=q===10?"Finish Round →":"Next Question →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();
+    LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"division",score,level,best_streak:bestStreak}).then(renderBoard).catch(()=>{});
+  }else{
+    stars=Math.max(1,stars-1);streak=0;
+    if(level==="divisible"){const miss=btns.filter((b,i)=>isRight(i)&&!mode.sel.has(i)).length,extra=btns.filter((b,i)=>!isRight(i)&&mode.sel.has(i)).length;
+      el("status").textContent="Not quite. "+(extra?extra+" of your picks "+(extra===1?"has":"have")+" a leftover. ":"")+(miss?"You missed "+miss+". ":"")+"Check each with a "+divisor+"s fact."}
+    else{const k=mode.opts[[...mode.sel][0]].kind;el("status").textContent=k==="vague"?"That might be true, but it doesn’t show WHY. Pick one with a math fact.":"That reasoning has a mistake. Check the math in it."}
+    el("status").className="status bad";updateUI();
+  }
 }
 function next(){if(!solved)return;if(q===10){q=1;round++;el("status").textContent="Round "+round+" starts now — harder division, and your "+score+" points carry forward."}else q++;makeProblem()}
 function chooseLevel(v){level=v;q=1;round=1;score=0;streak=0;bestStreak=0;lastProblemKey="";document.querySelectorAll(".level-card").forEach(x=>x.classList.toggle("active",x.dataset.level===v));makeProblem()}
