@@ -90,7 +90,7 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 <button class="level-card" data-level="groups"><div class="level-num">4</div><h3>Equal Groups <span class="new-tag">NEW</span></h3><p>Share counters into equal groups and see division as an array.</p></button>
 <button class="level-card" data-level="bars"><div class="level-num">5</div><h3>Bar Models <span class="new-tag">NEW</span></h3><p>Read a bar diagram and find the size of each equal part.</p></button>
 <button class="level-card" data-level="mystery"><div class="level-num">6</div><h3>Mystery Number <span class="new-tag">NEW</span></h3><p>Find the one number n that makes all three equations true.</p></button>
-<button class="level-card" data-level="zeroone"><div class="level-num">7</div><h3>Who’s Right? <span class="new-tag">NEW</span></h3><p>Spot mistakes with 0 and 1 rules, then give the real answer.</p></button>
+<button class="level-card" data-level="zeroone"><div class="level-num">7</div><h3>Who’s Right? <span class="new-tag">NEW</span></h3><p>Spot division mistakes, like the 0 and 1 rules, then give the real answer.</p></button>
 <button class="level-card" data-level="divisible"><div class="level-num">8</div><h3>Select All <span class="new-tag">NEW</span></h3><p>Tap every number that divides evenly with none left over.</p></button>
 <button class="level-card" data-level="explain"><div class="level-num">9</div><h3>Explain It <span class="new-tag">NEW</span></h3><p>Pick the explanation that really proves the answer, like on a test.</p></button>
 </div></section>
@@ -134,7 +134,7 @@ html,body{margin:0;min-height:100%}body{font-family:"Nunito",Arial,sans-serif;co
 <script>
 const PROFILE="learningWithNiniProfileV1",AV=["⭐","🐱","🐰","🌈","❤️"],el=id=>document.getElementById(id);
 let profile=safe(PROFILE,{name:"Nini",avatar:"⭐"}),picked=profile.avatar||"⭐";
-let level="foundation",q=1,round=1,score=0,streak=0,bestStreak=0,stars=3,solved=false,lastProblemKey="";
+let seenKeys=new Set(),level="foundation",q=1,round=1,score=0,streak=0,bestStreak=0,stars=3,solved=false,lastProblemKey="";
 let divisor=4,quotient=6,remainder=0,dividend=24,answers={quotient:"",remainder:""},activeField="quotient";
 function safe(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
@@ -146,6 +146,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 function makeProblem(){
   stars=3;solved=false;answers={quotient:"",remainder:""};activeField="quotient";
   const boost=Math.min(round-1,5);
+  if(q===1)seenKeys=new Set();
   let tries=0,key="";
   do{
     remainder=0;mode={};
@@ -155,28 +156,42 @@ function makeProblem(){
     else if(level==="groups"){divisor=rnd(2,Math.min(6,4+boost));quotient=rnd(2,Math.min(9,6+boost));mode.ask=Math.random()<.5?"each":"groups"}
     else if(level==="bars"){divisor=rnd(2,Math.min(8,5+boost));quotient=rnd(2,Math.min(12,9+boost))}
     else if(level==="mystery"){quotient=rnd(2,Math.min(12,9+boost));const f=shuffle([2,3,4,5,6,7,8,9]);mode.b=f[0];mode.d=f[1];mode.f=f[2];mode.order=shuffle([0,1,2]);divisor=mode.b}
-    else if(level==="divisible"){const d=rnd(3,Math.min(9,6+boost)),want=rnd(2,4),mx=Math.min(10+boost,Math.floor(100/d));
+    else if(level==="divisible"){const d=rnd(3,Math.min(9,6+boost)),want=rnd(2,4),mx=Math.min(10+Math.min(boost,2),Math.floor(100/d));
       const nums=shuffle(Array.from({length:mx-1},(_,i)=>i+2)).slice(0,want).map(x=>x*d);
-      while(nums.length<6){const n=d*rnd(2,Math.min(9+boost,Math.floor(99/d)))+rnd(1,d-1);if(n<=100&&!nums.includes(n))nums.push(n)}
+      while(nums.length<6){const n=d*rnd(2,Math.min(9+Math.min(boost,2),Math.floor(99/d)))+rnd(1,d-1);if(n<=100&&!nums.includes(n))nums.push(n)}
       mode.nums=shuffle(nums);mode.sel=new Set();divisor=d;quotient=0;mode.key=mode.nums.join(",")}
-    else if(level==="explain"){const d=rnd(3,9),q=rnd(2,9),n=d*q,t=rnd(0,3),nm=KIDS[rnd(0,KIDS.length-1)];let best,vague,wrong;
-      if(t===0){mode.prompt=n+" ÷ "+d+" = "+q+". How do you know?";best="Because "+d+" × "+q+" = "+n+".";vague="I just know it.";wrong="Because "+d+" + "+q+" = "+n+"."}
-      else if(t===1){mode.prompt="Can "+n+" be divided by "+d+" with none left over? Yes. Why?";best="Because "+d+" × "+q+" = "+n+", so nothing is left over.";vague="I used my multiplication skills.";wrong="Because "+n+" is a big number."}
-      else if(t===2){mode.prompt="n × "+d+" = "+n+". Why is n = "+q+"?";best="Because "+d+" × "+q+" = "+n+", so "+n+" ÷ "+d+" = "+q+".";vague="I guessed and it looked right.";wrong="Because "+n+" − "+d+" = "+q+"."}
-      else{mode.prompt=nm+" says "+n+" ÷ 1 = 1. Why is "+nm+" wrong?";best="Because "+n+" × 1 = "+n+", so "+n+" ÷ 1 = "+n+".";vague=nm+" just made a mistake.";wrong="Because dividing always makes a number smaller."}
-      mode.opts=shuffle([{t:best,kind:"best"},{t:vague,kind:"vague"},{t:wrong,kind:"wrong"}]);mode.sel=new Set();divisor=d;quotient=q;mode.key=t+"|"+n}
-    else{const kind=rnd(0,2),a=rnd(2,Math.min(12,9+boost));mode.kind=kind;mode.name=KIDS[rnd(0,KIDS.length-1)];mode.face=FACES[rnd(0,FACES.length-1)];
+    else if(level==="explain"){const d=rnd(3,9),q=rnd(2,9),n=d*q,t=rnd(0,6),nm=KIDS[rnd(0,KIDS.length-1)],r=rnd(1,d-1),m=n+r,item=["stickers","shells","cookies","marbles","cards"][rnd(0,4)];let best,pool;
+      // kinds: best = true fact that proves it; vague = no math; false = contains an untrue fact; irrelevant = true math that doesn't prove it; flawed = wrong idea
+      if(t===0){mode.prompt=n+" ÷ "+d+" = "+q+". How do you know?";best="Because "+d+" × "+q+" = "+n+".";
+        pool=[["I just know it.","vague"],["Because "+d+" × "+(q+1)+" = "+n+".","false"],["Because "+n+" − "+d+" = "+q+".","false"],["Because "+n+" − "+d+" = "+(n-d)+".","irrelevant"]]}
+      else if(t===1){mode.prompt="Can "+n+" be divided by "+d+" with none left over? Yes. Why?";best="Because "+d+" × "+q+" = "+n+", so nothing is left over.";
+        pool=[["I used my multiplication skills.","vague"],["Because "+d+" × "+(q-1)+" = "+n+", so nothing is left over.","false"],["Because "+n+" is a big number.","flawed"],["Because "+n+" + "+d+" = "+(n+d)+".","irrelevant"]]}
+      else if(t===2){mode.prompt="Can "+m+" be divided by "+d+" with none left over? No. Why?";best="Because "+d+" × "+q+" = "+n+" and "+d+" × "+(q+1)+" = "+(n+d)+", so "+m+" is in between and has "+r+" left over.";
+        pool=[["I just checked it.","vague"],["Because "+d+" × "+q+" = "+m+".","false"],["Because "+m+" + "+d+" = "+(m+d)+".","irrelevant"]]}
+      else if(t===3){mode.prompt="n × "+d+" = "+n+". Why is n = "+q+"?";best="Because "+d+" × "+q+" = "+n+", so "+n+" ÷ "+d+" = "+q+".";
+        pool=[["I guessed and it looked right.","vague"],["Because "+n+" − "+d+" = "+q+".","false"],["Because "+d+" + "+q+" = "+n+".","false"],["Because "+d+" + 1 = "+(d+1)+".","irrelevant"]]}
+      else if(t===4){mode.prompt=nm+" says "+n+" ÷ 1 = 1. Why is "+nm+" wrong?";best="Because "+n+" × 1 = "+n+", so "+n+" ÷ 1 = "+n+".";
+        pool=[[nm+" just made a mistake.","vague"],["Because dividing always makes a number smaller.","flawed"],["Because 1 × 1 = "+n+".","false"],["Because "+n+" + 1 = "+(n+1)+".","irrelevant"]]}
+      else if(t===5){mode.prompt=n+" "+item+" are shared equally by "+d+" friends. Each friend gets "+q+". How do you know?";best="Because "+d+" × "+q+" = "+n+", so "+n+" ÷ "+d+" = "+q+".";
+        pool=[["Sharing is always fair.","vague"],["Because "+n+" − "+d+" = "+q+".","false"],["Because "+d+" × "+(q+1)+" = "+n+".","false"],["Because "+n+" + "+d+" = "+(n+d)+".","irrelevant"]]}
+      else{mode.prompt=nm+" says 0 ÷ "+d+" = "+d+". Why is "+nm+" wrong?";best="Because "+d+" × 0 = 0, so 0 ÷ "+d+" = 0.";
+        pool=[["Because zero is a tricky number.","vague"],["Because "+d+" × 1 = 0.","false"],["Because "+d+" is bigger than 0.","irrelevant"]]}
+      const two=shuffle(pool).slice(0,2);
+      mode.opts=shuffle([{t:best,kind:"best"}].concat(two.map(x=>({t:x[0],kind:x[1]}))));mode.sel=new Set();divisor=d;quotient=q;mode.key=t+"|"+n+"|"+(t===2?m:"")}
+    else{const kind=rnd(0,4),a=rnd(2,Math.min(12,9+boost));mode.kind=kind;mode.name=KIDS[rnd(0,KIDS.length-1)];mode.face=FACES[rnd(0,FACES.length-1)];
       if(kind===0){mode.a=a;mode.b=1;quotient=a;mode.wrong=1}
       else if(kind===1){mode.a=a;mode.b=a;quotient=1;mode.wrong=Math.random()<.5?0:a}
-      else{mode.a=0;mode.b=a;quotient=0;mode.wrong=a}
+      else if(kind===2){mode.a=0;mode.b=a;quotient=0;mode.wrong=a}
+      else{const d=rnd(2,9),qq=rnd(2,Math.min(10,9+boost));mode.a=d*qq;mode.b=d;quotient=qq;
+        mode.wrong=kind===3?d*qq*d:(Math.random()<.5?qq+1:qq-1)}
       mode.right=Math.random()<.3;mode.claim=mode.right?quotient:mode.wrong;divisor=mode.b}
     dividend=level==="zeroone"?mode.a:divisor*quotient+remainder;
     answer=quotient;
     if(level==="groups"&&mode.ask==="groups")answer=divisor;
     key=level+"|"+dividend+"|"+divisor+"|"+remainder+"|"+(mode.ask||"")+(mode.kind||"")+(mode.key||"");
     tries++;
-  }while(key===lastProblemKey&&tries<20);
-  lastProblemKey=key;
+  }while((key===lastProblemKey||seenKeys.has(key))&&tries<80);
+  lastProblemKey=key;seenKeys.add(key);
   el("levelName").textContent=NAMES[level];
   const eq=el("equation"),vis=el("visual");
   eq.className="equation";vis.className="visual";vis.innerHTML="";
@@ -226,7 +241,7 @@ function makeProblem(){
   el("factFamily").innerHTML="<strong>Division clue</strong><br>"+clue;
   updateUI();
 }
-function ruleText(){return mode.kind===0?"Any number ÷ 1 is itself.":mode.kind===1?"Any number (not 0) ÷ itself is 1.":"0 ÷ any number (not 0) is 0."}
+function ruleText(){return mode.kind===0?"Any number ÷ 1 is itself.":mode.kind===1?"Any number (not 0) ÷ itself is 1.":mode.kind===2?"0 ÷ any number (not 0) is 0.":mode.kind===3?"Don’t multiply when the problem says divide. Check with multiplication: "+divisor+" × ? = "+dividend+".":"Check with multiplication: "+divisor+" × ? = "+dividend+"."}
 function proofText(){
   if(level==="remainder")return divisor+" × "+quotient+" + "+remainder+" = "+dividend;
   if(level==="groups")return dividend+" ÷ "+divisor+" = "+quotient+" and "+divisor+" × "+quotient+" = "+dividend;
@@ -272,7 +287,7 @@ function hint(){
   if(solved)return;stars=Math.max(1,stars-1);
   if(level==="divisible"){const i=mode.nums.findIndex((n,k)=>(n%divisor===0)!==mode.sel.has(k)),n=mode.nums[i<0?0:i],w=Math.floor(n/divisor),r=n%divisor;
     el("factFamily").innerHTML="<strong>Hint</strong><br>Look at "+n+": "+divisor+" × "+w+" = "+divisor*w+(r?", leaving "+r+" left over.":", none left over!");el("status").textContent="Check each number with a "+divisor+"s fact.";el("status").className="status info";updateUI();return}
-  if(level==="explain"){el("factFamily").innerHTML="<strong>Hint</strong><br>Cross out any answer with no math fact. Then check the math in the others.";el("status").textContent="A strong explanation shows WHY with a true fact.";el("status").className="status info";updateUI();return}
+  if(level==="explain"){el("factFamily").innerHTML="<strong>Hint</strong><br>Check that the fact is true AND that it proves this exact answer.";el("status").textContent="A strong explanation shows WHY with a true fact.";el("status").className="status info";updateUI();return}
   if(level==="remainder")el("factFamily").innerHTML="<strong>Hint</strong><br>"+divisor+" × "+quotient+" = "+(divisor*quotient)+". Then "+dividend+" − "+(divisor*quotient)+" leaves the remainder.";
   else if(level==="mystery")el("factFamily").innerHTML="<strong>Hint</strong><br>Start with "+(quotient*mode.d)+" ÷ "+mode.d+". Think "+mode.d+" × ? = "+(quotient*mode.d)+".";
   else if(level==="zeroone")el("factFamily").innerHTML="<strong>Hint</strong><br>"+ruleText();
@@ -299,7 +314,7 @@ function checkChoice(){
     stars=Math.max(1,stars-1);streak=0;
     if(level==="divisible"){const miss=btns.filter((b,i)=>isRight(i)&&!mode.sel.has(i)).length,extra=btns.filter((b,i)=>!isRight(i)&&mode.sel.has(i)).length;
       el("status").textContent="Not quite. "+(extra?extra+" of your picks "+(extra===1?"has":"have")+" a leftover. ":"")+(miss?"You missed "+miss+". ":"")+"Check each with a "+divisor+"s fact."}
-    else{const k=mode.opts[[...mode.sel][0]].kind;el("status").textContent=k==="vague"?"That might be true, but it doesn’t show WHY. Pick one with a math fact.":"That reasoning has a mistake. Check the math in it."}
+    else{const k=mode.opts[[...mode.sel][0]].kind;el("status").textContent=k==="vague"?"That doesn’t show WHY. A good explanation uses a math fact.":k==="false"?"Check the math in that one. The fact it uses isn’t true.":k==="irrelevant"?"That math is true, but it doesn’t prove this answer.":"That idea isn’t right. Look for the fact that proves it."}
     el("status").className="status bad";updateUI();
   }
 }
