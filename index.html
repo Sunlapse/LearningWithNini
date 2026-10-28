@@ -1558,7 +1558,7 @@
           <p class="games-subtitle">Pick a topic, choose a game, and practice at your own pace.</p>
 
           <nav class="category-nav" aria-label="Game topics">
-            <a href="#operations">Operations</a>
+            <a href="#operations">Operations <span id="operationsNewTag" style="display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#ff7a59;color:#fff;font-size:.7em;font-weight:900;vertical-align:middle">NEW</span></a>
             <a href="#fractions-place-value"><span>Fractions &amp;</span> <span>Place Value</span></a>
             <a href="#measurement">Measurement</a>
             <a href="#geometry">Geometry</a>
@@ -1585,6 +1585,7 @@
               </article>
 
               <article class="feature-card division">
+                <div class="new-game-badge" id="divisionNewLevelsBadge">✨ 4 NEW LEVELS</div>
                 <div class="card-icon">➗</div>
                 <h4>Division Dash</h4>
                 <div class="grade-tag">Grades 3–5</div>
@@ -1911,6 +1912,9 @@
       }
       if (now >= new Date("2026-10-21T00:00:00-10:00")) {
         document.getElementById("fractionNewModesBadge")?.remove();
+      }
+      if (now >= new Date("2026-11-10T00:00:00-10:00")) {
+        ["divisionNewLevelsBadge","operationsNewTag"].forEach(id => document.getElementById(id)?.remove());
       }
       const multiplicationExpires = new Date("2026-10-20T00:00:00-10:00");
       if (now >= multiplicationExpires) {
