@@ -16,9 +16,9 @@
       ".lwn-level-toggle .t{flex:1}.lwn-level-toggle .t small{display:block;color:#7a7191;font-size:12px;font-weight:800}" +
       ".lwn-level-toggle .c{flex:none;font-size:18px;transition:transform .2s}" +
       ".lwn-levels-open .lwn-level-toggle .c{transform:rotate(180deg)}" +
-      ".lwn-collapsible .level-grid{display:none!important}" +
-      ".lwn-collapsible.lwn-levels-open .level-grid{display:grid!important;margin-top:10px}" +
-      ".lwn-collapsible .level-card{min-height:0!important;padding:10px 12px!important}" +
+      ".lwn-collapsible .level-grid,.lwn-collapsible .mode-grid,.lwn-collapsible .levelgrid{display:none!important}" +
+      ".lwn-collapsible.lwn-levels-open .level-grid,.lwn-collapsible.lwn-levels-open .mode-grid,.lwn-collapsible.lwn-levels-open .levelgrid{display:grid!important;margin-top:10px}" +
+      ".lwn-collapsible .level-card,.lwn-collapsible .mode-card,.lwn-collapsible .difficulty-card,.lwn-collapsible .levelgrid>.level{min-height:0!important;padding:10px 12px!important}" +
       ".lwn-collapsible h2{display:none!important}section.lwn-collapsible,.lwn-collapsible{margin-top:46px!important;padding:12px!important}" +
       ".nini,.nini img{height:150px!important;min-height:150px!important}" +
       "}" +
@@ -30,9 +30,9 @@
 
   /* ---------- 1. level dropdown on phones ---------- */
   function levelDropdown() {
-    var grid = document.querySelector(".level-grid");
+    var grid = document.querySelector(".level-grid, .mode-grid, .levelgrid");
     if (!grid) return;
-    var cards = grid.querySelectorAll(".level-card");
+    var cards = grid.querySelectorAll(".level-card, .mode-card, .difficulty-card, .levelgrid > .level");
     if (cards.length < 2) return;
     var section = grid.parentElement;
     section.classList.add("lwn-collapsible");
@@ -40,7 +40,7 @@
     btn.type = "button"; btn.className = "lwn-level-toggle"; btn.setAttribute("aria-expanded", "false");
     grid.parentNode.insertBefore(btn, grid);
     function label() {
-      var active = grid.querySelector(".level-card.active") || cards[0];
+      var active = grid.querySelector(".level-card.active, .mode-card.active, .difficulty-card.active, .levelgrid > .level.active") || cards[0];
       var idx = Array.prototype.indexOf.call(cards, active) + 1;
       var name = active.querySelector("h3") ? active.querySelector("h3").textContent.trim() : ("Level " + idx);
       btn.innerHTML = '<span class="n">' + idx + '</span><span class="t">' + name.replace(/</g, "&lt;") +
