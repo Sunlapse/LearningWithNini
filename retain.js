@@ -3,6 +3,8 @@
    2. After a game: invite grown-ups to the weekly progress report + new-mystery email.
       Never shown to parents who already said yes. Parents who said no are asked once more at most, a week later.
    3. One-time ask for signed-in parents who never made an email choice (accounts made before the checkbox).
+   4. Seasonal "what's new" ask for parents who said no: at most once per season (key below), on the homepage,
+      never within 7 days of their last choice or of another ask.
    Nothing is ever emailed unless a parent taps "Yes". */
 (function () {
   if (window.LWNRetain) return;
@@ -142,6 +144,49 @@
     });
   }
 
+  // 4. Parents who said no: one friendly "look what's new" ask per season.
+  var SEASON = "2026-fall-puzzle-hunts";
+  function seasonalReask() {
+    if (page !== "index.html") return;
+    var done = get("lwn-optin-season", "");
+    if (done === SEASON) return;
+    var st = get("lwn-optin-ask", { n: 0, last: "" }) || { n: 0, last: "" };
+    if (st.last && addDays(st.last, 7) > today) return;          // never right after another ask
+    getMeta().then(function (m) {
+      if (!m || choice(m.md) !== "no") return;
+      var at = m.md.email_updates_at ? hiDay(new Date(m.md.email_updates_at)) : "";
+      if (at && addDays(at, 7) > today) return;                  // give a fresh "no" at least a week
+      setTimeout(function () {
+        whenFree(function () {
+          set("lwn-optin-season", SEASON);
+          set("lwn-optin-ask", { n: (st.n || 0) + 1, last: today, askedNo: true });
+          var p = prof(), source = "season " + SEASON;
+          var faces = ["pumpkin/witch", "pumpkin/scarecrow", "thanksgiving/chef", "thanksgiving/surfer-turkey"].map(function (f) {
+            return '<img src="/events/' + f + '-icon.webp" alt="" style="width:40px;height:40px;border-radius:50%;border:3px solid #fff;margin-left:-10px;box-shadow:0 2px 6px rgba(0,0,0,.15);object-fit:cover">';
+          }).join("");
+          var c = card("lwnRetainAsk", '<span class="tag">FOR GROWN-UPS · NEW THIS FALL</span>' +
+            '<div style="margin:8px 0 4px 10px">' + faces + "</div>" +
+            "<h3>Lots of new stuff on Learn With Nini! 🎉</h3><p>Want a quick email when something new drops? You can turn it off anytime.</p><ul>" +
+            "<li>🧩 Puzzle hunts that unlock Nini costumes (Thanksgiving starts Nov 10)</li>" +
+            "<li>📊 " + (p.name ? esc(p.name) + "’s" : "Your child’s") + " progress report every Sunday</li>" +
+            "<li>🕵️ Nini’s new Case File every Monday</li></ul>" +
+            '<button type="button" class="go" data-yes>Yes, email me</button><button type="button" class="no" data-no>No thanks</button>' +
+            "<small>Sent to " + esc(m.email) + ". We won’t ask again this season.</small>");
+          track("optin_shown", { source: source });
+          c.querySelector("[data-yes]").onclick = function () {
+            var b = this; b.disabled = true; b.textContent = "Saving…";
+            saveChoice(true, source).then(function () {
+              c.innerHTML = "<h3>Welcome back! 🎉</h3><p>You’ll hear about the Thanksgiving Puzzle Hunt and get a progress report on Sunday.</p>";
+              track("optin_yes", { source: source }); setTimeout(function () { c.remove(); }, 4500);
+            }).catch(function () { b.disabled = false; b.textContent = "Couldn’t save. Try again"; });
+          };
+          c.querySelector("[data-no]").onclick = function () { track("optin_no", { source: source }); c.remove(); };
+          c.querySelector(".x").onclick = function () { track("optin_closed", { source: source }); c.remove(); };
+        });
+      }, 6000);
+    });
+  }
+
   // 2. After a finished game or Daily Challenge.
   var finishes = Number(get("lwn-finishes", 0)) || 0;
   function afterGame() {
@@ -177,6 +222,7 @@
   function boot() {
     setTimeout(function () { whenFree(welcomeBack); }, 1200);
     setTimeout(undecidedCheck, 3000);
+    setTimeout(seasonalReask, 3500);
     if (!hookScores()) { var n = 0, iv = setInterval(function () { if (hookScores() || ++n > 40) clearInterval(iv); }, 250); }
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
