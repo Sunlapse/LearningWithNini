@@ -75,7 +75,7 @@
       '<div class="help" id="lwnPHelp">Keep the same nickname so your scores stay together.</div>' +
       '<div class="lbl">Pick your icon</div><div class="av">' +
       ICONS.map(function (a) { return '<button type="button" data-av="' + a + '" class="' + (a === avatar ? "on" : "") + '" aria-label="Icon ' + a + '">' + a + "</button>"; }).join("") +
-      "</div>" + collectHtml(avatar) + '<button type="button" class="go">Save ✓</button></div>';
+      "</div>" + collectHtml(avatar) + (window.LWNEvent ? LWNEvent.pickerHtml(avatar) : "") + '<button type="button" class="go">Save ✓</button></div>';
     document.body.appendChild(w);
     var big = w.querySelector("#lwnPBig"), input = w.querySelector("#lwnPName"), help = w.querySelector("#lwnPHelp");
     w.querySelectorAll("[data-av]").forEach(function (b) {

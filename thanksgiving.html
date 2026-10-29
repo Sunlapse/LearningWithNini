@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Thanksgiving Puzzle Hunt | Learn With Nini</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Learn With Nini">
+  <meta property="og:title" content="Thanksgiving Puzzle Hunt | Learn With Nini">
+  <meta property="og:description" content="Play free math games, collect puzzle pieces and unlock 4 Thanksgiving Nini costumes. November 10–30.">
+  <meta property="og:url" content="https://learnwithnini.com/thanksgiving.html">
+  <meta property="og:image" content="https://learnwithnini.com/events/thanksgiving/surfer-turkey.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="description" content="Play free math games, collect puzzle pieces and unlock 4 Thanksgiving Nini costumes. November 10–30." />
+  <link rel="canonical" href="https://learnwithnini.com/thanksgiving.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Nunito",Arial,sans-serif;color:#203D61;background:radial-gradient(circle at 5% 5%,#FFF0DA,transparent 30%),linear-gradient(180deg,#FFF8EF,#fff 50%,#fffafb);line-height:1.5}
+    a{color:inherit;text-decoration:none}
+    .top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(59,104,160,.1)}
+    .top-inner{width:min(1040px,calc(100% - 32px));margin:auto;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{font-family:"Fredoka",sans-serif;font-size:1.4rem;font-weight:700}.learn{color:#3682df}.nini{color:#ef6d4d}
+    .back{font-weight:900;color:#3573bf}
+    main{width:min(1040px,calc(100% - 32px));margin:24px auto 56px}
+    h1,h2,h3{font-family:"Fredoka",sans-serif;line-height:1.12;margin:0}
+    .hero{text-align:center;background:linear-gradient(135deg,#FFE9C9,#FFD9A8);border:3px solid #FFC27A;border-radius:32px;padding:26px 20px 22px;box-shadow:0 8px 0 #F6B565}
+    .hero .tag{display:inline-block;background:#fff;color:#C2481B;border-radius:999px;padding:6px 14px;font-weight:900;font-size:.9rem}
+    h1{font-size:clamp(2.2rem,6vw,3.6rem);color:#B5410F;margin:10px 0 6px;letter-spacing:-.02em}
+    .hero p{margin:0 auto;max-width:600px;font-weight:800;color:#7A4A1F;font-size:1.05rem}
+    .today{display:inline-flex;align-items:center;gap:10px;margin-top:14px;background:#fff;border-radius:999px;padding:8px 16px;font-weight:900;color:#5A2E0C}
+    .today .dots{display:flex;gap:5px}.today .dots i{width:22px;height:22px;border-radius:7px;background:#F1E4D6;display:grid;place-items:center;font-style:normal;font-size:13px}
+    .today .dots i.on{background:#FF9A3C}
+    .bar{height:16px;border-radius:999px;background:#fff;margin:14px auto 0;max-width:420px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(120,60,10,.12)}
+    .bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#FFB347,#E0602F);transition:width .8s}
+    .count{margin-top:6px;font-weight:900;color:#7A4A1F}
+    .play{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:13px 20px;font:700 1.1rem/1 "Fredoka",sans-serif;cursor:pointer;background:#E0602F;color:#fff;box-shadow:0 5px 0 #A9401A}
+    .btn.alt{background:#fff;color:#3573bf;box-shadow:0 5px 0 #D5E2F3}
+    h2{font-size:clamp(1.7rem,3.4vw,2.3rem);color:#C2481B;margin:34px 0 14px;text-align:center}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .cos{background:#fff;border-radius:26px;padding:12px 12px 16px;text-align:center;border:2px solid #F3E3D3;box-shadow:0 10px 24px rgba(120,60,10,.08)}
+    .cos.got{border-color:#FFB45C}
+    .cos h3{font-size:1.2rem;color:#5A2E0C;margin:12px 0 2px}
+    .cos .fr{font:700 1.05rem/1.2 "Fredoka",sans-serif;color:#2D6CB9}
+    .cos .st{font-size:.9rem;font-weight:800;color:#8B7A68;margin-top:4px;min-height:2.6em}
+    .cos button{margin-top:6px;border:0;border-radius:999px;padding:9px 14px;background:#FFF1DC;color:#B5410F;font:700 .98rem/1 "Fredoka",sans-serif;cursor:pointer}
+    .cos button.using{background:#E9FBF0;color:#168354;cursor:default}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .step{background:#fff;border-radius:22px;padding:18px 14px;text-align:center;border:1px solid #F3E3D3}
+    .step .ic{font-size:2.2rem}.step b{display:block;font-family:"Fredoka",sans-serif;font-size:1.15rem;color:#5A2E0C;margin:6px 0 2px}
+    .step span{font-weight:800;color:#7B6B5D;font-size:.95rem}
+    .math{margin-top:16px;background:#EEF6FF;border:1px solid #D7E8FA;border-radius:22px;padding:16px 18px;font-weight:800;color:#2F5785;text-align:center}
+    .math b{font-family:"Fredoka",sans-serif;color:#2D6CB9}
+    #prize{scroll-margin-top:84px}
+    .prize{background:#fff;border-radius:28px;border:2px dashed #E7CFA9;padding:22px;text-align:center}
+    .prize.won{border:3px solid #F5BB31;background:linear-gradient(135deg,#FFFBEA,#FFF1C9)}
+    .prize .big{font-size:3.2rem}.prize p{font-weight:800;color:#7B6B5D;margin:6px auto 0;max-width:520px}
+    .prize input{margin-top:14px;width:min(320px,100%);border:2px solid #E7CFA9;border-radius:14px;padding:12px;font:inherit;font-weight:900;font-size:1.05rem;text-align:center}
+    .cert{display:none}
+    .parents{margin-top:34px;background:#FAF8FF;border:1px solid #ECE6F7;border-radius:22px;padding:18px 20px;color:#5E6685;font-weight:700;font-size:.95rem}
+    .parents b{color:#25466f}
+    @media(max-width:860px){.grid,.steps{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:520px){.brand{font-size:1.1rem;white-space:nowrap}.back{font-size:.88rem;white-space:nowrap}}
+    @media(max-width:420px){.grid{gap:10px}.cos{padding:8px 8px 12px;border-radius:20px}.cos h3{font-size:1.02rem}.cos .st{font-size:.82rem}.steps{grid-template-columns:1fr 1fr}}
+    /* printable certificate */
+    @media print{
+      body{background:#fff}
+      body>*:not(.cert){display:none!important}
+      .cert{display:flex!important;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;height:96vh;border:14px double #E0602F;border-radius:24px;padding:30px;font-family:"Fredoka",sans-serif;color:#5A2E0C}
+      .cert .faces{display:flex;gap:14px;margin:18px 0}.cert .faces img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid #FFB45C}
+      .cert h1{font-size:44px;color:#B5410F}.cert .name{font-size:52px;color:#2D6CB9;margin:10px 0;border-bottom:3px solid #F1D7B5;padding:0 30px}
+      .cert p{font-family:"Nunito",sans-serif;font-weight:800;font-size:18px;max-width:560px}
+      .cert .foot{margin-top:24px;font-size:16px;color:#8B7A68}
+    }
+  </style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nini Math">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
+  <script src="/event.js?v=1"></script>
+  <script src="/install-banner.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="/"><span class="learn">LearnWith</span><span class="nini">Nini</span>.com ⭐</a>
+      <a class="back" href="/">← Back to Math</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="tag" id="evDates">🦃 November 10–30</span>
+      <h1>🧩 Thanksgiving Puzzle Hunt</h1>
+      <p id="evIntro">Play math games to collect puzzle pieces. Finish a picture to unlock a Nini costume for your icon!</p>
+      <div class="today" id="evToday"></div>
+      <div class="bar"><span id="evBar" style="width:0"></span></div>
+      <div class="count" id="evCount"></div>
+      <div class="play">
+        <a class="btn" href="/daily-challenge.html">🔥 Daily Challenge</a>
+        <a class="btn alt" href="/#skill-games">🎮 Play a game</a>
+      </div>
+    </section>
+
+    <h2>Your costume puzzles</h2>
+    <div class="grid" id="evGrid"></div>
+
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><div class="ic">🎮</div><b>Finish a round</b><span>Any 10-question game round = 1 piece</span></div>
+      <div class="step"><div class="ic">🔥</div><b>Daily Challenge</b><span>Finish it = 2 pieces</span></div>
+      <div class="step"><div class="ic">🧩</div><b>Up to 3 a day</b><span>Come back each day for more</span></div>
+      <div class="step"><div class="ic">🏆</div><b>Unlock all 4</b><span>Get the Grand Prize certificate</span></div>
+    </div>
+    <div class="math">🧮 Puzzle math: each picture has 4 pieces, so every piece is <b>1/4</b> of the picture. <b>2/4</b> is the same as <b>1/2</b>, and <b>4/4</b> makes <b>1 whole</b>!</div>
+
+    <h2 id="prize">🏆 Grand Prize</h2>
+    <div class="prize" id="evPrize"></div>
+
+    <div class="parents"><b>For parents:</b> The Puzzle Hunt is free and runs November 10–30 (Hawaiʻi time). Kids earn pieces by finishing math, not by tapping or buying anything, and the daily limit keeps it to a short session a day. Progress saves on this device, or on every device with a free <a href="/account.html" style="text-decoration:underline">parent account</a>. Costumes kids unlock stay theirs after the event ends.</div>
+  </main>
+
+  <div class="cert" id="evCert">
+    <h1>🏆 Grand Prize Certificate</h1>
+    <p>This certifies that</p>
+    <div class="name" id="certName">Math Star</div>
+    <p>collected all 16 puzzle pieces and unlocked every costume in the Learn With Nini Thanksgiving Puzzle Hunt!</p>
+    <div class="faces" id="certFaces"></div>
+    <div class="foot" id="certFoot">LearnWithNini.com · November 2026</div>
+  </div>
+
+<script>
+(function(){
+  var E=window.LWNEvent; if(!E) return;
+  var EV=E.EV, el=function(id){return document.getElementById(id)};
+  function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function profile(){try{return JSON.parse(localStorage.getItem("learningWithNiniProfileV1")||"null")||{}}catch(e){return{}}}
+  function render(){
+    E.css();
+    var s=E.state(), ph=E.phase(), n=s.n, used=E.todayCount(), left=E.daysLeft(), me=profile();
+    el("evIntro").textContent = ph==="soon" ? "Starts November 10! Play math games to collect puzzle pieces and unlock 4 Nini costumes."
+      : ph==="over" ? "The Puzzle Hunt is over. Mahalo for playing! Costumes you unlocked are still yours."
+      : "Play math games to collect puzzle pieces. Finish a picture to unlock a Nini costume for your icon!";
+    el("evDates").textContent = ph==="on" ? "🦃 "+left+" day"+(left===1?"":"s")+" left" : "🦃 November 10–30";
+    el("evToday").innerHTML = ph==="on" ? "Today: <span class='dots'>"+[0,1,2].map(function(i){return "<i class='"+(i<used?"on":"")+"'>"+(i<used?"🧩":"")+"</i>"}).join("")+"</span>"+(used>=EV.perDay?" Come back tomorrow!":used+" of "+EV.perDay)
+      : ph==="soon" ? "🗓️ Come back November 10" : "🎉 Thanks for playing";
+    el("evBar").style.width=(n/E.TOTAL*100)+"%";
+    el("evCount").textContent=n+" of "+E.TOTAL+" pieces";
+    el("evGrid").innerHTML=EV.costumes.map(function(c,i){
+      var have=Math.max(0,Math.min(EV.perCostume,n-i*EV.perCostume)), got=have===EV.perCostume, using=me.avatar===c.token;
+      var status = got ? "Unlocked!" : have ? (EV.perCostume-have)+" more piece"+(EV.perCostume-have===1?"":"s")+" to go" : i===E.unlockedCount() ? "Next up" : "Locked";
+      return "<div class='cos"+(got?" got":"")+"'>"+E.puzzleHtml(c,have,false)+"<h3>"+esc(c.name)+"</h3><div class='fr'>"+E.fractionText(have)+"</div><div class='st'>"+status+"</div>"+
+        (got?"<button type='button' class='"+(using?"using":"")+"' data-use='"+c.token+"'>"+(using?"✓ My icon":"Use as my icon")+"</button>":"")+"</div>";
+    }).join("");
+    el("evGrid").querySelectorAll("[data-use]").forEach(function(b){ if(!b.classList.contains("using")) b.onclick=function(){E.useIcon(b.dataset.use)} });
+    var won=n>=E.TOTAL;
+    el("evPrize").className="prize"+(won?" won":"");
+    el("evPrize").innerHTML = won
+      ? "<div class='big'>🏆</div><h3 style='font-size:1.6rem;color:#B5410F'>You did it!</h3><p>You collected all 16 pieces. Type your name and print your certificate.</p>"+
+        "<input id='certInput' maxlength='30' placeholder='Your name' value='"+esc(me.name&&me.name.toLowerCase()!=="nini"?me.name:"")+"'><div class='play'><button type='button' class='btn' id='printCert'>🖨️ Print my certificate</button></div>"
+      : "<div class='big'>🔒🏆</div><p>Unlock all 4 costumes to get a printable Grand Prize certificate with your name on it.</p><p style='margin-top:10px;color:#C2481B'>"+(E.TOTAL-n)+" pieces to go!</p>";
+    var pb=el("printCert");
+    if(pb) pb.onclick=function(){
+      el("certName").textContent=(el("certInput").value||"Math Star").trim();
+      el("certFaces").innerHTML=EV.costumes.map(function(c){return "<img src='"+E.icon(c)+"' alt=''>"}).join("");
+      el("certFoot").textContent="LearnWithNini.com · Thanksgiving Puzzle Hunt "+EV.start.slice(0,4);
+      setTimeout(function(){window.print()},300);
+    };
+  }
+  render();
+  window.addEventListener("lwn:piece",function(){setTimeout(render,200)});
+  window.addEventListener("storage",render);
+})();
+</script>
+</body>
+</html>

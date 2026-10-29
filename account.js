@@ -7,7 +7,7 @@
   var KEY = "sb_publishable_Uso8SKT30uVsIDPxTzroIQ_kMCWOoaN";
   var SDK = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
   // Keys that are about this device only and should never be copied between devices.
-  var SKIP = /^(sb-|lwnGlobalDeviceId$|niniBannerClosed$|lwn-sync-)/;
+  var SKIP = /^(sb-|lwnGlobalDeviceId$|niniBannerClosed$|lwn-sync-|lwn-event-preview$)/;
 
   var recovering = /(?:^|[&#])type=recovery(?:&|$)/.test(location.hash);
   var client = null, readyP = null;
@@ -65,6 +65,10 @@
   }
   // Nickname + icon: the most recently changed one wins (ties keep this device's).
   function newerProfile(a, b) { var x = json(a, {}), y = json(b, {}); return (Number(y.updatedAt) || 0) > (Number(x.updatedAt) || 0) ? b : a; }
+  function mergeEvent(a, b) {
+    var x = json(a, {}), y = json(b, {});
+    return JSON.stringify({ n: Math.max(Number(x.n) || 0, Number(y.n) || 0), days: maxMap(x.days, y.days), daily: union(x.daily, y.daily) });
+  }
   function merge(local, cloud) {
     var out = {};
     Object.keys(cloud || {}).concat(Object.keys(local || {})).forEach(function (k) {
@@ -78,6 +82,7 @@
       else if (k === "lwn-icons-v1" || k === "lwn-postcards-v1") out[k] = JSON.stringify(union(json(l, []), json(c, [])));
       else if (k === "lwn-boss-v1") { var bx = json(l, {}), by = json(c, {}), bo = {}; Object.keys(bx).concat(Object.keys(by)).forEach(function (q) { bo[q] = !!(bx[q] || by[q]); }); out[k] = JSON.stringify(bo); }
       else if (k === "lwn-skills-v1") { var sx = json(l, {}), sy = json(c, {}), so = {}; Object.keys(sx).concat(Object.keys(sy)).forEach(function (d) { var a = sx[d] || {}, b2 = sy[d] || {}, o = so[d] = {}; Object.keys(a).concat(Object.keys(b2)).forEach(function (t) { var p = a[t] || [0, 0], q2 = b2[t] || [0, 0]; o[t] = p[1] >= q2[1] ? p : q2; }); }); out[k] = JSON.stringify(so); }
+      else if (/^lwn-event-(?!preview$)/.test(k)) out[k] = mergeEvent(l, c);
       else if (k === "lwn-league-best") out[k] = String(Math.max(Number(json(l, 0)) || 0, Number(json(c, 0)) || 0));
       else out[k] = l; // this device's choice wins for settings and everything else
     });

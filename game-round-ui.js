@@ -348,6 +348,7 @@
     finaleTimer = null;
     if (suppressAdvanceFinale || choosingAnotherLevel || finaleShown) return;
     finaleShown = true;
+    try { window.dispatchEvent(new CustomEvent("lwn:round-done")); } catch (e) {}
     buildConfetti();
     const score = scoreValue();
     finale.querySelector(".lwn-finale-score").textContent =
