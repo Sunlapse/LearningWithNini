@@ -162,10 +162,10 @@
           set("lwn-optin-ask", { n: (st.n || 0) + 1, last: today, askedNo: true });
           var p = prof(), source = "season " + SEASON;
           var faces = ["pumpkin/witch", "pumpkin/scarecrow", "thanksgiving/chef", "thanksgiving/surfer-turkey"].map(function (f) {
-            return '<img src="/events/' + f + '-icon.webp" alt="" style="width:40px;height:40px;border-radius:50%;border:3px solid #fff;margin-left:-10px;box-shadow:0 2px 6px rgba(0,0,0,.15);object-fit:cover">';
+            return '<img src="/events/' + f + '-icon.webp" alt="" style="width:40px;height:40px;border-radius:50%;border:3px solid #fff;margin-left:-10px;box-shadow:0 2px 6px rgba(0,0,0,.15);object-fit:cover;display:inline-block;flex:none">';
           }).join("");
           var c = card("lwnRetainAsk", '<span class="tag">FOR GROWN-UPS · NEW THIS FALL</span>' +
-            '<div style="margin:8px 0 4px 10px">' + faces + "</div>" +
+            '<div style="display:flex;flex-direction:row;margin:10px 0 4px 10px">' + faces + "</div>" +
             "<h3>Lots of new stuff on Learn With Nini! 🎉</h3><p>Want a quick email when something new drops? You can turn it off anytime.</p><ul>" +
             "<li>🧩 Puzzle hunts that unlock Nini costumes (Thanksgiving starts Nov 10)</li>" +
             "<li>📊 " + (p.name ? esc(p.name) + "’s" : "Your child’s") + " progress report every Sunday</li>" +
