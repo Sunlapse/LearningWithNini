@@ -232,17 +232,31 @@ button:disabled{opacity:.28;cursor:default}
 .list .given{color:var(--muted);text-align:right;white-space:nowrap}
 .results-review-title{margin:22px 0 2px;font-family:"Fredoka",system-ui,sans-serif;color:#326aae}
 .results-review-copy{margin:0 0 10px;color:var(--muted);font-weight:800}
-.practice-next{border:2px solid var(--line);border-radius:22px;padding:16px;background:linear-gradient(135deg,#fff9ea,#f0f7ff);box-shadow:0 10px 24px rgba(50,89,137,.08)}
-.practice-next h2{margin:0 0 4px;font-family:"Fredoka",system-ui,sans-serif;color:#326aae}
-.practice-next>p{margin:0 0 12px;color:var(--muted);font-weight:800}
-.practice-grid{display:grid;gap:9px}
-.practice-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:11px;padding:12px;border-radius:16px;background:#fff;border:2px solid #e5effb;text-decoration:none;color:var(--ink)}
-.practice-card:hover{border-color:#a6c7ef}
-.practice-icon{font-size:28px}
-.practice-copy strong{display:block;font-family:"Fredoka",system-ui,sans-serif;font-size:18px;color:#2d69b2}
-.practice-copy span{display:block;margin-top:2px;color:var(--muted);font-size:13px;font-weight:800;line-height:1.3}
-.practice-go{padding:8px 11px;border-radius:999px;background:#468ADE;color:#fff;font-weight:1000;white-space:nowrap}
-@media(max-width:520px){.practice-card{grid-template-columns:auto 1fr}.practice-go{grid-column:1/-1;text-align:center}}
+.practice-next{border:3px solid #FFD66B;border-radius:24px;padding:16px;background:linear-gradient(160deg,#FFF6D8,#EAF5FF 70%);box-shadow:0 10px 24px rgba(50,89,137,.1)}
+.pn-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.pn-head img{width:58px;height:58px;border-radius:50%;border:3px solid #F5633E;flex:none;background:#fff}
+.pn-bubble{position:relative;background:#fff;border-radius:16px;padding:10px 13px;box-shadow:0 4px 12px rgba(50,89,137,.1)}
+.pn-bubble:before{content:"";position:absolute;left:-8px;top:20px;border:8px solid transparent;border-right-color:#fff;border-left:0}
+.practice-next h2{margin:0;font-family:"Fredoka",system-ui,sans-serif;color:#E0602F;font-size:22px;line-height:1.1}
+.practice-next .pn-bubble p{margin:3px 0 0;color:#5b5577;font-weight:800;font-size:14px;line-height:1.3}
+.practice-grid{display:grid;gap:11px}
+.practice-card{position:relative;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;padding:14px;border-radius:20px;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--c1,#45B8ED),var(--c2,#478ADD));box-shadow:0 5px 0 var(--c3,#2F6FB8);transition:transform .12s}
+.practice-card:hover,.practice-card:focus-visible{transform:translateY(-2px)}
+.practice-card:active{transform:translateY(3px);box-shadow:0 2px 0 var(--c3,#2F6FB8)}
+.practice-icon{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.92);display:grid;place-items:center;font-size:34px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.08)}
+.practice-copy strong{display:block;font-family:"Fredoka",system-ui,sans-serif;font-size:20px;line-height:1.1;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.15)}
+.practice-copy .pc-fun{display:block;margin-top:3px;font-size:14px;font-weight:900;line-height:1.3;color:rgba(255,255,255,.95)}
+.pc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.pc-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.25);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:900;color:#fff}
+.pc-tag.top{background:#FFD24A;color:#5A3A00}
+.pc-bar{display:block;height:6px;border-radius:999px;background:rgba(255,255,255,.35);margin-top:7px;overflow:hidden;max-width:220px}.pc-bar i{display:block;height:100%;background:#fff;border-radius:999px}
+.practice-go{grid-column:1/-1;text-align:center;padding:11px;border-radius:14px;background:#fff;color:var(--c3,#2F6FB8);font-family:"Fredoka",system-ui,sans-serif;font-size:18px;font-weight:700}
+.pn-path{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;margin-top:12px;padding:13px;border-radius:20px;background:#fff;border:3px dashed #7CC8A0;text-decoration:none;color:#1F4D33}
+.pn-path .pp-ic{width:60px;height:60px;border-radius:18px;background:#E3F6EA;display:grid;place-items:center;font-size:32px}
+.pn-path b{display:block;font-family:"Fredoka",system-ui,sans-serif;font-size:18px;color:#17643A;line-height:1.15}
+.pn-path span{display:block;font-size:13px;font-weight:800;color:#3E6B50;margin-top:3px;line-height:1.3}
+.pn-path .pp-go{grid-column:1/-1;text-align:center;padding:10px;border-radius:14px;background:#2BAE66;color:#fff;font-family:"Fredoka",system-ui,sans-serif;font-size:17px;font-weight:700}
+@media(prefers-reduced-motion:reduce){.practice-card{transition:none}}
 
 @media (orientation:portrait){
   .body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
@@ -508,9 +522,9 @@ button:disabled{opacity:.28;cursor:default}
     <p class="results-review-copy">Check what you got right, missed, skipped, or needed another try.</p>
     <ul class="list" id="review"><li>Review will appear here after your challenge.</li></ul>
     <section class="practice-next" id="practiceNext" aria-label="Recommended practice">
-      <h2>🎯 Practice next</h2>
-      <p id="practiceNextText">Based on the questions that gave you trouble today.</p>
-      <div class="practice-grid" id="practiceGrid"><a class="practice-card" href="index.html">Browse math games →</a></div>
+      <div class="pn-head"><img src="/nini-face.webp" alt="Nini" width="58" height="58"><div class="pn-bubble"><h2>Nini’s picks for you! 🎯</h2><p id="practiceNextText">These games help with the questions that were tricky today.</p></div></div>
+      <div class="practice-grid" id="practiceGrid"><a class="practice-card" href="index.html"><span class="practice-icon">🎮</span><span class="practice-copy"><strong>Browse math games</strong></span></a></div>
+      <div id="practicePath"></div>
     </section>
     <section class="done-video" aria-label="Watch Nini solve this challenge">
       <h2 id="doneVideoHeading">Watch Nini solve Day <span id="doneVideoDay">1</span> ▶</h2>
@@ -1377,8 +1391,47 @@ function inferPracticeGame(item){
   if(/how many|how much|left|more|fewer|difference|total|altogether/.test(s))return 'detective';
   return 'maze';
 }
+// Fun look for each game + where it sits on Nini's Adventure Path (same units as path.html)
+const PRACTICE_FUN={
+  multiplication:{xp:'multiplication',fun:'Race the clock with times tables!',c:['#FF8A5B','#F2545B','#C23B3F']},
+  division:{xp:'division',fun:'Share the treats fair and square!',c:['#6C8CFF','#4C63E0','#3446A8']},
+  detective:{xp:'detective',fun:'Crack the case with math clues!',c:['#7A5CE6','#5A3FC0','#3F2A8C']},
+  maze:{xp:'math_maze',fun:'Add and subtract your way out!',c:['#3CC48D','#21A06E','#167A52']},
+  place:{xp:'place_value',fun:'Find where every digit lives!',c:['#2BB3E8','#1E8FD0','#16699A']},
+  number:{xp:'number_battle',fun:'Battle with bigger numbers!',c:['#FF6FA8','#E04585','#A82E61']},
+  money:{xp:'money',fun:'Count coins like a shopkeeper!',c:['#F7B731','#E99518','#A86A0C']},
+  time:{xp:'time',fun:'Set the clock before it rings!',c:['#42C6C9','#22A3AA','#17777C']},
+  fractions:{xp:'fraction',fun:'Slice pizzas into fractions!',c:['#FF9F43','#F07B1F','#B35A12']},
+  measure:{xp:'length',fun:'Measure everything in the lab!',c:['#9AC93F','#76A82A','#55791E']},
+  geometry:{xp:'geometry',fun:'Build shapes and find their area!',c:['#B06CE8','#8E49CC','#663596']}
+};
+const PATH_UNITS=[
+  {n:1,place:'Hawaii',emoji:'🏄‍♀️',boss:'🌊 The Big Wave',g:[['place_value',30,'Place Value Challenge','place-value-challenge.html'],['number_battle',30,'Number Battle','number-battle.html'],['money',30,'Money Match','money-match.html']]},
+  {n:2,place:'Alaska',emoji:'⛷️',boss:'🏔️ The Snow Mountain',g:[['time',30,'Time Match','time-match.html'],['multiplication',30,'Multiplication Sprint','multiplication-sprint.html'],['division',30,'Division Dash','division-dash.html']]},
+  {n:3,place:'China',emoji:'🏯',boss:'🐉 The Great Wall Dragon',g:[['math_maze',30,'Math Maze','math-maze.html'],['fraction',30,'Fraction Builder','fraction-builder.html'],['detective',30,'Math Detective','math-detective.html']]},
+  {n:4,place:'Italy',emoji:'🍕',boss:'🗼 The Leaning Tower',g:[['geometry',30,'Geometry Builder','geometry-builder.html'],['length',30,'Length Lab','length-lab.html'],['capacity',30,'Capacity Lab','capacity-lab.html'],['weight_mass',30,'Weight & Mass Lab','weight-mass-lab.html']]},
+  {n:5,place:'Underwater',emoji:'🐬',boss:'🦈 The Giant Shark',g:[['detective',60,'Math Detective ⭐⭐','math-detective.html'],['number_battle',60,'Number Battle ⭐⭐','number-battle.html'],['fraction',60,'Fraction Builder ⭐⭐','fraction-builder.html']]},
+  {n:6,place:'Horse Ranch',emoji:'🐴',boss:'🐎 The Wild Stallion',g:[['money',60,'Money Match ⭐⭐','money-match.html'],['time',60,'Time Match ⭐⭐','time-match.html'],['division',60,'Division Dash ⭐⭐','division-dash.html'],['geometry',60,'Geometry Builder ⭐⭐','geometry-builder.html']]}
+];
+function pathState(){
+  const xp=(LS.get('lwn-xp-v1',{})||{}).games||{},bosses=LS.get('lwn-boss-v1',{})||{};
+  const daily=new Set((LS.get('dm-log',[])||[]).map(r=>r&&r.date).filter(Boolean)).size;
+  let done=0,total=0,next=null;
+  PATH_UNITS.forEach(u=>{
+    let unitOk=true;
+    u.g.forEach(([id,goal,name,url])=>{total++;if((Number(xp[id])||0)>=goal)done++;else{unitOk=false;if(!next)next={kind:'game',id,goal,have:Number(xp[id])||0,name,url,u}}});
+    total++;if(bosses['u'+u.n])done++;else{unitOk=false;if(!next)next={kind:'boss',name:'Boss battle: '+u.boss,url:'boss.html?u='+u.n,u}}
+    total++;if(unitOk&&daily>=u.n)done++;
+  });
+  return {xp,done,total,next};
+}
+// The first Adventure level this game still counts for, e.g. Alaska 12/30 XP
+function pathStopFor(xpId,ps){
+  for(const u of PATH_UNITS)for(const [id,goal] of u.g)if(id===xpId&&(Number(ps.xp[id])||0)<goal)return {u,goal,have:Number(ps.xp[id])||0};
+  return null;
+}
 function renderPracticeRecommendations(items){
-  const section=$('#practiceNext'),grid=$('#practiceGrid'),copy=$('#practiceNextText');
+  const section=$('#practiceNext'),grid=$('#practiceGrid'),copy=$('#practiceNextText'),pathBox=$('#practicePath');
   if(!section||!grid)return;
   const trouble=(items||[]).filter(item=>item&&['no','ok2','skip'].includes(item.r));
   const counts={};
@@ -1386,23 +1439,38 @@ function renderPracticeRecommendations(items){
     const game=inferPracticeGame(item);
     counts[game]=(counts[game]||0)+(item.r==='no'?2:1);
   });
-  const ranked=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  if(!trouble.length){
-    section.hidden=false;
-    copy.textContent='Great work — no missed, skipped, or second-try questions to target this time.';
-    grid.innerHTML='<div class="practice-card"><span class="practice-icon">🌟</span><span class="practice-copy"><strong>No targeted practice needed</strong><span>Come back for tomorrow’s Daily Challenge or choose any game you want to practice.</span></span></div>';
-    return;
-  }
+  const ranked=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,2);
+  let ps={xp:{},done:0,total:32,next:null};try{ps=pathState()}catch(e){}
+  const next=ps.next;
   section.hidden=false;
-  copy.textContent='Based on questions that were missed, skipped, or needed another try. Start with the top recommendation.';
-  grid.innerHTML=ranked.map(([key,count],i)=>{
-    const g=PRACTICE_GAMES[key],priority=i===0?'Best match':'Good practice';
-    return '<a class="practice-card" href="'+g.href+'">'+
-      '<span class="practice-icon">'+g.icon+'</span>'+
-      '<span class="practice-copy"><strong>'+g.title+'</strong><span>'+priority+' · '+g.desc+'</span></span>'+
-      '<span class="practice-go">Practice →</span>'+
-      '</a>';
-  }).join('');
+  if(!trouble.length){
+    copy.textContent='Wow, nothing tricky today! Ready for your next adventure?';
+    grid.innerHTML='';
+  }else{
+    copy.textContent=ranked.length>1?'These 2 games will make the tricky questions easy!':'This game will make the tricky questions easy!';
+    grid.innerHTML=ranked.map(([key],i)=>{
+      const g=PRACTICE_GAMES[key],f=PRACTICE_FUN[key]||{c:[]},stop=f.xp?pathStopFor(f.xp,ps):null;
+      const isNext=next&&next.kind==='game'&&next.id===f.xp;
+      const tags=(i===0?'<span class="pc-tag top">⭐ Nini’s top pick</span>':'')+
+        (isNext?'<span class="pc-tag">🗺️ Your next Adventure stop!</span>':stop?'<span class="pc-tag">🗺️ Counts for '+stop.u.place+' '+stop.u.emoji+'</span>':'');
+      const bar=stop?'<span class="pc-bar" aria-label="'+Math.min(stop.have,stop.goal)+' of '+stop.goal+' XP"><i style="width:'+Math.max(4,Math.round(Math.min(stop.have,stop.goal)/stop.goal*100))+'%"></i></span>':'';
+      const style=f.c.length?' style="--c1:'+f.c[0]+';--c2:'+f.c[1]+';--c3:'+f.c[2]+'"':'';
+      return '<a class="practice-card" href="'+g.href+'"'+style+'>'+
+        '<span class="practice-icon">'+g.icon+'</span>'+
+        '<span class="practice-copy"><strong>'+g.title+'</strong><span class="pc-fun">'+(f.fun||g.desc)+'</span><span class="pc-tags">'+tags+'</span>'+bar+'</span>'+
+        '<span class="practice-go">Let’s play! →</span></a>';
+    }).join('');
+  }
+  // The Adventure Path card (hidden when it would only repeat a game card above)
+  if(pathBox){
+    const repeats=next&&next.kind==='game'&&ranked.some(([k])=>(PRACTICE_FUN[k]||{}).xp===next.id);
+    if(!next||repeats){pathBox.innerHTML='';}
+    else{
+      const what=next.kind==='game'?next.name+' in '+next.u.place+' '+next.u.emoji:next.name+' in '+next.u.place+' '+next.u.emoji;
+      const sub=next.kind==='game'?Math.min(next.have,next.goal)+' of '+next.goal+' XP · '+ps.done+' of '+ps.total+' Adventure levels done':'Beat the boss to finish '+next.u.place+'! · '+ps.done+' of '+ps.total+' levels done';
+      pathBox.innerHTML='<a class="pn-path" href="path.html"><span class="pp-ic">🗺️</span><span><b>'+(trouble.length?'Or keep traveling with Nini!':'Next Adventure stop!')+'</b><span>'+what+'</span><span>'+sub+'</span></span><span class="pp-go">Go to my Adventure →</span></a>';
+    }
+  }
 }
 
 /* ---------- Hawaiʻi clock ---------- */
