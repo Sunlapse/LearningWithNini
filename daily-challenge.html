@@ -232,6 +232,21 @@ button:disabled{opacity:.28;cursor:default}
 .list .given{color:var(--muted);text-align:right;white-space:nowrap}
 .results-review-title{margin:22px 0 2px;font-family:"Fredoka",system-ui,sans-serif;color:#326aae}
 .results-review-copy{margin:0 0 10px;color:var(--muted);font-weight:800}
+.nini-streak{display:flex;gap:12px;align-items:flex-start;margin:14px 0 4px;padding:13px 14px;border-radius:20px;background:linear-gradient(135deg,#FFF6E0,#FFE9F0);border:2px solid #FFD39A;box-shadow:0 6px 16px rgba(240,120,60,.12);animation:nsIn .45s cubic-bezier(.2,1.3,.4,1)}
+.nini-streak.ns-wait{background:linear-gradient(135deg,#FFE7D6,#FFD8C2);border-color:#FF9F6E;animation:nsIn .45s cubic-bezier(.2,1.3,.4,1),nsNudge 2.4s 1s ease-in-out 2}
+.nini-streak.ns-new{background:linear-gradient(135deg,#EAF5FF,#F3EEFF);border-color:#BFD8F5}
+.nini-streak img{flex:none;width:52px;height:52px;border-radius:50%;border:3px solid #F5633E;background:#fff}
+.nini-streak .ns-body{flex:1;min-width:0}
+.nini-streak .ns-msg{font-weight:800;font-size:15px;line-height:1.35;color:#4A3A55}.nini-streak .ns-msg b{font-family:"Fredoka",system-ui,sans-serif;font-size:17px;color:#D9531E}
+.nini-streak.ns-new .ns-msg b{color:#1E6FD9}
+.ns-week{display:flex;gap:5px;margin-top:9px}
+.ns-dot{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:900;color:#9A8AA8}
+.ns-dot i{font-style:normal;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.8);border:2px solid #F0DCC8;display:grid;place-items:center;font-size:14px}
+.ns-dot.on i{background:#FFE7B0;border-color:#FFB547}
+.ns-dot.today i{box-shadow:0 0 0 3px rgba(245,99,62,.35)}
+@keyframes nsIn{from{transform:translateY(8px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+@keyframes nsNudge{0%,100%{transform:none}20%{transform:rotate(-1.2deg)}40%{transform:rotate(1.2deg)}60%{transform:rotate(-.6deg)}}
+@media(prefers-reduced-motion:reduce){.nini-streak,.nini-streak.ns-wait{animation:none}}
 .practice-next{border:3px solid #FFD66B;border-radius:24px;padding:16px;background:linear-gradient(160deg,#FFF6D8,#EAF5FF 70%);box-shadow:0 10px 24px rgba(50,89,137,.1)}
 .pn-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .pn-head img{width:58px;height:58px;border-radius:50%;border:3px solid #F5633E;flex:none;background:#fff}
@@ -387,7 +402,7 @@ button:disabled{opacity:.28;cursor:default}
       <h1 id="dayTitle">Day 1</h1>
       <p style="margin:6px 0 0;font-weight:800;color:#345277">Nini’s Daily Math Challenge ⭐</p>
       <p style="margin:8px 0 0">Pick your grade, then tap a challenge. Use the scratch pad to work it out!</p>
-      <p id="streakLine">Let's warm up that brain.</p>
+      <div id="streakLine" class="nini-streak">Let's warm up that brain.</div>
     </div>
 
 
@@ -1590,7 +1605,20 @@ function renderStart(){
   const challengeDay=dayNumber();
   window.LWNCurrentChallengeDay=challengeDay;
   $('#dayTitle').textContent='Day '+challengeDay;
-  const s=deviceProgress().current;$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow to keep it going.':"Let's warm up that brain.";
+  const s=deviceProgress().current;
+  // Nini speech bubble: streak status + this week's practice days
+  try{
+    const ds=knownDailyDates(),t=dayDate(),todayKey=fmtUTC(t),doneToday=ds.has(todayKey);
+    const mon=new Date(t);mon.setUTCDate(mon.getUTCDate()-((mon.getUTCDay()+6)%7));
+    let dots='';for(let i=0;i<7;i++){const d=new Date(mon);d.setUTCDate(mon.getUTCDate()+i);const k=fmtUTC(d),on=ds.has(k),isT=k===todayKey;dots+=`<span class="ns-dot${on?' on':''}${isT?' today':''}"><i>${on?'🔥':''}</i>${'MTWTFSS'[i]}</span>`}
+    let msg,mood;
+    if(doneToday&&s>1){msg=`<b>🔥 ${s}-day streak!</b> You did today’s challenge. Come back tomorrow to make it <b>${s+1}</b>!`;mood='ns-done'}
+    else if(doneToday){msg=`<b>🎉 Day 1 done!</b> Come back tomorrow and we’ll start a 🔥 streak together!`;mood='ns-done'}
+    else if(s>0){msg=`<b>🔥 Your ${s}-day streak is waiting!</b> Play today to keep it going. A 3-minute Quick Dash counts!`;mood='ns-wait'}
+    else{msg=`<b>Hi, I’m Nini! 👋</b> Let’s warm up that brain. Play today to start a streak!`;mood='ns-new'}
+    $('#streakLine').className='nini-streak '+mood;
+    $('#streakLine').innerHTML=`<img src="/nini-face.webp" alt="Nini" width="52" height="52"><div class="ns-body"><div class="ns-msg">${msg}</div><div class="ns-week">${dots}</div></div>`;
+  }catch(e){$('#streakLine').textContent=s>1?`${s} days in a row. Keep the streak going.`:s===1?'1 day done. Come back tomorrow to keep it going.':"Let's warm up that brain.";}
   $('#name').value=settings.name;
   document.querySelectorAll('#avatarPick button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.av===(sharedProfile.avatar||'⭐')));
   document.querySelectorAll('#gradeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===settings.grade));
