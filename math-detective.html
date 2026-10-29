@@ -109,6 +109,13 @@ body.theme-two .notebook strong{color:#36506f}
 .cf-copy strong{display:block;font:700 clamp(27px,3.5vw,40px)/1.05 "Fredoka",sans-serif;margin:9px 0 12px;color:#FFF5DA}
 .cf-hook{display:block;font-size:17px;font-weight:900;line-height:1.35;color:#FFE19C}
 .cf-details{display:block;font-size:14px;font-weight:800;margin-top:6px;line-height:1.4}
+.cf-list{display:grid;gap:8px;margin:12px 0 4px}
+.cf-case{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.18);color:#FFF5DA;text-decoration:none}
+.cf-case:hover,.cf-case:focus-visible{background:rgba(255,255,255,.2)}
+.cf-case b{font:700 16px/1.2 "Fredoka",sans-serif}
+.cf-case i{flex:none;font-style:normal;font-size:11px;font-weight:900;letter-spacing:.05em;padding:4px 8px;border-radius:999px;background:#FFB23F;color:#3B1F00}
+.cf-case.done i{background:#7CE0A3;color:#0E4A27}
+a.cf-play{text-decoration:none}
 .cf-play{display:inline-block;margin-top:16px;background:#FFAA3D;color:#34154D;border-radius:14px;padding:12px 18px;font-weight:1000;font-size:17px;box-shadow:0 4px 0 #BE6015}
 .cf-stars{position:absolute;right:12px;top:14px;color:#C6A0FF;font-size:32px;line-height:2;transform:rotate(12deg);z-index:-1}
 .cf-banner:hover .cf-play{background:#FFCA70}
@@ -139,11 +146,26 @@ body.theme-two .notebook strong{color:#36506f}
   </aside>
 
   <main class="main">
-<a class="cf-banner" href="case-files.html">
-  <span class="cf-art" aria-hidden="true"><span class="cf-ghost">👻</span><span class="cf-pumpkin">🎃</span><span class="cf-candy">🍬</span></span>
-  <span class="cf-copy"><span class="cf-tag">HALLOWEEN MYSTERY · NINI'S CASE FILES</span><strong>The Missing<br>Pumpkin Candy</strong><span class="cf-hook">The candy is gone… can YOU crack the case?</span><span class="cf-details">Solve the math. Collect clues. Catch the culprit!</span><span class="cf-play">Solve the spooky case <span aria-hidden="true">→</span></span></span>
+<div class="cf-banner" id="cfBanner">
+  <span class="cf-art" aria-hidden="true"><span class="cf-ghost">🔍</span><span class="cf-pumpkin">🕵️</span><span class="cf-candy">📁</span></span>
+  <span class="cf-copy"><span class="cf-tag">NINI'S CASE FILES · A NEW MYSTERY EVERY MONDAY</span><strong>Can you solve<br>every case?</strong><span class="cf-details">Solve the math. Collect clues. Catch the culprit!</span>
+    <span class="cf-list" id="cfList"><a class="cf-case" href="case-files.html?case=c2-blue-ribbon"><b>🐴 The Missing Blue Ribbon</b><i>NEW</i></a><a class="cf-case" href="case-files.html?case=c1-pumpkin-candy"><b>🎃 The Missing Pumpkin Candy</b><i>Halloween</i></a></span>
+    <a class="cf-play" href="case-files.html">See all case files <span aria-hidden="true">→</span></a></span>
   <span class="cf-stars" aria-hidden="true">✦<br>✧<br>✦</span>
-</a>
+</div>
+<script>
+/* Fill the case list from the live Case Files page, newest first, with ✓ on solved ones */
+(function(){
+  var solved={};try{var all=JSON.parse(localStorage.getItem("lwn-cases-v1")||"{}");Object.keys(all).forEach(function(k){var c=all[k]||{};if((c.g23&&c.g23.solved)||(c.g45&&c.g45.solved))solved[k]=1})}catch(e){}
+  function paint(list){var box=document.getElementById("cfList");if(!box||!list.length)return;
+    box.innerHTML=list.slice(0,4).map(function(c,i){var tag=solved[c.id]?"✓ Solved":i===0?"NEW":/🎃|👻|Halloween/i.test(c.title)?"Halloween":"Case #"+c.num;
+      return '<a class="cf-case'+(solved[c.id]?' done':'')+'" href="case-files.html?case='+c.id+'"><b>'+c.title.replace(/</g,"&lt;")+'</b><i>'+tag+'</i></a>'}).join("")}
+  try{var today=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date());
+    fetch("case-files.html").then(function(r){return r.text()}).then(function(t){var re=/id:\s*"([^"]+)",\s*num:\s*(\d+),\s*live:\s*"([\d-]+)",\s*title:\s*"([^"]+)"/g,m,out=[];
+      while((m=re.exec(t)))if(m[3]<=today)out.push({id:m[1],num:m[2],live:m[3],title:m[4]});
+      out.sort(function(a,b){return a.live<b.live?1:-1});paint(out)}).catch(function(){})}catch(e){paint([])}
+})();
+</script>
 <section id="challenge-options" class="levels challenge-options-anchor">
       <h2>🔎 Math Detective — Choose a Case File</h2>
       <div class="level-grid">
