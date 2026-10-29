@@ -49,7 +49,7 @@ window.LWNFun = (function () {
       "padding:16px 26px;border-radius:24px;box-shadow:0 10px 30px rgba(70,138,222,.35);transition:opacity .2s,transform .3s;white-space:nowrap}" +
       "#lwnCombo.on{opacity:1;transform:translate(-50%,-50%) scale(1)}" +
       "#lwnConfetti{position:fixed;inset:0;z-index:59;pointer-events:none}" +
-      "#lwnSound{position:fixed;left:12px;bottom:12px;z-index:58;border:0;border-radius:999px;background:#fff;box-shadow:0 4px 12px rgba(40,76,120,.2);" +
+      "#lwnSound{position:fixed;left:19px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:58;border:0;border-radius:999px;background:#fff;box-shadow:0 4px 12px rgba(40,76,120,.2);" +
       "width:44px;height:44px;font-size:20px;cursor:pointer}" +
       "#lwnSound.lwn-in-bar{position:static;box-shadow:none;background:none;width:auto;height:auto;font-size:22px}" +
       ".lwn-freeze{margin-top:10px;background:#E8F6FF;border:1px solid #BFE6FF;border-radius:14px;padding:8px 10px;font-size:13px;font-weight:800;color:#1b5e8c}" +

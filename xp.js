@@ -38,6 +38,8 @@
     // keep ~60 days of history
     Object.keys(s.days).sort().slice(0, -60).forEach(function (k) { delete s.days[k]; });
     save(s);
+    if (round.before == null) round.before = before;
+    round.xp += xp;
     paint(); toast("+" + xp + " XP" + (why ? " · " + why : ""));
     try { window.dispatchEvent(new CustomEvent("lwn:xp", { detail: { xp: xp, why: why || "" } })); } catch (e) {}
     if (reached) goalReached();
@@ -83,7 +85,7 @@
       "#lwnXP small{position:relative;display:block;font:900 9px/1 'Nunito',system-ui,sans-serif;color:#8A8199;margin-top:2px}" +
       "#lwnXP.full{box-shadow:0 0 0 4px #FFE58A,0 6px 18px rgba(40,76,120,.25)}" +
       "body.lwn-xp-hide #lwnXP{display:none}" +
-      "#lwnXPToast{position:fixed;left:12px;bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:2147482999;background:#284C79;color:#fff;font:800 14px/1 'Nunito',system-ui,sans-serif;" +
+      "#lwnXPToast{position:fixed;left:78px;bottom:calc(26px + env(safe-area-inset-bottom,0px));z-index:2147482999;background:#284C79;color:#fff;font:800 14px/1 'Nunito',system-ui,sans-serif;" +
       "padding:9px 12px;border-radius:999px;opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s;pointer-events:none;transform:translateY(6px)}" +
       "#lwnXPToast.on{opacity:1;transform:none}" +
       "#lwnXPSheet{position:fixed;inset:0;z-index:2147483000;background:rgba(20,38,60,.35);display:none;align-items:flex-end;justify-content:center}" +
@@ -302,6 +304,72 @@
       new MutationObserver(upd).observe(game, { attributes: true, attributeFilter: ["class"] }); upd();
     }
   }
+
+  /* ---------- end-of-round XP celebration (games' "YOU DID IT!" screen, Daily Challenge results, lab round cards) ---------- */
+  var round = { xp: 0, before: null };
+  function celebCSS() {
+    if (document.getElementById("lwn-xpc-css")) return;
+    var c = document.createElement("style"); c.id = "lwn-xpc-css";
+    c.textContent =
+      ".lwn-xpc{position:relative;margin:14px 0;padding:14px 14px 12px;border-radius:20px;background:linear-gradient(135deg,#1F4FA8,#3A7BE0);color:#fff;text-align:center;overflow:hidden;box-shadow:0 10px 24px rgba(31,79,168,.28);animation:lwnXpcIn .5s cubic-bezier(.2,1.4,.4,1)}" +
+      ".lwn-xpc.goal{background:linear-gradient(135deg,#FF9F1C,#FF5E3A)}" +
+      ".lwn-xpc .big{font:700 44px/1 'Fredoka',system-ui,sans-serif;letter-spacing:.5px;text-shadow:0 3px 0 rgba(0,0,0,.18);display:inline-block;animation:lwnXpcPop .6s .25s both}" +
+      ".lwn-xpc .big i{font-style:normal;display:inline-block;animation:lwnXpcBolt 1s ease-in-out infinite}" +
+      ".lwn-xpc .msg{font-weight:900;font-size:15px;margin:4px 0 10px;opacity:.95}" +
+      ".lwn-xpc .bar{position:relative;height:18px;border-radius:999px;background:rgba(255,255,255,.22);overflow:visible}" +
+      ".lwn-xpc .bar .f{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#FFE27A,#FFC93C);transition:width 1.2s cubic-bezier(.2,.9,.3,1)}" +
+      ".lwn-xpc .bar .k{position:absolute;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:15px;box-shadow:0 0 14px 4px rgba(255,226,122,.8);transition:left 1.2s cubic-bezier(.2,.9,.3,1)}" +
+      ".lwn-xpc .lab{display:flex;justify-content:space-between;font-weight:900;font-size:12px;margin-top:6px;opacity:.9}" +
+      ".lwn-xpc .sp{position:absolute;font-style:normal;font-size:18px;pointer-events:none;opacity:0;animation:lwnXpcSpark 1.4s ease-out forwards}" +
+      ".lwn-xpc .gtag{display:inline-block;margin-top:9px;background:#fff;color:#C2410C;border-radius:999px;padding:6px 13px;font:700 15px/1 'Fredoka',system-ui,sans-serif;animation:lwnXpcPop .5s 1.3s both}" +
+      "@keyframes lwnXpcIn{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}" +
+      "@keyframes lwnXpcPop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}" +
+      "@keyframes lwnXpcBolt{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(8deg) scale(1.2)}}" +
+      "@keyframes lwnXpcSpark{0%{opacity:0;transform:translate(0,0) scale(.3)}20%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2)}}" +
+      "@media (prefers-reduced-motion:reduce){.lwn-xpc,.lwn-xpc .big,.lwn-xpc .big i,.lwn-xpc .gtag{animation:none}.lwn-xpc .sp{display:none}}";
+    document.head.appendChild(c);
+  }
+  function celebrate(where, place) {
+    if (!where || !round.xp) return;
+    var old = document.getElementById("lwnXPC"); if (old) old.remove();
+    celebCSS();
+    var s = st(), goal = s.goal, after = s.days[today()] || 0, before = Math.max(0, round.before == null ? after - round.xp : round.before), gained = round.xp;
+    round = { xp: 0, before: null };
+    var crossed = before < goal && after >= goal, pctB = Math.min(100, before / goal * 100), pctA = Math.min(100, after / goal * 100);
+    var msg = crossed ? "You smashed your daily goal!" : after >= goal ? "Bonus XP! " + after + " XP today 🔥" : (goal - after) + " XP to today's goal of " + goal;
+    var box = document.createElement("div"); box.id = "lwnXPC"; box.className = "lwn-xpc" + (crossed ? " goal" : "");
+    box.setAttribute("role", "status");
+    var sparks = ""; for (var i = 0; i < 10; i++) { var a = i / 10 * Math.PI * 2; sparks += "<i class='sp' style='left:50%;top:34px;--dx:" + Math.round(Math.cos(a) * 120) + "px;--dy:" + Math.round(Math.sin(a) * 60) + "px;animation-delay:" + (.2 + (i % 3) * .12).toFixed(2) + "s'>" + ["⚡", "✨", "⭐"][i % 3] + "</i>"; }
+    box.innerHTML = sparks + "<div class='big'><i>⚡</i> +<span class='n'>0</span> XP</div><div class='msg'>" + msg + "</div>" +
+      "<div class='bar'><div class='f' style='width:" + pctB + "%'></div><div class='k' style='left:" + Math.max(3, pctB) + "%'>" + (crossed || after >= goal ? "🏆" : "⚡") + "</div></div>" +
+      "<div class='lab'><span>" + after + " XP today</span><span>🎯 " + goal + "</span></div>" + (crossed ? "<div class='gtag'>🎯 DAILY GOAL REACHED!</div>" : "");
+    if (place === "before") where.parentNode.insertBefore(box, where); else where.insertAdjacentElement(place || "afterend", box);
+    // count up, then fill the bar
+    var n = box.querySelector(".n"), t0 = null, dur = Math.min(1200, 400 + gained * 20);
+    function step(ts) { if (!t0) t0 = ts; var k = Math.min(1, (ts - t0) / dur); n.textContent = Math.round(gained * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+    setTimeout(function () { box.querySelector(".f").style.width = pctA + "%"; box.querySelector(".k").style.left = Math.max(3, pctA) + "%"; }, 350);
+    try { if (window.LWNFun) { LWNFun.play(crossed ? "badge" : "combo"); if (crossed) LWNFun.confetti(140); } } catch (e) {}
+  }
+  function watchRounds() {
+    // games with the shared "YOU DID IT!" screen
+    var seen = new WeakSet();
+    new MutationObserver(function () {
+      var f = document.querySelector(".lwn-finale.show");
+      if (f && !seen.has(f)) { seen.add(f); setTimeout(function () { var act = f.querySelector(".lwn-finale-actions"); if (act) celebrate(act, "before"); }, 250); }
+      if (!document.querySelector(".lwn-finale.show")) seen = new WeakSet();
+    }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ["class"] });
+    // Daily Challenge / Quick Dash results
+    var done = document.getElementById("done");
+    if (done) new MutationObserver(function () { if (done.classList.contains("on")) setTimeout(function () { var at = document.getElementById("bigScore"); celebrate(at || done.firstElementChild, "afterend"); }, 1200); }).observe(done, { attributes: true, attributeFilter: ["class"] });
+    // Length / Capacity / Weight labs
+    var rc = document.getElementById("roundCard");
+    if (rc) new MutationObserver(function () { if (rc.classList.contains("show")) setTimeout(function () { var m = document.getElementById("roundMessage"); celebrate(m, "afterend"); }, 300); }).observe(rc, { attributes: true, attributeFilter: ["class"] });
+    // a fresh round starts counting from zero
+    var game = document.getElementById("game");
+    if (game) new MutationObserver(function () { if (game.classList.contains("on")) round = { xp: 0, before: null }; }).observe(game, { attributes: true, attributeFilter: ["class"] });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", watchRounds); else watchRounds();
 
   window.LWNXP = { add: add, fromScore: fromScore, open: openSheet, state: st, league: league, tierFor: tierFor, leagues: LEAGUES,
     noteBest: noteBest, myName: myName, monday: monday, shift: shift, hawaiiToday: today, today: function () { return st().days[today()] || 0; } };
