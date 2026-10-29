@@ -170,7 +170,7 @@
     var L = window.LWNLeaderboard; if (!L || typeof L.saveScore !== "function") return false;
     if (L.__retainHooked) return true;
     var orig = L.saveScore;
-    L.saveScore = function () { try { afterGame(); } catch (e) {} return orig.apply(this, arguments); };
+    L.saveScore = function (p) { try { if (!/\|dash\|/.test(String(p && p.level || ""))) afterGame(); } catch (e) {} return orig.apply(this, arguments); };
     L.__retainHooked = true; return true;
   }
 

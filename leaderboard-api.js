@@ -281,7 +281,7 @@ window.LWNLeaderboard = (() => {
     return rows.filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()));
   }
 
-  async function dailyChallenge({date=null,minutes=null,limit=1000,includeReview=false,activity=false}={}){
+  async function dailyChallenge({date=null,minutes=null,limit=1000,includeReview=false,activity=false,includeDash=false}={}){
     const u=new URLSearchParams({
       select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at,device_id",
       order:"score.desc,updated_at.asc",
@@ -290,6 +290,7 @@ window.LWNLeaderboard = (() => {
     if(date)u.set("challenge_date","eq."+date);
     if([10,15,20].includes(Number(minutes)))u.set("minutes","eq."+String(Number(minutes)));
     if(!includeReview)u.set("mode","neq.review");
+    if(!includeDash)u.append("mode","neq.dash"); // Quick Dash rows only count for the weekly league
 
     const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load Daily Challenge leaderboard");
@@ -340,6 +341,7 @@ window.LWNLeaderboard = (() => {
       limit:"1000"
     });
     if([10,15,20].includes(Number(minutes)))u.set("minutes","eq."+String(Number(minutes)));
+    u.append("mode","neq.dash");
 
     const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load Daily Challenge history");

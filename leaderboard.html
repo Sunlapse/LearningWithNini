@@ -192,6 +192,7 @@ footer{text-align:center;color:#8b829f;font-weight:800;padding:28px 0 4px}
 <script src="leaderboard-api.js?v=20261009-actual-scores"></script>
 <script>
 const GAMES=[
+  {id:"league",label:"This Week",icon:"🔥",note:"This week’s league · best Daily Challenge or Quick Dash each day, Monday to Sunday"},
   {id:"overall",label:"Overall",icon:"🏆",note:"Combined best scores across all games"},
   {id:"daily_challenge",label:"Daily Challenge",icon:"📝",note:"Today’s activity and actual scores by challenge length"},
   {id:"quick_dash",label:"Quick Dash",icon:"⚡",note:"8 questions • same points as the Daily Challenge (max 8) • ties go to the faster time"},
@@ -209,7 +210,7 @@ const GAMES=[
   {id:"capacity",label:"Capacity Lab",icon:"🥤",note:"Capacity Lab high scores"},
   {id:"weight_mass",label:"Weight & Mass Lab",icon:"⚖️",note:"Weight & Mass Lab high scores"}
 ];
-let activeGame="overall";
+let activeGame="league";
 let dailyView="today";
 let dailyDuration="20";
 const el=id=>document.getElementById(id);
@@ -383,6 +384,16 @@ async function renderActive(){
   const list=el("activeLeaderboard");list.innerHTML='<div class="loading">Loading global scores…</div>';
   try{
     let rows;
+    if(activeGame==="league"){
+      for(let i=0;i<40&&!(window.LWNXP&&LWNXP.league);i++)await new Promise(r=>setTimeout(r,150));
+      rows=await LWNXP.league();
+      if(version!==renderVersion)return;
+      const left=LWNXP.daysLeft?LWNXP.daysLeft():0,me=(LWNXP.myName?LWNXP.myName():"").toLowerCase();
+      el("boardNote").textContent="Best Daily Challenge or Quick Dash each day, Monday to Sunday (Hawaiʻi time) · resets in "+left+" day"+(left===1?"":"s");
+      el("countBadge").textContent=rows.length?(rows.length+" player"+(rows.length===1?"":"s")):"No scores";
+      list.innerHTML=rows.length?rows.slice(0,20).map((x,i)=>'<div class="leaderboard-item'+(x.key===me?' me':'')+'"'+(x.key===me?' style="box-shadow:inset 0 0 0 3px #FFC93C"':'')+'><div class="leaderboard-rank">'+(i+1)+'</div><div><div class="leaderboard-name">'+esc(x.avatar||"⭐")+' '+esc(x.name)+(x.key===me?' <small style="color:#E0602F">(you)</small>':'')+'</div><div class="leaderboard-meta">'+esc(LWNXP.tierFor(x.points).icon+" "+LWNXP.tierFor(x.points).name+" league")+'</div></div><div class="leaderboard-total">🔥 '+fmtScore(x.points)+'</div></div>').join(""):'<div class="leaderboard-empty">No one has played this week yet. Do today’s Daily Challenge or a 3-minute Quick Dash to take #1! 🌟</div>';
+      return;
+    }
     if(activeGame==="overall"){
       rows=await LWNLeaderboard.overall(10);
       if(version!==renderVersion)return;
@@ -482,7 +493,7 @@ el("leaderboardProfileBtn").addEventListener("click",chooseLeaderboardProfile);
 updateLeaderboardProfileButton();
 buildSelector();
 // Open a specific board from a link, e.g. leaderboard.html?game=quick_dash
-(function(){try{const g=new URLSearchParams(location.search).get("game");if(g&&GAMES.some(x=>x.id===g)&&g!=="overall"){selectGame(g);return}}catch(e){}renderActive()})();
+(function(){let g=null;try{g=new URLSearchParams(location.search).get("game")}catch(e){}selectGame(g&&GAMES.some(x=>x.id===g)?g:"league")})();
 renderPodium();
 </script>
 </body>

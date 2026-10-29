@@ -1806,6 +1806,8 @@ function finish(){
     const dashScore=Math.max(0,Math.min(8,finalPoints)),dashTime=Math.floor(secs/60)+':'+pad2(secs%60);
     const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'quick_dash',score:dashScore,level:sessionGrade+'|'+today()+'|'+Math.max(1,Math.round(secs)),best_streak:streak()};
     queueGlobalScore(payload);
+    // The Dash also counts for this week's league (stored as a "dash" day; the Daily Challenge boards ignore it)
+    queueGlobalScore({name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:dashScore,level:sessionGrade+'|dash|3min|'+today(),best_streak:streak()});
     globalStatus.textContent='⚡ '+dashScore+' points in '+dashTime+'. Saving to the Quick Dash leaderboard…';
     flushPendingGlobal().then(saved=>{
       globalStatus.innerHTML=saved&&!pendingGlobal.some(x=>pendingKey(x)===pendingKey(payload))

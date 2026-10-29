@@ -40,7 +40,7 @@
     var L = window.LWNLeaderboard; if (!L || L.__statsHooked || typeof L.saveScore !== "function") return !!(L && L.__statsHooked);
     var orig = L.saveScore;
     L.saveScore = function (p) {
-      try { send(p && p.game === "daily_challenge" ? "daily_finish" : "score", { game: p && p.game, score: p && p.score, level: p && p.level }); } catch (e) {}
+      try { if (!/\|dash\|/.test(String(p && p.level || ""))) send(p && p.game === "daily_challenge" ? "daily_finish" : "score", { game: p && p.game, score: p && p.score, level: p && p.level }); } catch (e) {}
       return orig.apply(this, arguments);
     };
     L.__statsHooked = true; return true;
