@@ -118,9 +118,12 @@ button:disabled{opacity:.28;cursor:default}
 .week-day{text-align:center}
 .week-day small{display:block;color:#8A8199;font-size:10px;font-weight:900;margin-bottom:4px}
 .week-dot{height:34px;border-radius:11px;display:grid;place-items:center;background:#fff;border:2px solid #E0E7EF;color:#B4AABC;font-weight:1000;font-size:15px}
-.week-day.done .week-dot{background:#5CCB91;border-color:#5CCB91;color:#fff}
-.week-day.today .week-dot{box-shadow:0 0 0 3px rgba(70,138,222,.12);border-color:#468ADE}
-.week-day.today.done .week-dot{border-color:#5CCB91}
+.week-day.wd-done .week-dot{background:#5CCB91;border-color:#5CCB91;color:#fff}
+.week-day.wd-today small{color:#1E6FD9}
+.week-day.wd-today .week-dot{box-shadow:0 0 0 3px rgba(70,138,222,.25);border-color:#468ADE}
+.week-day.wd-today.wd-done .week-dot{border-color:#3FAE74;box-shadow:0 0 0 3px rgba(92,203,145,.35)}
+.week-day.wd-future .week-dot{background:#F6F8FB;border-style:dashed}
+.week-day.wd-future small{opacity:.6}
 @media(max-width:480px){.progress-stats{gap:5px}.progress-stat b{font-size:18px}.week-strip{gap:4px}.week-dot{height:31px}}
 
 /* game */
@@ -481,7 +484,7 @@ button:disabled{opacity:.28;cursor:default}
         <div class="progress-stat"><b id="deviceBest">0</b><span>Best streak</span></div>
         <div class="progress-stat"><b id="deviceTotalCorrect">0</b><span>Questions correct</span></div>
       </div>
-      <div class="week-strip" id="weekStrip" aria-label="Last seven days"></div>
+      <div class="week-strip" id="weekStrip" aria-label="This week"></div>
     </section>
     <a class="setup-watch-link" id="setupWatchLink" href="https://www.youtube.com/playlist?list=PLOeN8KaQujJo" target="_blank" rel="noopener">▶ Watch Nini’s challenge instead</a>
     <div class="row"><span id="setLabel">Today's shared problem set</span><a class="link" href="leaderboard.html">Global leaderboard →</a></div>
@@ -1549,15 +1552,16 @@ function renderDeviceProgress(){
     :'Finish today’s challenge to start your streak.';
 
   const strip=$('#weekStrip');strip.innerHTML='';
-  const end=dayDate();
-  for(let i=6;i>=0;i--){
-    const d=new Date(end);d.setUTCDate(d.getUTCDate()-i);
-    const key=fmtUTC(d);
+  // This week, Monday to Sunday (same as Nini's bubble at the top); today is marked, later days are faded
+  const end=dayDate(),mon=new Date(end);mon.setUTCDate(mon.getUTCDate()-((mon.getUTCDay()+6)%7));
+  for(let i=0;i<7;i++){
+    const d=new Date(mon);d.setUTCDate(mon.getUTCDate()+i);
+    const key=fmtUTC(d),isToday=key===today(),future=key>today();
     const el=document.createElement('div');
-    el.className='week-day'+(p.dates.has(key)?' done':'')+(key===today()?' today':'');
+    el.className='week-day'+(p.dates.has(key)?' wd-done':'')+(isToday?' wd-today':'')+(future?' wd-future':'');
     const isFrozen=frozenSet.has(key)&&!realDailyDates().has(key);
-    const label=new Intl.DateTimeFormat('en-US',{weekday:'short',timeZone:'UTC'}).format(d).slice(0,1);
-    el.innerHTML='<small>'+label+'</small><div class="week-dot">'+(isFrozen?'🧊':p.dates.has(key)?'✓':'·')+'</div>';
+    const label=isToday?'Today':'MTWTFSS'[i];
+    el.innerHTML='<small>'+label+'</small><div class="week-dot">'+(isFrozen?'🧊':p.dates.has(key)?'✓':'')+'</div>';
     strip.appendChild(el);
   }
   fun('freezeNote',document.querySelector('.progress-panel'),freezeSaved,today());
