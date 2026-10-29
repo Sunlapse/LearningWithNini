@@ -1979,10 +1979,14 @@
   var day;try{day=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date())}catch(e){day=new Date().toISOString().slice(0,10)}
   var d=new Date(day+"T12:00:00Z"),mon=new Date(d);mon.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));mon=mon.toISOString().slice(0,10);
   if(g("lwn-case-fab-closed")===day)return;
-  if((g("lwn-case-solved-week")||"")>=mon)return;
-  var halloween=day<="2026-10-31";
-  var a=document.createElement("a");a.id="lwnCaseFab";a.href="case-files.html";
-  a.innerHTML='<span class="i">'+(halloween?"🎃":"🔎")+'</span><span><b>New mystery!</b><br>'+(halloween?"Who took the pumpkin candy?":"Help Nini solve this week\u2019s case")+'</span><button type="button" class="x" aria-label="Close">×</button>';
+  // Point at a case this kid hasn't solved yet: the Halloween case through Oct 31, otherwise this week's case
+  var cases={};try{cases=JSON.parse(g("lwn-cases-v1")||"{}")||{}}catch(e){}
+  function solved(id){var c=cases[id]||{};return !!((c.g23&&c.g23.solved)||(c.g45&&c.g45.solved))}
+  var weekDone=(g("lwn-case-solved-week")||"")>=mon;
+  var halloween=day<="2026-10-31"&&!solved("c1-pumpkin-candy");
+  if(!halloween&&weekDone)return;
+  var a=document.createElement("a");a.id="lwnCaseFab";a.href=halloween?"case-files.html?case=c1-pumpkin-candy":"case-files.html";
+  a.innerHTML='<span class="i">'+(halloween?"🎃":"🔎")+'</span><span><b>'+(halloween?"Halloween mystery!":"New mystery!")+'</b><br>'+(halloween?"Who took the pumpkin candy?":"Help Nini solve this week\u2019s case")+'</span><button type="button" class="x" aria-label="Close">×</button>';
   a.querySelector(".x").addEventListener("click",function(e){e.preventDefault();e.stopPropagation();try{localStorage.setItem("lwn-case-fab-closed",day)}catch(x){}a.remove()});
   a.addEventListener("click",function(){try{LWNStats.track("case_fab_click")}catch(e){}});
   function show(){document.body.appendChild(a);setTimeout(function(){a.classList.add("on")},50)}
