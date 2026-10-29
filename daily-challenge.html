@@ -1700,15 +1700,15 @@ function finish(){
   try{
   const globalStatus=$('#globalSaveStatus');
   if(done.dash&&attempted>0&&window.LWNLeaderboard){
-    // Dash score (max 100): 10 per point earned (first-try answers count most) + up to 20 for speed.
-    const dashScore=Math.max(0,Math.min(100,Math.round(finalPoints*10)+(done.items.length>=done.maxQ?Math.round(Math.max(0,180-secs)/9):0)));
-    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'quick_dash',score:dashScore,level:sessionGrade+'|'+today(),best_streak:streak()};
+    // Same points as the Daily Challenge (1 per first-try answer, max 8). Ties go to the faster time.
+    const dashScore=Math.max(0,Math.min(8,finalPoints)),dashTime=Math.floor(secs/60)+':'+pad2(secs%60);
+    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'quick_dash',score:dashScore,level:sessionGrade+'|'+today()+'|'+Math.max(1,Math.round(secs)),best_streak:streak()};
     queueGlobalScore(payload);
-    globalStatus.textContent='⚡ Dash score: '+dashScore+'. Saving to the Quick Dash leaderboard…';
+    globalStatus.textContent='⚡ '+dashScore+' points in '+dashTime+'. Saving to the Quick Dash leaderboard…';
     flushPendingGlobal().then(saved=>{
       globalStatus.innerHTML=saved&&!pendingGlobal.some(x=>pendingKey(x)===pendingKey(payload))
-        ?'⚡ Dash score <b>'+dashScore+'</b> saved for '+escapeHTML(globalName())+'! <a href="/leaderboard.html?game=quick_dash">See the Quick Dash board →</a>'
-        :'⚡ Dash score '+dashScore+' is saved here. It will go to the leaderboard when the connection returns.';
+        ?'⚡ <b>'+dashScore+' points in '+dashTime+'</b> saved for '+escapeHTML(globalName())+'! <a href="/leaderboard.html?game=quick_dash">See the Quick Dash board →</a> Want more points? Try the full Daily Challenge!'
+        :'⚡ '+dashScore+' points in '+dashTime+' is saved here. It will go to the leaderboard when the connection returns.';
     });
   }
   else if(done.dash){globalStatus.textContent='Answer at least one question to save your Dash.'}
