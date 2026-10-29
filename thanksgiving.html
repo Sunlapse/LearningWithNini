@@ -86,7 +86,7 @@
   <script src="/event.js?v=1"></script>
   <script src="/install-banner.js" defer></script>
 </head>
-<body>
+<body data-event="thanksgiving-2026">
   <header class="top">
     <div class="top-inner">
       <a class="brand" href="/"><span class="learn">LearnWith</span><span class="nini">Nini</span>.com ⭐</a>
@@ -137,7 +137,7 @@
 
 <script>
 (function(){
-  var E=window.LWNEvent; if(!E) return;
+  var L=window.LWNEvent; if(!L) return; var E=L.forId(document.body.dataset.event); if(!E) return;
   var EV=E.EV, el=function(id){return document.getElementById(id)};
   function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
   function profile(){try{return JSON.parse(localStorage.getItem("learningWithNiniProfileV1")||"null")||{}}catch(e){return{}}}
@@ -148,13 +148,13 @@
       : ph==="over" ? "The Puzzle Hunt is over. Mahalo for playing! Costumes you unlocked are still yours."
       : "Play math games to collect puzzle pieces. Finish a picture to unlock a Nini costume for your icon!";
     el("evDates").textContent = ph==="on" ? "🦃 "+left+" day"+(left===1?"":"s")+" left" : "🦃 November 10–30";
-    el("evToday").innerHTML = ph==="on" ? "Today: <span class='dots'>"+[0,1,2].map(function(i){return "<i class='"+(i<used?"on":"")+"'>"+(i<used?"🧩":"")+"</i>"}).join("")+"</span>"+(used>=EV.perDay?" Come back tomorrow!":used+" of "+EV.perDay)
+    el("evToday").innerHTML = ph==="on" ? "Today: <span class='dots'>"+[0,1,2].map(function(i){return "<i class='"+(i<used?"on":"")+"'>"+(i<used?"🧩":"")+"</i>"}).join("")+"</span>"+(used>=E.PER_DAY?" Come back tomorrow!":used+" of "+E.PER_DAY)
       : ph==="soon" ? "🗓️ Come back November 10" : "🎉 Thanks for playing";
     el("evBar").style.width=(n/E.TOTAL*100)+"%";
     el("evCount").textContent=n+" of "+E.TOTAL+" pieces";
     el("evGrid").innerHTML=EV.costumes.map(function(c,i){
-      var have=Math.max(0,Math.min(EV.perCostume,n-i*EV.perCostume)), got=have===EV.perCostume, using=me.avatar===c.token;
-      var status = got ? "Unlocked!" : have ? (EV.perCostume-have)+" more piece"+(EV.perCostume-have===1?"":"s")+" to go" : i===E.unlockedCount() ? "Next up" : "Locked";
+      var have=Math.max(0,Math.min(E.PER_COSTUME,n-i*E.PER_COSTUME)), got=have===E.PER_COSTUME, using=me.avatar===c.token;
+      var status = got ? "Unlocked!" : have ? (E.PER_COSTUME-have)+" more piece"+(E.PER_COSTUME-have===1?"":"s")+" to go" : i===E.unlockedCount() ? "Next up" : "Locked";
       return "<div class='cos"+(got?" got":"")+"'>"+E.puzzleHtml(c,have,false)+"<h3>"+esc(c.name)+"</h3><div class='fr'>"+E.fractionText(have)+"</div><div class='st'>"+status+"</div>"+
         (got?"<button type='button' class='"+(using?"using":"")+"' data-use='"+c.token+"'>"+(using?"✓ My icon":"Use as my icon")+"</button>":"")+"</div>";
     }).join("");
