@@ -147,8 +147,8 @@ a.cf-play{text-decoration:none}
 
   <main class="main">
 <div class="cf-banner" id="cfBanner">
-  <span class="cf-art" aria-hidden="true"><span class="cf-ghost">🔍</span><span class="cf-pumpkin">🕵️</span><span class="cf-candy">📁</span></span>
-  <span class="cf-copy"><span class="cf-tag">NINI'S CASE FILES · A NEW MYSTERY EVERY MONDAY</span><strong>Can you solve<br>every case?</strong><span class="cf-details">Solve the math. Collect clues. Catch the culprit!</span>
+  <span class="cf-art" aria-hidden="true" id="cfArt"><span class="cf-ghost">👻</span><span class="cf-pumpkin">🎃</span><span class="cf-candy">🍬</span></span>
+  <span class="cf-copy"><span class="cf-tag" id="cfTag">HALLOWEEN SPECIAL · NINI'S CASE FILES</span><strong>Can you solve<br>every case?</strong><span class="cf-details">Solve the math. Collect clues. Catch the culprit!</span>
     <span class="cf-list" id="cfList"><a class="cf-case" href="case-files.html?case=c2-blue-ribbon"><b>🐴 The Missing Blue Ribbon</b><i>NEW</i></a><a class="cf-case" href="case-files.html?case=c1-pumpkin-candy"><b>🎃 The Missing Pumpkin Candy</b><i>Halloween</i></a></span>
     <a class="cf-play" href="case-files.html">See all case files <span aria-hidden="true">→</span></a></span>
   <span class="cf-stars" aria-hidden="true">✦<br>✧<br>✦</span>
@@ -156,6 +156,9 @@ a.cf-play{text-decoration:none}
 <script>
 /* Fill the case list from the live Case Files page, newest first, with ✓ on solved ones */
 (function(){
+  // Halloween look (🎃👻🍬) through Halloween weekend, then the detective look
+  try{var hd=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date());
+    if(hd>"2026-11-01"){document.getElementById("cfArt").innerHTML='<span class="cf-ghost">🔍</span><span class="cf-pumpkin">🕵️</span><span class="cf-candy">📁</span>';document.getElementById("cfTag").textContent="NINI'S CASE FILES · A NEW MYSTERY EVERY MONDAY"}}catch(e){}
   var solved={};try{var all=JSON.parse(localStorage.getItem("lwn-cases-v1")||"{}");Object.keys(all).forEach(function(k){var c=all[k]||{};if((c.g23&&c.g23.solved)||(c.g45&&c.g45.solved))solved[k]=1})}catch(e){}
   function paint(list){var box=document.getElementById("cfList");if(!box||!list.length)return;
     box.innerHTML=list.slice(0,4).map(function(c,i){var tag=solved[c.id]?"✓ Solved":i===0?"NEW":/🎃|👻|Halloween/i.test(c.title)?"Halloween":"Case #"+c.num;
