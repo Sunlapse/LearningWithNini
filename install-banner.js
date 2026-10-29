@@ -33,6 +33,19 @@
   if (!document.querySelector('script[src="/retain.js"]')) {
     var rt = document.createElement("script"); rt.src = "/retain.js"; rt.defer = true; document.head.appendChild(rt);
   }
+  // A clear 🏠 Home button on pages whose header only has the logo (kids don't know the logo goes home)
+  function homeButton() {
+    var path = location.pathname.replace(/\/index\.html$/, "/");
+    if (path === "/" || document.getElementById("lwnHome")) return;
+    var brand = document.querySelector('header .brand[href="/"], header a.brand[href="/index.html"]');
+    if (!brand || brand.parentNode.querySelector('a[href="/"]:not(.brand), a[href="index.html"]:not(.brand)')) return;
+    var h = document.createElement("a"); h.id = "lwnHome"; h.href = "/"; h.setAttribute("aria-label", "Home");
+    h.textContent = "🏠";
+    h.style.cssText = "display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;min-height:44px;border-radius:14px;background:#EEF5FF;font-size:22px;text-decoration:none;padding:0;margin-right:8px";
+    var wrap = document.createElement("span"); wrap.style.cssText = "display:inline-flex;align-items:center;min-width:0";
+    brand.parentNode.insertBefore(wrap, brand); wrap.appendChild(h); wrap.appendChild(brand);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", homeButton); else homeButton();
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch(function () {});
   }

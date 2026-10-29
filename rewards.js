@@ -489,6 +489,35 @@
     burst(null, null, { count: 120, emoji: ["🎉", "⭐", "🗺️", "🪙"] });
   }
 
+  /* ---------- "what's next" helper: Daily Challenge first if not done today, otherwise the next Adventure stop ---------- */
+  var PATH_STEPS = [
+    { n: 1, place: "Hawaii", emoji: "🏄‍♀️", boss: "🌊 The Big Wave", g: [["place_value", 30, "Place Value Challenge", "place-value-challenge.html"], ["number_battle", 30, "Number Battle", "number-battle.html"], ["money", 30, "Money Match", "money-match.html"]] },
+    { n: 2, place: "Alaska", emoji: "⛷️", boss: "🏔️ The Snow Mountain", g: [["time", 30, "Time Match", "time-match.html"], ["multiplication", 30, "Multiplication Sprint", "multiplication-sprint.html"], ["division", 30, "Division Dash", "division-dash.html"]] },
+    { n: 3, place: "China", emoji: "🏯", boss: "🐉 The Great Wall Dragon", g: [["math_maze", 30, "Math Maze", "math-maze.html"], ["fraction", 30, "Fraction Builder", "fraction-builder.html"], ["detective", 30, "Math Detective", "math-detective.html"]] },
+    { n: 4, place: "Italy", emoji: "🍕", boss: "🗼 The Leaning Tower", g: [["geometry", 30, "Geometry Builder", "geometry-builder.html"], ["length", 30, "Length Lab", "length-lab.html"], ["capacity", 30, "Capacity Lab", "capacity-lab.html"], ["weight_mass", 30, "Weight & Mass Lab", "weight-mass-lab.html"]] },
+    { n: 5, place: "Underwater", emoji: "🐬", boss: "🦈 The Giant Shark", g: [["detective", 60, "Math Detective ⭐⭐", "math-detective.html"], ["number_battle", 60, "Number Battle ⭐⭐", "number-battle.html"], ["fraction", 60, "Fraction Builder ⭐⭐", "fraction-builder.html"]] },
+    { n: 6, place: "Horse Ranch", emoji: "🐴", boss: "🐎 The Wild Stallion", g: [["money", 60, "Money Match ⭐⭐", "money-match.html"], ["time", 60, "Time Match ⭐⭐", "time-match.html"], ["division", 60, "Division Dash ⭐⭐", "division-dash.html"], ["geometry", 60, "Geometry Builder ⭐⭐", "geometry-builder.html"]] }
+  ];
+  function nextStep() {
+    var log = get("dm-log", []) || [], days = {}; log.forEach(function (r) { if (r && r.date) days[r.date] = 1; });
+    var t = hiToday();
+    if (!days[t]) {
+      var n = 0, d = new Date(t + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() - 1);
+      while (days[d.toISOString().slice(0, 10)]) { n++; d.setUTCDate(d.getUTCDate() - 1); }
+      return { kind: "daily", icon: "🔥", title: n ? "Keep your " + n + "-day streak going!" : "Start a streak today!", sub: "Today’s Daily Challenge is waiting. Short on time? Try a 3-minute Quick Dash.", url: "/daily-challenge.html", btn: "Play today’s challenge →" };
+    }
+    var xp = (get("lwn-xp-v1", {}) || {}).games || {}, bosses = get("lwn-boss-v1", {}) || {};
+    for (var i = 0; i < PATH_STEPS.length; i++) {
+      var u = PATH_STEPS[i];
+      for (var j = 0; j < u.g.length; j++) { var g = u.g[j], have = Number(xp[g[0]]) || 0;
+        if (have < g[1]) { try { sessionStorage.setItem("lwn-trip", JSON.stringify({ u: u.n, page: g[3] })); } catch (e) {}
+          return { kind: "path", icon: u.emoji, title: "Next Adventure stop: " + u.place + "!", sub: g[2] + " · " + have + " of " + g[1] + " XP", url: "/" + g[3], btn: "Travel with Nini →" }; } }
+      if (!bosses["u" + u.n]) return { kind: "path", icon: "⚔️", title: "Boss battle in " + u.place + "!", sub: "Beat " + u.boss + " to finish this trip.", url: "/boss.html?u=" + u.n, btn: "Fight the boss →" };
+    }
+    return { kind: "daily", icon: "🏆", title: "You finished the whole Adventure!", sub: "Go for a new best on the Daily Challenge.", url: "/daily-challenge.html", btn: "Daily Challenge →" };
+  }
+  window.LWNNext = nextStep;
+
   window.LWNIcons = { locked: LOCKED, unlocked: unlocked, isUnlocked: function (i) { return unlocked().indexOf(i) >= 0; }, unlock: unlock, check: checkUnlocks, openChest: openChest };
 
   function start() {
