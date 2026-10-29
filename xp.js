@@ -101,12 +101,17 @@
       "#lwnXPSheet .gbar.full .tip{width:40px;height:40px;margin:-20px 0 0 -26px;background:#FFF4CC;font-size:22px;box-shadow:0 0 0 4px rgba(255,159,28,.4),0 0 22px 8px rgba(255,170,40,.65)}" +
       "#lwnXPSheet .gbar .spark{position:absolute;top:50%;right:4px;z-index:3;pointer-events:none}" +
       "#lwnXPSheet .gbar .spark i{position:absolute;font-style:normal;font-size:15px;opacity:0;animation:lwnSpark 1.6s ease-out infinite}" +
+      "#lwnXPSheet .gbar.zero:before{content:'';position:absolute;left:0;top:0;bottom:0;width:70px;border-radius:999px;background:radial-gradient(circle at 20px 50%,rgba(255,214,70,.75),rgba(255,214,70,0) 70%);animation:lwnZeroGlow 1.4s ease-in-out infinite}" +
+      "#lwnXPSheet .gbar .tip.zero{left:21px;margin:-14px 0 0 -14px;width:28px;height:28px;background:#FFF4CC;font-size:17px;box-shadow:0 0 0 4px rgba(255,201,60,.5),0 0 20px 7px rgba(255,190,40,.75);animation:lwnZeroPulse 1.1s ease-in-out infinite}" +
+      "#lwnXPSheet .gbar .spark.zero{left:21px;right:auto}" +
+      "@keyframes lwnZeroPulse{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.18) rotate(-8deg)}}" +
+      "@keyframes lwnZeroGlow{0%,100%{opacity:.55}50%{opacity:1}}" +
       "#lwnXPSheet .gsub{display:flex;justify-content:space-between;font-weight:900;font-size:13px;color:#5E7896}#lwnXPSheet .gsub b{color:#E0602F}" +
       "#lwnXPSheet .week i span.hit{background:linear-gradient(180deg,#FFC93C,#FF9F1C)!important}" +
       "@keyframes lwnShine{from{background-position:120% 0}to{background-position:-120% 0}}" +
       "@keyframes lwnPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}" +
       "@keyframes lwnSpark{0%{opacity:0;transform:translate(0,-50%) scale(.4)}25%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.1)}}" +
-      "@media (prefers-reduced-motion:reduce){#lwnXPSheet .gbar .fill:after,#lwnXPSheet .gbar .tip,#lwnXPSheet .gbar .spark i{animation:none}#lwnXPSheet .gbar .spark i{opacity:1}}" +
+      "@media (prefers-reduced-motion:reduce){#lwnXPSheet .gbar .fill:after,#lwnXPSheet .gbar .tip,#lwnXPSheet .gbar .spark i,#lwnXPSheet .gbar.zero:before{animation:none}#lwnXPSheet .gbar .spark i{opacity:1}}" +
       "#lwnXPSheet .card{background:#fff;width:min(520px,100%);max-height:88vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));" +
       "font-family:'Nunito',system-ui,sans-serif;color:#1d3c63}" +
       "#lwnXPSheet h2{font:700 22px/1.1 'Fredoka',system-ui,sans-serif;margin:0 0 4px;color:#3271BD}" +
@@ -179,15 +184,16 @@
     // Goal bar: fills toward the daily goal with a glowing tip; past the goal it turns gold and sparkles at the edge
     function goalBar(xp, goal) {
       var pct = Math.min(100, Math.round(xp / goal * 100)), full = xp >= goal;
-      var sparks = full ? ["✨", "⭐", "💥", "✨", "🌟", "⭐"].map(function (e, i) {
-        var a = (i / 6) * Math.PI * 2; return "<i style='--dx:" + Math.round(Math.cos(a) * 34) + "px;--dy:" + Math.round(Math.sin(a) * 26 - 12) + "px;animation-delay:" + (i * .25).toFixed(2) + "s'>" + e + "</i>";
+      var zero = xp <= 0;
+      var sparks = full || zero ? (zero ? ["✨", "⭐", "✨", "🌟", "✨"] : ["✨", "⭐", "💥", "✨", "🌟", "⭐"]).map(function (e, i, arr) {
+        var a = (i / arr.length) * Math.PI * 2; return "<i style='--dx:" + Math.round(Math.cos(a) * (zero ? 26 : 34)) + "px;--dy:" + Math.round(Math.sin(a) * (zero ? 20 : 26) - (zero ? 6 : 12)) + "px;animation-delay:" + (i * (zero ? .32 : .25)).toFixed(2) + "s'>" + e + "</i>";
       }).join("") : "";
-      return "<div class='gbar" + (full ? " full" : "") + "' role='progressbar' aria-valuemin='0' aria-valuemax='" + goal + "' aria-valuenow='" + Math.min(xp, goal) + "' aria-label='Daily goal progress'>" +
+      return "<div class='gbar" + (full ? " full" : "") + (zero ? " zero" : "") + "' role='progressbar' aria-valuemin='0' aria-valuemax='" + goal + "' aria-valuenow='" + Math.min(xp, goal) + "' aria-label='Daily goal progress'>" +
         "<div class='fill' style='width:0%' data-w='" + pct + "'></div>" +
         "<div class='lbl' style='" + (full ? "" : pct < 60 ? "justify-content:flex-end;padding-right:16px" : "justify-content:flex-start;padding-left:16px;color:#fff;text-shadow:0 1px 2px rgba(0,40,90,.4)") + "'>" + xp + " / " + goal + " XP</div>" +
-        (xp > 0 ? "<div class='tip' style='left:" + Math.max(4, pct) + "%'>" + (full ? "🏆" : "⚡") + "</div>" : "") +
-        (full ? "<div class='spark'>" + sparks + "</div>" : "") + "</div>" +
-        "<div class='gsub'><span>0</span>" + (full ? "<b>🎉 Goal smashed!" + (xp > goal ? " +" + (xp - goal) + " bonus XP" : "") + "</b>" : "<span>" + (goal - xp) + " XP to your goal</span>") + "<span>🎯 " + goal + "</span></div>";
+        (xp > 0 ? "<div class='tip' style='left:" + Math.max(4, pct) + "%'>" + (full ? "🏆" : "⚡") + "</div>" : "<div class='tip zero' title='Ready!'>⚡</div>") +
+        (full || zero ? "<div class='spark" + (zero ? " zero" : "") + "'>" + sparks + "</div>" : "") + "</div>" +
+        "<div class='gsub'><span>0</span>" + (full ? "<b>🎉 Goal smashed!" + (xp > goal ? " +" + (xp - goal) + " bonus XP" : "") + "</b>" : zero ? "<b>⚡ Ready to blast off! Play to fill it up</b>" : "<span>" + (goal - xp) + " XP to your goal</span>") + "<span>🎯 " + goal + "</span></div>";
     }
     var sh = document.getElementById("lwnXPSheet");
     if (!sh) {
@@ -398,6 +404,13 @@
       ".lwn-xpc .big i{font-style:normal;display:inline-block;animation:lwnXpcBolt 1s ease-in-out infinite}" +
       ".lwn-xpc .msg{font-weight:900;font-size:15px;margin:4px 0 10px;opacity:.95}" +
       ".lwn-xpc .bar{position:relative;height:18px;border-radius:999px;background:rgba(255,255,255,.22);overflow:visible}" +
+      ".lwn-xpc.launch .bar .k{box-shadow:0 0 0 4px rgba(255,201,60,.55),0 0 20px 8px rgba(255,190,40,.8);animation:lwnZeroPulse .5s ease-in-out infinite}" +
+      ".lwn-xpc.launch.go .bar .k{animation:none}" +
+      ".lwn-xpc .bar .boom{position:absolute;left:3%;top:50%;width:0;height:0;pointer-events:none;z-index:3}" +
+      ".lwn-xpc .bar .boom i{position:absolute;left:-9px;top:-10px;font-style:normal;font-size:18px;opacity:0}" +
+      ".lwn-xpc.launch.go .bar .boom i{animation:lwnBoom .8s ease-out forwards}" +
+      "@keyframes lwnBoom{0%{opacity:1;transform:translate(0,0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(1.3)}}" +
+      "@keyframes lwnZeroPulse{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.18) rotate(-8deg)}}" +
       ".lwn-xpc .bar .f{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#FFE27A,#FFC93C);transition:width 1.2s cubic-bezier(.2,.9,.3,1)}" +
       ".lwn-xpc .bar .k{position:absolute;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:15px;box-shadow:0 0 14px 4px rgba(255,226,122,.8);transition:left 1.2s cubic-bezier(.2,.9,.3,1)}" +
       ".lwn-xpc .lab{display:flex;justify-content:space-between;font-weight:900;font-size:12px;margin-top:6px;opacity:.9}" +
@@ -418,18 +431,20 @@
     round = { xp: 0, before: null };
     var crossed = before < goal && after >= goal, pctB = Math.min(100, before / goal * 100), pctA = Math.min(100, after / goal * 100);
     var msg = crossed ? "You smashed your daily goal!" : after >= goal ? "Bonus XP! " + after + " XP today 🔥" : (goal - after) + " XP to today's goal of " + goal;
-    var box = document.createElement("div"); box.id = "lwnXPC"; box.className = "lwn-xpc" + (crossed ? " goal" : "");
+    var launch = before <= 0;
+    var box = document.createElement("div"); box.id = "lwnXPC"; box.className = "lwn-xpc" + (crossed ? " goal" : "") + (launch ? " launch" : "");
     box.setAttribute("role", "status");
     var sparks = ""; for (var i = 0; i < 10; i++) { var a = i / 10 * Math.PI * 2; sparks += "<i class='sp' style='left:50%;top:34px;--dx:" + Math.round(Math.cos(a) * 120) + "px;--dy:" + Math.round(Math.sin(a) * 60) + "px;animation-delay:" + (.2 + (i % 3) * .12).toFixed(2) + "s'>" + ["⚡", "✨", "⭐"][i % 3] + "</i>"; }
     box.innerHTML = sparks + "<div class='big'><i>⚡</i> +<span class='n'>0</span> XP</div><div class='msg'>" + msg + "</div>" +
-      "<div class='bar'><div class='f' style='width:" + pctB + "%'></div><div class='k' style='left:" + Math.max(3, pctB) + "%'>" + (crossed || after >= goal ? "🏆" : "⚡") + "</div></div>" +
+      "<div class='bar'>" + (launch ? "<span class='boom'>" + ["✨", "⭐", "💥", "✨", "🌟", "⚡", "✨", "⭐"].map(function (e, i) { var a = i / 8 * Math.PI * 2; return "<i style='--bx:" + Math.round(Math.cos(a) * 46) + "px;--by:" + Math.round(Math.sin(a) * 30) + "px'>" + e + "</i>"; }).join("") + "</span>" : "") +
+      "<div class='f' style='width:" + pctB + "%'></div><div class='k' style='left:" + Math.max(3, pctB) + "%'>" + (crossed || after >= goal ? "🏆" : "⚡") + "</div></div>" +
       "<div class='lab'><span>" + after + " XP today</span><span>🎯 " + goal + "</span></div>" + (crossed ? "<div class='gtag'>🎯 DAILY GOAL REACHED!</div>" : "");
     if (place === "before") where.parentNode.insertBefore(box, where); else where.insertAdjacentElement(place || "afterend", box);
     // count up, then fill the bar
     var n = box.querySelector(".n"), t0 = null, dur = Math.min(1200, 400 + gained * 20);
     function step(ts) { if (!t0) t0 = ts; var k = Math.min(1, (ts - t0) / dur); n.textContent = Math.round(gained * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); }
     requestAnimationFrame(step);
-    setTimeout(function () { box.querySelector(".f").style.width = pctA + "%"; box.querySelector(".k").style.left = Math.max(3, pctA) + "%"; }, 350);
+    setTimeout(function () { if (launch) box.classList.add("go"); box.querySelector(".f").style.width = pctA + "%"; box.querySelector(".k").style.left = Math.max(3, pctA) + "%"; }, launch ? 700 : 350);
     try { if (window.LWNFun) { LWNFun.play(crossed ? "badge" : "combo"); if (crossed) LWNFun.confetti(140); } } catch (e) {}
   }
   function watchRounds() {
