@@ -1609,14 +1609,26 @@
               </article>
 
               <article class="feature-card detective halloween-detective">
-                <div class="card-icon" aria-hidden="true">🎃👻</div>
-                <div class="halloween-case-badge">HALLOWEEN CASES ARE HERE!</div>
+                <div class="card-icon" aria-hidden="true" id="mdIcon">🎃👻</div>
+                <div class="halloween-case-badge" id="mdBadge">HALLOWEEN CASES ARE HERE!</div>
                 <h4>Math Detective</h4>
                 <div class="grade-tag">Grades 2–5</div>
                 <p>Solve word-problem mysteries and choose the right operation!</p>
-                <a class="case-files-link" href="case-files.html">🍬 The Missing Pumpkin Candy — crack the Halloween case →</a>
+                <a class="case-files-link" id="mdCase" href="case-files.html?case=c1-pumpkin-candy">🍬 The Missing Pumpkin Candy — crack the Halloween case →</a>
                 <a class="card-btn" href="math-detective.html">Solve Cases <span>→</span></a>
               </article>
+              <script>
+              /* Math Detective card follows the season and links to this week's case */
+              (function(){try{
+                var hd=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date()),md=hd.slice(5);
+                var S=md>="10-01"&&md<="11-01"?{i:"🎃👻",b:"HALLOWEEN CASES ARE HERE!",halloween:1}:md>="11-02"&&md<="11-29"?{i:"🦃🥧",b:"FALL & THANKSGIVING CASES!"}:md>="11-30"&&md<="12-27"?{i:"❄️🎁",b:"HOLIDAY CASES ARE HERE!"}:(md>="12-28"||md<="01-03")?{i:"🎆🥳",b:"NEW YEAR MYSTERY!"}:{i:"🕵️🔍",b:"A NEW CASE EVERY MONDAY!"};
+                document.getElementById("mdIcon").textContent=S.i;document.getElementById("mdBadge").textContent=S.b;
+                if(S.halloween)return;
+                fetch("case-files.html").then(function(r){return r.text()}).then(function(t){var re=/id:\s*"([^"]+)",\s*num:\s*(\d+),\s*live:\s*"([\d-]+)",\s*title:\s*"([^"]+)"/g,m,best=null;
+                  while((m=re.exec(t)))if(m[3]<=hd&&(!best||m[3]>best.live))best={id:m[1],live:m[3],title:m[4]};
+                  if(best){var a=document.getElementById("mdCase");a.href="case-files.html?case="+best.id;a.textContent="🕵️ This week: "+best.title+" — solve the case →"}}).catch(function(){})
+              }catch(e){}})();
+              </script>
 
               <article class="feature-card mathmaze">
                 <div class="card-icon">🧩</div>

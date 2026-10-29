@@ -156,12 +156,20 @@ a.cf-play{text-decoration:none}
 <script>
 /* Fill the case list from the live Case Files page, newest first, with ✓ on solved ones */
 (function(){
-  // Halloween look (🎃👻🍬) through Halloween weekend, then the detective look
-  try{var hd=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date());
-    if(hd>"2026-11-01"){document.getElementById("cfArt").innerHTML='<span class="cf-ghost">🔍</span><span class="cf-pumpkin">🕵️</span><span class="cf-candy">📁</span>';document.getElementById("cfTag").textContent="NINI'S CASE FILES · A NEW MYSTERY EVERY MONDAY"}}catch(e){}
+  // Seasonal look: Halloween through Nov 1, fall & Thanksgiving in November, winter holidays in December, then detective
+  try{var hd=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date()),md=hd.slice(5);
+    var SEASONS=[{to:"11-01",art:["👻","🎃","🍬"],tag:"HALLOWEEN SPECIAL · NINI'S CASE FILES"},
+      {to:"11-29",art:["🍂","🦃","🥧"],tag:"FALL & THANKSGIVING MYSTERIES · NINI'S CASE FILES"},
+      {to:"12-27",art:["❄️","🎁","🕯️"],tag:"HOLIDAY MYSTERIES · NINI'S CASE FILES"},
+      {to:"12-31",art:["🎉","🎆","🥳"],tag:"NEW YEAR MYSTERY · NINI'S CASE FILES"}];
+    var S=null;if(md>="10-01")for(var i=0;i<SEASONS.length;i++){if(md<=SEASONS[i].to){S=SEASONS[i];break}}
+    if(!S&&md<="01-03")S=SEASONS[3];
+    if(!S)S={art:["🔍","🕵️","📁"],tag:"NINI'S CASE FILES · A NEW MYSTERY EVERY MONDAY"};
+    document.getElementById("cfArt").innerHTML='<span class="cf-ghost">'+S.art[0]+'</span><span class="cf-pumpkin">'+S.art[1]+'</span><span class="cf-candy">'+S.art[2]+'</span>';
+    document.getElementById("cfTag").textContent=S.tag}catch(e){}
   var solved={};try{var all=JSON.parse(localStorage.getItem("lwn-cases-v1")||"{}");Object.keys(all).forEach(function(k){var c=all[k]||{};if((c.g23&&c.g23.solved)||(c.g45&&c.g45.solved))solved[k]=1})}catch(e){}
   function paint(list){var box=document.getElementById("cfList");if(!box||!list.length)return;
-    box.innerHTML=list.slice(0,4).map(function(c,i){var tag=solved[c.id]?"✓ Solved":i===0?"NEW":/🎃|👻|Halloween/i.test(c.title)?"Halloween":"Case #"+c.num;
+    box.innerHTML=list.slice(0,4).map(function(c,i){var tag=solved[c.id]?"✓ Solved":i===0?"NEW":/🎃|👻|Halloween/i.test(c.title)?"Halloween":/🦃|🥧|Thanksgiving/i.test(c.title)?"Thanksgiving":/🕎|Hanukkah|Chanukah/i.test(c.title)?"Hanukkah":/🎄|Christmas|Santa/i.test(c.title)?"Christmas":/🎆|New Year/i.test(c.title)?"New Year":/❄️|⛄|Snow|Winter/i.test(c.title)?"Winter":/🍂|Harvest|Fall/i.test(c.title)?"Fall":"Case #"+c.num;
       return '<a class="cf-case'+(solved[c.id]?' done':'')+'" href="case-files.html?case='+c.id+'"><b>'+c.title.replace(/</g,"&lt;")+'</b><i>'+tag+'</i></a>'}).join("")}
   try{var today=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date());
     fetch("case-files.html").then(function(r){return r.text()}).then(function(t){var re=/id:\s*"([^"]+)",\s*num:\s*(\d+),\s*live:\s*"([\d-]+)",\s*title:\s*"([^"]+)"/g,m,out=[];
