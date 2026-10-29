@@ -1414,6 +1414,21 @@
   .games-organized.lwn-tabbed .topic-heading{margin-top:2px}
 }
 @keyframes lwnTabIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* Topic tiles: big colorful buttons so kids notice every topic */
+.topic-pick-title{text-align:center!important;max-width:none!important;font:700 1.35rem/1.2 "Fredoka",system-ui,sans-serif!important;color:#1E5FA8!important;margin:6px 0 12px!important}
+.category-nav.topic-tiles{position:static!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:10px!important;padding:0!important;margin:0 0 22px!important;background:none!important;border:0!important;backdrop-filter:none!important}
+.topic-tiles a{position:relative;display:flex!important;flex-direction:column!important;align-items:center;justify-content:center;gap:3px;min-height:104px!important;padding:12px 8px!important;border-radius:20px!important;background:linear-gradient(145deg,var(--t1),var(--t2))!important;color:#fff!important;text-align:center;text-decoration:none;box-shadow:0 5px 0 var(--t3)!important;border:3px solid transparent!important;transition:transform .12s;font-size:1rem!important}
+.topic-tiles a:hover{transform:translateY(-2px)}
+.topic-tiles a:active{transform:translateY(3px);box-shadow:0 2px 0 var(--t3)!important}
+.topic-tiles a i{font-style:normal;font-size:2rem;line-height:1;width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.92)}
+.topic-tiles a b{font:700 1rem/1.15 "Fredoka",system-ui,sans-serif;text-shadow:0 1px 0 rgba(0,0,0,.15)}
+.topic-tiles a small{font-size:.75rem;font-weight:900;opacity:.95}
+.topic-tiles a em{position:absolute;top:-8px;right:-4px;font-style:normal;background:#FFD23F;color:#5A3A00;border-radius:999px;padding:2px 8px;font-size:.68rem;font-weight:1000;box-shadow:0 2px 0 #C99A00}
+.games-organized.lwn-tabbed .topic-tiles a.on{border-color:#1D2A44!important;box-shadow:0 0 0 3px #fff,0 0 0 6px var(--t2),0 5px 0 var(--t3)!important}
+.games-organized.lwn-tabbed .topic-tiles a.on:after{content:"▼";position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);color:var(--t2);font-size:14px}
+.games-organized.lwn-tabbed .topic-tiles a:not(.on){opacity:.88}
+@media(max-width:980px){.category-nav.topic-tiles{grid-template-columns:repeat(3,minmax(0,1fr))!important;margin:0 0 26px!important}.topic-tiles a{min-height:96px!important;padding:10px 4px!important}.topic-tiles a b{font-size:.86rem}.topic-tiles a i{width:44px;height:44px;font-size:1.6rem}}
+@media(max-width:380px){.topic-tiles a b{font-size:.78rem}}
 
     .daily-treasure-banner{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;gap:18px;margin:16px 0 22px;padding:20px 24px;border:3px solid #F5BB31;border-radius:24px;background:linear-gradient(120deg,#FFF9D8,#FFE6A4);box-shadow:0 7px 0 #F2CF76;text-align:left;color:#633A14}
     .daily-treasure-banner .treasure-picture{flex:0 0 110px;position:relative;transform:rotate(-6deg)}
@@ -1555,14 +1570,14 @@
         <section class="games-organized" id="skill-games">
           <h2 class="section-title">Choose a Math Skill</h2>
           <div class="daily-treasure-banner" role="note" aria-label="Daily treasure chest reward"><span class="treasure-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><div class="treasure-picture"><svg viewBox="0 0 120 100" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M14 48V34C14 8 106 8 106 34V48Z" fill="#A85A24" stroke="#623414" stroke-width="4"/><path d="M20 34C20 15 100 15 100 34" fill="none" stroke="#D98A3D" stroke-width="7"/><rect x="12" y="46" width="96" height="44" rx="7" fill="#A85A24" stroke="#623414" stroke-width="4"/><path d="M20 65H100M20 78H100" stroke="#7C411B" stroke-width="3"/><path d="M30 22V89M90 22V89" stroke="#FFD24A" stroke-width="10"/><path d="M13 48H107" stroke="#FFD24A" stroke-width="8"/><rect x="49" y="42" width="22" height="25" rx="4" fill="#FFD24A" stroke="#B7791F" stroke-width="3"/><path d="M60 51a3 3 0 0 0-2 5v5h4v-5a3 3 0 0 0-2-5" fill="#623414"/></svg></div><div class="treasure-copy"><span class="treasure-label">YOUR DAILY TREASURE</span><strong>Play today. Open your treasure!</strong><p>Earn a treasure chest by playing a game today!</p></div></div>
-          <p class="games-subtitle">Pick a topic, choose a game, and practice at your own pace.</p>
+          <p class="games-subtitle topic-pick-title">👇 Pick a topic to see its games</p>
 
-          <nav class="category-nav" aria-label="Game topics">
-            <a href="#operations">Operations <span id="operationsNewTag" style="display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#ff7a59;color:#fff;font-size:.7em;font-weight:900;vertical-align:middle">NEW</span></a>
-            <a href="#fractions-place-value"><span>Fractions &amp;</span> <span>Place Value</span></a>
-            <a href="#measurement">Measurement</a>
-            <a href="#geometry">Geometry</a>
-            <a href="#time-money">Time &amp; Money</a>
+          <nav class="category-nav topic-tiles" aria-label="Game topics">
+            <a href="#operations" style="--t1:#FF8A5B;--t2:#F2545B;--t3:#C23B3F"><i>➕</i><b>Operations</b><small data-count="operations"></small><em id="operationsNewTag">NEW</em></a>
+            <a href="#fractions-place-value" style="--t1:#FFB547;--t2:#F28A1F;--t3:#B35A12"><i>🍕</i><b>Fractions &amp; Place Value</b><small data-count="fractions-place-value"></small></a>
+            <a href="#measurement" style="--t1:#3CC48D;--t2:#21A06E;--t3:#167A52"><i>📏</i><b>Measurement</b><small data-count="measurement"></small></a>
+            <a href="#geometry" style="--t1:#B06CE8;--t2:#8E49CC;--t3:#663596"><i>📐</i><b>Geometry</b><small data-count="geometry"></small></a>
+            <a href="#time-money" style="--t1:#2BB3E8;--t2:#1E8FD0;--t3:#16699A"><i>⏰</i><b>Time &amp; Money</b><small data-count="time-money"></small></a>
           </nav>
 
           <section class="topic-group" id="operations">
@@ -1941,6 +1956,8 @@
   }
   links.forEach(function(a,i){a.setAttribute("role","tab");a.addEventListener("click",function(e){if(!mq.matches)return;e.preventDefault();show(i,true);try{history.replaceState(null,"",a.getAttribute("href"))}catch(x){}})});
   (mq.addEventListener?mq.addEventListener("change",apply):mq.addListener(apply)); apply();
+  // "3 games" under each topic tile
+  nav.querySelectorAll("[data-count]").forEach(function(el){var g=document.getElementById(el.getAttribute("data-count"));var n=g?g.querySelectorAll(".feature-card").length:0;el.textContent=n?n+" game"+(n>1?"s":""):""});
 })();
 </script>
 <script>
