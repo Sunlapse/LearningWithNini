@@ -127,7 +127,7 @@ function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function fmt(n){return Number(n).toLocaleString("en-US")}
 function digitsOf(n){return String(n).padStart(4,"0").split("").map(Number)}
 function expandedOf(n){const d=digitsOf(n);return d.map((x,i)=>x*placeValues[i]).filter(x=>x>0).map(fmt).join(" + ")||"0"}
-function chartHTML(n,hot=-1){const d=digitsOf(n);return d.map((x,i)=>'<div class="place-cell '+(i===hot?'target':'')+'"><div class="place-name">'+places[i]+'</div><div class="place-digit">'+x+'</div><div class="place-value">'+fmt(x*placeValues[i])+'</div></div>').join("")}
+function chartHTML(n,hot=-1,hideHot=false){const d=digitsOf(n);return d.map((x,i)=>'<div class="place-cell '+(i===hot?'target':'')+'"><div class="place-name">'+places[i]+'</div><div class="place-digit">'+x+'</div><div class="place-value">'+(hideHot&&i===hot?'?':fmt(x*placeValues[i]))+'</div></div>').join("")}
 function blankChartHTML(){return places.map(p=>'<div class="place-cell"><div class="place-name">'+p+'</div><div class="place-digit">?</div><div class="place-value">Find this digit</div></div>').join("")}
 function shuffledExpandedOf(n){const d=digitsOf(n);const terms=d.map((x,i)=>x*placeValues[i]).filter(x=>x>0).map(fmt);return terms.sort(()=>Math.random()-.5).join(" + ")||"0"}
 function digits3(n){return String(n).padStart(3,"0").split("").map(Number)}
@@ -179,7 +179,7 @@ function makeGrade2(){
   }else if(grade2Type==="expanded"){
     correct=number;
     el("prompt").textContent="Write this expanded form in standard form.";
-    el("bigNumber").textContent="?";el("placeChart").innerHTML=chart3HTML(number,-1);el("expanded").textContent=(d[0]*100)+" + "+(d[1]*10)+" + "+d[2];
+    el("bigNumber").textContent="?";el("placeChart").innerHTML=blankChart3HTML();el("expanded").textContent=(d[0]*100)+" + "+(d[1]*10)+" + "+d[2];
     grade2Hint="Combine the hundreds, tens, and ones.";grade2Explain=(d[0]*100)+" + "+(d[1]*10)+" + "+d[2]+" = "+number+".";
   }else if(grade2Type==="words"){
     correct=number;
@@ -217,8 +217,8 @@ function makeDigit(){
   targetPlace=rnd(0,3);const d=digitsOf(number);correct=d[targetPlace]*placeValues[targetPlace];
   if(d[targetPlace]===0){number+=placeValues[targetPlace];return makeDigit()}
   el("levelName").textContent="Digit Detective · Round "+round;el("prompt").textContent="What is the value of the highlighted digit?";renderBigNumber(targetPlace);
-  el("placeChart").innerHTML=round===1?chartHTML(number,targetPlace):blankChartHTML();
-  el("expanded").textContent=round===1?expandedOf(number):"Use the digit's position to determine its value.";
+  el("placeChart").innerHTML=round===1?chartHTML(number,targetPlace,true):blankChartHTML();
+  el("expanded").textContent=round===1?"Each place is worth 10 times the place to its right.":"Use the digit's position to determine its value.";
   const opts=new Set([correct]);
   [d[targetPlace],placeValues[targetPlace],d[targetPlace]*100,d[targetPlace]*10,d[targetPlace]*1000].forEach(x=>{if(x>=0&&x!==correct)opts.add(x)});
   while(opts.size<4)opts.add(rnd(1,9)*placeValues[rnd(0,3)]);
@@ -259,6 +259,8 @@ function check(){
     solved=true;score+=stars;streak++;
     if(level==="digit")el("answerArea").querySelectorAll("[data-choice]").forEach(x=>{if(Number(x.dataset.choice)===correct)x.classList.add("correct")});
     if(level==="build")el("placeChart").innerHTML=chartHTML(number,-1);
+    if(level==="digit"&&round===1)el("placeChart").innerHTML=chartHTML(number,targetPlace);
+    if(level==="grade2"&&grade2Type==="expanded")el("placeChart").innerHTML=chart3HTML(number,-1);
     const msg=level==="grade2"?"Correct! "+grade2Explain:level==="digit"?"Correct! The digit is worth "+fmt(correct)+".":level==="build"?"Correct! "+expandedOf(number)+" = "+fmt(number)+".":"Correct! "+fmt(number)+" rounds to "+fmt(correct)+".";
     el("status").textContent=msg+" You earned "+stars+" star"+(stars===1?"":"s")+"!";el("status").className="status good";el("checkBtn").textContent=q===10?"Finish Round →":"Next Question →";el("checkBtn").className="next";el("hintBtn").disabled=true;updateUI();
     LWNLeaderboard.saveScore({name:profile.name||"Nini",avatar:profile.avatar||"⭐",game:"place_value",score,level,best_streak:streak}).then(renderBoard).catch(()=>{});
