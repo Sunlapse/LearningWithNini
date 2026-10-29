@@ -290,10 +290,66 @@
     else anchor.parentNode.insertBefore(a, anchor);
   }
 
+  /* ---------- homepage announcement (once per event per device) ---------- */
+  function busy() { return !!document.querySelector(".lwn-modal:not(#lwnEvAnnounce),#lwnWelcome,#lwnProfile,#lwnNicknameOverlay,#lwnRetainAsk,#lwnPiece,#lwnWelcomeBack"); }
+  function announce(tries) {
+    tries = tries || 0;
+    var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    if (page !== "index.html") return;
+    var E = current(); if (!E || E.phase() !== "on") return;
+    var EV = E.EV, KEYA = "lwn-event-announced-" + EV.id;
+    try { if (localStorage.getItem(KEYA)) return; } catch (e) { return; }
+    if (E.state().n > 0) { try { localStorage.setItem(KEYA, "1"); } catch (e) {} return; }
+    if (busy() || document.getElementById("lwnEvAnnounce")) { if (tries < 30) setTimeout(function () { announce(tries + 1); }, 1500); return; }
+    css();
+    if (!document.getElementById("lwnEvAnnCss")) {
+      var st2 = document.createElement("style"); st2.id = "lwnEvAnnCss";
+      st2.textContent =
+        "#lwnEvAnnounce{position:fixed;inset:0;z-index:2147483200;background:rgba(20,38,60,.5);display:grid;place-items:center;padding:16px;font-family:'Nunito',system-ui,sans-serif}" +
+        "#lwnEvAnnounce .card{width:min(400px,100%);max-height:94vh;overflow:auto;background:#fff;border-radius:30px;overflow:hidden;text-align:center;color:#203D61;box-shadow:0 28px 70px rgba(20,40,70,.4);animation:lwnPieceIn .5s ease both}" +
+        "#lwnEvAnnounce .art{position:relative;display:flex;justify-content:center;gap:0;background:linear-gradient(135deg,#3B1E5C,#6B3FA0);padding:30px 10px 22px}" +
+        "#lwnEvAnnounce .art img{width:42%;max-width:150px;aspect-ratio:1;object-fit:cover;border-radius:22px;border:4px solid #fff;box-shadow:0 10px 24px rgba(0,0,0,.3)}" +
+        "#lwnEvAnnounce .art img:first-child{transform:rotate(-6deg);margin-right:-10px}#lwnEvAnnounce .art img:nth-child(2){transform:rotate(6deg) translateY(8px)}" +
+        "#lwnEvAnnounce .new{position:absolute;top:12px;left:14px;background:#FF7A2F;color:#fff;font:700 13px/1 'Fredoka',sans-serif;padding:6px 10px;border-radius:999px;letter-spacing:.04em}" +
+        "#lwnEvAnnounce .x{position:absolute;top:10px;right:10px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.9);font-size:22px;color:#4B2A73;cursor:pointer}" +
+        "#lwnEvAnnounce .body{padding:18px 20px 20px}" +
+        "#lwnEvAnnounce h2{font:700 25px/1.12 'Fredoka',system-ui,sans-serif;color:#C2481B;margin:0}" +
+        "#lwnEvAnnounce .sub{font-weight:800;color:#5E6B85;margin:6px 0 14px}" +
+        "#lwnEvAnnounce ol{list-style:none;margin:0;padding:0;display:grid;gap:8px;text-align:left}" +
+        "#lwnEvAnnounce li{display:flex;align-items:center;gap:12px;background:#FFF6EC;border-radius:16px;padding:9px 12px;font-weight:800;color:#5A2E0C}" +
+        "#lwnEvAnnounce li .ic{font-size:26px;flex:none;width:34px;text-align:center}#lwnEvAnnounce li .tx{flex:1;min-width:0}#lwnEvAnnounce li b{display:block;font:700 16px/1.1 'Fredoka',sans-serif}" +
+        "#lwnEvAnnounce li small{display:block;font-size:13px;color:#8B6A4E;font-weight:800}" +
+        "#lwnEvAnnounce .go{display:block;width:100%;margin-top:16px;border:0;border-radius:18px;padding:15px;background:linear-gradient(135deg,#FF9A3C,#E0602F);color:#fff;font:700 20px/1 'Fredoka',sans-serif;cursor:pointer;box-shadow:0 5px 0 #A9401A}" +
+        "#lwnEvAnnounce .see{display:block;margin-top:12px;font-weight:900;color:#3B6FAF;text-decoration:none}";
+      document.head.appendChild(st2);
+    }
+    var cnt = EV.costumes.length, dl = E.daysLeft();
+    var w = document.createElement("div"); w.id = "lwnEvAnnounce"; w.className = "lwn-modal";
+    w.innerHTML = '<div class="card" role="dialog" aria-modal="true" aria-labelledby="lwnEvAnnT"><div class="art"><span class="new">NEW!</span>' +
+      '<button type="button" class="x" aria-label="Close">×</button>' +
+      EV.costumes.slice(0, 2).map(function (c) { return '<img src="' + E.pic(c) + '" alt="' + esc(c.name) + '">'; }).join("") + "</div>" +
+      '<div class="body"><h2 id="lwnEvAnnT">' + EV.emoji + " " + esc(EV.name) + "!</h2>" +
+      '<div class="sub">Unlock ' + (cnt === 2 ? "2 new Nini costumes" : cnt + " new Nini costumes") + " for your icon · " + dl + " day" + (dl === 1 ? "" : "s") + " only!</div>" +
+      "<ol><li><span class=\"ic\">🎮</span><span class=\"tx\"><b>Do a math round</b><small>Any game or the Daily Challenge</small></span></li>" +
+      "<li><span class=\"ic\">🧩</span><span class=\"tx\"><b>Collect puzzle pieces</b><small>Up to " + PER_DAY + " pieces a day</small></span></li>" +
+      "<li><span class=\"ic\">" + EV.emoji + "</span><span class=\"tx\"><b>Unlock the costumes</b><small>4 pieces finish each picture</small></span></li></ol>" +
+      '<button type="button" class="go">Start collecting!</button><a class="see" href="' + EV.page + '">See the costumes →</a></div></div>';
+    document.body.appendChild(w);
+    try { localStorage.setItem(KEYA, "1"); } catch (e) {}
+    function close() { w.remove(); }
+    w.querySelector(".x").onclick = close;
+    w.addEventListener("click", function (e) { if (e.target === w) close(); });
+    w.querySelector(".go").onclick = function () {
+      close();
+      var g = document.getElementById("skill-games"); if (g) g.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    try { if (window.LWNStats && LWNStats.track) LWNStats.track("event_announce", { event: EV.id }); } catch (e) {}
+  }
+
   window.LWNEvent = {
     all: ALL, forId: forId, current: current, featured: featured, today: today, fractionText: fractionText,
     pickerHtml: pickerHtml, css: css, useIcon: useIcon, swap: swapIn
   };
-  function init() { watch(); banner(); }
+  function init() { watch(); banner(); setTimeout(announce, 2500); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
