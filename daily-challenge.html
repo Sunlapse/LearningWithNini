@@ -1685,6 +1685,8 @@ function finish(){
   const secs=Math.max(0,Math.min(sessionMins*60,Math.round(sessionMins*60-(Number(done.msLeft)||0)/1000)));
   const finalPoints=Math.round(done.points*100)/100;
   const dashToday=done.dash&&log.some(x=>x&&x.date===today()&&x.dash);
+  // Right/wrong by question type for the parent weekly report (last 28 days kept). {date:{type:[right,tried]}}
+  if(attempted>0&&!done.testMinute){try{const sk=LS.get('lwn-skills-v1',{})||{},d=today(),day=sk[d]||(sk[d]={});(done.items||[]).forEach(it=>{if(!it||!it.type)return;const c=day[it.type]||(day[it.type]=[0,0]);c[1]++;if(it.r==='ok'||it.r==='ok2')c[0]++});Object.keys(sk).sort().slice(0,-28).forEach(k=>delete sk[k]);LS.set('lwn-skills-v1',sk)}catch(e){}}
   if(attempted>0&&!done.testMinute){try{const entry={date:today(),grade:sessionGrade,mode:sessionMode,mins:sessionMins,correct:done.correct,points:finalPoints,attempted,secs};if(done.dash)entry.dash=true;log.push(entry);LS.set('dm-log',log)}catch(e){console.error('Saving local progress failed',e)}}
   if(done.dash&&attempted>0){try{if(window.LWNXP)LWNXP.add(dashToday?3:Math.min(20,5+done.correct*2),'Quick Dash')}catch(e){}try{if(window.LWNStats)LWNStats.track('dash_finish',{correct:done.correct,attempted,grade:sessionGrade})}catch(e){}}
   if(!done.testMinute)try{renderDeviceProgress()}catch(e){console.error('Progress display failed',e)}
