@@ -88,6 +88,22 @@
       "#lwnXPToast.on{opacity:1;transform:none}" +
       "#lwnXPSheet{position:fixed;inset:0;z-index:2147483000;background:rgba(20,38,60,.35);display:none;align-items:flex-end;justify-content:center}" +
       "#lwnXPSheet.on{display:flex}" +
+      "#lwnXPSheet .gbar{position:relative;height:34px;border-radius:999px;background:#E8F0FA;margin:12px 0 6px;box-shadow:inset 0 2px 4px rgba(30,70,120,.12)}" +
+      "#lwnXPSheet .gbar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#45B8ED,#478ADD);transition:width .9s cubic-bezier(.2,.9,.3,1.2);overflow:hidden}" +
+      "#lwnXPSheet .gbar .fill:after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);background-size:220% 100%;animation:lwnShine 2.2s linear infinite}" +
+      "#lwnXPSheet .gbar.full .fill{background:linear-gradient(90deg,#FFC93C,#FF9F1C,#FF6B3D)}" +
+      "#lwnXPSheet .gbar .lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 16px/1 'Fredoka',system-ui,sans-serif;color:#1d3c63;text-shadow:0 1px 0 rgba(255,255,255,.7);z-index:2}" +
+      "#lwnXPSheet .gbar.full .lbl{color:#fff;text-shadow:0 1px 2px rgba(120,50,0,.45)}" +
+      "#lwnXPSheet .gbar .tip{position:absolute;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(69,184,237,.35),0 0 16px 4px rgba(69,184,237,.55);display:grid;place-items:center;font-size:15px;z-index:3;animation:lwnPulse 1.4s ease-in-out infinite}" +
+      "#lwnXPSheet .gbar.full .tip{width:40px;height:40px;margin:-20px 0 0 -26px;background:#FFF4CC;font-size:22px;box-shadow:0 0 0 4px rgba(255,159,28,.4),0 0 22px 8px rgba(255,170,40,.65)}" +
+      "#lwnXPSheet .gbar .spark{position:absolute;top:50%;right:4px;z-index:3;pointer-events:none}" +
+      "#lwnXPSheet .gbar .spark i{position:absolute;font-style:normal;font-size:15px;opacity:0;animation:lwnSpark 1.6s ease-out infinite}" +
+      "#lwnXPSheet .gsub{display:flex;justify-content:space-between;font-weight:900;font-size:13px;color:#5E7896}#lwnXPSheet .gsub b{color:#E0602F}" +
+      "#lwnXPSheet .week i span.hit{background:linear-gradient(180deg,#FFC93C,#FF9F1C)!important}" +
+      "@keyframes lwnShine{from{background-position:120% 0}to{background-position:-120% 0}}" +
+      "@keyframes lwnPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}" +
+      "@keyframes lwnSpark{0%{opacity:0;transform:translate(0,-50%) scale(.4)}25%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.1)}}" +
+      "@media (prefers-reduced-motion:reduce){#lwnXPSheet .gbar .fill:after,#lwnXPSheet .gbar .tip,#lwnXPSheet .gbar .spark i{animation:none}#lwnXPSheet .gbar .spark i{opacity:1}}" +
       "#lwnXPSheet .card{background:#fff;width:min(520px,100%);max-height:88vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));" +
       "font-family:'Nunito',system-ui,sans-serif;color:#1d3c63}" +
       "#lwnXPSheet h2{font:700 22px/1.1 'Fredoka',system-ui,sans-serif;margin:0 0 4px;color:#3271BD}" +
@@ -157,6 +173,19 @@
 
   function openSheet() {
     css();
+    // Goal bar: fills toward the daily goal with a glowing tip; past the goal it turns gold and sparkles at the edge
+    function goalBar(xp, goal) {
+      var pct = Math.min(100, Math.round(xp / goal * 100)), full = xp >= goal;
+      var sparks = full ? ["✨", "⭐", "💥", "✨", "🌟", "⭐"].map(function (e, i) {
+        var a = (i / 6) * Math.PI * 2; return "<i style='--dx:" + Math.round(Math.cos(a) * 34) + "px;--dy:" + Math.round(Math.sin(a) * 26 - 12) + "px;animation-delay:" + (i * .25).toFixed(2) + "s'>" + e + "</i>";
+      }).join("") : "";
+      return "<div class='gbar" + (full ? " full" : "") + "' role='progressbar' aria-valuemin='0' aria-valuemax='" + goal + "' aria-valuenow='" + Math.min(xp, goal) + "' aria-label='Daily goal progress'>" +
+        "<div class='fill' style='width:0%' data-w='" + pct + "'></div>" +
+        "<div class='lbl' style='" + (full ? "" : pct < 60 ? "justify-content:flex-end;padding-right:16px" : "justify-content:flex-start;padding-left:16px;color:#fff;text-shadow:0 1px 2px rgba(0,40,90,.4)") + "'>" + xp + " / " + goal + " XP</div>" +
+        (xp > 0 ? "<div class='tip' style='left:" + Math.max(4, pct) + "%'>" + (full ? "🏆" : "⚡") + "</div>" : "") +
+        (full ? "<div class='spark'>" + sparks + "</div>" : "") + "</div>" +
+        "<div class='gsub'><span>0</span>" + (full ? "<b>🎉 Goal smashed!" + (xp > goal ? " +" + (xp - goal) + " bonus XP" : "") + "</b>" : "<span>" + (goal - xp) + " XP to your goal</span>") + "<span>🎯 " + goal + "</span></div>";
+    }
     var sh = document.getElementById("lwnXPSheet");
     if (!sh) {
       sh = document.createElement("div"); sh.id = "lwnXPSheet"; sh.setAttribute("role", "dialog"); sh.setAttribute("aria-modal", "true");
@@ -167,12 +196,13 @@
     for (var i = 0; i < 7; i++) { var k = shift(mon, i); max = Math.max(max, s.days[k] || 0); }
     for (var j = 0; j < 7; j++) {
       var key = shift(mon, j), v = s.days[key] || 0; weekXP += v;
-      bars += "<div><i><span style='height:" + Math.round(v / max * 100) + "%'></span></i>" + "MTWTFSS"[j] + "</div>";
+      bars += "<div><i><span" + (v >= s.goal ? " class='hit'" : "") + " style='height:" + Math.round(v / max * 100) + "%'></span></i>" + "MTWTFSS"[j] + "</div>";
     }
     var gs = goalStreak(s);
     sh.innerHTML = '<div class="card"><button class="x" aria-label="Close">×</button>' +
       "<h2>⚡ " + xp + " XP today</h2><div class='muted'>Daily goal: " + s.goal + " XP" +
       (xp >= s.goal ? " — done! 🎉" : " — " + (s.goal - xp) + " to go") + (gs ? " · 🎯 " + gs + "-day goal streak" : "") + "</div>" +
+      goalBar(xp, s.goal) +
       "<h3>This week · " + weekXP + " XP</h3><div class='week'>" + bars + "</div>" +
       "<h3>Daily goal</h3><div class='goals'>" + GOALS.map(function (g) {
         return '<button type="button" data-goal="' + g.xp + '" aria-pressed="' + (g.xp === s.goal) + '"><b>' + g.xp + "</b>" + g.label + "</button>";
@@ -185,6 +215,8 @@
       b.addEventListener("click", function () { var s2 = st(); s2.goal = Number(b.dataset.goal); save(s2); paint(); openSheet(); });
     });
     sh.classList.add("on");
+    // animate the bar filling up
+    var gf = sh.querySelector(".gbar .fill"); if (gf) requestAnimationFrame(function () { requestAnimationFrame(function () { gf.style.width = gf.getAttribute("data-w") + "%"; }); });
     league().then(renderLeague).catch(function () {
       var el = document.getElementById("lwnLeague"); if (el) el.innerHTML = "<div class='muted'>League standings need an internet connection.</div>";
     });
