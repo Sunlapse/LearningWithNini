@@ -85,6 +85,15 @@
       "#lwnXP svg{position:absolute;inset:0}#lwnXP b{position:relative;font:700 15px/1 'Fredoka','Nunito',system-ui,sans-serif;color:#284C79}" +
       "#lwnXP small{position:relative;display:block;font:900 9px/1 'Nunito',system-ui,sans-serif;color:#8A8199;margin-top:2px}" +
       "#lwnXP.full{box-shadow:0 0 0 4px #FFE58A,0 6px 18px rgba(40,76,120,.25)}" +
+      "#lwnXP.zero{animation:lwnNudge 4.5s ease-in-out infinite}" +
+      "#lwnXP .nsp{position:absolute;font-style:normal;font-size:14px;opacity:0;pointer-events:none}" +
+      "#lwnXP.zero .nsp{animation:lwnNudgeSp 4.5s ease-out infinite}" +
+      "#lwnXP.zero .nsp.b{animation-delay:.18s}#lwnXP.zero .nsp.c{animation-delay:.36s}" +
+      "#lwnXP.zero.soft{animation-name:lwnNudgeSoft}#lwnXP.zero.soft .nsp{display:none}" +
+      "@keyframes lwnNudge{0%,18%,100%{transform:scale(1);box-shadow:0 6px 18px rgba(40,76,120,.25)}6%{transform:scale(1.14) rotate(-6deg);box-shadow:0 0 0 5px rgba(255,201,60,.6),0 0 22px 8px rgba(255,190,40,.75)}12%{transform:scale(1.04) rotate(4deg);box-shadow:0 0 0 4px rgba(255,201,60,.4),0 0 16px 5px rgba(255,190,40,.5)}}" +
+      "@keyframes lwnNudgeSoft{0%,20%,100%{box-shadow:0 6px 18px rgba(40,76,120,.25)}8%{box-shadow:0 0 0 4px rgba(255,201,60,.45),0 0 14px 4px rgba(255,190,40,.45)}}" +
+      "@keyframes lwnNudgeSp{0%{opacity:0;transform:translate(0,0) scale(.4)}5%{opacity:1}18%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(1.1)}100%{opacity:0}}" +
+      "@media (prefers-reduced-motion:reduce){#lwnXP.zero,#lwnXP.zero .nsp{animation:none}#lwnXP.zero{box-shadow:0 0 0 3px rgba(255,201,60,.55),0 6px 18px rgba(40,76,120,.25)}}" +
       "body.lwn-xp-hide #lwnXP{display:none}" +
       "#lwnXPToast{position:fixed;left:78px;bottom:calc(26px + env(safe-area-inset-bottom,0px));z-index:2147482999;background:#284C79;color:#fff;font:800 14px/1 'Nunito',system-ui,sans-serif;" +
       "padding:9px 12px;border-radius:999px;opacity:0;transform:translateX(-6px);transition:opacity .2s,transform .2s;pointer-events:none;transform:translateY(6px)}" +
@@ -157,6 +166,10 @@
     var s = st(), xp = s.days[today()] || 0, full = xp >= s.goal;
     b.innerHTML = ringSVG(xp / s.goal, full) + "<div><b>" + (full ? "⭐" : xp) + "</b><small>" + (full ? "GOAL!" : "/" + s.goal + " XP") + "</small></div>";
     b.classList.toggle("full", full);
+    // At 0 XP for the day: a gentle golden nudge every few seconds (stronger on the homepage, soft in games)
+    var zero = xp <= 0, home = (location.pathname.split("/").pop() || "index.html").toLowerCase() === "index.html";
+    b.classList.toggle("zero", zero); b.classList.toggle("soft", zero && !home);
+    if (zero) b.insertAdjacentHTML("beforeend", "<i class='nsp a' style='left:-6px;top:-6px;--sx:-10px;--sy:-12px'>✨</i><i class='nsp b' style='right:-6px;top:-4px;--sx:10px;--sy:-14px'>⭐</i><i class='nsp c' style='right:-2px;bottom:-6px;--sx:12px;--sy:8px'>✨</i>");
     b.setAttribute("aria-label", "Today's XP: " + xp + " of " + s.goal + ". Open XP and leagues");
   }
   var toastT;
