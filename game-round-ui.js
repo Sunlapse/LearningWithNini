@@ -204,6 +204,9 @@
       box-shadow:0 10px 22px rgba(52,124,212,.22);
     }
     .lwn-finale-levels{background:#fffbf0;color:#b7492d}
+    .lwn-finale-leave{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .lwn-finale-leave a{display:inline-flex;align-items:center;gap:6px;padding:10px 15px;border-radius:999px;background:#fff;border:2px solid #dbe7f5;color:#2f6fb8;font-weight:1000;text-decoration:none;font-size:.95rem}
+    .lwn-finale-leave a.path{border-color:#9fd9b8;color:#17643a}
 
     .lwn-confetti-stage{
       position:absolute;
@@ -303,6 +306,10 @@
       <div class="lwn-finale-actions">
         <button type="button" class="lwn-finale-again">🎮 Play Another Round</button>
         <button type="button" class="lwn-finale-levels">⭐ Choose Another Level</button>
+      </div>
+      <div class="lwn-finale-leave">
+        <a class="path" href="/path.html">🗺️ My Adventure</a>
+        <a href="/#games">🏠 All games</a>
       </div>
     </div>
   `;
