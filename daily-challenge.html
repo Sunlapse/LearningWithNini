@@ -388,7 +388,7 @@ button:disabled{opacity:.28;cursor:default}
           <span class="pk-ic">⚡</span>
           <span class="pk-t">Quick Dash</span>
           <span class="pk-s">3 minutes · 8 questions</span>
-          <span class="pk-n">Quick warm-up. Counts for your streak!</span>
+          <span class="pk-n">Counts for your streak and has its own leaderboard!</span>
         </button>
         <button type="button" class="pick-card full go" id="goBtn">
           <span class="pk-ic">📝</span>
@@ -630,7 +630,7 @@ function queueTodayLocalResultIfNeeded(){
   if(!todays.length)return;
   const bestBySession=new Map();
   todays.forEach(item=>{
-    if(item.dash||Number(item.mins)<10)return; // Quick Dash never goes to the leaderboard
+    if(item.dash||Number(item.mins)<10)return; // Quick Dash has its own board (quick_dash), not the Daily Challenge board
     const mins=Number(item.mins)||20;
     const mode=String(item.mode||'standard');
     const grade=String(item.grade||settings.grade);
@@ -1699,7 +1699,19 @@ function finish(){
   try{sessionStorage.setItem('lwn-last-question-review',JSON.stringify(done.items||[]))}catch(e){}
   try{
   const globalStatus=$('#globalSaveStatus');
-  if(done.dash){globalStatus.textContent=attempted>0?'⚡ Quick Dash done! It counts for your streak. Try the full Daily Challenge to get on the leaderboard and beat Nini.':'Answer at least one question to save your Dash.'}
+  if(done.dash&&attempted>0&&window.LWNLeaderboard){
+    // Dash score (max 100): 10 per point earned (first-try answers count most) + up to 20 for speed.
+    const dashScore=Math.max(0,Math.min(100,Math.round(finalPoints*10)+(done.items.length>=done.maxQ?Math.round(Math.max(0,180-secs)/9):0)));
+    const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'quick_dash',score:dashScore,level:sessionGrade+'|'+today(),best_streak:streak()};
+    queueGlobalScore(payload);
+    globalStatus.textContent='⚡ Dash score: '+dashScore+'. Saving to the Quick Dash leaderboard…';
+    flushPendingGlobal().then(saved=>{
+      globalStatus.innerHTML=saved&&!pendingGlobal.some(x=>pendingKey(x)===pendingKey(payload))
+        ?'⚡ Dash score <b>'+dashScore+'</b> saved for '+escapeHTML(globalName())+'! <a href="/leaderboard.html?game=quick_dash">See the Quick Dash board →</a>'
+        :'⚡ Dash score '+dashScore+' is saved here. It will go to the leaderboard when the connection returns.';
+    });
+  }
+  else if(done.dash){globalStatus.textContent='Answer at least one question to save your Dash.'}
   else if(attempted>0&&!done.testMinute&&window.LWNLeaderboard){
     const payload={name:globalName(),avatar:sharedProfile.avatar||'⭐',game:'daily_challenge',score:finalPoints,level:sessionGrade+'|'+sessionMode+'|'+sessionMins+'min|'+today(),best_streak:streak()};
     queueGlobalScore(payload);
