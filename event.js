@@ -19,7 +19,9 @@
         { id: "witch", name: "Witch Nini", token: "🧙✨" },
         { id: "scarecrow", name: "Scarecrow Nini", token: "🌾✨" },
         { id: "pumpkin-trex", name: "Pumpkin T-Rex", token: "🦖✨" },
-        { id: "pirate-honu", name: "Pirate Honu", token: "🐢✨" }
+        { id: "pirate-honu", name: "Pirate Honu", token: "🐢✨" },
+        { id: "boo-ghost", name: "Boo the Ghost", token: "👻✨" },
+        { id: "vampire-kid", name: "Vampire Kid", token: "🧛✨" }
       ]
     },
     {
