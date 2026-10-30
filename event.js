@@ -36,7 +36,8 @@
         { id: "pilgrim", name: "Pilgrim Nini", token: "🌽✨" },
         { id: "football", name: "Football Nini", token: "🏈✨" },
         { id: "surfer-turkey", name: "Surfer Turkey Nini", token: "🦃✨" },
-        { id: "touchdown-turkey", name: "Touchdown Turkey", token: "🦃🏆✨" }
+        { id: "touchdown-turkey", name: "Touchdown Turkey", token: "🦃🏆✨" },
+        { id: "aloha-turkey", name: "Aloha Turkey", token: "🦃🌺✨" }
       ]
     }
   ];
