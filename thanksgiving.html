@@ -8,11 +8,11 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Learn With Nini">
   <meta property="og:title" content="Thanksgiving Puzzle Hunt | Learn With Nini">
-  <meta property="og:description" content="Play free math games, collect puzzle pieces and unlock 4 Thanksgiving Nini costumes. November 10–30.">
+  <meta property="og:description" content="Play free math games, collect puzzle pieces and unlock Thanksgiving costumes for Nini and friends. November 10–30.">
   <meta property="og:url" content="https://learnwithnini.com/thanksgiving.html">
   <meta property="og:image" content="https://learnwithnini.com/events/thanksgiving/surfer-turkey.webp">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="description" content="Play free math games, collect puzzle pieces and unlock 4 Thanksgiving Nini costumes. November 10–30." />
+  <meta name="description" content="Play free math games, collect puzzle pieces and unlock Thanksgiving costumes for Nini and friends. November 10–30." />
   <link rel="canonical" href="https://learnwithnini.com/thanksgiving.html" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@
     .btn{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:13px 20px;font:700 1.1rem/1 "Fredoka",sans-serif;cursor:pointer;background:#E0602F;color:#fff;box-shadow:0 5px 0 #A9401A}
     .btn.alt{background:#fff;color:#3573bf;box-shadow:0 5px 0 #D5E2F3}
     h2{font-size:clamp(1.7rem,3.4vw,2.3rem);color:#C2481B;margin:34px 0 14px;text-align:center}
-    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
     .cos{background:#fff;border-radius:26px;padding:12px 12px 16px;text-align:center;border:2px solid #F3E3D3;box-shadow:0 10px 24px rgba(120,60,10,.08)}
     .cos.got{border-color:#FFB45C}
     .cos h3{font-size:1.2rem;color:#5A2E0C;margin:12px 0 2px}
@@ -83,7 +83,7 @@
   <meta name="apple-mobile-web-app-title" content="Nini Math">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
-  <script src="/event.js?v=5"></script>
+  <script src="/event.js?v=6"></script>
   <script src="/install-banner.js" defer></script>
 </head>
 <body data-event="thanksgiving-2026">
@@ -116,7 +116,7 @@
       <div class="step"><div class="ic">🎮</div><b>Finish a round</b><span>Any 10-question game round = 1 piece</span></div>
       <div class="step"><div class="ic">🔥</div><b>Daily Challenge</b><span>Finish it = 2 pieces</span></div>
       <div class="step"><div class="ic">🧩</div><b>Up to 3 a day</b><span>Come back each day for more</span></div>
-      <div class="step"><div class="ic">🏆</div><b>Unlock all 4</b><span>Get the Grand Prize certificate</span></div>
+      <div class="step"><div class="ic">🏆</div><b>Unlock them all</b><span>Get the Grand Prize certificate</span></div>
     </div>
     <div class="math">🧮 Puzzle math: each picture has 4 pieces, so every piece is <b>1/4</b> of the picture. <b>2/4</b> is the same as <b>1/2</b>, and <b>4/4</b> makes <b>1 whole</b>!</div>
 
@@ -130,7 +130,7 @@
     <h1>🏆 Grand Prize Certificate</h1>
     <p>This certifies that</p>
     <div class="name" id="certName">Math Star</div>
-    <p>collected all 16 puzzle pieces and unlocked every costume in the Learn With Nini Thanksgiving Puzzle Hunt!</p>
+    <p>collected every puzzle piece and unlocked every costume in the Learn With Nini Thanksgiving Puzzle Hunt!</p>
     <div class="faces" id="certFaces"></div>
     <div class="foot" id="certFoot">LearnWithNini.com · November 2026</div>
   </div>
@@ -144,7 +144,7 @@
   function render(){
     E.css();
     var s=E.state(), ph=E.phase(), n=s.n, used=E.todayCount(), left=E.daysLeft(), me=profile();
-    el("evIntro").textContent = ph==="soon" ? "Starts November 10! Play math games to collect puzzle pieces and unlock 4 Nini costumes."
+    el("evIntro").textContent = ph==="soon" ? "Starts November 10! Play math games to collect puzzle pieces and unlock "+EV.costumes.length+" costumes."
       : ph==="over" ? "The Puzzle Hunt is over. Mahalo for playing! Costumes you unlocked are still yours."
       : "Play math games to collect puzzle pieces. Finish a picture to unlock a Nini costume for your icon!";
     el("evDates").textContent = ph==="on" ? "🦃 "+left+" day"+(left===1?"":"s")+" left" : "🦃 November 10–30";
@@ -163,9 +163,9 @@
     var won=n>=E.TOTAL;
     el("evPrize").className="prize"+(won?" won":"");
     el("evPrize").innerHTML = won
-      ? "<div class='big'>🏆</div><h3 style='font-size:1.6rem;color:#B5410F'>You did it!</h3><p>You collected all 16 pieces. Type your name and print your certificate.</p>"+
+      ? "<div class='big'>🏆</div><h3 style='font-size:1.6rem;color:#B5410F'>You did it!</h3><p>You collected all "+E.TOTAL+" pieces. Type your name and print your certificate.</p>"+
         "<input id='certInput' maxlength='30' placeholder='Your name' value='"+esc(me.name&&me.name.toLowerCase()!=="nini"?me.name:"")+"'><div class='play'><button type='button' class='btn' id='printCert'>🖨️ Print my certificate</button></div>"
-      : "<div class='big'>🔒🏆</div><p>Unlock all 4 costumes to get a printable Grand Prize certificate with your name on it.</p><p style='margin-top:10px;color:#C2481B'>"+(E.TOTAL-n)+" pieces to go!</p>";
+      : "<div class='big'>🔒🏆</div><p>Unlock all "+EV.costumes.length+" costumes to get a printable Grand Prize certificate with your name on it.</p><p style='margin-top:10px;color:#C2481B'>"+(E.TOTAL-n)+" pieces to go!</p>";
     var pb=el("printCert");
     if(pb) pb.onclick=function(){
       el("certName").textContent=(el("certInput").value||"Math Star").trim();
