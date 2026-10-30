@@ -83,7 +83,7 @@
   <meta name="apple-mobile-web-app-title" content="Nini Math">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
-  <script src="/event.js?v=2"></script>
+  <script src="/event.js?v=3"></script>
   <script src="/install-banner.js" defer></script>
 </head>
 <body data-event="thanksgiving-2026">
@@ -153,12 +153,13 @@
     el("evBar").style.width=(n/E.TOTAL*100)+"%";
     el("evCount").textContent=n+" of "+E.TOTAL+" pieces";
     el("evGrid").innerHTML=EV.costumes.map(function(c,i){
-      var have=Math.max(0,Math.min(E.PER_COSTUME,n-i*E.PER_COSTUME)), got=have===E.PER_COSTUME, using=me.avatar===c.token;
-      var status = got ? "Unlocked!" : have ? (E.PER_COSTUME-have)+" more piece"+(E.PER_COSTUME-have===1?"":"s")+" to go" : i===E.unlockedCount() ? "Next up" : "Locked";
+      var have=E.haveOf(c,s), got=have===E.PER_COSTUME, using=me.avatar===c.token, tgt=E.target(s), isNext=tgt&&tgt.id===c.id;
+      var status = got ? "Unlocked!" : (isNext ? "⭐ Working on this · " : "")+(have ? (E.PER_COSTUME-have)+" more piece"+(E.PER_COSTUME-have===1?"":"s")+" to go" : isNext ? "next pieces go here" : "Not started");
       return "<div class='cos"+(got?" got":"")+"'>"+E.puzzleHtml(c,have,false)+"<h3>"+esc(c.name)+"</h3><div class='fr'>"+E.fractionText(have)+"</div><div class='st'>"+status+"</div>"+
-        (got?"<button type='button' class='"+(using?"using":"")+"' data-use='"+c.token+"'>"+(using?"✓ My icon":"Use as my icon")+"</button>":"")+"</div>";
+        (got?"<button type='button' class='"+(using?"using":"")+"' data-use='"+c.token+"'>"+(using?"✓ My icon":"Use as my icon")+"</button>":(!isNext&&ph==="on"?"<button type='button' data-pick='"+c.id+"'>Work on this one next</button>":""))+"</div>";
     }).join("");
     el("evGrid").querySelectorAll("[data-use]").forEach(function(b){ if(!b.classList.contains("using")) b.onclick=function(){E.useIcon(b.dataset.use)} });
+    el("evGrid").querySelectorAll("[data-pick]").forEach(function(b){ b.onclick=function(){E.setCur(b.dataset.pick);render()} });
     var won=n>=E.TOTAL;
     el("evPrize").className="prize"+(won?" won":"");
     el("evPrize").innerHTML = won

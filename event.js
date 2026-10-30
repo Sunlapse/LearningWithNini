@@ -17,7 +17,8 @@
       emoji: "🎃", certificate: false, next: "thanksgiving-2026",
       costumes: [
         { id: "witch", name: "Witch Nini", token: "🧙✨" },
-        { id: "scarecrow", name: "Scarecrow Nini", token: "🌾✨" }
+        { id: "scarecrow", name: "Scarecrow Nini", token: "🌾✨" },
+        { id: "pumpkin-trex", name: "Pumpkin T-Rex", token: "🦖✨" }
       ]
     },
     {
@@ -70,9 +71,30 @@
       return "soon";
     }
     function daysLeft() { var a = new Date((today() < EV.start ? EV.start : today()) + "T12:00:00Z"), b = new Date(EV.end + "T12:00:00Z"); return Math.max(0, Math.round((b - a) / 864e5) + 1); }
-    function st() { var s = get(KEY, {}); if (!s || typeof s !== "object") s = {}; s.n = Math.min(TOTAL, Number(s.n) || 0); s.days = s.days || {}; s.daily = s.daily || []; return s; }
+    // Saved state: have = pieces per costume {id: 0-4}, cur = the puzzle the kid picked to work on next.
+    // Older saves only had n (a total, filled in costume order); those are converted here.
+    function st() {
+      var s = get(KEY, {}); if (!s || typeof s !== "object") s = {};
+      s.days = s.days || {}; s.daily = s.daily || []; s.have = s.have && typeof s.have === "object" ? s.have : {};
+      var sum = 0; EV.costumes.forEach(function (c) { s.have[c.id] = Math.max(0, Math.min(PER_COSTUME, Number(s.have[c.id]) || 0)); sum += s.have[c.id]; });
+      var extra = Math.min(TOTAL, Number(s.n) || 0) - sum;            // pieces counted on an older device/version
+      EV.costumes.forEach(function (c) { while (extra > 0 && s.have[c.id] < PER_COSTUME) { s.have[c.id]++; extra--; sum++; } });
+      s.n = sum;
+      if (s.cur && !EV.costumes.some(function (c) { return c.id === s.cur; })) s.cur = null;
+      return s;
+    }
     function todayCount() { return st().days[today()] || 0; }
-    function unlockedCount(n) { return Math.floor((n == null ? st().n : n) / PER_COSTUME); }
+    function haveOf(c, s) { return (s || st()).have[c.id] || 0; }
+    function unlockedCount(s) { s = s || st(); return EV.costumes.filter(function (c) { return s.have[c.id] >= PER_COSTUME; }).length; }
+    function isDone(c, s) { return haveOf(c, s) >= PER_COSTUME; }
+    // The puzzle the next piece goes to: the kid's pick, else one already started, else the first unfinished one
+    function target(s) {
+      s = s || st();
+      var pick = EV.costumes.filter(function (c) { return c.id === s.cur && !isDone(c, s); })[0];
+      if (pick) return pick;
+      return EV.costumes.filter(function (c) { return s.have[c.id] > 0 && !isDone(c, s); })[0] || EV.costumes.filter(function (c) { return !isDone(c, s); })[0] || null;
+    }
+    function setCur(id) { var s = st(); s.cur = id; set(KEY, s); try { window.dispatchEvent(new CustomEvent("lwn:piece", { detail: { event: EV.id, pick: id } })); } catch (e) {} }
     function icon(c) { return EV.dir + c.id + "-icon.webp"; }
     function pic(c) { return EV.dir + c.id + ".webp"; }
 
@@ -81,13 +103,19 @@
       var s = st(), d = today(), used = s.days[d] || 0;
       var got = Math.max(0, Math.min(k, PER_DAY - used, TOTAL - s.n));
       if (!got) return 0;
-      var before = s.n;
-      s.n += got; s.days[d] = used + got;
+      var before = s.n, items = [];
+      for (var i = 0; i < got; i++) {
+        var c = target(s); if (!c) break;
+        s.have[c.id]++; s.n++;
+        if (s.have[c.id] >= PER_COSTUME && s.cur === c.id) s.cur = null;
+        items.push({ c: c, have: s.have[c.id], all: s.n >= TOTAL });
+      }
+      s.days[d] = used + got;
       Object.keys(s.days).sort().slice(0, -40).forEach(function (x) { delete s.days[x]; });
       set(KEY, s);
       try { window.dispatchEvent(new CustomEvent("lwn:piece", { detail: { event: EV.id, before: before, after: s.n, why: why || "" } })); } catch (e) {}
       try { if (window.LWNAccount && LWNAccount.push) LWNAccount.push().catch(function () {}); } catch (e) {}
-      setTimeout(function () { popup(api, before, s.n); }, 1100);
+      setTimeout(function () { popup(api, items); }, 1100);
       return got;
     }
     function earnDaily() {
@@ -110,12 +138,12 @@
     }
 
     function pickerHtml(avatar) {
-      var ph = phase(), n = unlockedCount();
+      var ph = phase(), s = st(), n = unlockedCount(s);
       if (ph === "soon" && !n) return "";
       if (ph === "over" && !n) return "";
       return '<div class="lbl">' + EV.emoji + " " + esc(EV.short) + ' costumes <span style="color:#7a7191;font-weight:800">(' + n + " of " + EV.costumes.length + ")</span></div>" +
         '<div class="av">' + EV.costumes.map(function (c, i) {
-          return i < n
+          return isDone(c, s)
             ? '<button type="button" data-av="' + c.token + '" class="' + (c.token === avatar ? "on" : "") + '" aria-label="' + esc(c.name) + '">' + c.token + "</button>"
             : '<button type="button" class="lock" data-lock="' + esc(ph === "over" ? "The event is over. This one was a " + EV.short + " prize" : "Collect " + PER_COSTUME + " puzzle pieces in the " + EV.name) + '" data-i="' + esc(c.name) + '" aria-label="Locked: ' + esc(c.name) + '"><span><img src="' + icon(c) + '" alt="" style="width:1.2em;height:1.2em;border-radius:50%;vertical-align:middle"></span><i>🔒</i></button>';
         }).join("") + "</div>";
@@ -124,7 +152,7 @@
     var api = {
       EV: EV, TOTAL: TOTAL, KEY: KEY, PER_DAY: PER_DAY, PER_COSTUME: PER_COSTUME,
       state: st, phase: phase, today: today, daysLeft: daysLeft, earn: earn, earnDaily: earnDaily,
-      unlockedCount: unlockedCount, puzzleHtml: puzzleHtml, fractionText: fractionText, pickerHtml: pickerHtml,
+      unlockedCount: unlockedCount, haveOf: haveOf, isDone: isDone, target: target, setCur: setCur, puzzleHtml: puzzleHtml, fractionText: fractionText, pickerHtml: pickerHtml,
       icon: icon, pic: pic, css: css, useIcon: useIcon, todayCount: todayCount
     };
     return api;
@@ -179,6 +207,11 @@
       "#lwnPiece p{margin:4px 0 0;font-weight:800;color:#5E6B85;line-height:1.4}" +
       "#lwnPiece .btns{display:grid;gap:8px;margin-top:16px}" +
       "#lwnPiece button,#lwnPiece a{border:0;border-radius:16px;padding:13px;font:700 18px/1 'Fredoka',system-ui,sans-serif;cursor:pointer;text-decoration:none}" +
+      "#lwnPiece .pick{margin-top:14px;background:#FFF6EC;border-radius:18px;padding:10px}#lwnPiece .pick b{display:block;font:700 16px/1.2 'Fredoka',sans-serif;color:#5A2E0C;margin-bottom:8px}" +
+      "#lwnPiece .pick div{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}" +
+      "#lwnPiece .pick button{border:3px solid #fff;background:#fff;border-radius:16px;padding:4px 4px 6px;width:84px;cursor:pointer;font:800 11px/1.15 'Nunito',sans-serif;color:#5A2E0C;box-shadow:0 3px 8px rgba(120,60,10,.12)}" +
+      "#lwnPiece .pick button img{display:block;width:62px;height:62px;border-radius:50%;margin:0 auto 4px;object-fit:cover}" +
+      "#lwnPiece .pick button.on{border-color:#FF9A3C;background:#FFF1DC}" +
       "#lwnPiece .main{background:linear-gradient(135deg,#FF9A3C,#E0602F);color:#fff}#lwnPiece .sec{background:#EEF4FB;color:#3B6FAF}" +
       ".lwn-ev-banner{display:flex;gap:14px;align-items:center;margin:14px 0 6px;padding:14px 16px;border-radius:24px;text-decoration:none;color:#5A2E0C;" +
       "background:linear-gradient(135deg,#FFF1DC,#FFE2BC);border:2px solid #FFC98A;box-shadow:0 10px 26px rgba(224,96,47,.16);font-family:'Nunito',system-ui,sans-serif}" +
@@ -194,26 +227,29 @@
 
   /* ---------- popup after earning ---------- */
   var queue = [];
-  function popup(E, before, after) {
-    for (var n = before + 1; n <= after; n++) queue.push([E, n]);
+  function popup(E, items) {
+    items.forEach(function (it) { queue.push([E, it]); });
     if (!document.getElementById("lwnPiece")) showNext();
   }
   function showNext() {
     var item = queue.shift(); if (!item) return;
     css();
-    var E = item[0], n = item[1], EV = E.EV;
-    var ci = Math.floor((n - 1) / PER_COSTUME), c = EV.costumes[ci], have = n - ci * PER_COSTUME;
-    var done = have === PER_COSTUME, all = n === E.TOTAL, cap = E.todayCount() >= PER_DAY && !queue.length;
+    var E = item[0], it = item[1], EV = E.EV, c = it.c, have = it.have;
+    var done = have === PER_COSTUME, all = it.all, cap = E.todayCount() >= PER_DAY && !queue.length;
     var nxt = EV.next ? forId(EV.next) : null, cnt = EV.costumes.length;
+    var left = EV.costumes.filter(function (x) { return !E.isDone(x); });
     var title = all ? "🏆 You unlocked " + (cnt === 2 ? "both" : "all " + cnt) + "!" : done ? "🎉 " + c.name + " unlocked!" : "🧩 New puzzle piece!";
     var msg = all ? (EV.certificate ? "You collected every puzzle piece. Get your Grand Prize certificate!"
         : "You finished the " + EV.name + "!" + (nxt ? " The " + nxt.EV.name + " starts " + nxt.EV.dates.split("–")[0].trim() + "." : ""))
       : done ? "You finished the picture. You can use " + c.name + " as your icon!"
       : "Finish " + (PER_COSTUME - have) + " more to unlock " + c.name + ".";
     if (cap && !all) msg += " That’s " + PER_DAY + " pieces today. Come back tomorrow for more!";
+    // After finishing a picture, the kid picks which puzzle to work on next
+    var pick = done && !all && left.length > 1 && !queue.length ? '<div class="pick"><b>Pick your next puzzle:</b><div>' +
+      left.map(function (x) { return '<button type="button" data-pick="' + x.id + '"><img src="' + E.icon(x) + '" alt=""><span>' + esc(x.name) + "</span></button>"; }).join("") + "</div></div>" : "";
     var w = document.createElement("div"); w.id = "lwnPiece";
     w.innerHTML = '<div class="card" role="dialog" aria-modal="true"><h2>' + title + "</h2>" + E.puzzleHtml(c, have, true) +
-      '<div class="frac">' + fractionText(have) + (have < 4 ? " of the picture" : " picture") + "</div><p>" + esc(msg) + '</p><div class="btns">' +
+      '<div class="frac">' + fractionText(have) + (have < 4 ? " of the picture" : " picture") + "</div><p>" + esc(msg) + "</p>" + pick + '<div class="btns">' +
       (all && EV.certificate ? '<a class="main" href="' + EV.page + '#prize">Get my certificate 🏆</a>'
         : done ? '<button type="button" class="main" data-use="' + c.token + '">Use as my icon</button>' : '<button type="button" class="main" data-ok>Yay! 🎉</button>') +
       '<a class="sec" href="' + EV.page + '">See my puzzles</a></div></div>';
@@ -222,6 +258,13 @@
     w.addEventListener("click", function (e) { if (e.target === w) close(); });
     var ok = w.querySelector("[data-ok]"); if (ok) ok.onclick = close;
     var use = w.querySelector("[data-use]"); if (use) use.onclick = function () { useIcon(c.token); close(); };
+    w.querySelectorAll("[data-pick]").forEach(function (b) {
+      b.onclick = function () {
+        E.setCur(b.dataset.pick);
+        w.querySelectorAll("[data-pick]").forEach(function (x) { x.classList.toggle("on", x === b); });
+        var lbl = w.querySelector(".pick b"); if (lbl) lbl.textContent = "Next up: " + b.textContent + " ✓";
+      };
+    });
     try { if (done && window.LWNFun && LWNFun.confetti) LWNFun.confetti(); } catch (e) {}
   }
   function useIcon(token) {
@@ -279,12 +322,12 @@
     var EV = E.EV, ph = E.phase(), s = E.state(), cnt = EV.costumes.length;
     var anchor = document.querySelector("#skill-games .daily-treasure-banner, #skill-games"); if (!anchor) return;
     css();
-    var n = E.unlockedCount(s.n), dl = E.daysLeft();
+    var n = E.unlockedCount(s), dl = E.daysLeft();
     var a = document.createElement("a"); a.id = "lwnEvBanner"; a.className = "lwn-ev-banner"; a.href = EV.page;
     var sub = ph === "soon" ? "Starts " + EV.dates.split("–")[0].trim() + "! Collect puzzle pieces and unlock " + cnt + " Nini costumes."
       : s.n >= E.TOTAL ? "You unlocked " + (cnt === 2 ? "both" : "all " + cnt) + "! 🏆" + (EV.certificate ? " Get your certificate." : "")
       : s.n + " of " + E.TOTAL + " pieces · " + n + " of " + cnt + " costumes · " + dl + " day" + (dl === 1 ? "" : "s") + " left";
-    a.innerHTML = '<span class="faces">' + EV.costumes.map(function (c, i) { return '<img src="' + E.icon(c) + '" alt="" class="' + (i < n ? "" : "lock") + '">'; }).join("") + "</span>" +
+    a.innerHTML = '<span class="faces">' + EV.costumes.map(function (c, i) { return '<img src="' + E.icon(c) + '" alt="" class="' + (E.isDone(c, s) ? "" : "lock") + '">'; }).join("") + "</span>" +
       "<span><b>🧩 " + esc(EV.name) + "</b><small>" + esc(sub) + '</small></span><span class="go">' + (ph === "soon" ? "Peek →" : "Play →") + "</span>";
     if (anchor.id === "skill-games") { var h = anchor.querySelector("h2"); if (h && h.nextSibling) anchor.insertBefore(a, h.nextSibling); else anchor.prepend(a); }
     else anchor.parentNode.insertBefore(a, anchor);
@@ -327,9 +370,9 @@
     var w = document.createElement("div"); w.id = "lwnEvAnnounce"; w.className = "lwn-modal";
     w.innerHTML = '<div class="card" role="dialog" aria-modal="true" aria-labelledby="lwnEvAnnT"><div class="art"><span class="new">NEW!</span>' +
       '<button type="button" class="x" aria-label="Close">×</button>' +
-      EV.costumes.slice(0, 2).map(function (c) { return '<img src="' + E.pic(c) + '" alt="' + esc(c.name) + '">'; }).join("") + "</div>" +
+      EV.costumes.slice(0, 4).map(function (c) { return '<img src="' + E.pic(c) + '" alt="' + esc(c.name) + '"' + (EV.costumes.length > 2 ? ' style="width:23%;border-width:3px;border-radius:16px"' : "") + ">"; }).join("") + "</div>" +
       '<div class="body"><h2 id="lwnEvAnnT">' + EV.emoji + " " + esc(EV.name) + "!</h2>" +
-      '<div class="sub">Unlock ' + (cnt === 2 ? "2 new Nini costumes" : cnt + " new Nini costumes") + " for your icon · " + dl + " day" + (dl === 1 ? "" : "s") + " only!</div>" +
+      '<div class="sub">Unlock ' + cnt + " new costumes" + " for your icon · " + dl + " day" + (dl === 1 ? "" : "s") + " only!</div>" +
       "<ol><li><span class=\"ic\">🎮</span><span class=\"tx\"><b>Do a math round</b><small>Any game or the Daily Challenge</small></span></li>" +
       "<li><span class=\"ic\">🧩</span><span class=\"tx\"><b>Collect puzzle pieces</b><small>Up to " + PER_DAY + " pieces a day</small></span></li>" +
       "<li><span class=\"ic\">" + EV.emoji + "</span><span class=\"tx\"><b>Unlock the costumes</b><small>4 pieces finish each picture</small></span></li></ol>" +

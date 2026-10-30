@@ -67,7 +67,10 @@
   function newerProfile(a, b) { var x = json(a, {}), y = json(b, {}); return (Number(y.updatedAt) || 0) > (Number(x.updatedAt) || 0) ? b : a; }
   function mergeEvent(a, b) {
     var x = json(a, {}), y = json(b, {});
-    return JSON.stringify({ n: Math.max(Number(x.n) || 0, Number(y.n) || 0), days: maxMap(x.days, y.days), daily: union(x.daily, y.daily) });
+    var out = { n: Math.max(Number(x.n) || 0, Number(y.n) || 0), days: maxMap(x.days, y.days), daily: union(x.daily, y.daily) };
+    if (x.have || y.have) out.have = maxMap(x.have, y.have);   // pieces per costume; event.js fills in any older "n"-only progress
+    out.cur = x.cur || y.cur || null;                            // this device's pick wins
+    return JSON.stringify(out);
   }
   function merge(local, cloud) {
     var out = {};
