@@ -27,7 +27,7 @@
   }
   // Seasonal puzzle event (Thanksgiving Puzzle Hunt) + costume icons.
   if (!document.querySelector('script[src^="/event.js"]')) {
-    var es = document.createElement("script"); es.src = "/event.js?v=3"; es.defer = true; document.head.appendChild(es);
+    var es = document.createElement("script"); es.src = "/event.js?v=4"; es.defer = true; document.head.appendChild(es);
   }
   // First-visit welcome: nickname, icon and grade.
   if (!document.querySelector('script[src="/welcome.js"]')) {
