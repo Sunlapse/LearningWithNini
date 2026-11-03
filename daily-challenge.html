@@ -209,10 +209,11 @@ button:disabled{opacity:.28;cursor:default}
 .cmp{display:none;grid-template-columns:repeat(3,1fr);gap:10px;flex:1}
 .cmp button{background:var(--key);border-radius:18px;font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:56px;min-height:90px}.cmp button.wrong{background:var(--bad-bg);outline:3px solid var(--red);opacity:.72}.cmp button.correct{background:var(--good-bg);outline:3px solid var(--green)}
 .right.is-cmp .keys{display:none}.right.is-cmp .cmp{display:grid}.right.is-cmp .ans{display:none}
-.acts{display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
+.acts{display:grid;grid-template-columns:1fr;gap:14px}
 .check{background:linear-gradient(135deg,#44B8EE,#468ADE);color:var(--sun-ink);border-radius:16px;font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:26px;padding:14px;box-shadow:0 4px 0 #2F72C4}
 .check:active{transform:translateY(3px);box-shadow:0 1px 0 #2F72C4}
-.skip{background:var(--key);border-radius:16px;font-weight:700;font-size:18px}
+.skip{justify-self:center;min-width:140px;padding:8px 18px;background:transparent;border:2px dashed #C9D6E6;color:#6B7392;border-radius:999px;font-weight:800;font-size:15px}
+.skip.armed{background:#FFF3DF;border:2px solid #F0A43A;color:#A85F00}
 .pause{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:5;border-radius:20px}
 .pause.on{display:flex}
 .pause h2{font-family:"Fredoka",system-ui,sans-serif;font-size:48px;margin:0}
@@ -361,8 +362,9 @@ button:disabled{opacity:.28;cursor:default}
  #game .ans{min-height:62px;font-size:34px}
  #game .keys{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(46px,auto);gap:7px;flex:none}
  #game .key{min-width:0;min-height:46px;font-size:25px}
- #game .acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:8px;position:static;flex:none}
- #game .acts button{min-width:0;min-height:54px}
+ #game .acts{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;position:static;flex:none}
+ #game .acts .check{min-width:0;min-height:58px}
+ #game .acts .skip{min-height:40px}
  #game .bar{gap:7px;min-width:0}
  #game .who{font-size:clamp(12px,3vw,16px)}
  #game .timer{font-size:clamp(23px,7vw,32px);min-width:0}
@@ -524,7 +526,7 @@ button:disabled{opacity:.28;cursor:default}
       <div class="hint" id="hint"></div>
       <div class="keys" id="keys"></div>
       <div class="cmp" id="cmp"><button data-c="<">&lt;</button><button data-c="=">=</button><button data-c=">">&gt;</button></div>
-      <div class="acts"><button class="skip" id="skipBtn">Skip</button><button class="check" id="checkBtn">Check</button></div>
+      <div class="acts"><button class="check" id="checkBtn">Check</button><button class="skip" id="skipBtn">Skip</button></div>
     </div>
     <div class="flash" id="flash"><span>✓</span></div>
     <div class="pause" id="pause"><h2>Paused</h2><button class="go" id="resumeBtn">Keep going</button><button class="ghost" id="endBtn">Finish for today</button></div>
@@ -1686,7 +1688,7 @@ function updTimer(){
     finish();
   }
 }
-function nextProblem(){
+function nextProblem(){disarmSkip();
   if(!S||finishing)return;
   if(S.dash&&S.items.length>=S.maxQ){finish();return}
   S.cur=genProblem(S.idx+1);S.idx++;S.input='';S.tries=0;S.wrongChoices=new Set();S.revealed=false;S.locked=false;
@@ -1743,7 +1745,10 @@ function submit(val){
       setFb('Answer: '+showAns(S.cur),'bad');$('#checkBtn').textContent='Next';}
   }
 }
-function skip(){if(!S||S.locked||S.paused)return;fun('skipped');if(!S.revealed)S.items.push({t:S.cur.text,type:S.cur.type,given:'',ans:showAns(S.cur),r:'skip'});nextProblem()}
+let skipArmT=null;function disarmSkip(){const b=$('#skipBtn');if(!b)return;clearTimeout(skipArmT);skipArmT=null;b.classList.remove('armed');b.textContent='Skip'}
+function skip(){if(!S||S.locked||S.paused)return;
+  const sb=$('#skipBtn');if(sb&&!sb.classList.contains('armed')){sb.classList.add('armed');sb.textContent='Tap again to skip';clearTimeout(skipArmT);skipArmT=setTimeout(disarmSkip,2500);return}
+  disarmSkip();fun('skipped');if(!S.revealed)S.items.push({t:S.cur.text,type:S.cur.type,given:'',ans:showAns(S.cur),r:'skip'});nextProblem()}
 function finish(){
   if(!S||finishing)return;
   finishing=true;
@@ -1848,7 +1853,7 @@ if($('#dashBtn')&&today()<DASH_LIVE&&!/[?&]dash=1/.test(location.search)){$('#da
 if($('#oneMinuteTestBtn'))$('#oneMinuteTestBtn').addEventListener('click',()=>startSession(true));
 $('#keys').addEventListener('click',e=>{const b=e.target.closest('.key');if(b)press(b.dataset.k)});
 $('#cmp').addEventListener('click',e=>{const b=e.target.closest('button');if(b)submit(b.dataset.c)});
-$('#checkBtn').addEventListener('click',()=>submit());
+$('#checkBtn').addEventListener('click',()=>{disarmSkip();submit()});
 $('#skipBtn').addEventListener('click',skip);
 $('#pauseBtn').addEventListener('click',pauseS);
 $('#resumeBtn').addEventListener('click',resume);
