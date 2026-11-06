@@ -181,6 +181,7 @@
     if (!L || L.__eventHooked || typeof L.saveScore !== "function") return !!(L && L.__eventHooked);
     var orig = L.saveScore;
     L.saveScore = function (p) {
+      try { if (p && iconSwap && (p.avatar === iconSwap.from || !p.avatar)) p.avatar = iconSwap.to; } catch (e) {}
       try {
         if (p && p.game === "daily_challenge" && !/\|dash\|/.test(String(p.level || ""))) { var e = current(); if (e) e.earnDaily(); }
       } catch (e) {}
@@ -272,11 +273,35 @@
     });
     try { if (done && window.LWNFun && LWNFun.confetti) LWNFun.confetti(); } catch (e) {}
   }
+  // Switch the player's icon right here, without reloading, so results screens (like the Daily Challenge review) stay put.
+  var iconSwap = null;   // {from, to}: later score saves on this page use the new icon
   function useIcon(token) {
     var P = window.LWNProfile, p = (P && P.get()) || {};
-    if (!p.name || String(p.name).trim().toLowerCase() === "nini") { if (P) P.open({ onSave: function () { location.reload(); } }); return; }
+    var x = byToken(token), label = x ? x.c.name : "Your new icon";
+    if (!p.name || String(p.name).trim().toLowerCase() === "nini") {
+      if (P) P.open({ onSave: function () { var q = P.get() || {}; if (q.avatar !== token) P.save(q.name, token); applyIcon(p.avatar, token, label); } });
+      return;
+    }
     if (P) P.save(p.name, token);
-    setTimeout(function () { location.reload(); }, 200);
+    applyIcon(p.avatar, token, label);
+  }
+  function applyIcon(from, to, label) {
+    iconSwap = { from: from || "⭐", to: to };
+    // Update avatar spots on the page that show just the old icon
+    if (from && from !== to && document.body) {
+      var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), list = [];
+      while (w.nextNode()) { var n = w.currentNode, par = n.parentNode; if (n.nodeValue.trim() === from && par && !/^(SCRIPT|STYLE|TEXTAREA|OPTION)$/.test(par.nodeName) && !(par.closest && par.closest("#avatarPick,.lwn-cos,#lwnProfile"))) list.push(n); }
+      list.forEach(function (n) { n.nodeValue = n.nodeValue.replace(from, to); });
+      swapIn(document.body);
+    }
+    try { window.dispatchEvent(new CustomEvent("lwn:icon", { detail: { from: from, to: to } })); } catch (e) {}
+    css();
+    var t = document.createElement("div");
+    t.setAttribute("role", "status");
+    t.style.cssText = "position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:2147483400;background:#203D61;color:#fff;padding:12px 18px;border-radius:999px;font:800 16px/1.2 Nunito,system-ui,sans-serif;box-shadow:0 10px 26px rgba(20,40,70,.3);display:flex;gap:8px;align-items:center";
+    t.innerHTML = "✓ " + esc(label) + " is your icon! <span>" + to + "</span>";
+    document.body.appendChild(t); swapIn(t);
+    setTimeout(function () { t.remove(); }, 2800);
   }
 
   /* ---------- costume icons anywhere on the page ---------- */

@@ -587,6 +587,8 @@ const dayDate=()=>new Date(today()+'T12:00:00Z');
 const fmtUTC=d=>d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTCDate());
 
 const sharedProfile=LS.get('learningWithNiniProfileV1',{name:'',avatar:'⭐'});
+// A costume picked from a puzzle-hunt popup changes the icon without reloading; keep this page's copy in step
+window.addEventListener('lwn:icon',e=>{if(e.detail&&e.detail.to){sharedProfile.avatar=e.detail.to;sharedProfile.updatedAt=Date.now()}});
 let settings=Object.assign({name:'',grade:'3',mode:'standard',mins:20},LS.get('dm-settings',{}));
 if(!['2','3','4','5'].includes(String(settings.grade)))settings.grade='3';
 if(!['standard','review','challenge'].includes(String(settings.mode)))settings.mode='standard';
