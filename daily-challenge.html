@@ -698,6 +698,12 @@ const ri=(a,b)=>a+Math.floor(R()*(b-a+1));
 const pick=a=>a[Math.floor(R()*a.length)];
 const fmt=n=>n.toLocaleString('en-US');
 const NAMES=['Maya','Leo','Kai','Ava','Noah','Lani','Sam','Mia','Eli','Zoe','Koa','Ruby'];
+// Story settings for the grade 3 word problems
+const STORY_GROUPS=[{box:'bags',item:'marbles',pack:1},{box:'boxes',item:'crayons',pack:1},{box:'plates',item:'musubi'},{box:'packs',item:'juice boxes',pack:1},{box:'trays',item:'cookies'},{box:'baskets',item:'mangoes',pack:1},{box:'buckets',item:'shells',pack:1},{box:'vans',item:'players'},{box:'shelves',item:'books'},{box:'lei',item:'flowers'},{box:'jars',item:'buttons',pack:1},{box:'tables',item:'kids'},{box:'canoes',item:'paddlers'},{box:'bowls',item:'strawberries',pack:1},{box:'nests',item:'eggs'},{box:'cartons',item:'eggs',pack:1}];
+const STORY_PACK=STORY_GROUPS.filter(c=>c.pack);
+const STORY_COUNTS=[{verb:'collected',base:'collect',past:'collected',place:'beach club',item:'shells',give:1},{verb:'read',base:'read',past:'read',place:'reading club',item:'pages'},{verb:'sold',base:'sell',past:'sold',place:'school fair',item:'tickets',give:1},{verb:'scored',base:'score',past:'scored',place:'team',item:'points'},{verb:'picked',base:'pick',past:'picked',place:'garden club',item:'strawberries',give:1},{verb:'baked',base:'bake',past:'baked',place:'bakery',item:'cookies',give:1},{verb:'folded',base:'fold',past:'folded',place:'craft club',item:'paper cranes',give:1},{verb:'counted',base:'count',past:'counted',place:'aquarium',item:'fish'}];
+const STORY_SHOP=[{a:'books',b:'magazines'},{a:'hats',b:'visors'},{a:'shave ice cones',b:'smoothies'},{a:'notebooks',b:'folders'},{a:'toy cars',b:'yo-yos'},{a:'plants',b:'flower pots'},{a:'sticker sheets',b:'pens'},{a:'kites',b:'beach balls'}];
+const STORY_EVENTS=['Soccer practice','A hula class','The school play','A swim lesson','A movie','Piano practice','A science show','Art club'];
 const BREAK_APART_SPLITS={
   4:[[1,3],[2,2]],5:[[1,4],[2,3]],6:[[1,5],[2,4],[3,3]],
   7:[[2,5],[3,4]],8:[[2,6],[3,5],[4,4]],9:[[3,6],[4,5]],10:[[4,6],[5,5]]
@@ -804,6 +810,78 @@ const GEN={
   unitPrice3(){
     const price=pick([3,4,5,6,7,8,9]),qty=ri(3,8);
     return{q:`Tickets cost ${price} each. A family buys ${qty} tickets. What is the total cost in dollars?`,a:price*qty,k:'num',factKey:`unit:${Math.min(price,qty)}x${Math.max(price,qty)}`,hint:'Price per ticket × number of tickets.'}
+  },
+  // ---- Grade 3 story problems (many settings per kind; every answer is a whole number) ----
+  storyGroups3(){
+    const c=pick(STORY_GROUPS),g=ri(3,9),e=ri(3,9),n=pick(NAMES);
+    const q=pick([
+      c.pack?`${n} has ${g} ${c.box} with ${e} ${c.item} in each. How many ${c.item} are there in all?`:`There are ${g} ${c.box} with ${e} ${c.item} at each. How many ${c.item} are there in all?`,
+      `There are ${g} ${c.box}. Each one has ${e} ${c.item}. How many ${c.item} altogether?`,
+      ...(c.pack?[`${n} fills ${g} ${c.box} and puts ${e} ${c.item} in each one. How many ${c.item} does ${n} use?`]:[])
+    ]);
+    return{q,a:g*e,k:'num',factKey:`mul:${Math.min(g,e)}x${Math.max(g,e)}`,hint:`${g} equal groups of ${e}: multiply ${g} × ${e}.`}
+  },
+  storyShare3(){
+    const c=pick(STORY_PACK),g=ri(3,9),e=ri(3,9),n=pick(NAMES),T=g*e;
+    const q=pick([
+      `${n} has ${T} ${c.item} and puts the same number into each of ${g} ${c.box}. How many ${c.item} go in each?`,
+      `${T} ${c.item} are shared equally among ${g} ${c.box}. How many ${c.item} are in each one?`
+    ]);
+    return{q,a:e,k:'num',factKey:`mul:${Math.min(g,e)}x${Math.max(g,e)}`,hint:`Divide: ${T} ÷ ${g}. Think ${g} × ? = ${T}.`}
+  },
+  storyHowMany3(){
+    const c=pick(STORY_PACK),g=ri(3,9),e=ri(3,9),T=g*e;
+    const q=pick([
+      `${T} ${c.item} are packed into ${c.box} with ${e} in each. How many ${c.box} are filled?`,
+      `There are ${T} ${c.item}. Each of the ${c.box} holds ${e}. How many ${c.box} are needed for all of them?`
+    ]);
+    return{q,a:g,k:'num',factKey:`mul:${Math.min(g,e)}x${Math.max(g,e)}`,hint:`How many groups of ${e} make ${T}? ${T} ÷ ${e}.`}
+  },
+  storyCompare3(){
+    const c=pick(STORY_COUNTS),n=pick(NAMES);let m=pick(NAMES);while(m===n)m=pick(NAMES);
+    const big=ri(120,880),diff=ri(25,Math.min(400,big-20)),small=big-diff;
+    const more=R()<.6;
+    const q=more?`${n} ${c.verb} ${big} ${c.item}. ${m} ${c.verb} ${small} ${c.item}. How many more ${c.item} did ${n} ${c.base} than ${m}?`
+                :`${m} ${c.verb} ${small} ${c.item}. ${n} ${c.verb} ${big} ${c.item}. How many fewer ${c.item} did ${m} ${c.base} than ${n}?`;
+    return{q,a:diff,k:'num',hint:`Find the difference: ${big} − ${small}.`}
+  },
+  storyAddSub3(){
+    const c=pick(STORY_COUNTS),n=pick(NAMES),kind=ri(0,2);
+    if(kind===0){const a=ri(120,560),b=ri(80,430);return{q:`The ${c.place} ${c.past} ${a} ${c.item} on Saturday and ${b} on Sunday. How many ${c.item} in all?`,a:a+b,k:'num',hint:`Add: ${a} + ${b}.`}}
+    if(kind===1){const g=pick(STORY_COUNTS.filter(x=>x.give)),a=ri(300,950),b=ri(60,a-40);return{q:`${n} had ${a} ${g.item}. Then ${b} were given away. How many ${g.item} does ${n} have now?`,a:a-b,k:'num',hint:`Subtract: ${a} − ${b}.`}}
+    const total=ri(400,980),part=ri(120,total-60);
+    return{q:`${n}’s goal is ${total} ${c.item}. ${n} has ${part} so far. How many more ${c.item} does ${n} need to reach the goal?`,a:total-part,k:'num',hint:`${part} + ? = ${total}. Subtract ${total} − ${part}.`}
+  },
+  storyTwoStep3(){
+    const n=pick(NAMES),kind=ri(0,3);
+    if(kind===0){ // Levi-style: equal price, then find each
+      const s=pick(STORY_SHOP),a=ri(2,6),b=ri(1,4),each=ri(2,9),T=(a+b)*each;
+      return{q:`${n} buys ${a} ${s.a} and ${b} ${s.b}. They all cost the same. ${n} spends $${T}. How much does each one cost?`,a:each,k:'num',hint:`First find how many items: ${a} + ${b}. Then divide $${T} by that number.`}
+    }
+    if(kind===1){ // groups then more added
+      const c=pick(STORY_GROUPS),g=ri(3,8),e=ri(3,9),more=ri(4,19);
+      return{q:`There are ${g} ${c.box} with ${e} ${c.item} in each, plus ${more} extra ${c.item}. How many ${c.item} in all?`,a:g*e+more,k:'num',hint:`First ${g} × ${e}. Then add ${more}.`}
+    }
+    if(kind===2){ // combine then split
+      const team=pick([3,4,5,6]),k=ri(4,9),T=team*k,a=ri(Math.max(8,Math.floor(T/2)-6),Math.floor(T/2)+4),b=T-a;
+      return{q:`${a} kids from one class and ${b} kids from another class join a game. They make teams of ${team}. How many teams can they make?`,a:k,k:'num',hint:`First add ${a} + ${b}. Then divide by ${team}.`}
+    }
+    const price=ri(3,9),q=ri(2,6),have=price*q+ri(5,40),s=pick(STORY_SHOP);
+    return{q:`${n} has $${have} and buys ${q} ${s.a} for $${price} each. How much money does ${n} have left?`,a:have-price*q,k:'num',hint:`First ${q} × $${price}. Then subtract from $${have}.`}
+  },
+  storyLeftover3(){
+    const c=pick(STORY_PACK),e=ri(3,9),full=ri(3,9),left=ri(1,e-1),T=e*full+left,askLeft=R()<.4;
+    return askLeft
+      ?{q:`${T} ${c.item} are put into ${c.box}, ${e} in each. How many ${c.item} are left over after filling as many as possible?`,a:left,k:'num',hint:`${e} × ${full} = ${e*full}. What is left from ${T}?`}
+      :{q:`${T} ${c.item} are put into ${c.box}, ${e} in each. How many ${c.box} can be completely filled?`,a:full,k:'num',hint:`How many groups of ${e} fit in ${T}? Think ${e} × ? close to ${T}.`}
+  },
+  storyMoney3(){
+    const s=pick(STORY_SHOP),n=pick(NAMES),price=ri(2,9),q=ri(2,7),total=price*q,bill=total<=20?20:total<=50?50:100;
+    return{q:`${n} buys ${q} ${s.a} for $${price} each and pays with a $${bill} bill. How much change does ${n} get?`,a:bill-total,k:'num',hint:`Cost: ${q} × $${price} = $${total}. Change: $${bill} − $${total}.`}
+  },
+  storyTime3(){
+    const e=pick(STORY_EVENTS),h=ri(1,10),m=ri(0,9)*5,dur=ri(4,11)*5,t=h*60+m+dur,eh=Math.floor(t/60),em=t%60;
+    return{q:`${e} starts at ${h}:${pad2(m)} and ends at ${eh}:${pad2(em)}. How many minutes long is it?`,a:dur,k:'num',hint:`Count on from ${h}:${pad2(m)} to ${eh}:${pad2(em)} by 5s.`}
   },
   ninePattern3(){
     const n=ri(0,10),hideFactor=R()<.5;
@@ -1253,10 +1331,10 @@ const PHASE_POOLS={
     challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','quarterTime2','elapsedTime2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002']
   },
   '3':{
-    warmup:['mult','div','missing','missingDiv3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','add','sub','round','place3','pattern3','money3'],
-    core:['wordMult','wordDiv','wordAddSub3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
-    stretch:['twoStep3','wordUnknown3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','fracOf3','expanded3','measure3','time','fraccmp','area','perim','missingDividend3','add4','sub4','equivfrac','angle','factorPair4'],
-    challenge:['twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
+    warmup:['storyGroups3','storyShare3','storyAddSub3','mult','div','missing','missingDiv3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','add','sub','round','place3','pattern3','money3'],
+    core:['storyGroups3','storyShare3','storyHowMany3','storyCompare3','storyAddSub3','storyTwoStep3','storyMoney3','storyTime3','wordMult','wordDiv','wordAddSub3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
+    stretch:['storyTwoStep3','storyCompare3','storyHowMany3','storyMoney3','storyTime3','storyLeftover3','twoStep3','wordUnknown3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','fracOf3','expanded3','measure3','time','fraccmp','area','perim','missingDividend3','add4','sub4','equivfrac','angle','factorPair4'],
+    challenge:['storyTwoStep3','storyLeftover3','twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
   },
   '4':{
     warmup:['mult','factorPair4','missingPartial4','add4','sub4','placeMillion','roundBig','deccmp','pattern4','money4','measure4'],
