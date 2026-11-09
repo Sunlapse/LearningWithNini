@@ -148,11 +148,57 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
 (function(){
   /* ===== Cases: add each new case to the TOP of this list, with live = its Monday (YYYY-MM-DD). ===== */
   var CASES = [{
+    id: "c3-giant-sweet-potato",
+    num: 3,
+    live: "2026-11-09",
+    title: "The Missing Giant Sweet Potato 🍂",
+    next: "Case #4 drops Monday, Nov 16",
+    intro: "Detective, we have a new case! 🍂 It's the Harvest Fair at Lucky Leaf Farm, with hayrides, tall corn stalks, and sweet potatoes fresh from the field. Farmer Ana set the biggest one, a giant purple sweet potato, on the weigh-in scale on a low hay-bale stand for the Biggest Sweet Potato contest. She saw it there at 9:40. At 10:25 it was GONE! Solve each math problem to unlock a clue. Then tell me who took the sweet potato.",
+    suspects: [
+      { id: "koa", e: "🧢", name: "Koa", note: "in a green baseball cap" },
+      { id: "hazel", e: "🐐", name: "Hazel", note: "the brown-and-white spotted goat" },
+      { id: "mia", e: "🎒", name: "Mia", note: "with a yellow backpack" },
+      { id: "truffle", e: "🐷", name: "Truffle", note: "the pink piglet" }
+    ],
+    culprit: "truffle",
+    solved: "It was <b>Truffle the piglet</b>! 🐷 She wiggled under a loose board in her pen fence, sniffed out the giant sweet potato with her round snout, nudged it off the low hay-bale stand, and rolled it all the way to her favorite muddy spot behind the barn. Farmer Ana found it a little muddy but not even nibbled. She washed it off, checked on Truffle (happy and healthy!), walked her back to her pen, and fixed the loose board. Hazel the goat was innocent and spent the whole morning munching hay. The giant purple sweet potato still won the weigh-in! Remember, detectives: farm animals are curious, so ask a grown-up before you go near them or open a pen. Case closed! 🍠",
+    wrong: "Not this one! Look at clues 3 and 6 again: round nose prints with two little holes and a stiff pink bristly hair. 🔎",
+    chapters: {
+      g23: [
+        { story: "Farmer Ana set up hay bale seats for the fair. She made 8 rows with 9 bales in each row.", q: "How many hay bale seats did Farmer Ana set up?", a: 72, unit: "bales", hint: "8 groups of 9. Try 10 × 8 = 80, then take away 8.",
+          clue: "Across from the <b>72 hay bale seats</b> was the weigh-in stand with the giant purple sweet potato. Farmer Ana saw it there at 9:40. At 10:25 it was gone, so it vanished between 9:40 and 10:25! 😱" },
+        { story: "Koa played sack races at the games field. He went to the field at 9:35 and came back at 10:30.", q: "How many minutes was Koa at the games field?", a: 55, unit: "minutes", hint: "From 9:35 to 10:00 is 25 minutes. From 10:00 to 10:30 is 30 more minutes. Add them.",
+          clue: "Koa was at the games field for <b>55 minutes</b>, from 9:35 to 10:30. The game helpers saw him the whole time. That covers all of 9:40 to 10:25. Koa is cleared! 🧢", clear: "koa" },
+        { story: "We found a trail of small hoofprints in the dirt by the weigh-in stand. The trail has 9 steps, and each step is 30 cm long.", q: "How long is the trail?", a: 270, unit: "cm", hint: "9 steps × 30 cm each. 9 × 3 tens = 27 tens.",
+          clue: "The <b>270 cm</b> trail has small hoofprints split into two halves. Every few steps there is a <b>round nose print with two little holes</b>, like someone sniffing the ground! 🔎 Which suspect has a nose like that?" },
+        { story: "Mia helped at the face-painting tent. She put all 32 paintbrushes into 4 cups, with the same number in each cup.", q: "How many paintbrushes went in each cup?", a: 8, unit: "brushes", hint: "32 ÷ 4. Think: 4 × what = 32?",
+          clue: "Mia put <b>8 brushes</b> in each cup. She worked at the face-painting tent from 9:15 to 10:45, and the face painters saw her the whole time. That covers all of 9:40 to 10:25. Mia is cleared! 🎒", clear: "mia" },
+        { story: "The hoofprints went past rows of corn stalks. The rows had 14, 21, 28, ... stalks.", q: "How many stalks are in the next row?", a: 35, unit: "stalks", hint: "Each row has 7 more stalks than the one before. 28 + 7.",
+          clue: "Right after the row of <b>35 stalks</b>, the hoofprints turn toward a <b>muddy, dug-up spot</b> behind the barn. 🌽" },
+        { story: "Farmer Ana brought 200 sweet potatoes to sell at the fair. She sold 135 of them at the farm stand, and all the rest are in the bin behind the barn.", q: "How many sweet potatoes are in the bin?", a: 65, unit: "sweet potatoes", hint: "200 − 135. Take away 100 to get 100, then take away 35 more.",
+          clue: "Next to the bin of <b>65 sweet potatoes</b>, in the muddy dug-up spot, we found the giant purple sweet potato, a little muddy but fine, and a stiff <b>pink bristly hair</b>! 🍠" }
+      ],
+      g45: [
+        { story: "Farmer Ana set up hay bale seats for the fair. She made 18 rows with 14 bales in each row.", q: "How many hay bale seats did Farmer Ana set up?", a: 252, unit: "bales", hint: "18 × 14 = 18 × 10 + 18 × 4.",
+          clue: "Across from the <b>252 hay bale seats</b> was the weigh-in stand with the giant purple sweet potato. Farmer Ana saw it there at 9:40. At 10:25 it was gone, so it vanished between 9:40 and 10:25! 😱" },
+        { story: "Koa played sack races at the games field. He went to the field at 9:20 and came back at 10:40.", q: "How many minutes was Koa at the games field?", a: 80, unit: "minutes", hint: "From 9:20 to 10:20 is 60 minutes. Then add 20 more minutes to get to 10:40.",
+          clue: "Koa was at the games field for <b>80 minutes</b>, from 9:20 to 10:40. The game helpers saw him the whole time. The sweet potato went missing between 9:40 and 10:25, while he was still there. Koa is cleared! 🧢", clear: "koa" },
+        { story: "A trail of small hoofprints in the dirt is 4.5 meters long. Each step is 30 cm long.", q: "How many steps are in the trail?", a: 15, unit: "steps", hint: "4.5 m = 450 cm. Then 450 ÷ 30. (30 × 10 = 300, and 150 more is how many 30s?)",
+          clue: "The trail has <b>15 steps</b>. The hoofprints are split into two halves, and every few steps there is a <b>round nose print with two little holes</b>, like someone sniffing the ground! 🔎 Which suspect has a nose like that?" },
+        { story: "Mia helped at the face-painting tent. She packed all 192 face-paint crayons into boxes, with 8 crayons in each box.", q: "How many boxes did Mia fill?", a: 24, unit: "boxes", hint: "192 ÷ 8. Split it: 160 ÷ 8 = 20 and 32 ÷ 8 = 4.",
+          clue: "Mia filled <b>24 boxes</b>. She worked at the face-painting tent from 9:15 to 10:45, and the face painters saw her the whole time. That covers all of 9:40 to 10:25. Mia is cleared! 🎒", clear: "mia" },
+        { story: "The farm path has 84 corn stalks along it. The hoofprints went past 3/7 of the stalks, then turned off the path.", q: "How many stalks did the hoofprints go past?", a: 36, unit: "stalks", hint: "84 ÷ 7 = 12. Then 12 × 3.",
+          clue: "The hoofprints went past <b>36 stalks</b>, then turned toward a <b>muddy, dug-up spot</b> behind the barn. 🌽" },
+        { story: "Farmer Ana brought 360 sweet potatoes to sell at the fair. She sold 5/8 of them at the farm stand, and all the rest are in the bin behind the barn.", q: "How many sweet potatoes are in the bin?", a: 135, unit: "sweet potatoes", hint: "First find 5/8 of 360: 360 ÷ 8 = 45, and 45 × 5 = 225. Then 360 − 225.",
+          clue: "Next to the bin of <b>135 sweet potatoes</b>, in the muddy dug-up spot, we found the giant purple sweet potato, a little muddy but fine, and a stiff <b>pink bristly hair</b>! 🍠" }
+      ]
+    }
+  }, {
     id: "c2-blue-ribbon",
     num: 2,
     live: "2026-10-26",
     title: "The Missing Blue Ribbon 🐴",
-    next: "Case #3 drops Monday, Nov 2",
+    next: "Case #3 is out now!",
     intro: "Detective, we have a new case! 🐴 At the Sunny Hill Ranch Fall Fair, Judge Ruby set a shiny blue ribbon on the pie table for the best pie in the contest. She saw it there at 10:20. At 11:05 it was GONE! Solve each math problem to unlock a clue. Then tell me who took the ribbon.",
     suspects: [
       { id: "theo", e: "🤠", name: "Theo", note: "in a cowboy hat" },
