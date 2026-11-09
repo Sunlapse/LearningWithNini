@@ -1543,6 +1543,9 @@ const toText=q=>{
 const showAns=p=>p.k==='frac'?`${p.a[0]}/${p.a[1]}`:p.k==='num'?String(p.a):p.a;
 
 function fracVal(s){let m=s.match(/^(\d+)\/(\d+)$/);if(m)return +m[2]===0?null:+m[1]/+m[2];m=s.match(/^\d+$/);return m?+s:null}
+// The decimal point only shows when the answer really needs one (like 1.25).
+// Whole-number answers (even cents questions) hide it so it can't be tapped by mistake.
+function keysFor(p){let k=KEYSET[p&&p.k]||'';if(p&&p.k==='num'&&Number.isInteger(+p.a))k=k.replace('.','');return k}
 function isRight(p,input){
   const s=String(input).replace(/[\s,]/g,'').toUpperCase();if(!s)return false;
   switch(p.k){
@@ -1889,7 +1892,7 @@ function nextProblem(){disarmSkip();
   buildKeys();updAns();strokes=[];redraw();
 }
 function buildKeys(){
-  const allowed=KEYSET[S.cur.k]||'';const order=['7','8','9','4','5','6','1','2','3','0','.','⌫','/',':','R'];
+  const allowed=keysFor(S.cur);const order=['7','8','9','4','5','6','1','2','3','0','.','⌫','/',':','R'];
   const k=$('#keys');k.innerHTML='';
   order.forEach(c=>{if(c!=='⌫'&&!'0123456789'.includes(c)&&!allowed.includes(c))return;
     const b=document.createElement('button');b.className='key';b.textContent=c;b.dataset.k=c;if(c==='⌫')b.setAttribute('aria-label','Delete');k.appendChild(b)});
@@ -2051,7 +2054,7 @@ $('#homeBtn').textContent='Back to start';$('#homeBtn').addEventListener('click'
 document.addEventListener('keydown',e=>{if(!S||document.activeElement===$('#name'))return;
   if(e.key==='Enter'){e.preventDefault();submit()}else if(e.key==='Backspace')press('⌫');
   else if(S.cur&&S.cur.k==='cmp'&&'<=>'.includes(e.key))submit(e.key);
-  else if('0123456789'.includes(e.key)||(KEYSET[S.cur&&S.cur.k]||'').includes(e.key.toUpperCase()))press(e.key.toUpperCase())});
+  else if('0123456789'.includes(e.key)||keysFor(S.cur).includes(e.key.toUpperCase()))press(e.key.toUpperCase())});
 
 // Recover a locally saved Daily Challenge result from today and retry failed uploads.
 queueTodayLocalResultIfNeeded();
