@@ -148,6 +148,52 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
 (function(){
   /* ===== Cases: add each new case to the TOP of this list, with live = its Monday (YYYY-MM-DD). ===== */
   var CASES = [{
+    id: "c4-golden-acorn",
+    num: 4,
+    live: "2026-11-16",
+    title: "The Missing Golden Acorn 🍂",
+    next: "Case #5 drops Monday, Nov 23",
+    intro: "Detective, we have a new case! 🍂 It's Harvest Day at Maple Hollow Farm, with apple picking, a corn maze, and big piles of crunchy leaves. Farmer Gail set a shiny golden acorn trophy on the prize table for the best scarecrow. She saw it there at 1:10. At 1:55 it was GONE! Solve each math problem to unlock a clue. Then tell me who took the trophy.",
+    suspects: [
+      { id: "jonah", e: "🧑‍🌾", name: "Jonah", note: "in red rain boots" },
+      { id: "pepper", e: "🐕", name: "Pepper", note: "the black-and-white farm dog" },
+      { id: "lani", e: "🧣", name: "Lani", note: "in a cozy orange scarf" },
+      { id: "nutmeg", e: "🐿️", name: "Nutmeg", note: "the gray squirrel in the oak tree" }
+    ],
+    culprit: "pepper",
+    solved: "It was <b>Pepper the farm dog</b>! 🐕 Pepper saw the shiny trophy, carried it away in her mouth, and buried it in the big leaf pile, just like a bone. Farmer Gail dug it out and wiped it off, and it was as good as new. She clipped on Pepper's leash, gave her a chew toy of her own, and let her rest on the porch for the rest of the fair. Nutmeg the squirrel was innocent and stayed up in her oak tree. Remember, detectives: ask a grown-up before you pet a farm dog, and never touch or feed wild animals like squirrels. The best scarecrow got its golden acorn after all. Case closed! 🏆",
+    wrong: "Not this one! Look at clues 3 and 6 again: big paw prints as wide as a grown-up's hand and a clump of black-and-white fur. 🔎",
+    chapters: {
+      g23: [
+        { story: "Farmer Gail set out apple-picking baskets in 7 rows. Each row had 8 baskets.", q: "How many baskets did Farmer Gail set out?", a: 56, unit: "baskets", hint: "7 groups of 8. Try 8 × 7, or 8 + 8 + 8 + 8 + 8 + 8 + 8.",
+          clue: "Next to the <b>56 baskets</b> was the prize table with the golden acorn trophy. Farmer Gail saw it there at 1:10. At 1:55 it was gone, so the trophy vanished between 1:10 and 1:55! 😱" },
+        { story: "Jonah's group walked through the corn maze. They went in at 1:05 and came out at 2:00.", q: "How many minutes was Jonah in the corn maze?", a: 55, unit: "minutes", hint: "From 1:05 to 1:55 is 50 minutes. Then add 5 more minutes to get to 2:00.",
+          clue: "Jonah was in the corn maze for <b>55 minutes</b>, from 1:05 to 2:00. The maze guide walked with his group the whole time. That covers all of 1:10 to 1:55. Jonah is cleared! 🧑‍🌾", clear: "jonah" },
+        { story: "We found a trail of paw prints in the soft dirt by the prize table. The trail has 7 steps, and each step is 50 cm long.", q: "How long is the trail?", a: 350, unit: "cm", hint: "7 steps × 50 cm each. 7 × 5 tens = 35 tens.",
+          clue: "The <b>350 cm</b> trail has big paw prints. Each print has 4 toes with claw marks, and it is as wide as a grown-up's hand! 🐾 Which suspect has paws that big?" },
+        { story: "Lani helped at the apple stand. She split all 45 apples equally into 5 baskets.", q: "How many apples went in each basket?", a: 9, unit: "apples", hint: "45 ÷ 5. Think: 5 × what = 45?",
+          clue: "Lani put <b>9 apples</b> in each basket. She worked at the apple stand from 1:00 to 2:15, and Grandpa Joe and the shoppers saw her the whole time. That covers all of 1:10 to 1:55. Lani is cleared! 🧣", clear: "lani" },
+        { story: "The paw prints went past a row of apple trees. The first tree had 18 apples left on it, the next had 27, then 36, ...", q: "How many apples are on the next tree?", a: 45, unit: "apples", hint: "Each tree has 9 more apples than the one before. 36 + 9.",
+          clue: "Right after the tree with <b>45 apples</b>, the paw prints turn toward the <b>big leaf pile</b> by the barn. 🍁" },
+        { story: "This morning Farmer Gail raked 300 leaves into the big pile. Now 125 of those leaves are scattered around a freshly dug hole, and all the rest are still in the pile.", q: "How many leaves are still in the pile?", a: 175, unit: "leaves", hint: "300 − 125. Take away 100 to get 200, then take away 25 more.",
+          clue: "<b>175 leaves</b> are still in the pile. In the dug hole we found the golden acorn trophy and a clump of <b>black-and-white fur</b>! 🍂" }
+      ],
+      g45: [
+        { story: "Farmer Gail set out apple-picking baskets in 14 rows. Each row had 16 baskets.", q: "How many baskets did Farmer Gail set out?", a: 224, unit: "baskets", hint: "14 × 16 = 14 × 10 + 14 × 6.",
+          clue: "Next to the <b>224 baskets</b> was the prize table with the golden acorn trophy. Farmer Gail saw it there at 1:10. At 1:55 it was gone, so the trophy vanished between 1:10 and 1:55! 😱" },
+        { story: "Jonah's group walked through the corn maze. They went in at 12:50 and came out at 2:05.", q: "How many minutes was Jonah in the corn maze?", a: 75, unit: "minutes", hint: "From 12:50 to 1:50 is 60 minutes. Then add 15 more minutes to get to 2:05.",
+          clue: "Jonah was in the corn maze for <b>75 minutes</b>, from 12:50 to 2:05. The maze guide walked with his group the whole time. The trophy went missing between 1:10 and 1:55, while he was still in the maze. Jonah is cleared! 🧑‍🌾", clear: "jonah" },
+        { story: "A trail of paw prints in the soft dirt is 4.2 meters long. Each step is 35 cm long.", q: "How many steps are in the trail?", a: 12, unit: "steps", hint: "4.2 m = 420 cm. Then 420 ÷ 35. (35 × 10 = 350, and 35 × 2 = 70.)",
+          clue: "The trail has <b>12 steps</b>. Each print has 4 toes with claw marks, and it is as wide as a grown-up's hand! 🐾 Which suspect has paws that big?" },
+        { story: "Lani helped at the apple stand. She packed all 216 apples into bags, with 8 apples in each bag.", q: "How many bags did Lani fill?", a: 27, unit: "bags", hint: "216 ÷ 8. Split it: 160 ÷ 8 = 20 and 56 ÷ 8 = 7.",
+          clue: "Lani filled <b>27 bags</b>. She worked at the apple stand from 1:00 to 2:15, and Grandpa Joe and the shoppers saw her the whole time. That covers all of 1:10 to 1:55. Lani is cleared! 🧣", clear: "lani" },
+        { story: "The orchard path has 72 apple trees along it. The paw prints went past 5/9 of the trees, then turned off the path.", q: "How many trees did the paw prints go past?", a: 40, unit: "trees", hint: "72 ÷ 9 = 8. Then 8 × 5.",
+          clue: "The paw prints went past <b>40 trees</b>, then turned toward the <b>big leaf pile</b> by the barn. 🍁" },
+        { story: "This morning Farmer Gail raked 1,200 leaves into the big pile. Now 3/8 of those leaves are scattered around a freshly dug hole, and all the rest are still in the pile.", q: "How many leaves are still in the pile?", a: 750, unit: "leaves", hint: "First find 3/8 of 1,200: 1,200 ÷ 8 = 150, and 150 × 3 = 450. Then 1,200 − 450.",
+          clue: "<b>750 leaves</b> are still in the pile. In the dug hole we found the golden acorn trophy and a clump of <b>black-and-white fur</b>! 🍂" }
+      ]
+    }
+  }, {
     id: "c3-giant-sweet-potato",
     num: 3,
     live: "2026-11-09",
