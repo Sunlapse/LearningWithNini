@@ -703,6 +703,9 @@ const STORY_GROUPS=[{box:'bags',item:'marbles',pack:1},{box:'boxes',item:'crayon
 const STORY_PACK=STORY_GROUPS.filter(c=>c.pack);
 const STORY_COUNTS=[{verb:'collected',base:'collect',past:'collected',place:'beach club',item:'shells',give:1},{verb:'read',base:'read',past:'read',place:'reading club',item:'pages'},{verb:'sold',base:'sell',past:'sold',place:'school fair',item:'tickets',give:1},{verb:'scored',base:'score',past:'scored',place:'team',item:'points'},{verb:'picked',base:'pick',past:'picked',place:'garden club',item:'strawberries',give:1},{verb:'baked',base:'bake',past:'baked',place:'bakery',item:'cookies',give:1},{verb:'folded',base:'fold',past:'folded',place:'craft club',item:'paper cranes',give:1},{verb:'counted',base:'count',past:'counted',place:'aquarium',item:'fish'}];
 const STORY_SHOP=[{a:'books',b:'magazines'},{a:'hats',b:'visors'},{a:'shave ice cones',b:'smoothies'},{a:'notebooks',b:'folders'},{a:'toy cars',b:'yo-yos'},{a:'plants',b:'flower pots'},{a:'sticker sheets',b:'pens'},{a:'kites',b:'beach balls'}];
+const STORY_ROWS=[{place:'A theater',rows:'rows',item:'seats'},{place:'An orchard',rows:'rows',item:'trees'},{place:'A parking lot',rows:'rows',item:'spaces'},{place:'A garden',rows:'rows',item:'plants'},{place:'A stadium section',rows:'rows',item:'seats'},{place:'A sticker book',rows:'pages',item:'stickers'},{place:'A photo album',rows:'pages',item:'photos'}];
+const gcdS=(a,b)=>b?gcdS(b,a%b):a;
+const simpleNum=d=>{let n;do{n=ri(1,d-1)}while(gcdS(n,d)!==1);return n};
 const STORY_EVENTS=['Soccer practice','A hula class','The school play','A swim lesson','A movie','Piano practice','A science show','Art club'];
 const BREAK_APART_SPLITS={
   4:[[1,3],[2,2]],5:[[1,4],[2,3]],6:[[1,5],[2,4],[3,3]],
@@ -882,6 +885,112 @@ const GEN={
   storyTime3(){
     const e=pick(STORY_EVENTS),h=ri(1,10),m=ri(0,9)*5,dur=ri(4,11)*5,t=h*60+m+dur,eh=Math.floor(t/60),em=t%60;
     return{q:`${e} starts at ${h}:${pad2(m)} and ends at ${eh}:${pad2(em)}. How many minutes long is it?`,a:dur,k:'num',hint:`Count on from ${h}:${pad2(m)} to ${eh}:${pad2(em)} by 5s.`}
+  },
+  // ---- Grade 4 story problems ----
+  story4Times(){
+    const c=pick(STORY_COUNTS),n=pick(NAMES);let m=pick(NAMES);while(m===n)m=pick(NAMES);
+    const a=ri(4,15),k=ri(2,9);
+    return R()<.55
+      ?{q:`${m} ${c.verb} ${a} ${c.item}. ${n} ${c.verb} ${k} times as many ${c.item} as ${m}. How many ${c.item} did ${n} ${c.base}?`,a:a*k,k:'num',hint:`"${k} times as many" means multiply: ${a} × ${k}.`}
+      :{q:`${n} ${c.verb} ${a*k} ${c.item}. That is ${k} times as many as ${m}. How many ${c.item} did ${m} ${c.base}?`,a:a,k:'num',hint:`Undo "${k} times as many" by dividing: ${a*k} ÷ ${k}.`}
+  },
+  story4Mult(){
+    if(R()<.5){const s=pick(STORY_ROWS),r=ri(12,35),e=ri(12,28);
+      return{q:`${s.place} has ${r} ${s.rows} with ${e} ${s.item} in each. How many ${s.item} are there in all?`,a:r*e,k:'num',hint:`Multiply ${r} × ${e}. Try (${Math.floor(r/10)*10} × ${e}) + (${r%10} × ${e}).`}}
+    const c=pick(STORY_COUNTS),per=ri(125,480),d=ri(3,9);
+    return{q:`The ${c.place} ${c.past} ${per} ${c.item} each day for ${d} days. How many ${c.item} is that in all?`,a:per*d,k:'num',hint:`Multiply ${per} × ${d}.`}
+  },
+  story4Div(){
+    const c=pick(STORY_PACK),g=ri(3,9),e=ri(24,150),T=g*e;
+    return{q:`${fmt(T)} ${c.item} are shared equally among ${g} ${c.box}. How many ${c.item} go in each?`,a:e,k:'num',hint:`Divide ${T} ÷ ${g}.`}
+  },
+  story4Remainder(){
+    const kind=ri(0,2),cap=ri(4,9),full=ri(4,12),left=ri(1,cap-1),T=cap*full+left;
+    if(kind===0)return{q:`${T} students go on a field trip. Each van holds ${cap} students. How many vans are needed so everyone gets a ride?`,a:full+1,k:'num',hint:`${T} ÷ ${cap} = ${full} R${left}. The ${left} extra students need one more van.`}
+    if(kind===1)return{q:`${T} kids sign up for teams of ${cap}. How many full teams can they make?`,a:full,k:'num',hint:`${T} ÷ ${cap} = ${full} R${left}. Only full teams count.`}
+    return{q:`${T} cookies are packed in boxes of ${cap}. How many cookies are left over after filling as many boxes as possible?`,a:left,k:'num',hint:`${cap} × ${full} = ${cap*full}. ${T} − ${cap*full} = ?`}
+  },
+  story4FracSet(){
+    const d=pick([3,4,5,6,8,10]),n=simpleNum(d),k=ri(3,9),T=d*k,g=pick(['kids in a club like soccer','marbles in a jar are blue','students in a class ride the bus','shells in a bucket are white','fish in a tank are orange','cupcakes on a tray have sprinkles']);
+    const [who,rest]=[g.split(' ')[0],g];
+    return{q:`{${n}/${d}} of the ${T} ${rest}. How many ${who} is that?`,a:n*k,k:'num',hint:`Find {1/${d}} first: ${T} ÷ ${d} = ${k}. Then × ${n}.`}
+  },
+  story4AddSub(){
+    const kind=ri(0,2);
+    if(kind===0){const a=ri(1200,6800),b=ri(800,3100);return{q:`A stadium had ${fmt(a)} fans on Friday and ${fmt(b)} fans on Saturday. How many fans came in all?`,a:a+b,k:'num',hint:`Add ${fmt(a)} + ${fmt(b)}.`}}
+    if(kind===1){const a=ri(3000,9800),b=ri(600,a-500);return{q:`A store had ${fmt(a)} stickers. It sold ${fmt(b)}. How many stickers are left?`,a:a-b,k:'num',hint:`Subtract ${fmt(a)} − ${fmt(b)}.`}}
+    const goal=ri(4000,9500),have=ri(1500,goal-300);
+    return{q:`A school wants to read ${fmt(goal)} books this year. So far students have read ${fmt(have)}. How many more books do they need to read?`,a:goal-have,k:'num',hint:`${fmt(goal)} − ${fmt(have)}.`}
+  },
+  story4Convert(){
+    const kind=ri(0,4),n=pick(NAMES);
+    if(kind===0){const x=ri(2,9);return{q:`${n}’s ribbon is ${x} feet long. How many inches long is it?`,a:x*12,k:'num',hint:'1 foot = 12 inches.'}}
+    if(kind===1){const x=ri(2,6);return{q:`A road trip lasts ${x} hours. How many minutes is that?`,a:x*60,k:'num',hint:'1 hour = 60 minutes.'}}
+    if(kind===2){const x=ri(2,9);return{q:`A jug holds ${x} liters of juice. How many milliliters is that?`,a:x*1000,k:'num',hint:'1 liter = 1,000 milliliters.'}}
+    if(kind===3){const x=ri(2,9);return{q:`A bag of rice weighs ${x} kilograms. How many grams is that?`,a:x*1000,k:'num',hint:'1 kilogram = 1,000 grams.'}}
+    const x=ri(3,12);return{q:`${n} needs ${x} yards of fence. How many feet is that?`,a:x*3,k:'num',hint:'1 yard = 3 feet.'}
+  },
+  story4MultiStep(){
+    const n=pick(NAMES),a=ri(2,5),p=ri(8,14),b=ri(2,5),s=ri(2,5),tot=a*p+b*s,bill=tot<50?50:100; // max total 95, so the bill always covers it
+    return{q:`${n} buys ${a} movie tickets for $${p} each and ${b} snacks for $${s} each. ${n} pays with $${bill}. How much change does ${n} get?`,a:bill-tot,k:'num',hint:`Tickets: ${a} × $${p}. Snacks: ${b} × $${s}. Add, then subtract from $${bill}.`}
+  },
+  // ---- Grade 5 story problems ----
+  story5Mult(){
+    const s=pick([['A farm packs','boxes','mangoes'],['A factory fills','crates','water bottles'],['A school orders','cases','pencils'],['A bakery bakes','batches','cookies'],['A library gets','cartons','books']]),b=ri(12,45),m=ri(105,250);
+    return{q:`${s[0]} ${b} ${s[1]} with ${m} ${s[2]} in each. How many ${s[2]} is that in all?`,a:b*m,k:'num',hint:`Multiply ${m} × ${b}.`}
+  },
+  story5Div(){
+    const g=ri(12,36),e=ri(18,55),T=g*e;
+    return pick([
+      {q:`${fmt(T)} students ride ${g} buses with the same number on each bus. How many students ride each bus?`,a:e,k:'num',hint:`Divide ${T} ÷ ${g}.`},
+      {q:`A farm packs ${fmt(T)} eggs equally into ${g} crates. How many eggs go in each crate?`,a:e,k:'num',hint:`Divide ${T} ÷ ${g}.`}
+    ])
+  },
+  story5Remainder(){
+    const cap=ri(12,48),full=ri(6,24),left=ri(1,cap-1),T=cap*full+left;
+    return R()<.6
+      ?{q:`${fmt(T)} fans are going to a game. Each bus holds ${cap} people. How many buses are needed so everyone gets a seat?`,a:full+1,k:'num',hint:`${T} ÷ ${cap} = ${full} R${left}, so one more bus is needed.`}
+      :{q:`A teacher has ${fmt(T)} stickers and makes packs of ${cap}. How many full packs can she make?`,a:full,k:'num',hint:`${T} ÷ ${cap} = ${full} R${left}. Only full packs count.`}
+  },
+  story5Money(){
+    const n=pick(NAMES),item=pick(['smoothies','shave ice cones','poke bowls','sandwiches','bento boxes']),q=ri(2,6),pc=pick([225,250,275,325,350,375,425,450,475,525,575,625,675,725,850]),p=pc/100;
+    if(R()<.55)return{q:`${n} buys ${q} ${item} for $${p.toFixed(2)} each. What is the total cost in dollars?`,a:Math.round(q*pc)/100,k:'num',hint:`Multiply ${q} × ${p.toFixed(2)}.`}
+    return{q:`${q} friends share the cost of ${item} equally. The total is $${(q*pc/100).toFixed(2)}. How many dollars does each friend pay?`,a:pc/100,k:'num',hint:`Divide ${(q*pc/100).toFixed(2)} ÷ ${q}.`}
+  },
+  story5FracAdd(){
+    const pairs=[[2,3],[2,5],[3,4],[3,5],[4,5],[2,6],[4,6],[3,8],[4,8],[5,10]],ds=pick(pairs),d1=ds[0],d2=ds[1],n1=simpleNum(d1),n2=simpleNum(d2),n=pick(NAMES);
+    const den=d1*d2,num=n1*d2+n2*d1;
+    return pick([
+      {q:`${n} walks {${n1}/${d1}} mile to the park and then {${n2}/${d2}} mile to the beach. How many miles does ${n} walk in all?`,a:[num,den],k:'frac',hint:'Rename both fractions with a common denominator, then add.'},
+      {q:`A recipe uses {${n1}/${d1}} cup of flour and {${n2}/${d2}} cup of sugar. How many cups is that altogether?`,a:[num,den],k:'frac',hint:'Use a common denominator, then add.'}
+    ])
+  },
+  story5FracSub(){
+    const pairs=[[2,3],[2,5],[3,4],[3,5],[4,5],[2,6],[3,8],[4,8],[5,10]],ds=pick(pairs);let d1=ds[0],d2=ds[1],n1=simpleNum(d1),n2=simpleNum(d2);
+    let guard=0;while(n1*d2===n2*d1&&guard++<20){n1=simpleNum(d1);n2=simpleNum(d2)}
+    if(n1/d1<n2/d2){[n1,n2]=[n2,n1];[d1,d2]=[d2,d1]}
+    const den=d1*d2,num=n1*d2-n2*d1,n=pick(NAMES);
+    return{q:`${n} had {${n1}/${d1}} of a pizza. ${n} ate {${n2}/${d2}} of the pizza. How much of the pizza is left?`,a:[num,den],k:'frac',hint:'Use a common denominator, then subtract.'}
+  },
+  story5FracOf(){
+    const d=pick([3,4,5,6,8]),n=simpleNum(d),k=ri(4,15),T=d*k;
+    return pick([
+      {q:`A fish tank holds ${T} gallons. It is {${n}/${d}} full. How many gallons of water are in it?`,a:n*k,k:'num',hint:`{${n}/${d}} × ${T}: divide by ${d}, then multiply by ${n}.`},
+      {q:`There are ${T} students in the band. {${n}/${d}} of them play drums. How many students play drums?`,a:n*k,k:'num',hint:`${T} ÷ ${d} × ${n}.`}
+    ])
+  },
+  story5Volume(){
+    const l=ri(3,12),w=ri(2,9),h=ri(2,8);
+    return pick([
+      {q:`A toy box is ${l} inches long, ${w} inches wide and ${h} inches tall. How many 1-inch cubes would fill it?`,a:l*w*h,k:'num',hint:'Volume = length × width × height.'},
+      {q:`A garden bed is ${l} feet long, ${w} feet wide and ${h} feet deep. How many cubic feet of soil fill it?`,a:l*w*h,k:'num',hint:'Volume = length × width × height.'}
+    ])
+  },
+  story5Convert(){
+    const kind=ri(0,2);
+    if(kind===0){const m=ri(2,9),cm=ri(5,95);return{q:`A rope is ${m} meters ${cm} centimeters long. How many centimeters long is it?`,a:m*100+cm,k:'num',hint:'1 meter = 100 centimeters.'}}
+    if(kind===1){const t=ri(3,19)*0.5;return{q:`A bag of oranges weighs ${t} kilograms. How many grams is that?`,a:Math.round(t*1000),k:'num',hint:'1 kilogram = 1,000 grams.'}}
+    const ft=ri(3,9),inch=ri(1,11);return{q:`A shelf is ${ft} feet ${inch} inches long. How many inches long is it?`,a:ft*12+inch,k:'num',hint:'1 foot = 12 inches.'}
   },
   ninePattern3(){
     const n=ri(0,10),hideFactor=R()<.5;
@@ -1337,16 +1446,16 @@ const PHASE_POOLS={
     challenge:['storyTwoStep3','storyLeftover3','twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
   },
   '4':{
-    warmup:['mult','factorPair4','missingPartial4','add4','sub4','placeMillion','roundBig','deccmp','pattern4','money4','measure4'],
-    core:['partialProduct4','missingPartial4','areaModel4','mult2x2','mult4x1','longdiv','equivfrac','addfrac','subfrac','fraccompare4','angle','placeMillion','roundBig','factorPair4','wordMulti','areaBig','pattern4','fracOf4','money4','measure4'],
-    stretch:['partialProduct4','missingPartial4','areaModel4','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','factorPair4','wordMulti','fracOf4','money4','pattern4','measure4'],
-    challenge:['partialProduct4','missingPartial4','areaModel4','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','wordMulti','fracOf4','money4','pattern4']
+    warmup:['story4Times','story4Convert','mult','factorPair4','missingPartial4','add4','sub4','placeMillion','roundBig','deccmp','pattern4','money4','measure4'],
+    core:['story4Times','story4Mult','story4Div','story4Remainder','story4FracSet','story4AddSub','story4Convert','story4MultiStep','partialProduct4','missingPartial4','areaModel4','mult2x2','mult4x1','longdiv','equivfrac','addfrac','subfrac','fraccompare4','angle','placeMillion','roundBig','factorPair4','wordMulti','areaBig','pattern4','fracOf4','money4','measure4'],
+    stretch:['story4Times','story4Mult','story4Remainder','story4FracSet','story4MultiStep','story4AddSub','partialProduct4','missingPartial4','areaModel4','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','factorPair4','wordMulti','fracOf4','money4','pattern4','measure4'],
+    challenge:['story4MultiStep','story4Remainder','story4FracSet','partialProduct4','missingPartial4','areaModel4','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','addfrac','subfrac','roundBig','angle','wordMulti','fracOf4','money4','pattern4']
   },
   '5':{
-    warmup:['mult2x2','mult3x2_5','longdiv','longDiv2_5','placeMillion','roundBig','deccmp','decPlace5','decAdd5','decSub5','equivfrac','fraccompare4'],
-    core:['mult3x2_5','longDiv2_5','decAdd5','decSub5','decMultPow10_5','decPlace5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','wordMulti','areaBig','placeMillion','roundBig','fraccompare4','equivfrac'],
-    stretch:['mult3x2_5','longDiv2_5','decAdd5','decSub5','decMultPow10_5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','multiStep4','wordUnknown4','fraccompare4','areaBig','roundBig'],
-    challenge:['mult3x2_5','longDiv2_5','decMultPow10_5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','multiStep4','wordUnknown4','fraccompare4','areaBig','roundBig']
+    warmup:['story5Money','story5Convert','mult2x2','mult3x2_5','longdiv','longDiv2_5','placeMillion','roundBig','deccmp','decPlace5','decAdd5','decSub5','equivfrac','fraccompare4'],
+    core:['story5Mult','story5Div','story5Remainder','story5Money','story5FracAdd','story5FracSub','story5FracOf','story5Volume','story5Convert','mult3x2_5','longDiv2_5','decAdd5','decSub5','decMultPow10_5','decPlace5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','wordMulti','areaBig','placeMillion','roundBig','fraccompare4','equivfrac'],
+    stretch:['story5Mult','story5Div','story5Remainder','story5FracAdd','story5FracSub','story5FracOf','story5Money','mult3x2_5','longDiv2_5','decAdd5','decSub5','decMultPow10_5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','multiStep4','wordUnknown4','fraccompare4','areaBig','roundBig'],
+    challenge:['story5Remainder','story5FracAdd','story5FracSub','story5Div','mult3x2_5','longDiv2_5','decMultPow10_5','addFracUnlike5','subFracUnlike5','fracWhole5','volume5','multiStep5','multiStep4','wordUnknown4','fraccompare4','areaBig','roundBig']
   }
 };
 const mergePools=(a,b)=>[...new Set(a.concat(b))];
