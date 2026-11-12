@@ -226,6 +226,12 @@ button:disabled{opacity:.28;cursor:default}
 /* done */
 #done{overflow-y:auto;align-items:center;padding:28px 0}
 .done{width:100%;max-width:620px;display:flex;flex-direction:column;gap:20px}
+.done-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.done-nav a{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border-radius:999px;background:#fff;border:2px solid #DFE9F5;color:#1E5FA8;font-weight:900;text-decoration:none;font-size:15px}
+.done-nav a.done-home{background:#1E6FD9;border-color:#1E6FD9;color:#fff}
+.done-end{display:flex;flex-direction:column;gap:10px}
+.done-end .go{text-align:center;text-decoration:none;display:block}
+.done-end .go.alt{background:#fff;color:#1E5FA8;border:2px solid #DFE9F5;box-shadow:none}
 .big{font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:clamp(64px,12vw,110px);line-height:.9}
 .big small{font-size:.35em;color:var(--muted);font-weight:600}\n.big .score-context{display:block;margin-top:12px;font-family:"Nunito",system-ui,sans-serif;font-size:18px;line-height:1.2;color:var(--muted);font-weight:800}
 .stats{display:flex;gap:26px;flex-wrap:wrap;font-size:18px;color:var(--muted)}
@@ -535,6 +541,7 @@ button:disabled{opacity:.28;cursor:default}
 
 <section id="done" class="screen" aria-label="Results">
   <div class="done">
+    <nav class="done-nav" aria-label="Leave results"><a href="/" class="done-home">🏠 Home</a><a href="reading.html">📖 Daily Read</a><a href="index.html#skill-games">🎮 More games</a></nav>
     <div class="big" id="bigScore"></div>
     <div class="stats" id="stats"></div>
     <div class="global-save" id="globalSaveStatus">Your best score will save to the global leaderboard.</div>
@@ -566,7 +573,7 @@ button:disabled{opacity:.28;cursor:default}
         <a class="daily-video-link" id="doneVideoLink" href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener">Find this day on YouTube ↗</a>
       </div>
     </section>
-    <button class="go" id="homeBtn">Done</button>
+    <div class="done-end"><a class="go done-home-big" href="/">🏠 Back to home</a><button class="go alt" id="homeBtn">Done</button></div>
   </div>
 </section>
 
