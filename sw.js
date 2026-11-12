@@ -1,6 +1,6 @@
 // Learn With Nini – service worker (lets the app open fast and work offline)
 // Bump this number any time you change the site so the iPad gets the new version.
-const CACHE = "nini-v86";
+const CACHE = "nini-v87";
 
 // Pages/files saved for offline use. Add new game pages here.
 const PRECACHE = [
@@ -35,6 +35,8 @@ const PRECACHE = [
   "/nini-mini.webp",
   "/capacity-lab.html",
   "/daily-challenge.html",
+  "/reading.html",
+  "/stories.js",
   "/division-dash.html",
   "/fraction-builder.html",
   "/games.html",

@@ -1477,6 +1477,7 @@
         <a class="active" href="/">Home</a>
         <a href="https://www.youtube.com/@LearnWithNiniMath" target="_blank" rel="noopener noreferrer">Math Videos</a>
             <a href="daily-challenge.html">Daily Challenge</a>
+        <a href="reading.html">Daily Read</a>
         <a href="path.html">My Path</a>
         <a href="#skill-games">Games</a>
         <a href="leaderboard.html">Leaderboard</a>
@@ -1566,6 +1567,34 @@
           </div>
           <a class="step-video-link" id="challengeVideoLink" href="#latest-video">▶ Watch Nini’s latest challenge →</a>
         </section>
+
+        <a class="daily-read-banner" href="reading.html" id="dailyReadBanner">
+          <span class="drb-new">NEW</span>
+          <span class="drb-icon" aria-hidden="true">📖</span>
+          <span class="drb-copy"><b>Nini’s Daily Read</b><span id="drbLine">A new short story every day. Read it, then tell it back in your own words!</span></span>
+          <span class="drb-go">Read →</span>
+        </a>
+        <style>
+        .daily-read-banner{position:relative;display:flex;align-items:center;gap:14px;margin:18px 0 6px;padding:16px 18px;border-radius:22px;background:linear-gradient(135deg,#0B6E64,#14A391);color:#fff;text-decoration:none;box-shadow:0 12px 30px rgba(11,110,100,.25);font-family:"Nunito",system-ui,sans-serif}
+        .daily-read-banner .drb-icon{font-size:44px;flex:none;line-height:1}
+        .daily-read-banner .drb-copy{flex:1;min-width:0}
+        .daily-read-banner b{display:block;font:700 22px/1.15 "Fredoka",system-ui,sans-serif}
+        .daily-read-banner .drb-copy>span{display:block;font-weight:800;font-size:15px;opacity:.95;line-height:1.35;margin-top:2px}
+        .daily-read-banner .drb-go{flex:none;background:#FFD36B;color:#5A3A00;border-radius:14px;padding:11px 16px;font:700 17px/1 "Fredoka",system-ui,sans-serif}
+        .daily-read-banner .drb-new{position:absolute;top:-9px;left:16px;background:#EF6D4D;color:#fff;font-weight:900;font-size:12px;letter-spacing:.06em;border-radius:999px;padding:3px 9px}
+        @media(max-width:520px){.daily-read-banner{flex-wrap:wrap}.daily-read-banner .drb-go{width:100%;text-align:center}}
+        </style>
+        <script>
+        /* show today's story title; drop the NEW tag after Dec 1 */
+        (function(){try{var t=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date());
+          if(t>="2026-12-01"){var n=document.querySelector(".drb-new");if(n)n.remove();}
+          var s=document.createElement("script");s.src="stories.js";s.onload=function(){var D=window.LWN_STORIES;if(!D)return;
+            var g="";try{g=String(JSON.parse(localStorage.getItem("dm-settings")||"{}").grade||"")}catch(e){}
+            var b=(g==="4"||g==="5")?"g45":"g23",L=D[b],n=Math.round((Date.parse(t+"T12:00:00Z")-Date.parse(D.start+"T12:00:00Z"))/864e5),x=L[((n%L.length)+L.length)%L.length];
+            var done=false;try{done=!!(JSON.parse(localStorage.getItem("lwn-read-v1")||"{}").done||{})[b+":"+x.id]}catch(e){}
+            document.getElementById("drbLine").textContent=(done?"✅ You read today’s story: ":"Today’s story: ")+x.e+" "+x.t+(done?". New one tomorrow!":". Read it and tell it back!");
+          };document.head.appendChild(s);}catch(e){}})();
+        </script>
 
         <section class="games-organized" id="skill-games">
           <h2 class="section-title">Choose a Math Skill</h2>
@@ -1855,6 +1884,7 @@
             <a href="/">Home</a>
             <a href="#skill-games">Games</a>
             <a href="daily-challenge.html">Daily Challenge</a>
+            <a href="reading.html">Daily Read</a>
             <a href="leaderboard.html">Leaderboard</a>
             <a href="parents-teachers.html">Parents &amp; Teachers</a>
             <a href="#about">About</a>

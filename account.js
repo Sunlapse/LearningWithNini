@@ -7,7 +7,7 @@
   var KEY = "sb_publishable_Uso8SKT30uVsIDPxTzroIQ_kMCWOoaN";
   var SDK = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
   // Keys that are about this device only and should never be copied between devices.
-  var SKIP = /^(sb-|lwnGlobalDeviceId$|niniBannerClosed$|lwn-sync-|lwn-event-preview$)/;
+  var SKIP = /^(sb-|lwnGlobalDeviceId$|niniBannerClosed$|lwn-sync-|lwn-event-preview$|lwn-read-journal$)/;
 
   var recovering = /(?:^|[&#])type=recovery(?:&|$)/.test(location.hash);
   var client = null, readyP = null;
