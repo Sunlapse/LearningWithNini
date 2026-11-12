@@ -1590,7 +1590,7 @@
           if(t>="2026-12-01"){var n=document.querySelector(".drb-new");if(n)n.remove();}
           var s=document.createElement("script");s.src="stories.js";s.onload=function(){var D=window.LWN_STORIES;if(!D)return;
             var g="";try{g=String(JSON.parse(localStorage.getItem("dm-settings")||"{}").grade||"")}catch(e){}
-            var b=(g==="4"||g==="5")?"g45":"g23",L=D[b],n=Math.round((Date.parse(t+"T12:00:00Z")-Date.parse(D.start+"T12:00:00Z"))/864e5),x=L[((n%L.length)+L.length)%L.length];
+            var b=(g==="4"||g==="5")?"g45":"g23",x=window.LWN_STORY_FOR(b,t);
             var done=false;try{done=!!(JSON.parse(localStorage.getItem("lwn-read-v1")||"{}").done||{})[b+":"+x.id]}catch(e){}
             document.getElementById("drbLine").textContent=(done?"✅ You read today’s story: ":"Today’s story: ")+x.e+" "+x.t+(done?". New one tomorrow!":". Read it and tell it back!");
           };document.head.appendChild(s);}catch(e){}})();

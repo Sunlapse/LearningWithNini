@@ -3,7 +3,8 @@
    k = key ideas: [what we show the kid, "word|word|prefix*", ...more groups]
    An idea counts when every group has at least one match in the kid's retelling.
    Matching ignores case and punctuation, accepts simple endings (s, es, ed, ing) and small spelling slips.
-   To add stories: append to the END of a list so earlier days don't shift. */
+   To add stories: append to the END of a list so earlier days don't shift,
+   or pin a holiday story to a date in the "dated" section at the bottom. */
 window.LWN_STORIES = {
   start: "2026-11-11",
   g23: [
@@ -369,7 +370,81 @@ window.LWN_STORIES = {
           ["Tiny trigger hairs make it snap shut.", "hair*|trigger*|snap*|close*|shut"],
           ["It needs two touches so it doesn't close on rain.", "two|2|twice|raindrop*|rain|leaves|wast*"],
           ["It digests the bug over about a week.", "digest*|juice*|week|dissolv*|absorb*|eat*|eats"]] }
-  ]
+  ],
+  /* Holiday and seasonal stories pinned to a date (Hawaii time). A date listed here replaces the
+     regular rotation for that day. Keys are YYYY-MM-DD; each day has a g23 and a g45 story. */
+  dated: {
+    "2026-11-12": {
+      g23: { id: "d261112a", e: "🍂", t: "The Leaf Pile",
+        s: "On a breezy fall morning, Ella and her dad raked the yard. They made a giant pile of red and orange leaves. Ella took a running jump and landed right in the middle! Then a gust of wind blew the leaves all over the grass. Ella laughed and grabbed her rake again. This time they put the leaves in the garden, where they will turn into rich soil.",
+        k: [["Ella and her dad raked leaves into a big pile.", "rak*|pile*"],
+            ["Ella jumped into the pile.", "jump*|leap*|dove|dive*"],
+            ["The wind blew the leaves everywhere.", "wind*|blew|blow*|gust*|breez*"],
+            ["They put the leaves in the garden to make soil.", "garden*|soil|dirt|compost*"]] },
+      g45: { id: "d261112b", e: "🌽", t: "The Three Sisters",
+        s: "For centuries, many Native American nations have grown corn, beans, and squash together in the same small mound. These crops are often called the Three Sisters because they help each other. The tall corn stalks give the climbing bean vines something to wrap around. The beans add nitrogen, a nutrient that keeps the soil healthy. The squash spreads big, prickly leaves across the ground, which shade the soil, hold in moisture, and block weeds. Together, the three crops also make a healthy, balanced meal.",
+        k: [["Native American nations grow corn, beans and squash together.", "native*|together|three sisters|sisters|indigenous|american indian*"],
+            ["Corn gives the beans something to climb.", "climb*|wrap*|pole|support*|stalk*|grow up"],
+            ["Beans add nitrogen to keep the soil healthy.", "nitrogen|nutrient*|healthy soil|soil healthy|fertiliz*"],
+            ["Squash leaves shade the ground and block weeds.", "shade*|weed*|moisture|wet|cover*|block*"],
+            ["Together they make a healthy meal.", "meal|healthy|balanced|food|eat*|diet"]] }
+    },
+    "2026-11-13": {
+      g23: { id: "d261113a", e: "🥧", t: "Grandma's Pie Lesson",
+        s: "Kalei helped Grandma bake a sweet potato pie for Thanksgiving. They mashed the soft sweet potatoes and stirred in eggs and spices. Kalei poured the filling into the crust. After a while, Grandma peeked in the oven and saw the crust edges turning too dark. She covered them with strips of foil. When the pie was done, the whole house smelled sweet, and Kalei could not wait for dessert.",
+        k: [["Kalei and Grandma baked a sweet potato pie.", "pie*|bake*|baking|grandma|grandmother|tutu"],
+            ["They mashed sweet potatoes and mixed in eggs and spices.", "mash*|stir*|mix*|egg*|spice*|potato*"],
+            ["The crust edges were getting too dark.", "dark*|burn*|brown*|crust|edge*|black"],
+            ["Grandma covered the edges with foil.", "foil|cover*|wrap*"]] },
+      g45: { id: "d261113b", e: "🎈", t: "Giant Parade Balloons",
+        s: "Some big Thanksgiving parades feature balloons as tall as a five-story building. Each giant balloon is filled with helium, a gas lighter than air, usually the night before the parade. On parade day, a team of dozens of handlers walks below, each holding a rope to guide the balloon down the street. Wind is the biggest danger. Strong gusts can push a balloon into lampposts or trees, so organizers measure the wind before the parade. If gusts are too strong, the balloons fly lower to the ground or stay out of the parade.",
+        k: [["Parade balloons can be as tall as a building.", "tall|giant|huge|big|building|story|stories"],
+            ["They are filled with helium the night before.", "helium|gas|lighter|night before|fill*"],
+            ["Dozens of handlers hold ropes to guide them.", "handler*|rope*|people hold*|hold*|guide*|team"],
+            ["Wind is the biggest danger.", "wind*|gust*|blow*"],
+            ["In strong wind they fly lower or stay out.", "lower|low|stay out|grounded|cancel*|not fly|dont fly|measure*"]] }
+    },
+    "2026-11-14": {
+      g23: { id: "d261114a", e: "🦃", t: "Wild Turkey Facts",
+        s: "Wild turkeys live in forests and fields across North America. Even though they are big birds, they can fly short distances, and at night they sleep up in trees to stay safe. Male turkeys puff up their feathers and spread their tails like a fan to show off. They make a loud gobble sound that can be heard a mile away. Turkeys can also see colors, which helps them spot food and danger.",
+        k: [["Wild turkeys live in forests and fields.", "forest*|field*|wood*|wild|north america"],
+            ["They can fly and sleep in trees at night.", "fly|flies|flew|flying|tree*|sleep*"],
+            ["Males spread their tails like a fan.", "fan|tail*|puff*|feather*|show off|shows off"],
+            ["They gobble loudly.", "gobbl*|loud*|sound*|noise*"]] },
+      g45: { id: "d261114b", e: "🥧", t: "The Pie Rescue",
+        s: "Noah's job was to carry the pumpkin pie to his aunt's Thanksgiving dinner. As he climbed out of the car, he tripped on the curb, and the pie flipped upside down in its box. The crust cracked into pieces. Noah felt awful and wanted to hide in the car. Instead, his aunt grabbed clear cups and a can of whipped cream. Together they layered pie pieces and whipped cream to make pumpkin pie parfaits. Everyone said the new dessert was even better, and his cousins asked for parfaits every year.",
+        k: [["Noah was bringing a pumpkin pie to Thanksgiving.", "pie*|carr*|thanksgiving|dinner|bring*|brought"],
+            ["He tripped and the pie flipped and broke.", "trip*|fell|fall*|drop*|flip*|crack*|broke*|smash*|upside"],
+            ["Noah felt awful.", "awful|bad|sad|terrible|upset|embarrass*|hide|cry*"],
+            ["His aunt helped turn it into pie parfaits in cups.", "parfait*|cup*|whip*|layer*|aunt"],
+            ["Everyone liked the new dessert even more.", "better|loved|liked|every year|best|yummy|delicious|great"]] }
+    },
+    "2026-11-15": {
+      g23: { id: "d261115a", e: "🫙", t: "The Thankful Jar",
+        s: "In November, Owen's family kept a big jar on the kitchen counter. Every night, each person wrote one thing they were thankful for on a slip of paper and dropped it in. Owen wrote about his dog, his soccer team, and pancakes. On Thanksgiving, the family read every note out loud at dinner. Owen's favorite one was from his little sister. It said, \"I'm thankful for Owen.\"",
+        k: [["Owen's family kept a jar in the kitchen.", "jar"],
+            ["Each night they wrote what they were thankful for.", "wrote|write*|paper|slip*|note*|thankful|grateful"],
+            ["On Thanksgiving they read the notes out loud.", "read*|thanksgiving|out loud|dinner"],
+            ["His sister was thankful for Owen.", "sister|thankful for owen|grateful for owen|for him|for owen"]] },
+      g45: { id: "d261115b", e: "✉️", t: "The Letter Writer",
+        s: "Thanksgiving did not always happen on the same day across the United States. Each state chose its own date, and some did not celebrate at all. A magazine editor named Sarah Josepha Hale wanted one national day of thanks. For about seventeen years, she wrote letters to governors and presidents asking for it. In 1863, during the Civil War, President Abraham Lincoln finally declared a national day of Thanksgiving. Later, in 1941, Congress made the fourth Thursday of November the official date. One writer's patience helped create a holiday millions celebrate today.",
+        k: [["States used to celebrate Thanksgiving on different days.", "different|each state|own date|same day|not all|didnt|state*"],
+            ["Sarah Josepha Hale wanted one national holiday.", "sarah|hale|editor|woman|lady|she"],
+            ["She wrote letters for about seventeen years.", "letter*|wrote|write|seventeen|17|years"],
+            ["President Lincoln made it national in 1863.", "lincoln|1863|president|civil war"],
+            ["Congress set the fourth Thursday in 1941.", "fourth|4th|thursday|1941|congress|november"]] }
+    }
+  }
+};
+
+/* Which story to show for a band on a date: a pinned holiday story if there is one, otherwise the rotation. */
+window.LWN_STORY_FOR = function (band, iso) {
+  var D = window.LWN_STORIES, x = D.dated && D.dated[iso] && D.dated[iso][band];
+  if (x) return x;
+  // rotation only counts the days that did NOT have a pinned story, so no regular story gets skipped
+  var L = D[band], n = Math.round((Date.parse(iso + "T12:00:00Z") - Date.parse(D.start + "T12:00:00Z")) / 864e5);
+  Object.keys(D.dated || {}).forEach(function (d) { if (d >= D.start && d < iso && D.dated[d][band]) n--; });
+  return L[((n % L.length) + L.length) % L.length];
 };
 
 /* Matching engine (shared by the page and the tests) */

@@ -173,7 +173,7 @@ textarea:focus{outline:none;border-color:var(--teal)}
   var qs = new URLSearchParams(location.search);
   var TODAY = /^\d{4}-\d\d-\d\d$/.test(qs.get("d") || "") ? qs.get("d") : hst();
   if (TODAY < D.start) TODAY = D.start;
-  function storyFor(band, iso){ var L = D[band], n = dayNum(iso); return L[((n % L.length) + L.length) % L.length]; }
+  function storyFor(band, iso){ return window.LWN_STORY_FOR(band, iso); }
 
   var st = load(KEY, { band: null, done: {} }); st.done = st.done || {};
   var band = st.band;
