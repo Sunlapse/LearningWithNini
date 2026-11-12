@@ -97,7 +97,7 @@ ul.rules{text-align:left;font-weight:800;color:#3f4a6b;line-height:1.6;padding-l
   var GEN={
     // Unit 1 · Hawaii — Number Sense
     1:[
-      function(){var n=R(1000,9999),s=String(n),i=R(0,3),d=+s[i];if(!d){d=R(1,9);s=s.slice(0,i)+d+s.slice(i+1);n=+s}var v=d*Math.pow(10,3-i);
+      function(){/* the asked digit appears only once, so "the value of the 7" is never ambiguous */var d=R(1,9),i=R(0,3),s="";for(var k=0;k<4;k++){if(k===i){s+=d;continue}var x;do{x=R(k?0:1,9)}while(x===d);s+=x}var n=+s,v=d*Math.pow(10,3-i);
         return{q:"🐚 Nini found "+fmt(n)+" shells on the beach.<br><small>What is the value of the "+d+"?</small>",a:fmt(v),o:choices(fmt(v),function(){return fmt(d*Math.pow(10,R(0,3)))})}},
       function(){var a=R(100,999),b=R(100,999);if(a===b)b++;return{q:"🌊 Wave A is "+a+" cm tall. Wave B is "+b+" cm tall.<br>"+a+" ⬜ "+b+"<small>Which sign goes in the box?</small>",a:a>b?">":"<",o:[">","<","="]}},
       function(){var n=R(11,989),t=Math.round(n/10)*10;return{q:"🏄‍♀️ Nini surfed "+n+" meters.<br><small>Round to the nearest ten.</small>",a:t,o:choices(t,function(){return t+pick([-10,10,-20,20])})}},
