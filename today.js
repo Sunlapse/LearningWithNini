@@ -20,9 +20,9 @@
   function grade() { var g = String((get("dm-settings", {}) || {}).grade || ""); return ["2", "3", "4", "5"].indexOf(g) >= 0 ? g : "3"; }
   function status() {
     var d = hst(), log = get("dm-log", []) || [];
-    var daily = log.some(function (x) { return x && x.date === d && !x.dash; });
-    var dash = log.some(function (x) { return x && x.date === d && x.dash; });
-    var games = (rec().games || 0) + (dash ? 1 : 0);
+    // the full Daily Challenge or a 3-minute Quick Dash both count (both keep the streak going)
+    var daily = log.some(function (x) { return x && x.date === d; });
+    var games = rec().games || 0;
     var band = (grade() === "4" || grade() === "5") ? "g45" : "g23", story = null, read = false;
     try { if (window.LWN_STORY_FOR) { story = window.LWN_STORY_FOR(band, d); var rd = get("lwn-read-v1", {}) || {}; read = !!(rd.done || {})[band + ":" + story.id]; } } catch (e) {}
     var c = get("lwn-chest-v1", {}) || {};
@@ -72,7 +72,7 @@
     var s = status(), done = [s.daily, s.game, s.read].filter(Boolean).length;
     var nice = new Date(hst() + "T12:00:00Z").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
     var tasks = [
-      { k: "daily", ok: s.daily, e: "🔥", t: "Daily Challenge", sub: "Grow your streak", href: "/daily-challenge.html", go: "Start" },
+      { k: "daily", ok: s.daily, e: "🔥", t: "Daily Challenge", sub: "Or a 3-min Quick Dash", href: "/daily-challenge.html", go: "Start" },
       { k: "game", ok: s.game, e: "🎮", t: "Play any game", sub: "Pick a topic you like", href: "#game-topics", go: "Play" },
       { k: "read", ok: s.read, e: "📖", t: "Daily Read", sub: s.story ? s.story.e + " " + s.story.t : "A new story every day", href: "/reading.html", go: "Read" }
     ];
