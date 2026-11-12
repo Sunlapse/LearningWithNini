@@ -1481,7 +1481,7 @@
             <a href="daily-challenge.html">Daily Challenge</a>
         <a href="reading.html">Daily Read</a>
         <a href="path.html">My Path</a>
-        <a href="#skill-games">Games</a>
+        <a href="#game-topics">Games</a>
         <a href="leaderboard.html">Leaderboard</a>
         <a href="#parents">Parents</a>
         <a href="#about">About</a>
@@ -1518,7 +1518,7 @@
           </div>
           <nav class="quick-links" aria-label="Quick links">
             <a href="path.html"><b>🗺️</b>My Path<small>6 trips &amp; 6 bosses</small></a>
-            <a href="#skill-games"><b>🎮</b>Games<small>14 math games</small></a>
+            <a href="#game-topics"><b>🎮</b>Games<small>14 math games</small></a>
             <a href="leaderboard.html#leagues"><b>🏆</b>Leaderboard<small>Daily Challenge leagues</small></a>
           </nav>
           
@@ -1601,7 +1601,7 @@
         <section class="games-organized" id="skill-games">
           <h2 class="section-title">Choose a Skill</h2>
           <div class="daily-treasure-banner" role="note" aria-label="Daily treasure chest reward"><span class="treasure-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><div class="treasure-picture"><svg viewBox="0 0 120 100" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M14 48V34C14 8 106 8 106 34V48Z" fill="#A85A24" stroke="#623414" stroke-width="4"/><path d="M20 34C20 15 100 15 100 34" fill="none" stroke="#D98A3D" stroke-width="7"/><rect x="12" y="46" width="96" height="44" rx="7" fill="#A85A24" stroke="#623414" stroke-width="4"/><path d="M20 65H100M20 78H100" stroke="#7C411B" stroke-width="3"/><path d="M30 22V89M90 22V89" stroke="#FFD24A" stroke-width="10"/><path d="M13 48H107" stroke="#FFD24A" stroke-width="8"/><rect x="49" y="42" width="22" height="25" rx="4" fill="#FFD24A" stroke="#B7791F" stroke-width="3"/><path d="M60 51a3 3 0 0 0-2 5v5h4v-5a3 3 0 0 0-2-5" fill="#623414"/></svg></div><div class="treasure-copy"><span class="treasure-label">YOUR DAILY TREASURE</span><strong>Play today. Open your treasure!</strong><p>Earn a treasure chest by playing a game today!</p></div></div>
-          <p class="games-subtitle topic-pick-title">👇 Pick a topic to see its games</p>
+          <p class="games-subtitle topic-pick-title" id="game-topics" style="scroll-margin-top:96px">👇 Pick a topic to see its games</p>
 
           <nav class="category-nav topic-tiles" aria-label="Game topics">
             <a href="#operations" style="--t1:#FF8A5B;--t2:#F2545B;--t3:#C23B3F"><i>➕</i><b>Operations</b><small data-count="operations"></small><em id="operationsNewTag">NEW</em></a>
@@ -1905,7 +1905,7 @@
         <footer class="footer">
           <div class="footer-links">
             <a href="/">Home</a>
-            <a href="#skill-games">Games</a>
+            <a href="#game-topics">Games</a>
             <a href="daily-challenge.html">Daily Challenge</a>
             <a href="reading.html">Daily Read</a>
             <a href="leaderboard.html">Leaderboard</a>
@@ -2005,6 +2005,9 @@
     })();
   </script>
 <script>
+/* "Play a game" links land on the topic tiles; re-aim after banners above them finish loading */
+(function(){if(location.hash!=="#game-topics")return;function go(){var t=document.getElementById("game-topics");if(t)t.scrollIntoView({block:"start"})}
+  [150,600,1300].forEach(function(ms){setTimeout(function(){if(location.hash==="#game-topics"&&scrollY<(document.getElementById("game-topics")||{offsetTop:1e9}).offsetTop+400)go()},ms)})})();
 /* Game topics become tabs on phones and iPads */
 (function(){
   var wrap=document.querySelector(".games-organized"), nav=wrap&&wrap.querySelector(".category-nav"); if(!nav) return;
