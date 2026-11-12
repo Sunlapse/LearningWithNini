@@ -463,7 +463,7 @@ function nextQuestion(){if(!solved)return;if(q<10){q++;newQuestion();return}fini
 function finishRound(){
   el("roundTitle").textContent="🎉 Round "+round+" complete!";
   el("roundMessage").innerHTML="<strong>"+masteryThisRound+"/10 mastered on the first try with no hint</strong> in "+LEVELS[level].name+". Your "+score+" points carry forward.";
-  el("roundCard").classList.add("show");el("advanceBtn").style.display=level<6?"inline-block":"none";el("advanceBtn").textContent=level<6?"Try Level "+(level+2)+": "+LEVELS[level+1].name+" →":"";
+  el("roundCard").classList.add("show");try{window.dispatchEvent(new CustomEvent("lwn:round-done"))}catch(e){}el("advanceBtn").style.display=level<6?"inline-block":"none";el("advanceBtn").textContent=level<6?"Try Level "+(level+2)+": "+LEVELS[level+1].name+" →":"";
   el("roundCard").scrollIntoView({behavior:"smooth",block:"center"});saveGlobal(true);persist();
 }
 function beginNext(nextLevel){if(nextLevel&&level<6)level++;round++;q=1;masteryThisRound=0;el("roundCard").classList.remove("show");persist();newQuestion();window.scrollTo({top:0,behavior:"smooth"})}

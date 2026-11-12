@@ -421,7 +421,7 @@ function finishRound(){
   const rate=masteryThisRound;
   el("roundTitle").textContent="🎉 Round "+round+" complete!";
   el("roundMessage").innerHTML="<strong>"+rate+"/10 mastered on the first try with no hint</strong> in "+LEVELS[level].name+". Your "+score+" points carry forward into the next round.";
-  el("roundCard").classList.add("show");
+  el("roundCard").classList.add("show");try{window.dispatchEvent(new CustomEvent("lwn:round-done"))}catch(e){}
   el("advanceBtn").style.display=level<4?"inline-block":"none";
   el("advanceBtn").textContent=level<4?"Try Level "+(level+2)+": "+LEVELS[level+1].name+" →":"";
   el("roundCard").scrollIntoView({behavior:"smooth",block:"center"});

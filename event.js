@@ -183,7 +183,7 @@
     L.saveScore = function (p) {
       try { if (p && iconSwap && (p.avatar === iconSwap.from || !p.avatar)) p.avatar = iconSwap.to; } catch (e) {}
       try {
-        if (p && p.game === "daily_challenge" && !/\|dash\|/.test(String(p.level || ""))) { var e = current(); if (e) e.earnDaily(); }
+        if (p && p.game === "daily_challenge") { var e = current(); if (e) { if (/\|dash\|/.test(String(p.level || ""))) { var dk = "lwn-dash-piece:" + p.level + ":" + p.score; if (!sessionStorage.getItem(dk)) { sessionStorage.setItem(dk, "1"); e.earn(1, "round"); } } else e.earnDaily(); } }
       } catch (e) {}
       return orig.apply(this, arguments);
     };

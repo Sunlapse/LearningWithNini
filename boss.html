@@ -186,6 +186,7 @@ ul.rules{text-align:left;font-weight:800;color:#3f4a6b;line-height:1.6;padding-l
     setTimeout(function(){i++;if(i>=TOTAL||(i-right)>TOTAL-NEED)end();else show()},ok?700:1300);
   }
   function end(){
+    try{window.dispatchEvent(new CustomEvent("lwn:round-done"))}catch(e){}
     clearInterval(timer);
     var win=right>=NEED;
     if(win){
