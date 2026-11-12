@@ -596,6 +596,7 @@ const fmtUTC=d=>d.getUTCFullYear()+'-'+pad2(d.getUTCMonth()+1)+'-'+pad2(d.getUTC
 const sharedProfile=LS.get('learningWithNiniProfileV1',{name:'',avatar:'⭐'});
 // A costume picked from a puzzle-hunt popup changes the icon without reloading; keep this page's copy in step
 window.addEventListener('lwn:icon',e=>{if(e.detail&&e.detail.to){sharedProfile.avatar=e.detail.to;sharedProfile.updatedAt=Date.now()}});
+window.addEventListener('lwn:profile',e=>{const p=e.detail;if(p&&p.name){sharedProfile.name=p.name;if(p.avatar)sharedProfile.avatar=p.avatar;sharedProfile.updatedAt=Date.now()}});
 let settings=Object.assign({name:'',grade:'3',mode:'standard',mins:20},LS.get('dm-settings',{}));
 if(!['2','3','4','5'].includes(String(settings.grade)))settings.grade='3';
 if(!['standard','review','challenge'].includes(String(settings.mode)))settings.mode='standard';
@@ -2046,6 +2047,8 @@ $('#goBtn').addEventListener('click',()=>startSession(false));
 window.deviceProgress=deviceProgress; // read by the end-of-round adventure card
 window.__lwnTest={answer:()=>{if(S&&S.cur)submit(String(showAns(S.cur)))}};
 if($('#dashBtn'))$('#dashBtn').addEventListener('click',()=>startSession(false,true));
+// ?start=dash (from the first-visit welcome): jump straight into a Quick Dash
+if(/[?&]start=dash\b/.test(location.search)&&$('#dashBtn')){setTimeout(()=>{try{history.replaceState(null,'',location.pathname)}catch(e){}startSession(false,true)},250)}
 // Quick Dash launches on its own date so its effect on returning players can be measured separately (?dash=1 previews it early)
 const DASH_LIVE='2026-10-25';
 if($('#dashBtn')&&today()<DASH_LIVE&&!/[?&]dash=1/.test(location.search)){$('#dashBtn').hidden=true;$('#dashBtn').closest('.pick').classList.add('solo')}

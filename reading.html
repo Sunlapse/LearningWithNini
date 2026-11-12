@@ -285,7 +285,7 @@ textarea:focus{outline:none;border-color:var(--teal)}
     if (first) {
       var xp = got * 5 + (got === total ? 10 : 0);
       try { if (window.LWNXP && xp) LWNXP.add(xp, got === total ? "Story master" : "Great reading"); } catch(e){}
-      try { window.dispatchEvent(new CustomEvent("lwn:round-done")); } catch(e){}
+      try { window.dispatchEvent(new CustomEvent("lwn:round-done", { detail: { kind: "read" } })); } catch(e){}
       try { if (window.LWNStats) LWNStats.track("read_done", { id: S.id, band: band, got: got, total: total, tries: tries }); } catch(e){}
       var J = load(JKEY, []); J.unshift({ day: day, band: band, t: S.t, e: S.e, text: String(text).slice(0, 2000), got: got, total: total }); save(JKEY, J.slice(0, 60));
     }

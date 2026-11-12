@@ -29,6 +29,10 @@
   if (!document.querySelector('script[src^="/event.js"]')) {
     var es = document.createElement("script"); es.src = "/event.js?v=9"; es.defer = true; document.head.appendChild(es);
   }
+  // "Today with Nini" plan card on the homepage + counts today's finished rounds.
+  if (!document.querySelector('script[src="/today.js"]')) {
+    var td = document.createElement("script"); td.src = "/today.js"; td.defer = true; document.head.appendChild(td);
+  }
   // First-visit welcome: nickname, icon and grade.
   if (!document.querySelector('script[src="/welcome.js"]')) {
     var ws = document.createElement("script"); ws.src = "/welcome.js"; ws.defer = true; document.head.appendChild(ws);
@@ -63,6 +67,15 @@
   try { dismissed = localStorage.getItem("niniBannerClosed") === "1"; } catch (e) {}
 
   if (!isApple || installed || dismissed) return;
+  // Not on a kid's first day (that day is for playing), and only on the homepage or My Path.
+  var pg = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+  if (["index.html", "path.html"].indexOf(pg) < 0) return;
+  try {
+    var hiDay = new Intl.DateTimeFormat("en-CA", { timeZone: "Pacific/Honolulu" }).format(new Date());
+    var first = localStorage.getItem("lwn-first-day");
+    if (!first) { localStorage.setItem("lwn-first-day", hiDay); return; }
+    if (first === hiDay) return;
+  } catch (e) {}
 
   var css = document.createElement("style");
   css.textContent =
@@ -94,6 +107,6 @@
   };
 
   window.addEventListener("load", function () {
-    setTimeout(function () { if (!document.getElementById("lwnWelcome")) document.body.appendChild(box); }, 2500);
+    setTimeout(function () { if (!document.querySelector("#lwnWelcome,#lwnNameAsk,#lwnProfile,.lwn-modal")) document.body.appendChild(box); }, 2500);
   });
 })();

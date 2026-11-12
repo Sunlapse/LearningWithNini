@@ -23,7 +23,7 @@
 
   function prof() { var p = get("learningWithNiniProfileV1", null) || {}; return { name: String(p.name || raw("niniPlayerName") || "").trim(), avatar: p.avatar || "⭐" }; }
   function signedIn() { var t = get("sb-lwn-auth", null); return !!(t && (t.refresh_token || (t.currentSession && t.currentSession.refresh_token))); }
-  function busy() { return !!document.querySelector(".lwn-modal,#lwnWelcome,#lwnProfile,#lwnNicknameOverlay,#lwnRetainAsk"); }
+  function busy() { return !!document.querySelector(".lwn-modal,#lwnWelcome,#lwnProfile,#lwnNicknameOverlay,#lwnRetainAsk,#lwnNameAsk,#lwnPiece"); }
   function whenFree(fn, tries) { tries = tries || 0; if (busy() && tries < 20) return setTimeout(function () { whenFree(fn, tries + 1); }, 1500); fn(); }
 
   /* Daily Challenge streak, counted in Hawaii days (same days the site uses everywhere). */
@@ -67,6 +67,7 @@
   function welcomeBack() {
     if (["index.html", "path.html", "games.html", "daily-challenge.html"].indexOf(page) < 0) return;
     if (!returning() || !lastDay || lastDay >= today) return;   // only on the first visit of a new day
+    if (document.getElementById("lwnToday")) return;   // the homepage "Today with Nini" card already shows the plan
     if (get("lwn-wb-shown", "") === today) return;
     var p = prof(), s = streak(), dow = new Date(today + "T12:00:00Z").getUTCDay();
     var lines = [];
@@ -191,7 +192,7 @@
   var finishes = Number(get("lwn-finishes", 0)) || 0;
   function afterGame() {
     finishes++; set("lwn-finishes", finishes);
-    if (finishes < 2) return;                                   // let them play a little first
+    if (finishes < 4) return;                                   // let them play a little first (a first visit stays about the kid)
     var st = get("lwn-optin-ask", { n: 0, last: "" }) || { n: 0, last: "" };
     if (st.last && addDays(st.last, 7) > today) return;         // at most once a week
     getMeta().then(function (m) {
