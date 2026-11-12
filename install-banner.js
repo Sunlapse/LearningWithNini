@@ -29,6 +29,10 @@
   if (!document.querySelector('script[src^="/event.js"]')) {
     var es = document.createElement("script"); es.src = "/event.js?v=9"; es.defer = true; document.head.appendChild(es);
   }
+  // Read-aloud: "🗣️ Read it" next to game questions, and LWNSay.speak for Nini's messages.
+  if (!document.querySelector('script[src="/say.js"]')) {
+    var sy = document.createElement("script"); sy.src = "/say.js"; sy.defer = true; document.head.appendChild(sy);
+  }
   // "Today with Nini" plan card on the homepage + counts today's finished rounds.
   if (!document.querySelector('script[src="/today.js"]')) {
     var td = document.createElement("script"); td.src = "/today.js"; td.defer = true; document.head.appendChild(td);

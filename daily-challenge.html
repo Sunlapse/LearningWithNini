@@ -260,6 +260,7 @@ button:disabled{opacity:.28;cursor:default}
 .practice-next{border:3px solid #FFD66B;border-radius:24px;padding:16px;background:linear-gradient(160deg,#FFF6D8,#EAF5FF 70%);box-shadow:0 10px 24px rgba(50,89,137,.1)}
 .pn-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .pn-head img{width:58px;height:58px;border-radius:50%;border:3px solid #F5633E;flex:none;background:#fff}
+.pn-say{float:right;width:40px;height:40px;border-radius:50%;border:2px solid #D7E5F6;background:#F4F8FF;font-size:18px;cursor:pointer;margin:0 0 4px 6px}
 .pn-bubble{position:relative;background:#fff;border-radius:16px;padding:10px 13px;box-shadow:0 4px 12px rgba(50,89,137,.1)}
 .pn-bubble:before{content:"";position:absolute;left:-8px;top:20px;border:8px solid transparent;border-right-color:#fff;border-left:0}
 .practice-next h2{margin:0;font-family:"Fredoka",system-ui,sans-serif;color:#E0602F;font-size:22px;line-height:1.1}
@@ -549,7 +550,7 @@ button:disabled{opacity:.28;cursor:default}
     <p class="results-review-copy">Check what you got right, missed, skipped, or needed another try.</p>
     <ul class="list" id="review"><li>Review will appear here after your challenge.</li></ul>
     <section class="practice-next" id="practiceNext" aria-label="Recommended practice">
-      <div class="pn-head"><img src="/nini-face.webp" alt="Nini" width="58" height="58"><div class="pn-bubble"><h2>Nini’s picks for you! 🎯</h2><p id="practiceNextText">These games help with the questions that were tricky today.</p></div></div>
+      <div class="pn-head"><img src="/nini-face.webp" alt="Nini" width="58" height="58"><div class="pn-bubble"><button type="button" class="pn-say" onclick="try{LWNSay.speak('Nini’s picks for you! '+document.getElementById('practiceNextText').textContent)}catch(e){}" aria-label="Read this to me">🔊</button><h2>Nini’s picks for you! 🎯</h2><p id="practiceNextText">These games help with the questions that were tricky today.</p></div></div>
       <div class="practice-grid" id="practiceGrid"><a class="practice-card" href="index.html"><span class="practice-icon">🎮</span><span class="practice-copy"><strong>Browse math games</strong></span></a></div>
       <div id="practicePath"></div>
     </section>

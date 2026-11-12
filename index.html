@@ -1457,6 +1457,14 @@
 .halloween-case-badge{display:inline-block;align-self:flex-start;margin:12px 0 4px;background:#43205E;color:#FFE1A8;padding:7px 11px;border-radius:999px;font-size:.72rem;font-weight:1000;letter-spacing:.03em}
 .halloween-detective .case-files-link{background:#43205E;color:#FFF1DA;border:2px solid #F0A43F;padding:12px;box-shadow:0 4px 0 #D88B25}
 .halloween-detective .case-files-link:hover{background:#5A2D7A}
+/* Phones and iPads: the Today card + games come first; the big photo and duplicate buttons step aside */
+@media(max-width:980px){
+  .hero-art{display:none!important}
+  .hero-wrap .hero{padding-top:6px!important;padding-bottom:4px!important;min-height:0!important}
+  .hero-copy h1{font-size:clamp(30px,8vw,44px)!important;margin:4px 0!important}
+  .hero-copy .hello{margin-bottom:2px!important}
+  .lwn-today-on .hero-actions,.lwn-today-on .hero-copy .quick-links{display:none!important}
+}
 </style>
 <!-- Learn With Nini app (Add to Home Screen) -->
 <link rel="manifest" href="/manifest.json">
@@ -1543,60 +1551,6 @@
 
     <section class="content" id="games">
       <div class="shell">
-
-        <section class="adventures" id="adventures" aria-labelledby="advTitle">
-          <div class="adv-head">
-            <h2 id="advTitle">Nini’s Adventures</h2>
-            <a class="adv-all" href="path.html">My Path →</a>
-          </div>
-          <p class="adv-sub">Do math, unlock a trip!</p>
-          <div class="adv-row">
-            <a class="adv-card" href="path.html#u1"><img src="adv-hawaii.webp" alt="Nini surfing" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 1</span><span class="adv-cap"><b>Hawaii</b>Surfing</span></a>
-            <a class="adv-card" href="path.html#u2"><img src="adv-alaska.webp" alt="Nini skiing" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 2</span><span class="adv-cap"><b>Alaska</b>Skiing</span></a>
-            <a class="adv-card" href="path.html#u3"><img src="adv-china.webp" alt="Nini great wall" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 3</span><span class="adv-cap"><b>China</b>Great Wall</span></a>
-            <a class="adv-card" href="path.html#u4"><img src="adv-italy.webp" alt="Nini leaning tower" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 4</span><span class="adv-cap"><b>Italy</b>Leaning Tower</span></a>
-            <a class="adv-card" href="path.html#u5"><img src="adv-reef.webp" alt="Nini swimming underwater" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 5 ⭐⭐</span><span class="adv-cap"><b>Underwater</b>Swimming</span></a>
-            <a class="adv-card" href="path.html#u6"><img src="adv-ranch.webp" alt="Nini riding" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 6 ⭐⭐</span><span class="adv-cap"><b>Horse Ranch</b>Riding</span></a>
-          </div>
-        </section>
-
-        <section class="start-here" id="start-here">
-          <h2>How It Works</h2>
-          <div class="how-tiles">
-            <a class="how-tile t1" href="daily-challenge.html"><span class="how-art">🔥</span><span class="how-num">1</span><b>Do today’s challenge</b></a>
-            <a class="how-tile t2" href="path.html"><span class="how-art photo"><img src="adv-hawaii.webp" alt="" loading="lazy"></span><span class="how-num">2</span><b>Unlock adventures</b></a>
-            <a class="how-tile t3" href="daily-challenge.html#badges"><span class="how-art">🏅</span><span class="how-num">3</span><b>Win badges</b></a>
-          </div>
-          <a class="step-video-link" id="challengeVideoLink" href="#latest-video">▶ Watch Nini’s latest challenge →</a>
-        </section>
-
-        <a class="daily-read-banner" href="reading.html" id="dailyReadBanner">
-          <span class="drb-new">NEW</span>
-          <span class="drb-icon" aria-hidden="true">📖</span>
-          <span class="drb-copy"><b>Nini’s Daily Read</b><span id="drbLine">A new short story every day. Read it, then tell it back in your own words!</span></span>
-          <span class="drb-go">Read →</span>
-        </a>
-        <style>
-        .daily-read-banner{position:relative;display:flex;align-items:center;gap:14px;margin:18px 0 6px;padding:16px 18px;border-radius:22px;background:linear-gradient(135deg,#0B6E64,#14A391);color:#fff;text-decoration:none;box-shadow:0 12px 30px rgba(11,110,100,.25);font-family:"Nunito",system-ui,sans-serif}
-        .daily-read-banner .drb-icon{font-size:44px;flex:none;line-height:1}
-        .daily-read-banner .drb-copy{flex:1;min-width:0}
-        .daily-read-banner b{display:block;font:700 22px/1.15 "Fredoka",system-ui,sans-serif}
-        .daily-read-banner .drb-copy>span{display:block;font-weight:800;font-size:15px;opacity:.95;line-height:1.35;margin-top:2px}
-        .daily-read-banner .drb-go{flex:none;background:#FFD36B;color:#5A3A00;border-radius:14px;padding:11px 16px;font:700 17px/1 "Fredoka",system-ui,sans-serif}
-        .daily-read-banner .drb-new{position:absolute;top:-9px;left:16px;background:#EF6D4D;color:#fff;font-weight:900;font-size:12px;letter-spacing:.06em;border-radius:999px;padding:3px 9px}
-        @media(max-width:520px){.daily-read-banner{flex-wrap:wrap}.daily-read-banner .drb-go{width:100%;text-align:center}}
-        </style>
-        <script>
-        /* show today's story title; drop the NEW tag after Dec 1 */
-        (function(){try{var t=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date());
-          if(t>="2026-12-01"){var n=document.querySelector(".drb-new");if(n)n.remove();}
-          var s=document.createElement("script");s.src="stories.js";s.onload=function(){var D=window.LWN_STORIES;if(!D)return;
-            var g="";try{g=String(JSON.parse(localStorage.getItem("dm-settings")||"{}").grade||"")}catch(e){}
-            var b=(g==="4"||g==="5")?"g45":"g23",x=window.LWN_STORY_FOR(b,t);
-            var done=false;try{done=!!(JSON.parse(localStorage.getItem("lwn-read-v1")||"{}").done||{})[b+":"+x.id]}catch(e){}
-            document.getElementById("drbLine").textContent=(done?"✅ You read today’s story: ":"Today’s story: ")+x.e+" "+x.t+(done?". New one tomorrow!":". Read it and tell it back!");
-          };document.head.appendChild(s);}catch(e){}})();
-        </script>
 
         <section class="games-organized" id="skill-games">
           <h2 class="section-title">Choose a Skill</h2>
@@ -1809,6 +1763,60 @@
           <script>try{if(new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date())>="2026-12-01")document.querySelectorAll(".read-new").forEach(function(e){e.remove()})}catch(e){}</script>
         </section>
 
+        <section class="adventures" id="adventures" aria-labelledby="advTitle">
+          <div class="adv-head">
+            <h2 id="advTitle">Nini’s Adventures</h2>
+            <a class="adv-all" href="path.html">My Path →</a>
+          </div>
+          <p class="adv-sub">Do math, unlock a trip!</p>
+          <div class="adv-row">
+            <a class="adv-card" href="path.html#u1"><img src="adv-hawaii.webp" alt="Nini surfing" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 1</span><span class="adv-cap"><b>Hawaii</b>Surfing</span></a>
+            <a class="adv-card" href="path.html#u2"><img src="adv-alaska.webp" alt="Nini skiing" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 2</span><span class="adv-cap"><b>Alaska</b>Skiing</span></a>
+            <a class="adv-card" href="path.html#u3"><img src="adv-china.webp" alt="Nini great wall" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 3</span><span class="adv-cap"><b>China</b>Great Wall</span></a>
+            <a class="adv-card" href="path.html#u4"><img src="adv-italy.webp" alt="Nini leaning tower" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 4</span><span class="adv-cap"><b>Italy</b>Leaning Tower</span></a>
+            <a class="adv-card" href="path.html#u5"><img src="adv-reef.webp" alt="Nini swimming underwater" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 5 ⭐⭐</span><span class="adv-cap"><b>Underwater</b>Swimming</span></a>
+            <a class="adv-card" href="path.html#u6"><img src="adv-ranch.webp" alt="Nini riding" loading="lazy" width="600" height="656"><span class="adv-tag">Unit 6 ⭐⭐</span><span class="adv-cap"><b>Horse Ranch</b>Riding</span></a>
+          </div>
+        </section>
+
+        <section class="start-here" id="start-here">
+          <h2>How It Works</h2>
+          <div class="how-tiles">
+            <a class="how-tile t1" href="daily-challenge.html"><span class="how-art">🔥</span><span class="how-num">1</span><b>Do today’s challenge</b></a>
+            <a class="how-tile t2" href="path.html"><span class="how-art photo"><img src="adv-hawaii.webp" alt="" loading="lazy"></span><span class="how-num">2</span><b>Unlock adventures</b></a>
+            <a class="how-tile t3" href="daily-challenge.html#badges"><span class="how-art">🏅</span><span class="how-num">3</span><b>Win badges</b></a>
+          </div>
+          <a class="step-video-link" id="challengeVideoLink" href="#latest-video">▶ Watch Nini’s latest challenge →</a>
+        </section>
+
+        <a class="daily-read-banner" href="reading.html" id="dailyReadBanner">
+          <span class="drb-new">NEW</span>
+          <span class="drb-icon" aria-hidden="true">📖</span>
+          <span class="drb-copy"><b>Nini’s Daily Read</b><span id="drbLine">A new short story every day. Read it, then tell it back in your own words!</span></span>
+          <span class="drb-go">Read →</span>
+        </a>
+        <style>
+        .daily-read-banner{position:relative;display:flex;align-items:center;gap:14px;margin:18px 0 6px;padding:16px 18px;border-radius:22px;background:linear-gradient(135deg,#0B6E64,#14A391);color:#fff;text-decoration:none;box-shadow:0 12px 30px rgba(11,110,100,.25);font-family:"Nunito",system-ui,sans-serif}
+        .daily-read-banner .drb-icon{font-size:44px;flex:none;line-height:1}
+        .daily-read-banner .drb-copy{flex:1;min-width:0}
+        .daily-read-banner b{display:block;font:700 22px/1.15 "Fredoka",system-ui,sans-serif}
+        .daily-read-banner .drb-copy>span{display:block;font-weight:800;font-size:15px;opacity:.95;line-height:1.35;margin-top:2px}
+        .daily-read-banner .drb-go{flex:none;background:#FFD36B;color:#5A3A00;border-radius:14px;padding:11px 16px;font:700 17px/1 "Fredoka",system-ui,sans-serif}
+        .daily-read-banner .drb-new{position:absolute;top:-9px;left:16px;background:#EF6D4D;color:#fff;font-weight:900;font-size:12px;letter-spacing:.06em;border-radius:999px;padding:3px 9px}
+        @media(max-width:520px){.daily-read-banner{flex-wrap:wrap}.daily-read-banner .drb-go{width:100%;text-align:center}}
+        </style>
+        <script>
+        /* show today's story title; drop the NEW tag after Dec 1 */
+        (function(){try{var t=new Intl.DateTimeFormat("en-CA",{timeZone:"Pacific/Honolulu"}).format(new Date());
+          if(t>="2026-12-01"){var n=document.querySelector(".drb-new");if(n)n.remove();}
+          var s=document.createElement("script");s.src="stories.js";s.onload=function(){var D=window.LWN_STORIES;if(!D)return;
+            var g="";try{g=String(JSON.parse(localStorage.getItem("dm-settings")||"{}").grade||"")}catch(e){}
+            var b=(g==="4"||g==="5")?"g45":"g23",x=window.LWN_STORY_FOR(b,t);
+            var done=false;try{done=!!(JSON.parse(localStorage.getItem("lwn-read-v1")||"{}").done||{})[b+":"+x.id]}catch(e){}
+            document.getElementById("drbLine").textContent=(done?"✅ You read today’s story: ":"Today’s story: ")+x.e+" "+x.t+(done?". New one tomorrow!":". Read it and tell it back!");
+          };document.head.appendChild(s);}catch(e){}})();
+        </script>
+
         <section class="youtube-growth" id="latest-video">
           <div class="youtube-growth-head">
             <div>
@@ -2008,6 +2016,10 @@
 /* "Play a game" links land on the topic tiles; re-aim after banners above them finish loading */
 (function(){if(location.hash!=="#game-topics")return;function go(){var t=document.getElementById("game-topics");if(t)t.scrollIntoView({block:"start"})}
   [150,600,1300].forEach(function(ms){setTimeout(function(){if(location.hash==="#game-topics"&&scrollY<(document.getElementById("game-topics")||{offsetTop:1e9}).offsetTop+400)go()},ms)})})();
+/* The puzzle hunt banner and the weekly league sit after the games (the Today card already shows today's pieces) */
+(function(){var sg=document.getElementById("skill-games");if(!sg)return;
+  function move(){["lwnEvBanner","lwnLeagueHome"].forEach(function(id){var el=document.getElementById(id);if(el&&el.parentNode&&el!==sg.lastElementChild&&!el.__moved){el.__moved=1;sg.appendChild(el)}})}
+  new MutationObserver(move).observe(sg,{childList:true,subtree:false});move();})();
 /* Game topics become tabs on phones and iPads */
 (function(){
   var wrap=document.querySelector(".games-organized"), nav=wrap&&wrap.querySelector(".category-nav"); if(!nav) return;

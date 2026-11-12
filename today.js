@@ -43,6 +43,7 @@
       "#lwnToday .th b{display:block;font:700 24px/1.1 'Fredoka',system-ui,sans-serif;color:#1E6FD9}" +
       "#lwnToday .th small{display:block;font-weight:800;color:#6E7A92;font-size:14px;margin-top:2px}" +
       "#lwnToday .cnt{margin-left:auto;flex:none;font:700 18px/1 'Fredoka',system-ui,sans-serif;color:#1F9D55;background:#E7F7EE;border-radius:999px;padding:8px 12px}" +
+      "#lwnToday .spk{display:inline-flex;align-items:center;gap:6px;margin-top:10px;min-height:40px;padding:6px 14px;border-radius:999px;border:2px solid #D7E5F6;background:#F4F8FF;color:#1E5FA8;font:800 14px/1 'Nunito',system-ui,sans-serif;cursor:pointer}" +
       "#lwnToday .bar{height:12px;border-radius:999px;background:#E3ECF7;margin:12px 0 10px;overflow:hidden}" +
       "#lwnToday .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#3CC48D,#1F9D55);transition:width .6s}" +
       "#lwnToday .task{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 12px;margin-top:8px;border-radius:18px;border:2px solid #E3ECF7;background:#fff;text-decoration:none;color:inherit}" +
@@ -78,6 +79,7 @@
     var next = tasks.filter(function (x) { return !x.ok; })[0];
     var h = '<div class="th"><img src="/nini-face.webp" alt=""><div><b>Today with Nini</b><small>' + esc(nice) + " · do all 3!</small></div>" +
       '<span class="cnt">' + done + " of 3 ✓</span></div>" +
+      (window.LWNSay && LWNSay.ok ? '<button type="button" class="spk" aria-label="Read this to me">🔊 Read to me</button>' : "") +
       '<div class="bar"><i style="width:' + Math.round(done / 3 * 100) + '%"></i></div>' +
       tasks.map(function (x) {
         return '<a class="task' + (x.ok ? " done" : "") + (next && next.k === x.k ? " next" : "") + '" href="' + x.href + '" data-task="' + x.k + '">' +
@@ -93,6 +95,12 @@
     if (next) h += '<a class="big" href="' + next.href + '" data-task="' + next.k + '">' + (done ? "Next: " : "Start: ") + esc(next.t) + " →</a>";
     else h += '<div class="perfect"><b>🌟 Perfect day!</b>You did all 3. Come back tomorrow for a new challenge and a new story!</div>';
     host.innerHTML = h;
+    var spk = host.querySelector(".spk");
+    if (spk) spk.onclick = function () {
+      var said = next ? "Today with Nini! Do all 3 things. " + tasks.map(function (x) { return x.t + (x.ok ? ", done!" : ""); }).join(". ") + ". Next up: " + next.t + ". Tap the big orange button!"
+        : "Perfect day! You did all 3. Come back tomorrow for a new challenge and a new story!";
+      LWNSay.speak(said);
+    };
     var cb = host.querySelector("[data-chest]");
     if (cb) cb.onclick = function () { try { if (window.LWNIcons && LWNIcons.openChest) LWNIcons.openChest(); } catch (e) {} setTimeout(render, 2500); };
     host.querySelectorAll('[href="#game-topics"]').forEach(function (a) {
