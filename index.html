@@ -592,6 +592,8 @@
     }
 
     .video .card-btn { background: linear-gradient(135deg, #458fea, #307ddb); }
+    .reading .card-btn { background: linear-gradient(135deg, #1dbba6, #0f8b7e); }
+    .feature-card.reading { background: linear-gradient(180deg, #e6faf6, #e9f5ff); cursor: pointer; }
     .daily .card-btn { background: linear-gradient(135deg, #45b8ed, #4589dc); }
     .money .card-btn { background: linear-gradient(135deg, #16b9a7, #0aa991); }
     .time .card-btn { background: linear-gradient(135deg, #ef785a, #e66443); }
@@ -1794,12 +1796,12 @@
               </div>
             </div>
             <div class="topic-cards">
-              <article class="feature-card reading">
-                <div class="new-game-badge read-new">✨ NEW · A STORY EVERY DAY</div>
+              <article class="feature-card reading" role="link" tabindex="0" onclick="if(!event.target.closest('a'))location.href='reading.html'" onkeydown="if(event.key==='Enter')location.href='reading.html'">
+                <div class="new-game-badge read-new">✨ NEW</div>
                 <div class="card-icon">📖</div>
                 <h4>Nini’s Daily Read</h4>
                 <div class="grade-tag">Grades 2–5</div>
-                <p>A new holiday or fun-fact story each day. Retell it and see how many big ideas you remembered!</p>
+                <p>A new story every day. Read it, then tell it back!</p>
                 <a class="card-btn" href="reading.html">Read Today’s Story <span>→</span></a>
               </article>
             </div>
