@@ -62,6 +62,7 @@ button{font:inherit}
 .opt.ok{border-color:var(--good);background:#E7F7EE;color:#17643A}
 .opt.no{border-color:#F2B8B5;background:#FFF1F0;color:#9B2A27}
 .opt[disabled]{cursor:default}
+@keyframes pz{0%,100%{box-shadow:0 0 0 0 rgba(123,79,216,.5)}50%{box-shadow:0 0 0 8px rgba(123,79,216,0)}}.opt.pulse{border-color:#F0A020;animation:pz 1.2s ease-in-out 4}
 .opt.sel{border-color:#7B4FD8;background:#F1ECFF;color:#4B3A9E}
 .slot{min-width:58px;min-height:44px;border-radius:10px;border:3px dashed #B9A7EE;background:#fff;font:700 20px/1 "Fredoka",sans-serif;color:#4B3A9E;cursor:pointer;padding:0 8px}
 .slot.filled{border-style:solid;border-color:#7B4FD8}.slot.bad{border-color:var(--bad);background:#FFF1F0}
@@ -275,7 +276,7 @@ button{font:inherit}
     if(st.v===md.v&&M.A!==M.B)return {bad:"You used <b>"+st.v+"</b> twice! A story for "+esc(M.eq)+" needs both numbers."};
     if(st.start==="groups"){
       if(md.mid!=="each")return {bad:"If "+M.k[0]+" has "+st.v+" "+b.cs+", the next sentence should tell how many "+b.i+" are "+b.p+" each "+b.c+"."};
-      if(q.ask!=="total")return {bad:"We know how many "+b.cs+" and how many "+b.p+" each one. So what is missing? Ask about that."};
+      if(q.ask!=="total")return {bad:q.ask==="each"?"Your story already says <b>"+md.v+" "+b.i+" "+b.p+" each "+b.c+"</b>. We don’t need to ask that! What don’t we know yet?":q.ask==="groups"?"Your story already says <b>"+st.v+" "+b.cs+"</b>. We don’t need to ask that! What don’t we know yet?":"Nobody gave any away, so nothing is left over. What don’t we know yet?"};
       got=st.v+" × "+md.v;
     }else{
       if(md.mid==="each"){if(q.ask!=="groups")return {bad:q.ask==="total"?"The story already says "+st.v+" "+b.i+" in all! Ask about the part that is missing.":"That question doesn’t fit. We know the total and how many "+b.p+" each "+b.c+". What is missing?"};got=st.v+" ÷ "+md.v}
@@ -436,16 +437,26 @@ button{font:inherit}
         else{b.classList.add("no");wrong(d,b.dataset.r==="kw"?"Key words can trick you! The map tells the truth, not one word.":"Not that reason. Look at the map: is the <b>?</b> on the total or on "+(P.type==="eq"?"a group":"a part")+"? Is it equal groups or parts?")}
       }});
     }else if(name==="maker"){
-      var M=P,pick3=[null,null,null],heads=["1. Start the story","2. What happens?","3. Ask the question"];
-      var d=box(n,"Build a story for "+esc(M.eq),M.rows.map(function(r,ri){return '<p class="mk">'+heads[ri]+'</p><div class="opts" data-row="'+ri+'">'+r.map(function(o,oi){return '<button class="opt" data-o="'+oi+'">'+esc(o.t)+'</button>'}).join("")+'</div>'}).join("")+'<p class="mk">Your story:</p><div class="preview" id="mkPrev">Tap one sentence in each row.</div><button class="go" id="mkChk" disabled>Check my story ✓</button>');
+      var M=P,tries=0,pick3=[null,null,null],heads=["1. Start the story","2. What happens?","3. Ask the question"];
+      var d=box(n,"Build a story for "+esc(M.eq),M.rows.map(function(r,ri){return '<p class="mk">'+heads[ri]+'</p><div class="opts" data-row="'+ri+'">'+r.map(function(o,oi){return '<button class="opt" data-o="'+oi+'">'+esc(o.t)+'</button>'}).join("")+'</div>'}).join("")+'<details style="margin:10px 0 0"><summary style="cursor:pointer;font-weight:900;color:#7B4FD8">👀 Stuck? See an example</summary><div class="preview" style="margin-top:8px">'+({"×":"<b>4 × 6</b>: Ana has 4 bags. There are 6 apples in each bag. How many apples are there in all? <i>(4 groups of 6 put together)</i>","÷":"<b>20 ÷ 5</b>: Ana has 20 apples. There are 5 apples in each bag. How many bags are there? <i>(20 split into groups of 5)</i>","+":"<b>14 + 9</b>: Ana has 14 apples. She gets 9 more apples. How many apples are there in all?","−":"<b>30 − 8</b>: Ana has 30 apples. She gives 8 apples away. How many apples are left?"})[M.op]+'</div></details><p class="mk">Your story:</p><div class="preview" id="mkPrev">Tap one sentence in each row.</div><button class="go" id="mkChk" disabled>Check my story ✓</button>');
       d.querySelectorAll(".opts").forEach(function(row){var ri=+row.dataset.row;row.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
-        pick3[ri]=+b.dataset.o;row.querySelectorAll(".opt").forEach(function(y){y.classList.toggle("sel",y===b);y.classList.remove("no")});
+        pick3[ri]=+b.dataset.o;row.querySelectorAll(".opt").forEach(function(y){y.classList.toggle("sel",y===b);y.classList.remove("no");if(y===b)y.classList.remove("pulse")});
         $("mkPrev").textContent=pick3.map(function(p,i){return p==null?"…":M.rows[i][p].t}).join(" ");
         $("mkChk").disabled=pick3.indexOf(null)>=0;d.querySelector(".fb").innerHTML=""}})});
       $("mkChk").onclick=function(){
         var r=judgeStory(M,pick3.map(function(p,i){return M.rows[i][p].f}));
         if(r.ok){lock(d);finishProblem(d,"Your story matches <b>"+esc(M.eq)+"</b>! The answer is <b>"+M.ans+"</b>. You turned math into a real story.")}
-        else wrong(d,r.bad);
+        else{tries++;var hint=r.bad;
+          if(tries>=2){ // second miss: show the exact sentence to change
+            var best=null,bd=9;for(var a=0;a<M.rows[0].length;a++)for(var m=0;m<M.rows[1].length;m++)for(var k=0;k<M.rows[2].length;k++){
+              if(!judgeStory(M,[M.rows[0][a].f,M.rows[1][m].f,M.rows[2][k].f]).ok)continue;var c=[a,m,k],df=c.filter(function(x,i){return x!==pick3[i]}).length;if(df<bd){bd=df;best=c}}
+            var ri=[0,1,2].filter(function(i){return best[i]!==pick3[i]})[0];
+            d.querySelectorAll(".opt.pulse").forEach(function(x){x.classList.remove("pulse")});
+            var tgt=d.querySelector('.opts[data-row="'+ri+'"] .opt[data-o="'+best[ri]+'"]');tgt.classList.add("pulse");
+            hint+="<br>💡 Try changing row "+(ri+1)+" to: <b>“"+esc(M.rows[ri][best[ri]].t)+"”</b>";
+            setTimeout(function(){tgt.scrollIntoView({behavior:"smooth",block:"center"})},700);
+          }
+          wrong(d,hint)}
       };
     }else if(name==="missing"){
       var opts,lab={},m;
