@@ -36,7 +36,7 @@
     var s = document.createElement("style"); s.id = "lwnSayCss";
     s.textContent = ".lwn-say{display:inline-flex;align-items:center;gap:5px;margin:6px auto 0;min-height:40px;padding:6px 12px;border-radius:999px;border:2px solid #D7E5F6;background:#F4F8FF;color:#1E5FA8;font:800 14px/1 'Nunito',system-ui,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}" +
       ".lwn-say:active{transform:translateY(1px)}.lwn-say-wrap{display:flex;justify-content:center;width:100%}" +
-      ".lwn-say.abs{position:absolute;top:8px;right:8px;margin:0;z-index:3}";
+      ".lwn-say.abs{position:absolute;top:8px;right:8px;margin:0;z-index:3}.lwn-say-wrap.in-card{flex-basis:100%;margin-top:2px}.lwn-say-wrap.in-card .lwn-say{min-height:36px;margin-top:4px}";
     document.head.appendChild(s);
   }
   function els() { return (MAP[page] || []).map(function (s) { return document.querySelector(s); }).filter(visible); }
@@ -52,9 +52,10 @@
     var b = document.createElement("button"); b.type = "button"; b.className = "lwn-say"; b.innerHTML = "🗣️ Read it"; b.setAttribute("aria-label", "Read the question out loud");
     b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); speak(textFor()); });
     if (page === "daily-challenge.html") {
-      // the question card: pin the button to its corner so the keypad layout doesn't move
-      var card = q.closest(".qcard") || q.parentNode; if (getComputedStyle(card).position === "static") card.style.position = "relative";
-      b.classList.add("abs"); card.appendChild(b);
+      // put the button on its own line inside the question card, under the words, so it never covers them
+      var card = q.closest(".qcard") || q.parentNode; card.style.flexWrap = "wrap";
+      var w0 = document.createElement("div"); w0.className = "lwn-say-wrap in-card"; w0.appendChild(b); card.appendChild(w0);
+      var old = card.querySelectorAll(".lwn-say-wrap.in-card"); for (var i = 0; i < old.length - 1; i++) old[i].remove();
     } else {
       var w = document.createElement("div"); w.className = "lwn-say-wrap"; w.appendChild(b);
       q.insertAdjacentElement("afterend", w);
