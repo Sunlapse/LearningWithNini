@@ -86,6 +86,13 @@ button,input{font:inherit}
   line-height:.95;color:#377bcf;letter-spacing:-.04em
 }
 .equation .times{color:#ee6d4d}
+.level-card .new-tag{display:inline-block;margin-left:4px;padding:2px 7px;border-radius:999px;background:#ff7a59;color:#fff;font-size:.68rem;font-family:"Nunito",sans-serif;vertical-align:middle}
+.equation.table-q{font-size:1rem;line-height:1.2}
+.mtable{border-collapse:separate;border-spacing:5px;margin:4px auto 6px;font-weight:800;font-size:clamp(1.3rem,4.5vw,2rem);line-height:1}
+.mtable th,.mtable td{min-width:clamp(48px,13vw,72px);height:clamp(46px,12vw,64px);text-align:center;border-radius:12px;background:#fff;border:2px solid #D8E4F4;color:#1f3a63}
+.mtable th{background:#E8F1FF;color:#1E5FA8}.mtable .mt-x{background:#1E5FA8;color:#fff}
+.mtable .mt-miss{background:#FFF4D6;border:3px dashed #F0A500;color:#C07A00}
+.mt-ask{font-size:clamp(1.05rem,3.6vw,1.4rem);font-weight:800;color:#5c5a7a;margin-top:4px}
 .equation.break-apart{font-size:clamp(2rem,5vw,4rem);line-height:1.15;letter-spacing:-.025em}
 .equation.intro{font-size:clamp(1.65rem,4.5vw,3.25rem);line-height:1.22;letter-spacing:-.018em;max-width:900px;margin:18px auto 8px}
 .streak{margin-top:12px;color:#695f88;font-weight:900}
@@ -225,6 +232,10 @@ details summary{cursor:pointer;font-weight:1000;color:#3b71b3}
             <div class="level-num">6</div><h3>Break Apart</h3>
             <p>Split a multiplication fact into two easier facts using arrays and the distributive property.</p>
           </button>
+          <button class="level-card" data-level="table">
+            <div class="level-num">7</div><h3>Table Detective <span class="new-tag">NEW</span></h3>
+            <p>Find the missing product or factor in a multiplication table, like on the Topic 5 test.</p>
+          </button>
         </div>
       </section>
 
@@ -327,6 +338,7 @@ let board=safe(KEYS.board,[]);
 function safe(key,fallback){try{const v=localStorage.getItem(key);return v?JSON.parse(v):fallback}catch{return fallback}}
 function store(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch{}}
 function rnd(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+let tableAnswer=0,tableT=null;
 function currentRange(){
   const boost=Math.min(round-1,5);
   if(level==="intro")return {min:2,max:Math.min(6,4+Math.floor(boost/2)),name:"Arrays & Equal Groups"};
@@ -334,6 +346,7 @@ function currentRange(){
   if(level==="properties")return {min:2,max:Math.min(10,6+boost),name:"Properties & Patterns"};
   if(level==="power")return {min:Math.max(4,6-Math.floor(boost/2)),max:Math.min(12,9+boost),name:"Power Facts"};
   if(level==="break")return {min:3,max:Math.min(10,8+Math.floor(boost/2)),name:"Break Apart"};
+  if(level==="table")return {min:2,max:Math.min(10,6+boost),name:"Table Detective"};
   return {min:Math.min(7,2+boost),max:12,name:"Mixed Master"};
 }
 function shuffleFacts(items){
@@ -441,6 +454,20 @@ function makeQuestion(){
       const price=rnd(3,9),qty=rnd(3,8);a=price;b=qty;propertyAnswer=price*qty;
       el("equation").innerHTML='Tickets cost $'+price+' each. '+qty+' tickets cost $ ?';
     }
+  }else if(level==="table"){
+    // A small multiplication table like the ones on the Topic 5 test: find the missing product or factor.
+    const r=currentRange(),pick=(n,lo,hi)=>{const st=new Set();while(st.size<n)st.add(rnd(lo,hi));return [...st]};
+    const cols=pick(3,2,r.max).sort((x,y)=>x-y),rows=pick(3,1,r.max).sort((x,y)=>x-y);
+    const t=Math.random(),kind=t<.55?"product":t<.8?"col":"row";
+    const ri=rnd(0,2),ci=rnd(0,2);
+    tableT={cols,rows,kind,ri,ci};
+    a=rows[ri];b=cols[ci];
+    tableAnswer=kind==="product"?a*b:kind==="col"?b:a;
+    const cell=(v,miss)=>miss?'<td class="mt-miss">?</td>':'<td>'+v+'</td>';
+    let h='<table class="mtable"><tr><th class="mt-x">×</th>'+cols.map((c,j)=>kind==="col"&&j===ci?'<th class="mt-miss">?</th>':'<th>'+c+'</th>').join("")+'</tr>';
+    rows.forEach((rv,i)=>{h+='<tr>'+(kind==="row"&&i===ri?'<th class="mt-miss">?</th>':'<th>'+rv+'</th>')+cols.map((c,j)=>cell(rv*c,kind==="product"&&i===ri&&j===ci)).join("")+'</tr>'});
+    h+='</table><div class="mt-ask">'+(kind==="product"?"What number is missing from this multiplication table?":"Find the missing factor.")+'</div>';
+    el("equation").innerHTML=h;
   }else if(level==="break"){
     const preferred={
       3:[[1,2]],4:[[2,2],[1,3]],5:[[2,3],[1,4]],
@@ -458,6 +485,7 @@ function makeQuestion(){
   }
   el("equation").classList.toggle("break-apart",level==="break");
   el("equation").classList.toggle("intro",level==="intro"||level==="properties");
+  el("equation").classList.toggle("table-q",level==="table");
   el("levelName").textContent=r.name+" · Round "+round;
   el("answerDisplay").textContent="Type your answer";
   el("answerDisplay").classList.add("placeholder");
@@ -467,7 +495,9 @@ function makeQuestion(){
       ?"Use the multiplication property or pattern to find the missing number."
       :level==="break"
         ?"What number belongs in the ? so the two smaller facts equal the whole array?"
-        :"Enter the product, then check your answer.";
+        :level==="table"
+          ?"Row number × column number = the box where they meet."
+          :"Enter the product, then check your answer.";
   el("status").className="status";
   el("checkBtn").textContent="Check Answer →";
   el("checkBtn").className="check";
@@ -500,7 +530,7 @@ function typeDigit(n){
 }
 function clearAnswer(){if(solved)return;answer="";el("answerDisplay").textContent="Type your answer";el("answerDisplay").classList.add("placeholder")}
 function backspace(){if(solved)return;answer=answer.slice(0,-1);if(answer){el("answerDisplay").textContent=answer}else clearAnswer()}
-function correctAnswer(){return level==="properties"?propertyAnswer:level==="break"?(missingSplit==="left"?splitA:splitB):a*b}
+function correctAnswer(){return level==="table"?tableAnswer:level==="properties"?propertyAnswer:level==="break"?(missingSplit==="left"?splitA:splitB):a*b}
 function check(){
   if(solved){next();return}
   if(answer===""){el("status").textContent="Type an answer first.";el("status").className="status info";return}
@@ -513,6 +543,8 @@ function check(){
         ?"Correct! You used a multiplication property or pattern. You earned "+stars+" star"+(stars===1?"":"s")+"!"
       :level==="break"
         ?"Exactly! "+a+" × "+b+" = ("+splitA+" × "+b+") + ("+splitB+" × "+b+"). You earned "+stars+" star"+(stars===1?"":"s")+"!"
+      :level==="table"
+        ?"Exactly! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!"
         :"Great job! "+a+" × "+b+" = "+(a*b)+". You earned "+stars+" star"+(stars===1?"":"s")+"!";
     el("status").className="status good";
     el("checkBtn").textContent=question===10?"Finish Round →":"Next Question →";
@@ -528,6 +560,8 @@ function check(){
         ?"Not quite. Look at what stays the same: the factors, their order/grouping, or the skip-counting pattern."
       :level==="break"
         ?"Not quite. The two row groups must add back to "+a+". Look at how many rows are already shown."
+      :level==="table"
+        ?(tableT.kind==="product"?"Not quite. Multiply the row number by the column number.":"Not quite. What times "+(tableT.kind==="col"?a:b)+" makes "+(a*b)+"?")
         :(diff>0?"Not quite — your answer is too small. Try again.":"Not quite — your answer is too large. Try again.");
     el("status").className="status bad";
     answer="";el("answerDisplay").textContent="Try again";el("answerDisplay").classList.add("placeholder");
@@ -553,6 +587,11 @@ function showHint(){
     el("status").textContent="The array is already shown: "+a+" equal groups of "+b+". Count all the dots.";
     el("status").className="status info";
     return;
+  }
+  if(level==="table"){
+    stars=Math.max(1,stars-1);
+    el("status").textContent=tableT.kind==="product"?"Hint: go across row "+a+" and down column "+b+". Think "+a+" × "+b+".":"Hint: "+(tableT.kind==="col"?a:b)+" × ? = "+(a*b)+". Division helps: "+(a*b)+" ÷ "+(tableT.kind==="col"?a:b)+" = ?";
+    el("status").className="status info";updateUI();return;
   }
   if(level==="properties"){
     stars=Math.max(1,stars-1);

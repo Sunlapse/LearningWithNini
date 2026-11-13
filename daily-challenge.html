@@ -145,6 +145,8 @@ button:disabled{opacity:.28;cursor:default}
 .fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 .12em;font-size:.8em}
 .fr span:first-child{border-bottom:.08em solid currentColor;padding:0 .15em .06em}
 .fr span:last-child{padding:.06em .15em 0}
+.tbl-problem{display:flex;flex-direction:column;align-items:flex-start;gap:10px}.tbl-copy{font-size:clamp(17px,4.4vw,24px);line-height:1.25}
+.mini-table{border-collapse:separate;border-spacing:5px;font-size:clamp(24px,7vw,34px);font-weight:800}.mini-table th,.mini-table td{min-width:2.2em;height:1.9em;text-align:center;border-radius:.35em;background:#fff;border:2px solid #DCE6F3}.mini-table th{background:#EAF2FF;color:#1E5FA8}.mini-table .x{background:#1E5FA8;color:#fff}.mini-table .miss{background:#FFF4D6;border:3px dashed #F0A500;color:#C07A00}
 .blank{display:inline-block;min-width:1.3em;text-align:center;border:.07em dashed var(--muted);border-radius:.2em;color:var(--muted);margin:0 .2em;padding:0 .1em}
 .array-problem{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:16px;width:100%}
 .mini-array{display:grid;grid-template-columns:repeat(var(--array-cols),12px);gap:3px;padding:8px;border-radius:12px;background:var(--key);border:2px solid var(--line);width:max-content}
@@ -1354,6 +1356,15 @@ Object.assign(GEN,{
     const shownRight=hideLeft?right:'<span class="blank">?</span>';
     return{q:`Complete the break-apart fact: ${rows} × ${cols} = (${shownLeft} × ${cols}) + (${shownRight} × ${cols})`,a:missing,k:'num',factKey:`decomp:${rows}x${cols}`,hint:`The two row groups must add to ${rows}. Keep × ${cols} in both smaller facts.`}
   },
+  table3(){
+    // Topic 5 test style: a small multiplication table with one missing product or factor
+    const pick=(n,lo,hi)=>{const st=new Set();while(st.size<n)st.add(ri(lo,hi));return [...st].sort((x,y)=>x-y)};
+    const cols=pick(3,2,9),rows=pick(2,2,9),r=ri(0,1),c=ri(0,2),t=R(),kind=t<.6?'p':t<.8?'c':'r';
+    const a=kind==='p'?rows[r]*cols[c]:kind==='c'?cols[c]:rows[r];
+    const head=cols.map((v,j)=>kind==='c'&&j===c?'<th class="miss">?</th>':`<th>${v}</th>`).join('');
+    const body=rows.map((v,i)=>'<tr>'+(kind==='r'&&i===r?'<th class="miss">?</th>':`<th>${v}</th>`)+cols.map((w,j)=>kind==='p'&&i===r&&j===c?'<td class="miss">?</td>':`<td>${v*w}</td>`).join('')+'</tr>').join('');
+    return{q:`<span class="tbl-problem"><span class="tbl-copy">${kind==='p'?'What number is missing from this multiplication table?':'Find the missing factor in this multiplication table.'}</span><table class="mini-table"><tr><th class="x">×</th>${head}</tr>${body}</table></span>`,a,k:'num',factKey:`table:${rows[r]}x${cols[c]}`,hint:kind==='p'?`Row ${rows[r]} × column ${cols[c]}.`:`${kind==='c'?rows[r]:cols[c]} × ? = ${rows[r]*cols[c]}. Think ${rows[r]*cols[c]} ÷ ${kind==='c'?rows[r]:cols[c]}.`}
+  },
   combineFacts3(){
     const rows=ri(4,10),cols=ri(3,9),parts=chooseBreakApart(rows),left=parts[0],right=parts[1];
     return{q:`(${left} × ${cols}) + (${right} × ${cols}) = <span class="blank">?</span> × ${cols}`,a:rows,k:'num',factKey:`combine:${rows}x${cols}`,hint:`Combine the row groups: ${left} + ${right}. The number in each row stays ${cols}.`}
@@ -1449,8 +1460,8 @@ const PHASE_POOLS={
     challenge:['goalTwoStep2','twoWaysSub2','differenceStory2','partialDifferences2','sumPlace2','targetPair2','billsNeeded2','coinCombo2','carnivalBudget2','placeClue2','expandedToStandard2','wordToStandard2','placeWays2','placeRegroup2','digitSwap2','identifyPattern2','quarterTime2','elapsedTime2','compensation2','breakApartAdd2','openNumberLine2','hundredChart2','dataTable2','compareMore2','multStory2','rowsStory2','twoStep2','add2Big','sub2Big','array2','pairs2','equalShares2','money2','time2','place2','compare2','add3Digit2','sub3Digit2','exactNeed2','stickerPacks2','startUnknown3Digit2','lessBy10or1002']
   },
   '3':{
-    warmup:['storyGroups3','storyShare3','storyAddSub3','mult','div','missing','missingDiv3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','add','sub','round','place3','pattern3','money3'],
-    core:['storyGroups3','storyShare3','storyHowMany3','storyCompare3','storyAddSub3','storyTwoStep3','storyMoney3','storyTime3','wordMult','wordDiv','wordAddSub3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
+    warmup:['storyGroups3','storyShare3','storyAddSub3','mult','div','missing','missingDiv3','table3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','add','sub','round','place3','pattern3','money3'],
+    core:['storyGroups3','storyShare3','storyHowMany3','storyCompare3','storyAddSub3','storyTwoStep3','storyMoney3','storyTime3','wordMult','wordDiv','wordAddSub3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','table3','time','fraccmp','area','perim','add','sub','round','place3','pattern3','money3','expanded3','measure3','missing','missingDiv3','missingDividend3','fracOf3'],
     stretch:['storyTwoStep3','storyCompare3','storyHowMany3','storyMoney3','storyTime3','storyLeftover3','twoStep3','wordUnknown3','unitPrice3','commutative3','associative3','skipCount3','ninePattern3','equalGroupEquation3','breakApart3','combineFacts3','splitArray3','fracOf3','expanded3','measure3','time','fraccmp','area','perim','missingDividend3','add4','sub4','equivfrac','angle','factorPair4'],
     challenge:['storyTwoStep3','storyLeftover3','twoStep3','wordUnknown3','breakApart3','combineFacts3','splitArray3','multiStep4','wordUnknown4','mult2x2','longdiv','fraccompare4','roundBig','angle','fracOf4','money4','pattern4']
   },
