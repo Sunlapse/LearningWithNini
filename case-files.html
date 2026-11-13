@@ -148,6 +148,52 @@ h2{font-family:"Fredoka",sans-serif;color:var(--accent2);margin:0 0 10px;font-si
 (function(){
   /* ===== Cases: add each new case to the TOP of this list, with live = its Monday (YYYY-MM-DD). ===== */
   var CASES = [{
+    id: "c5-vanishing-pie",
+    num: 5,
+    live: "2026-11-23",
+    title: "The Case of the Vanishing Pie 🥧",
+    next: "Case #6 drops Monday, Nov 30",
+    intro: "Detective, we have a new case! 🥧 It's Thanksgiving at Auntie Rose's farmhouse, with the first snow of the year, a long feast table, and paper turkeys on every window. Auntie Rose set her famous pumpkin pie on the cooling rack on the front porch. She saw it there at 3:20. At 4:05 it was GONE! Solve each math problem to unlock a clue. Then tell me who took the pie.",
+    suspects: [
+      { id: "ray", e: "🧑‍🍳", name: "Uncle Ray", note: "in a striped apron and white sneakers" },
+      { id: "mila", e: "🎈", name: "Mila", note: "the cousin building a parade float" },
+      { id: "lou", e: "👴", name: "Grandpa Lou", note: "in a red knitted scarf and big brown boots" },
+      { id: "waffles", e: "🐶", name: "Waffles", note: "the fluffy golden retriever" }
+    ],
+    culprit: "lou",
+    solved: "It was <b>Grandpa Lou</b>! 👴 From the porch, he saw his neighbor Mrs. Lopez sitting all alone on her steps next door. He didn't want her to spend Thanksgiving by herself, so he grabbed the pie, crunched through the snow in his big boots, and went to invite her to the feast. His red scarf caught on her gate on the way in! The pie was safe and whole. Grandpa said sorry for not telling anyone first, and Mrs. Lopez came back with him to join the feast. Uncle Ray was innocent. He was in the kitchen mashing potatoes the whole time! Everyone shared the pie and said what they were thankful for. Mrs. Lopez said she was thankful for good neighbors. Remember, detectives: sharing is kind, but always tell your family before you take something away. Case closed! 🥧",
+    wrong: "Not this one! Look at clues 3 and 6 again: big boot prints with bumpy treads and a fuzzy strand of red yarn. 🔎",
+    chapters: {
+      g23: [
+        { story: "Auntie Rose baked dinner rolls for the feast. She baked 4 trays with 8 rolls on each tray.", q: "How many dinner rolls did Auntie Rose bake?", a: 32, unit: "rolls", hint: "4 groups of 8. Try 8 + 8 + 8 + 8.",
+          clue: "Next to the <b>32 dinner rolls</b>, Auntie Rose set her pumpkin pie on the cooling rack on the front porch. She saw it there at 3:20. At 4:05 it was gone, so the pie vanished between 3:20 and 4:05! 😱" },
+        { story: "Mila built a mini parade float in the garage with her dad. They started at 3:10 and finished at 4:15.", q: "How many minutes did Mila work on the float?", a: 65, unit: "minutes", hint: "From 3:10 to 4:10 is 60 minutes. Then add 5 more minutes to get to 4:15.",
+          clue: "Mila worked on the float for <b>65 minutes</b>, from 3:10 to 4:15. Her dad was with her in the garage the whole time. That covers all of 3:20 to 4:05. Mila is cleared! 🎈", clear: "mila" },
+        { story: "We found a trail of footprints in the snow going down the porch steps. The trail has 8 steps, and each step is 60 cm long.", q: "How long is the trail?", a: 480, unit: "cm", hint: "8 steps × 60 cm each. 8 × 6 tens = 48 tens.",
+          clue: "The <b>480 cm</b> trail has big, grown-up-size <b>boot prints with bumpy treads</b>. They are not sneaker prints, and they are not paw prints! 👢 Which suspect wears shoes like that?" },
+        { story: "Grandma played fetch with Waffles in the fenced backyard. She tossed the ball 36 times in 4 rounds, with the same number of tosses in each round.", q: "How many tosses were in each round?", a: 9, unit: "tosses", hint: "36 ÷ 4. Think: 4 × what = 36?",
+          clue: "Grandma tossed the ball <b>9 times</b> each round. Waffles played fetch in the fenced backyard from 3:00 to 4:30, and Grandma watched her the whole time. That covers all of 3:20 to 4:05. Waffles is cleared! 🐶", clear: "waffles" },
+        { story: "The boot prints went down the front path, past rows of mini pumpkins. The rows had 12, 24, 36, ... pumpkins.", q: "How many pumpkins are in the next row?", a: 48, unit: "pumpkins", hint: "Each row has 12 more pumpkins than the one before. 36 + 12.",
+          clue: "Right after the row of <b>48 pumpkins</b>, the boot prints turn toward the <b>gate of Mrs. Lopez's house</b> next door. 🏡" },
+        { story: "On Mrs. Lopez's porch is a box of thank-you cards. The box had 50 cards. She has mailed 32 of them, and all the rest are still in the box.", q: "How many cards are still in the box?", a: 18, unit: "cards", hint: "50 − 32. Take away 30 to get 20, then take away 2 more.",
+          clue: "Next to the box of <b>18 cards</b> sat Auntie Rose's pumpkin pie, safe and whole! And caught on the gate latch was a fuzzy strand of <b>red yarn</b>. 🧶" }
+      ],
+      g45: [
+        { story: "Auntie Rose baked dinner rolls for the feast. She baked 13 trays with 24 rolls on each tray.", q: "How many dinner rolls did Auntie Rose bake?", a: 312, unit: "rolls", hint: "13 × 24 = 10 × 24 + 3 × 24.",
+          clue: "Next to the <b>312 dinner rolls</b>, Auntie Rose set her pumpkin pie on the cooling rack on the front porch. She saw it there at 3:20. At 4:05 it was gone, so the pie vanished between 3:20 and 4:05! 😱" },
+        { story: "Mila built a mini parade float in the garage with her dad. They started at 2:55 and finished at 4:20.", q: "How many minutes did Mila work on the float?", a: 85, unit: "minutes", hint: "From 2:55 to 3:55 is 60 minutes. Then add 25 more minutes to get to 4:20.",
+          clue: "Mila worked on the float for <b>85 minutes</b>, from 2:55 to 4:20. Her dad was with her in the garage the whole time. The pie went missing between 3:20 and 4:05, while she was still there. Mila is cleared! 🎈", clear: "mila" },
+        { story: "A trail of footprints in the snow is 5.6 meters long. Each step is 70 cm long.", q: "How many steps are in the trail?", a: 8, unit: "steps", hint: "5.6 m = 560 cm. Then 560 ÷ 70. (Think: 7 × 8 = 56.)",
+          clue: "The trail has <b>8 steps</b>. They are big, grown-up-size <b>boot prints with bumpy treads</b>. They are not sneaker prints, and they are not paw prints! 👢 Which suspect wears shoes like that?" },
+        { story: "Grandma played fetch with Waffles in the fenced backyard. She tossed the ball 96 times, with 8 tosses in each round.", q: "How many rounds of fetch did they play?", a: 12, unit: "rounds", hint: "96 ÷ 8. Split it: 80 ÷ 8 = 10 and 16 ÷ 8 = 2.",
+          clue: "They played <b>12 rounds</b>. Waffles played fetch in the fenced backyard from 3:00 to 4:30, and Grandma watched her the whole time. That covers all of 3:20 to 4:05. Waffles is cleared! 🐶", clear: "waffles" },
+        { story: "The front path has 96 mini pumpkins along it. The boot prints went past 5/8 of the pumpkins, then turned off the path.", q: "How many pumpkins did the boot prints go past?", a: 60, unit: "pumpkins", hint: "96 ÷ 8 = 12. Then 12 × 5.",
+          clue: "The boot prints went past <b>60 pumpkins</b>, then turned toward the <b>gate of Mrs. Lopez's house</b> next door. 🏡" },
+        { story: "On Mrs. Lopez's porch is a box that held 120 thank-you cards. She has mailed 3/5 of them, and all the rest are still in the box.", q: "How many cards are still in the box?", a: 48, unit: "cards", hint: "First find 3/5 of 120: 120 ÷ 5 = 24, and 24 × 3 = 72. Then 120 − 72.",
+          clue: "Next to the box of <b>48 cards</b> sat Auntie Rose's pumpkin pie, safe and whole! And caught on the gate latch was a fuzzy strand of <b>red yarn</b>. 🧶" }
+      ]
+    }
+  }, {
     id: "c4-golden-acorn",
     num: 4,
     live: "2026-11-16",
