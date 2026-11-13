@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Story Map – Understand Word Problems | Learn With Nini</title>
+<meta name="description" content="Don't just guess times or divide. Map the story first: find the total, the groups and what's missing, then pick the equation. Free word problem practice for grades 2–4.">
+<link rel="canonical" href="https://learnwithnini.com/story-map.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Learn With Nini">
+<meta property="og:title" content="Story Map – understand word problems">
+<meta property="og:description" content="Find the total, the groups and what's missing, then pick the equation. Free for grades 2–4.">
+<meta property="og:url" content="https://learnwithnini.com/story-map.html">
+<meta property="og:image" content="https://learnwithnini.com/social-preview.png?v=3">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nini Math">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#203D61;--muted:#61708A;--blue:#1E6FD9;--line:#E3ECF7;--good:#1F9D55;--bad:#C8322F;--tot:#7B4FD8;--grp:#E8711A;--each:#1E9BB8;--part:#2E9E5B}
+html,body{margin:0}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#F3EEFF,#fff 40%,#FFF9F3)}
+button{font:inherit}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top a{display:inline-flex;align-items:center;min-height:44px;color:#1E5FA8;font-weight:900;text-decoration:none;background:#EEF5FF;border-radius:999px;padding:8px 14px;font-size:15px;white-space:nowrap}
+.top .brand{font-family:"Fredoka",sans-serif;font-size:20px;background:none;padding:0}.top .brand b{color:#EF6D4D}
+.top .sc{font-weight:900;background:#FFF6DA;border-radius:999px;padding:8px 12px;color:#7A5200}
+.wrap{width:min(820px,calc(100% - 28px));margin:14px auto 60px}
+.hero{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#5B3FC4,#8F6CF0);color:#fff;border-radius:24px;padding:16px 18px;box-shadow:0 14px 34px rgba(91,63,196,.25)}
+.hero img{width:70px;height:70px;border-radius:50%;border:4px solid #FFD36B;background:#fff;flex:none;object-fit:cover}
+.hero h1{font-family:"Fredoka",sans-serif;font-size:clamp(24px,5vw,32px);margin:0 0 2px;line-height:1.1}
+.hero p{margin:0;font-weight:700;opacity:.95;line-height:1.35}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
+.levels button{min-height:62px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:8px;font-weight:900;color:#4B3A9E;cursor:pointer;line-height:1.15}
+.levels button small{display:block;font-weight:800;color:var(--muted);font-size:12px;margin-top:3px}
+.levels button.on{border-color:#7B4FD8;background:#F1ECFF}
+@media(max-width:520px){.levels button{font-size:14px}.levels button small{font-size:11px}}
+.bar{display:flex;align-items:center;gap:10px;margin:12px 2px 0;font-weight:900;color:var(--muted);font-size:14px}
+.bar .track{flex:1;height:10px;border-radius:999px;background:#E6E0F5;overflow:hidden}.bar .track i{display:block;height:100%;background:linear-gradient(90deg,#9F7CF5,#5B3FC4);border-radius:999px;transition:width .4s}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:12px;box-shadow:0 10px 26px rgba(40,76,120,.07)}
+#story{font-size:clamp(19px,4.6vw,23px);line-height:1.6;font-weight:700;margin:0;color:#1B3352}
+.num{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:38px;padding:0 8px;margin:0 2px;border-radius:10px;border:2px dashed #B9A7EE;background:#F6F2FF;font-weight:900;color:#4B3A9E;font-size:1.05em;vertical-align:baseline}
+.num.tap{cursor:pointer;border-style:solid}.num.x{text-decoration:line-through;opacity:.55;border-color:#ccc;background:#f4f4f4;color:#888}
+.num.r-total{border:2px solid var(--tot);background:#F1EAFF;color:var(--tot)}.num.r-groups{border:2px solid var(--grp);background:#FFF1E4;color:#B9560F}
+.num.r-each{border:2px solid var(--each);background:#E6F7FB;color:#0E6F86}.num.r-part{border:2px solid var(--part);background:#E8F7EE;color:#1E7A44}
+.step{margin-top:12px}
+.step h2{font-family:"Fredoka",sans-serif;font-size:21px;margin:0 0 8px;color:#4B3A9E;display:flex;align-items:center;gap:8px}
+.step h2 .n{flex:none;width:30px;height:30px;border-radius:50%;background:#7B4FD8;color:#fff;display:grid;place-items:center;font-size:16px}
+.opts{display:grid;gap:8px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{min-height:56px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:10px 12px;font-weight:900;font-size:17px;color:var(--ink);cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;line-height:1.25}
+.opt .ic{font-size:24px;flex:none}
+.opt.stack{flex-direction:column;justify-content:center;text-align:center;gap:6px}
+.opt:active{transform:translateY(1px)}
+.opt.ok{border-color:var(--good);background:#E7F7EE;color:#17643A}
+.opt.no{border-color:#F2B8B5;background:#FFF1F0;color:#9B2A27}
+.opt[disabled]{cursor:default}
+.eq .opt{font-size:22px;justify-content:center;font-family:"Fredoka",sans-serif;font-weight:700}
+.rolerow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.rolerow .num{flex:none}
+.rolerow .chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{min-height:46px;border-radius:999px;border:2px solid var(--line);background:#fff;padding:6px 14px;font-weight:900;font-size:15px;cursor:pointer;color:var(--ink)}
+.chip.total.sel{border-color:var(--tot);background:#F1EAFF;color:var(--tot)}.chip.groups.sel{border-color:var(--grp);background:#FFF1E4;color:#B9560F}
+.chip.each.sel{border-color:var(--each);background:#E6F7FB;color:#0E6F86}.chip.part.sel{border-color:var(--part);background:#E8F7EE;color:#1E7A44}
+.chip.no{border-color:#F2B8B5;background:#FFF1F0}
+.say{display:flex;gap:10px;align-items:flex-start;margin-top:10px}
+.say img{width:40px;height:40px;border-radius:50%;flex:none;border:3px solid #FFE1B8}
+.say .b{border-radius:4px 16px 16px 16px;padding:10px 12px;font-weight:800;line-height:1.45;font-size:16px}
+.say.good .b{background:#E7F7EE;color:#17643A}.say.bad .b{background:#FFF1F0;color:#8A2421}.say.info .b{background:#FFF6E6;color:#7A4A1F}
+.model{margin:14px 0 4px;padding:12px 10px 8px;border-radius:16px;background:#FBFAFF;border:1px dashed #D9CFF5}
+.model .lbl{text-align:center;font-weight:900;color:var(--tot);margin-bottom:4px;font-size:15px}
+.model .brace{height:10px;border:3px solid var(--tot);border-bottom:0;border-radius:10px 10px 0 0;margin:0 4px 4px}
+.model .row{display:flex;gap:4px}
+.model .seg{flex:1;min-height:42px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:17px;color:#fff;background:var(--each)}
+.model .seg.part{background:var(--part)}.model .seg.part.b{background:#5DBB85}
+.model .seg.q{background:#FFF4D6;color:#B07000;border:3px dashed #F0A500}
+.model .seg.dots{background:none;color:var(--muted);flex:.5}
+.model .cap{text-align:center;font-weight:800;color:var(--grp);font-size:14px;margin-top:5px}
+.key{margin-top:12px;background:#F1ECFF;border-radius:16px;padding:10px 12px;font-weight:800;color:#4B3A9E;line-height:1.45;font-size:15px}
+.ans{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ans .box{min-width:120px;min-height:56px;border-radius:14px;border:3px solid #CFC2F2;background:#fff;display:grid;place-items:center;font:700 28px/1 "Fredoka",sans-serif;color:#4B3A9E;padding:0 12px}
+.ans .box.ph{color:#B3A9CC;font-size:18px}
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.pad button{min-height:52px;border-radius:12px;border:2px solid var(--line);background:#fff;font:700 22px/1 "Fredoka",sans-serif;color:var(--ink);cursor:pointer}
+.go{display:block;width:100%;margin-top:12px;min-height:56px;border:0;border-radius:16px;background:linear-gradient(135deg,#FF9B45,#E8711A);color:#fff;font:700 21px/1 "Fredoka",sans-serif;cursor:pointer;box-shadow:0 4px 0 #B9560F}
+.go.next{background:linear-gradient(135deg,#3CC48D,#1F9D55);box-shadow:0 4px 0 #17643A}
+.go[disabled]{opacity:.45;cursor:default}
+.fin{text-align:center}
+.fin .stars{font-size:44px;letter-spacing:4px}
+.fin h2{font-family:"Fredoka",sans-serif;color:#4B3A9E;font-size:28px;margin:6px 0}
+.fin p{font-weight:800;color:var(--muted);line-height:1.45}
+.row2{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.row2 a,.row2 button{flex:1;min-width:150px;min-height:52px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:900;color:#1E5FA8;text-decoration:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+.row2 .main{background:linear-gradient(135deg,#9F7CF5,#5B3FC4);color:#fff;border:0}
+.foot{text-align:center;color:var(--muted);font-weight:700;font-size:13px;margin-top:22px}
+.foot a{color:#1E5FA8}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:no-preference){.pop{animation:pop .35s ease}@keyframes pop{0%{transform:scale(.94);opacity:.4}100%{transform:none;opacity:1}}}
+</style>
+<script src="/install-banner.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <a href="/" class="brand">Learn<b>WithNini</b> ⭐</a>
+  <span class="sc" id="score">⭐ 0</span>
+</header>
+<div class="wrap">
+  <section class="hero">
+    <img src="nini-face.webp" alt="Nini">
+    <div><h1>🗺️ Story Map</h1><p>Don’t guess times or divide! Map the story first, then the math is easy.</p></div>
+  </section>
+
+  <div class="levels" role="group" aria-label="Choose a level">
+    <button type="button" data-level="1">1 · Equal Groups<small>× or ÷?</small></button>
+    <button type="button" data-level="2">2 · Groups or Parts?<small>× ÷ + −</small></button>
+    <button type="button" data-level="3">3 · Sneaky Numbers<small>extra info</small></button>
+  </div>
+
+  <div class="bar"><span id="qText">Story 1 of 6</span><span class="track"><i id="prog" style="width:0"></i></span></div>
+
+  <section class="card" id="play">
+    <p id="story"></p>
+    <div id="steps"></div>
+    <div class="key">🔑 <b>Missing the total?</b> Put it together: <b>×</b> for equal groups, <b>+</b> for parts.<br>🔑 <b>Know the total?</b> Take it apart: <b>÷</b> for equal groups, <b>−</b> for parts.</div>
+  </section>
+
+  <section class="card fin" id="fin" hidden></section>
+
+  <p class="foot">Tip for grown-ups: ask “What does each number mean?” before your child solves any word problem. · <a href="math-detective.html">Math Detective</a> · <a href="/">All games</a></p>
+</div>
+
+<script src="leaderboard-api.js"></script>
+<script src="fun.js"></script>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  function R(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+  function pick(a){return a[Math.floor(Math.random()*a.length)]}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function load(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+  function fx(n){try{fun(n)}catch(e){}}
+  var PER_ROUND=6;
+
+  /* ---------- story makers ---------- */
+  var KIDS=[["Adam","he"],["Mia","she"],["Kai","he"],["Leilani","she"],["Noah","he"],["Ava","she"],["Mateo","he"],["Hana","she"],["Ethan","he"],["Zoe","she"],["Keoni","he"],["Lily","she"]];
+  var BOX=[{c:"bag",cs:"bags",i:"apples",p:"in"},{c:"box",cs:"boxes",i:"crayons",p:"in"},{c:"basket",cs:"baskets",i:"eggs",p:"in"},{c:"jar",cs:"jars",i:"marbles",p:"in"},
+           {c:"pack",cs:"packs",i:"stickers",p:"in"},{c:"plate",cs:"plates",i:"cookies",p:"on"},{c:"shelf",cs:"shelves",i:"books",p:"on"},{c:"tank",cs:"tanks",i:"fish",p:"in"},
+           {c:"vase",cs:"vases",i:"flowers",p:"in"},{c:"bucket",cs:"buckets",i:"shells",p:"in"},{c:"tray",cs:"trays",i:"muffins",p:"on"},{c:"team",cs:"teams",i:"kids",p:"on"}];
+  var THINGS=["marbles","stickers","beads","shells","cards","crayons","stamps","rocks"];
+  var EXTRA=[function(){return "Their cat is "+N(R(3,9),"extra")+" years old."},function(){return "It was a sunny day with "+N(R(2,8),"extra")+" clouds in the sky."},function(){return "The store is "+N(R(2,9),"extra")+" blocks away."}];
+  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+  var numId=0,NUMS=[];
+  function N(v,role,lab){var id="n"+(numId++);NUMS.push({id:id,v:v,role:role,lab:lab});return "\u0001"+id+"\u0002"}
+
+  function eqStory(kind,ctx){
+    ctx=ctx||{};var k=ctx.k||pick(KIDS),b=ctx.b||pick(BOX),g,e;do{g=R(2,9);e=R(2,9)}while(g===e||(ctx.avoid&&ctx.avoid.indexOf(g*e)>=0));var t=g*e,s,books=ctx.books!=null?ctx.books:Math.random()<.2;
+    if(books){ // like the IXL one: each book is a group of days
+      if(kind==="total")s=k[0]+" read "+N(g,"groups")+" books. Each book took "+N(e,"each")+" days to read. How many days did "+k[1]+" read in all?";
+      else if(kind==="each")s="In "+N(t,"total")+" days, "+k[0]+" read "+N(g,"groups")+" books. Each book took the same number of days. How many days did each book take?";
+      else s="In "+N(t,"total")+" days, "+k[0]+" read some books. Each book took "+N(e,"each")+" days. How many books did "+k[1]+" read?";
+      return {type:"eq",kind:kind,g:g,e:e,t:t,s:s,c:"book",cs:"books",i:"days",groupWord:"Each book is a group of days.",ctx:{k:k,b:b,books:true},
+        lab:{total:"days in all",groups:"how many books",each:"days for each book"}};
+    }
+    if(b.c==="team"){
+      if(kind==="total")s="Coach made "+N(g,"groups")+" teams. There are "+N(e,"each")+" kids on each team. How many kids are there in all?";
+      else if(kind==="each")s="Coach split "+N(t,"total")+" kids into "+N(g,"groups")+" equal teams. How many kids are on each team?";
+      else s="Coach has "+N(t,"total")+" kids. "+N(e,"each")+" kids go on each team. How many teams can Coach make?";
+    }else{
+      if(kind==="total")s=k[0]+" has "+N(g,"groups")+" "+b.cs+". There are "+N(e,"each")+" "+b.i+" "+b.p+" each "+b.c+". How many "+b.i+" are there in all?";
+      else if(kind==="each")s=k[0]+" has "+N(t,"total")+" "+b.i+". "+cap(k[1])+" puts the same number "+b.p+" each of "+N(g,"groups")+" "+b.cs+". How many "+b.i+" go "+b.p+" each "+b.c+"?";
+      else s=k[0]+" has "+N(t,"total")+" "+b.i+". "+cap(k[1])+" puts "+N(e,"each")+" "+b.i+" "+b.p+" each "+b.c+". How many "+b.cs+" does "+k[1]+" fill?";
+    }
+    var lab=b.c==="team"?{total:"kids in all",groups:"how many teams",each:"kids on each team"}:{total:b.i+" in all",groups:"how many "+b.cs,each:b.i+" "+b.p+" each "+b.c};
+    return {type:"eq",kind:kind,g:g,e:e,t:t,s:s,c:b.c,cs:b.cs,i:b.i,groupWord:"Each "+b.c+" is one group.",ctx:{k:k,b:b,books:false},lab:lab};
+  }
+  function partStory(kind,ctx){
+    ctx=ctx||{};var k=ctx.k||pick(KIDS),it=ctx.it||pick(THINGS),a=R(12,68),bb=R(11,59);if(a===bb)bb++;var t=a+bb,s,f=ctx.f!=null?ctx.f:Math.random()<.5;
+    // every number gets its own story words, so kids say what it really counts
+    var L=f?{red:"the red "+it,blue:"the blue "+it,all:"all the "+it}
+           :(kind==="total"?{first:"the "+it+" at first",got:"the "+it+" "+k[1]+" got",now:"the "+it+" now"}:{first:"the "+it+" at first",gave:"the "+it+" "+k[1]+" gave away",left:"the "+it+" left"});
+    var miss;
+    if(kind==="total"){s=f?k[0]+" has "+N(a,"part",L.red)+" red "+it+" and "+N(bb,"part",L.blue)+" blue "+it+". How many "+it+" does "+k[1]+" have in all?"
+                          :k[0]+" had "+N(a,"part",L.first)+" "+it+". Then "+k[1]+" got "+N(bb,"part",L.got)+" more. How many "+it+" does "+k[1]+" have now?";miss=f?L.all:L.now}
+    else{s=f?k[0]+" has "+N(t,"total",L.all)+" "+it+". "+N(a,"part",L.red)+" of them are red. The rest are blue. How many are blue?"
+            :k[0]+" had "+N(t,"total",L.first)+" "+it+". "+cap(k[1])+" gave "+N(a,"part",L.gave)+" to a friend. How many "+it+" does "+k[1]+" have left?";miss=f?L.blue:L.left}
+    return {type:"part",kind:kind,a:a,b:bb,t:t,s:s,i:it,ctx:{k:k,it:it,f:f},missLab:miss,lab:{total:f?L.all:(kind==="total"?L.now:L.first),part:"a part"}};
+  }
+  function makeProblem(level){
+    numId=0;NUMS=[];
+    var P=level===1||Math.random()<.6?eqStory(pick(["total","each","groups"])):partStory(pick(["total","part"]));
+    P.nums=NUMS;
+    if(level===3){ // add a number you don't need, after the first sentence
+      var x=pick(EXTRA)();var cut=P.s.indexOf(". ")+2;P.s=P.s.slice(0,cut)+x+" "+P.s.slice(cut);P.nums=NUMS;
+    }
+    finishP(P);
+    return P;
+  }
+  function finishP(P){
+    P.nums.forEach(function(n){if(!n.lab&&P.lab)n.lab=P.lab[n.role]});
+    if(P.type==="eq")P.missLab=P.lab[P.kind];
+    var known=P.nums.filter(function(n){return n.role!=="extra"});
+    P.ans=P.type==="eq"?(P.kind==="total"?P.t:P.kind==="each"?P.e:P.g):(P.kind==="total"?P.t:P.t-P.a);
+    // equations
+    var big=Math.max(known[0].v,known[1].v),sm=Math.min(known[0].v,known[1].v),A=known[0].v,B=known[1].v,right;
+    if(P.type==="eq"){right=P.kind==="total"?P.g+" × "+P.e+" = ?":P.kind==="each"?P.t+" ÷ "+P.g+" = ?":P.t+" ÷ "+P.e+" = ?"}
+    else{right=P.kind==="total"?P.a+" + "+P.b+" = ?":P.t+" − "+P.a+" = ?"}
+    var all=[big+" × "+sm+" = ?",big+" ÷ "+sm+" = ?",big+" + "+sm+" = ?",big+" − "+sm+" = ?"];
+    if(P.type==="eq"&&P.kind==="total")all[0]=right;else if(P.type==="eq")all[1]=right;else if(P.kind==="total")all[2]=right;else all[3]=right;
+    P.eqs=shuffle(all.map(function(x){return{t:x,ok:x===right}}));
+    P.right=right;
+  }
+  /* "Flip it": same story world, new numbers, a different part missing */
+  function flipOf(P){
+    numId=0;NUMS=[];var F;
+    if(P.type==="eq"){var kinds=["total","each","groups"].filter(function(x){return x!==P.kind});F=eqStory(pick(kinds),{k:P.ctx.k,b:P.ctx.b,books:P.ctx.books,avoid:[P.t]})}
+    else F=partStory(P.kind==="total"?"part":"total",{k:P.ctx.k,it:P.ctx.it,f:P.ctx.f});
+    F.nums=NUMS;finishP(F);return F;
+  }
+
+  /* ---------- game state ---------- */
+  var level=Math.max(1,Math.min(3,+(load("lwn-storymap-v1",{}).level||1))),q=1,stars=0,P,steps,si,miss,roundStars=0;
+  var profile=load("learningWithNiniProfileV1",{})||{};
+  function saveLevel(){try{localStorage.setItem("lwn-storymap-v1",JSON.stringify({level:level}))}catch(e){}}
+  function roleName(r){return{total:"the total",groups:"how many groups",each:"how many in each group",part:"a part"}[r]}
+  function storyHTML(roles){
+    return esc(P.s).replace(/\u0001(n\d+)\u0002/g,function(m,id){var n=P.nums.filter(function(x){return x.id===id})[0],cls="num";
+      if(roles&&roles[id]==="x")cls+=" x";else if(roles&&roles[id])cls+=" r-"+roles[id];
+      return '<span class="'+cls+'" data-id="'+id+'">'+n.v+'</span>'});
+  }
+  var shown={}; // roles shown in the story so far
+  function plan(){
+    var s=[];if(level===3)s.push("extra");if(level>=2)s.push("type");s.push("roles","missing","eq","solve","flip");return s;
+  }
+  function start(){
+    q=1;roundStars=0;$("fin").hidden=true;$("play").hidden=false;
+    document.querySelectorAll(".levels button").forEach(function(b){b.classList.toggle("on",+b.dataset.level===level)});
+    next();
+  }
+  function next(){
+    P=makeProblem(level);steps=plan();si=0;miss=0;shown={};
+    $("qText").textContent="Story "+q+" of "+PER_ROUND;$("prog").style.width=((q-1)/PER_ROUND*100)+"%";
+    $("story").innerHTML=storyHTML(shown);$("steps").innerHTML="";
+    step();
+  }
+  function say(kind,html){return '<div class="say '+kind+'"><img src="nini-face.webp" alt=""><div class="b">'+html+'</div></div>'}
+  function box(n,title,inner){var d=document.createElement("div");d.className="step pop";d.innerHTML='<h2><span class="n">'+n+'</span>'+title+'</h2>'+inner+'<div class="fb"></div>';$("steps").appendChild(d);setTimeout(function(){d.scrollIntoView({behavior:"smooth",block:"nearest"})},60);return d}
+  function lock(d){d.querySelectorAll("button").forEach(function(b){b.disabled=true})}
+  function wrong(d,msg){miss++;fx("wrong");d.querySelector(".fb").innerHTML=say("bad",msg)}
+  function right(d,msg){fx("right");lock(d);d.querySelector(".fb").innerHTML=say("good",msg);si++;setTimeout(step,msg?650:250)}
+  function known(){return P.nums.filter(function(n){return n.role!=="extra"})}
+  function step(){
+    var name=steps[si],n=si+1;
+    if(!name)return;
+    if(name==="extra"){
+      var d=box(n,"Which number do you NOT need?",'<p style="margin:0;font-weight:800;color:#61708A">Tap it in the story above.</p>');
+      $("story").querySelectorAll(".num").forEach(function(el){el.classList.add("tap");el.onclick=function(){
+        if(steps[si]!=="extra")return;var nn=P.nums.filter(function(x){return x.id===el.dataset.id})[0];
+        if(nn.role==="extra"){shown[nn.id]="x";$("story").innerHTML=storyHTML(shown);right(d,"Yes! "+nn.v+" has nothing to do with the question. Sneaky stories add extra numbers, so always ask what each number means.")}
+        else{el.classList.add("no");wrong(d,"We need "+nn.v+". It is part of what the question asks about. Find the number that tells about something else.")}
+      }});
+    }else if(name==="type"){
+      var d=box(n,"What kind of story is it?",'<div class="opts two"><button class="opt stack" data-v="eq"><span class="ic">🟦🟦🟦</span>Equal groups<small style="font-weight:800;opacity:.75">same size</small></button><button class="opt stack" data-v="part"><span class="ic">🟥🟦</span>Parts and a total<small style="font-weight:800;opacity:.75">different sizes</small></button></div>');
+      d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
+        if(b.dataset.v===P.type){b.classList.add("ok");right(d,P.type==="eq"?"Right! Every group has the same number. "+(P.groupWord||""):"Right! The parts are different amounts that make a total.")}
+        else{b.classList.add("no");wrong(d,P.type==="eq"?"Look again: does each "+(P.c||"group")+" have the <b>same</b> number? Same-size groups mean equal groups.":"Look again: these amounts are different sizes, not equal groups. They are parts of one total.")}
+      }});
+    }else if(name==="roles"&&Math.random()<.5){
+      // Ask it the other way: "Which number tells how many books?"
+      var kn=known(),target=pick(kn),other=kn.filter(function(x){return x!==target})[0];
+      var d=box(n,"Which number tells "+esc(target.lab)+"?",'<div class="opts two">'+shuffle(P.nums.filter(function(x){return shown[x.id]!=="x"})).map(function(x){return '<button class="opt" data-id="'+x.id+'" style="justify-content:center;font-size:24px">'+x.v+'</button>'}).join("")+'</div>');
+      d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
+        if(b.dataset.id===target.id){b.classList.add("ok");shown[target.id]=target.role;shown[other.id]=other.role;$("story").innerHTML=storyHTML(shown);
+          right(d,"Yes! <b>"+target.v+"</b> is "+esc(target.lab)+" ("+roleName(target.role)+"). So <b>"+other.v+"</b> is "+esc(other.lab)+" ("+roleName(other.role)+").")}
+        else{b.classList.add("no");var x=P.nums.filter(function(y){return y.id===b.dataset.id})[0];wrong(d,x.role==="extra"?x.v+" is the extra number. It doesn’t tell about the question at all.":"No, "+x.v+" is "+esc(x.lab)+". Which number is "+esc(target.lab)+"?")}
+      }});
+    }else if(name==="roles"){
+      var chipsFor=P.type==="eq"?["total","groups","each"].map(function(o){return{l:P.lab[o],r:o}}):shuffle(known().map(function(x){return{l:x.lab,r:x.role}}).concat([{l:P.missLab,r:P.kind==="total"?"total":"part"}]));
+      var rows=known().map(function(nn){return '<div class="rolerow" data-id="'+nn.id+'"><span class="num">'+nn.v+'</span><span>is</span><span class="chips">'+chipsFor.map(function(o,ci){return '<button class="chip '+o.r+'" data-c="'+ci+'">'+esc(o.l)+'<small style="display:block;font-size:11px;opacity:.75">'+{total:"total",groups:"groups",each:"each group",part:"a part"}[o.r]+'</small></button>'}).join("")+'</span></div>'}).join("");
+      var d=box(n,"What does each number mean?",rows);
+      var done={};
+      d.querySelectorAll(".rolerow").forEach(function(row){var nn=P.nums.filter(function(x){return x.id===row.dataset.id})[0];
+        row.querySelectorAll(".chip").forEach(function(c){c.onclick=function(){
+          if(done[nn.id])return;
+          if(chipsFor[+c.dataset.c].l===nn.lab){c.classList.add("sel");done[nn.id]=1;shown[nn.id]=nn.role;$("story").innerHTML=storyHTML(shown);row.querySelectorAll(".chip").forEach(function(x){x.disabled=true});
+            if(Object.keys(done).length===known().length)right(d,known().map(function(x){return "<b>"+x.v+"</b> is "+esc(x.lab)+" ("+roleName(x.role)+")"}).join(", ")+".");else fx("right")}
+          else{c.classList.add("no");wrong(d,hintRole(nn))}
+        }})});
+    }else if(name==="missing"){
+      var opts,lab={},m;
+      if(P.type==="eq"){opts=["total","groups","each"];opts.forEach(function(o){lab[o]=cap(P.lab[o])});m=P.kind}
+      else{var kn2=known(),other=P.kind==="total"?kn2[0]:kn2.filter(function(x){return x.role==="total"})[0];opts=shuffle(["miss","other"]);lab.miss=cap(P.missLab);lab.other=cap(other.lab);m="miss"}
+      var d=box(n,"What is the question asking for?",'<div class="opts">'+opts.map(function(o){return '<button class="opt" data-v="'+o+'">❓ '+lab[o]+'</button>'}).join("")+'</div>');
+      d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
+        if(b.dataset.v===m){b.classList.add("ok");d.querySelector(".opts").insertAdjacentHTML("afterend",model());right(d,"Yes! The question asks for "+esc(lab[m].toLowerCase())+" ("+(P.type==="eq"?roleName(m):P.kind==="total"?"the total":"a part")+"). Here is the story map.")}
+        else{b.classList.add("no");wrong(d,"Read the question part again: “"+esc(P.s.replace(/\u0001(n\d+)\u0002/g,function(x,id){return P.nums.filter(function(y){return y.id===id})[0].v}).split(". ").pop())+"” What does it want to know?")}
+      }});
+    }else if(name==="eq"){
+      var d=box(n,"Which equation fits the map?",'<div class="opts two eq">'+P.eqs.map(function(o,i){return '<button class="opt" data-i="'+i+'">'+esc(o.t)+'</button>'}).join("")+'</div>');
+      d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){var o=P.eqs[+b.dataset.i];
+        if(o.ok){b.classList.add("ok");right(d,rule())}
+        else{b.classList.add("no");wrong(d,whyNot(o.t))}
+      }});
+    }else if(name==="flip"){
+      var F=flipOf(P),txt=esc(F.s).replace(/\u0001(n\d+)\u0002/g,function(m,id){return '<span class="num">'+F.nums.filter(function(x){return x.id===id})[0].v+'</span>'});
+      var d=box(n,"🔄 Flip it! Same story, new question",'<p style="font-size:19px;line-height:1.55;font-weight:700;margin:0 0 10px">'+txt+'</p><div class="opts two eq">'+F.eqs.map(function(o,i){return '<button class="opt" data-i="'+i+'">'+esc(o.t)+'</button>'}).join("")+'</div>');
+      d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){var o=F.eqs[+b.dataset.i];
+        if(o.ok){b.classList.add("ok");var Pp=P;P=F;var why=rule();P=Pp;finishProblem(d,"Yes! "+why+" "+esc(F.right.replace("?",F.ans))+".")}
+        else{b.classList.add("no");var Pp=P;P=F;var w=whyNot(o.t);P=Pp;wrong(d,"Careful, the question changed! "+w)}
+      }});
+    }else if(name==="solve"){
+      var d=box(n,"Solve it!",'<div class="ans"><span class="box ph" id="ansBox">Type the answer</span><span style="font-weight:900;color:#61708A">'+esc(unit())+'</span></div><div class="pad">'+[7,8,9,4,5,6,1,2,3,0].map(function(x){return '<button data-k="'+x+'">'+x+'</button>'}).join("")+'</div><div class="pad" style="grid-template-columns:1fr 2fr"><button data-k="del">⌫</button><button data-k="ok" style="background:#5B3FC4;color:#fff;border-color:#5B3FC4">Check ✓</button></div>');
+      var a="";
+      d.querySelectorAll(".pad button").forEach(function(b){b.onclick=function(){var k=b.dataset.k,bx=$("ansBox");
+        if(k==="del")a=a.slice(0,-1);else if(k==="ok"){if(!a)return;if(+a===P.ans){bx.classList.remove("ph");lock(d);fx("right");d.querySelector(".fb").innerHTML=say("good","<b>"+P.ans+" "+esc(unit())+"!</b> "+esc(P.right.replace("?",P.ans))+".");si++;setTimeout(step,700)}else{wrong(d,"Not quite. "+esc(P.right.replace("?","what"))+"? Use the map to check.");a=""}}
+        else if(a.length<3)a=String(+(a+k));
+        bx.textContent=a||"Type the answer";bx.classList.toggle("ph",!a)}});
+    }
+  }
+  function unit(){return P.type==="eq"?(P.kind==="groups"?P.cs:P.i):P.i}
+  function hintRole(nn){
+    if(P.type==="eq"){if(nn.role==="total")return nn.v+" is the whole amount, before it is split up. That’s the total.";
+      if(nn.role==="groups")return nn.v+" tells how many "+(P.cs||"groups")+" there are. That’s how many groups.";
+      return nn.v+" is how many are in just one "+(P.c||"group")+". That’s how many in each group.";}
+    return nn.role==="total"?nn.v+" is everything together. That’s the total.":nn.v+" is only some of them. That’s a part.";
+  }
+  function model(){
+    var h='<div class="model">';
+    if(P.type==="eq"){var tot=P.kind==="total"?"?":P.t,each=P.kind==="each"?"?":P.e,g=P.kind==="groups"?0:P.g;
+      h+='<div class="lbl">Total: '+tot+'</div><div class="brace"></div><div class="row">';
+      if(g){for(var i=0;i<g;i++)h+='<div class="seg'+(each==="?"?" q":"")+'">'+each+'</div>'}
+      else{h+='<div class="seg">'+each+'</div><div class="seg">'+each+'</div><div class="seg dots">…</div><div class="seg">'+each+'</div>'}
+      h+='</div><div class="cap">'+(g?g+" equal groups":"? groups")+'</div>';
+    }else{var t=P.kind==="total"?"?":P.t,a=P.a,b=P.kind==="total"?P.b:"?",wa=Math.max(25,Math.min(75,Math.round(P.a/P.t*100)));
+      h+='<div class="lbl">Total: '+t+'</div><div class="brace"></div><div class="row"><div class="seg part" style="flex:0 0 '+wa+'%">'+a+'</div><div class="seg part b'+(b==="?"?" q":"")+'" style="flex:1">'+b+'</div></div><div class="cap" style="color:#1E7A44">two parts</div>';}
+    return h+'</div>';
+  }
+  function rule(){
+    if(P.type==="eq")return P.kind==="total"?"The total is missing, so put the equal groups together: <b>multiply</b>.":"We know the total and need to split it into equal groups: <b>divide</b>.";
+    return P.kind==="total"?"The total is missing, so put the parts together: <b>add</b>.":"We know the total and one part, so take that part away: <b>subtract</b>.";
+  }
+  function whyNot(t){
+    var op=t.indexOf("×")>0?"×":t.indexOf("÷")>0?"÷":t.indexOf("+")>0?"+":"−";
+    var put=P.kind==="total";
+    if(P.type==="eq"&&(op==="+"||op==="−"))return "This story has <b>equal groups</b>, so we use × or ÷, not + or −.";
+    if(P.type==="part"&&(op==="×"||op==="÷"))return "This story has <b>parts</b> of different sizes, so we use + or −, not × or ÷.";
+    return put?"The total is missing, so we need to <b>put together</b>, not take apart.":"We already know the total. We need to <b>take it apart</b>, not make it bigger.";
+  }
+  function finishProblem(d,msg){
+    lock(d);var s=Math.max(1,3-miss);stars+=s;roundStars+=s;$("score").textContent="⭐ "+stars;fx(s===3?"win":"right");
+    d.querySelector(".fb").innerHTML=say("good",msg+" You earned "+"⭐".repeat(s))+'<button class="go next" id="nextBtn">'+(q>=PER_ROUND?"Finish round →":"Next story →")+'</button>';
+    try{LWNLeaderboard.saveScore({name:profile.name||"Math Star",avatar:profile.avatar||"⭐",game:"story_map",score:stars,level:"L"+level,best_streak:0}).catch(function(){})}catch(e){}
+    $("nextBtn").onclick=function(){if(q>=PER_ROUND)finale();else{q++;next();window.scrollTo({top:$("play").offsetTop-70,behavior:"smooth"})}};
+  }
+  function finale(){
+    $("prog").style.width="100%";$("play").hidden=true;var max=PER_ROUND*3,f=roundStars/max,st=f>=.9?3:f>=.6?2:1;
+    $("fin").hidden=false;
+    $("fin").innerHTML='<div class="stars">'+"⭐".repeat(st)+"☆".repeat(3-st)+'</div><h2>Story Mapper!</h2><p>You earned '+roundStars+' of '+max+' stars.<br>Remember: find the total, the groups and what’s missing. Then the operation picks itself!</p>'+
+      '<div class="row2"><button class="main" id="again">Play again 🔁</button>'+(level<3?'<button id="up">Try level '+(level+1)+' →</button>':'')+'<a href="/">🏠 Home</a></div>';
+    $("again").onclick=start;var up=$("up");if(up)up.onclick=function(){level++;saveLevel();start()};
+    try{window.dispatchEvent(new CustomEvent("lwn:round-done"))}catch(e){}
+    try{if(window.LWNStats)LWNStats.track("story_map_round",{level:level,stars:roundStars})}catch(e){}
+    fx("win");window.scrollTo({top:0,behavior:"smooth"});
+  }
+  document.querySelectorAll(".levels button").forEach(function(b){b.onclick=function(){level=+b.dataset.level;saveLevel();start()}});
+  window.__storyMap={make:makeProblem,flip:flipOf};
+  start();
+})();
+</script>
+</body>
+</html>

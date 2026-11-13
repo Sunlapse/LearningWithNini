@@ -5,6 +5,7 @@ window.LEARN_WITH_NINI_GAMES = [
   { title: 'Time Match', icon: '⏰', url: 'time-match.html' },
   { title: 'Multiplication Sprint', icon: '✖️', url: 'multiplication-sprint.html' },
   { title: 'Division Dash', icon: '➗', url: 'division-dash.html' },
+  { title: 'Story Map', icon: '🗺️', url: 'story-map.html' },
   { title: 'Place Value Challenge', icon: '🔢', url: 'place-value-challenge.html' },
   { title: 'Number Battle', icon: '⚔️', url: 'number-battle.html' },
   { title: 'Geometry Builder', icon: '📐', url: 'geometry-builder.html' },
