@@ -67,6 +67,9 @@ button{font:inherit}
 .slot.filled{border-style:solid;border-color:#7B4FD8}.slot.bad{border-color:var(--bad);background:#FFF1F0}
 .model .seg .slot{min-width:50px}
 .model .seg.mirror{font:700 18px/1 "Fredoka",sans-serif}
+.wrow{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.wrow input,.ans input{font:800 20px/1 "Nunito",sans-serif;min-height:52px;border-radius:12px;border:3px solid #CFC2F2;padding:0 12px;width:min(220px,58vw);color:#4B3A9E}
+.wrow input.ok,.ans input.ok{border-color:var(--good);background:#E7F7EE}.wrow input.bad,.ans input.bad{border-color:var(--bad);background:#FFF1F0}
 .tray{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0 4px}
 .tchip{min-width:60px;min-height:50px;border-radius:12px;border:2px solid #B9A7EE;background:#F6F2FF;font:700 22px/1 "Fredoka",sans-serif;color:#4B3A9E;cursor:pointer}
 .tchip.sel{background:#7B4FD8;color:#fff;border-color:#7B4FD8;transform:translateY(-2px)}.tchip.used{opacity:.3}
@@ -185,20 +188,26 @@ button{font:inherit}
       else if(kind==="each")s="Coach split "+N(t,"total")+" kids into "+N(g,"groups")+" equal teams. How many kids are on each team?";
       else s="Coach has "+N(t,"total")+" kids. "+N(e,"each")+" kids go on each team. How many teams can Coach make?";
     }else{
-      if(kind==="total")s=k[0]+" has "+N(g,"groups")+" "+b.cs+". There are "+N(e,"each")+" "+b.i+" "+b.p+" each "+b.c+". How many "+b.i+" are there in all?";
+      var trk=null;
+      if(kind==="total"&&Math.random()<.35){s=k[0]+" shared "+(k[1]==="he"?"his":"her")+" "+b.i+" equally "+b.p+" "+N(g,"groups")+" "+b.cs+". Each "+b.c+" got "+N(e,"each")+" "+b.i+". How many "+b.i+" did "+k[1]+" share?";trk="Tricky words! “Shared equally” sounds like divide. But the total is missing, so we <b>multiply</b>."}
+      else if(kind==="total")s=k[0]+" has "+N(g,"groups")+" "+b.cs+". There are "+N(e,"each")+" "+b.i+" "+b.p+" each "+b.c+". How many "+b.i+" are there in all?";
       else if(kind==="each")s=k[0]+" has "+N(t,"total")+" "+b.i+". "+cap(k[1])+" puts the same number "+b.p+" each of "+N(g,"groups")+" "+b.cs+". How many "+b.i+" go "+b.p+" each "+b.c+"?";
       else s=k[0]+" has "+N(t,"total")+" "+b.i+". "+cap(k[1])+" puts "+N(e,"each")+" "+b.i+" "+b.p+" each "+b.c+". How many "+b.cs+" does "+k[1]+" fill?";
     }
     var lab=b.c==="team"?{total:"kids in all",groups:"how many teams",each:"kids on each team"}:{total:b.i+" in all",groups:"how many "+b.cs,each:b.i+" "+b.p+" each "+b.c};
-    return {type:"eq",kind:kind,g:g,e:e,t:t,s:s,c:b.c,cs:b.cs,i:b.i,groupWord:"Each "+b.c+" is one group.",ctx:{k:k,b:b,books:false},lab:lab};
+    return {type:"eq",kind:kind,g:g,e:e,t:t,s:s,c:b.c,cs:b.cs,i:b.i,groupWord:"Each "+b.c+" is one group.",ctx:{k:k,b:b,books:false},lab:lab,trick:b.c==="team"?null:trk};
   }
   function partStory(kind,ctx){
     ctx=ctx||{};var k=ctx.k||pick(KIDS),it=ctx.it||pick(THINGS),a=R(12,68),bb=R(11,59);if(a===bb)bb++;var t=a+bb,s,f=ctx.f!=null?ctx.f:pick([0,1,1,2,2]),he=k[1],He=cap(k[1]);
     if(f===2){ // tricky words: the key word points the wrong way
       var T={gave:"the "+it+" "+he+" gave away",left:"the "+it+" left",first:"the "+it+" at first",want:"the "+it+" "+he+" wants",has:"the "+it+" "+he+" has now",need:"the "+it+" "+he+" still needs"},tr;
-      if(kind==="total"){s=k[0]+" gave "+N(a,"part",T.gave)+" "+it+" away. Now "+he+" has "+N(bb,"part",T.left)+" "+it+" left. How many "+it+" did "+he+" have at first?";tr="Tricky words! “Gave away” and “left” sound like subtract. But the total (at first) is missing, so we <b>add</b> the parts."}
-      else{s=k[0]+" wants "+N(t,"total",T.want)+" "+it+". "+He+" has "+N(a,"part",T.has)+" so far. How many more "+it+" does "+he+" need?";tr="Tricky word! “More” sounds like add. But we already know the total, so we <b>subtract</b>."}
-      return {type:"part",kind:kind,a:a,b:bb,t:t,s:s,i:it,ctx:{k:k,it:it,f:f},trick:tr,missLab:kind==="total"?T.first:T.need,lab:{total:kind==="total"?T.first:T.want,part:"a part"}};
+      var k2=pick(KIDS.filter(function(x){return x!==k})),ml,tl,v=R(0,kind==="total"?1:2);
+      if(kind==="total"&&v===0){s=k[0]+" gave "+N(a,"part",T.gave)+" "+it+" away. Now "+he+" has "+N(bb,"part",T.left)+" "+it+" left. How many "+it+" did "+he+" have at first?";tr="Tricky words! “Gave away” and “left” sound like subtract. But the total (at first) is missing, so we <b>add</b> the parts.";ml=T.first;tl=T.first}
+      else if(kind==="total"){s=k[0]+" used "+N(a,"part","the "+it+" "+he+" used")+" "+it+" for an art project. "+He+" still has "+N(bb,"part","the "+it+" "+he+" still has")+". How many "+it+" did "+he+" start with?";tr="Tricky word! “Used” sounds like subtract. But the total (the start) is missing, so we <b>add</b> the parts.";ml="the "+it+" "+he+" started with";tl=ml}
+      else if(v===0){s=k[0]+" wants "+N(t,"total",T.want)+" "+it+". "+He+" has "+N(a,"part",T.has)+" so far. How many more "+it+" does "+he+" need?";tr="Tricky word! “More” sounds like add. But we already know the total, so we <b>subtract</b>.";ml=T.need;tl=T.want}
+      else if(v===1){s=k[0]+" and "+k2[0]+" have "+N(t,"total","the "+it+" they have in all")+" "+it+" in all. "+k[0]+" has "+N(a,"part","the "+it+" "+k[0]+" has")+". How many "+it+" does "+k2[0]+" have?";tr="Tricky words! “In all” sounds like add. But the story already tells us the total, so we <b>subtract</b>.";ml="the "+it+" "+k2[0]+" has";tl="the "+it+" they have in all"}
+      else{s=k[0]+" had some "+it+". Then "+he+" got "+N(a,"part","the "+it+" "+he+" got")+" more. Now "+he+" has "+N(t,"total","the "+it+" "+he+" has now")+". How many "+it+" did "+he+" have at first?";tr="Tricky words! “Got more” sounds like add. But we know the total (now), so we <b>subtract</b>.";ml=T.first;tl="the "+it+" "+he+" has now"}
+      return {type:"part",kind:kind,a:a,b:bb,t:t,s:s,i:it,ctx:{k:k,it:it,f:f},trick:tr,missLab:ml,lab:{total:tl,part:"a part"}};
     }
     // every number gets its own story words, so kids say what it really counts
     var L=f?{red:"the red "+it,blue:"the blue "+it,all:"all the "+it}
@@ -231,6 +240,9 @@ button{font:inherit}
     else{right=P.kind==="total"?P.a+" + "+P.b+" = ?":P.t+" − "+P.a+" = ?"}
     var all=[big+" × "+sm+" = ?",big+" ÷ "+sm+" = ?",big+" + "+sm+" = ?",big+" − "+sm+" = ?"];
     if(P.type==="eq"&&P.kind==="total")all[0]=right;else if(P.type==="eq")all[1]=right;else if(P.kind==="total")all[2]=right;else all[3]=right;
+    // never offer a "wrong" division that doesn't come out even: a smart kid could rule it out by arithmetic alone
+    if(all[1]!==right&&big%sm!==0)all.splice(1,1);
+    P.trap=P.type==="eq"?(P.kind==="total"?big+" + "+sm+" = ?":P.t+" × "+(P.kind==="each"?P.g:P.e)+" = ?"):(P.kind==="total"?big+" − "+sm+" = ?":big+" + "+sm+" = ?");
     P.eqs=shuffle(all.map(function(x){return{t:x,ok:x===right}}));
     P.right=right;
   }
@@ -248,8 +260,8 @@ button{font:inherit}
     if(op==="×"){A=R(2,9);B=R(2,9)}else if(op==="÷"){B=R(2,9);A=B*R(2,9)}else if(op==="+"){A=R(12,60);B=R(5,30)}else{A=R(30,80);B=R(5,A-10)}
     var b=pick(BOX.filter(function(x){return x.c!=="team"})),k=pick(KIDS),He=cap(k[1]);
     var rows=[
-      [{t:k[0]+" has "+A+" "+b.i+".",f:{start:"total",v:A}},{t:k[0]+" has "+A+" "+b.cs+".",f:{start:"groups",v:A}}],
-      [{t:"There are "+B+" "+b.i+" "+b.p+" each "+b.c+".",f:{mid:"each",v:B}},{t:He+" shares them equally "+b.p+" "+B+" "+b.cs+".",f:{mid:"groups",v:B}},
+      [{t:k[0]+" has "+A+" "+b.i+".",f:{start:"total",v:A}},{t:k[0]+" has "+A+" "+b.cs+".",f:{start:"groups",v:A}},{t:k[0]+" has "+B+" "+b.i+".",f:{start:"total",v:B}},{t:k[0]+" has "+B+" "+b.cs+".",f:{start:"groups",v:B}}],
+      [{t:"There are "+B+" "+b.i+" "+b.p+" each "+b.c+".",f:{mid:"each",v:B}},{t:"There are "+A+" "+b.i+" "+b.p+" each "+b.c+".",f:{mid:"each",v:A}},{t:He+" shares them equally "+b.p+" "+B+" "+b.cs+".",f:{mid:"groups",v:B}},
        {t:He+" gets "+B+" more "+b.i+".",f:{mid:"plus",v:B}},{t:He+" gives "+B+" "+b.i+" away.",f:{mid:"minus",v:B}}],
       [{t:"How many "+b.i+" are there in all?",f:{ask:"total"}},{t:"How many "+b.i+" "+b.p+" each "+b.c+"?",f:{ask:"each"}},
        {t:"How many "+b.cs+" are there?",f:{ask:"groups"}},{t:"How many "+b.i+" are left?",f:{ask:"left"}}]
@@ -260,6 +272,7 @@ button{font:inherit}
   }
   function judgeStory(M,c){ // c = chosen facts of the 3 rows
     var st=c[0],md=c[1],q=c[2],b=M.b,got=null;
+    if(st.v===md.v&&M.A!==M.B)return {bad:"You used <b>"+st.v+"</b> twice! A story for "+esc(M.eq)+" needs both numbers."};
     if(st.start==="groups"){
       if(md.mid!=="each")return {bad:"If "+M.k[0]+" has "+st.v+" "+b.cs+", the next sentence should tell how many "+b.i+" are "+b.p+" each "+b.c+"."};
       if(q.ask!=="total")return {bad:"We know how many "+b.cs+" and how many "+b.p+" each one. So what is missing? Ask about that."};
@@ -271,8 +284,17 @@ button{font:inherit}
       else{if(q.ask!=="left")return {bad:"After "+M.k[1]+" gives some away, the question should ask how many are left."};got=st.v+" − "+md.v}
     }
     var want=M.A+" "+M.op+" "+M.B;
+    if(M.op==="×"&&got===M.B+" × "+M.A)return {ok:true};
     return got===want?{ok:true}:{bad:"Good story! But it is <b>"+got+"</b>. We need <b>"+want+"</b>. Change a sentence so the math matches."};
   }
+
+  /* ---------- typed words: "6 what?" -> books / days ---------- */
+  var IRREG={shelves:"shelf",shelve:"shelf",shelfs:"shelf",children:"kid",child:"kid",players:"kid",player:"kid",people:"kid",kids:"kid",boxes:"box",peaches:"peach",fish:"fish"};
+  function stems(w){w=w.toLowerCase().replace(/[^a-z]/g,"");if(IRREG[w])return [IRREG[w]];var o=[w];if(/s$/.test(w))o.push(w.slice(0,-1));if(/es$/.test(w))o.push(w.slice(0,-2));if(/ies$/.test(w))o.push(w.slice(0,-3)+"y");return o}
+  function near(a,b){if(a===b)return true;if(Math.min(a.length,b.length)>=3&&Math.abs(a.length-b.length)<=2&&(a.indexOf(b)===0||b.indexOf(a)===0))return true;if(Math.min(a.length,b.length)<4)return false;if(Math.abs(a.length-b.length)>1)return false;
+    var m=[],i,j;for(i=0;i<=a.length;i++){m[i]=[i];for(j=1;j<=b.length;j++)m[i][j]=i?Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1)):j}return m[a.length][b.length]<=1}
+  function saysWord(input,want){var W=stems(want);return String(input).split(/\s+/).some(function(x){return x&&stems(x).some(function(a){return W.some(function(w){return near(a,w)})})})}
+  function unitOf(P,role){return P.type!=="eq"?P.i:role==="groups"?P.cs:P.i}
 
   /* ---------- game state ---------- */
   var level=Math.max(1,Math.min(3,+(load("lwn-storymap-v1",{}).level||1))),q=1,stars=0,P,steps,si,miss,roundStars=0;
@@ -286,7 +308,7 @@ button{font:inherit}
   }
   var shown={}; // roles shown in the story so far
   function plan(){
-    var s=[];if(level===3)s.push("extra");if(level>=2)s.push("type");s.push("roles","build",Math.random()<.5?"who":"eq","solve","flip");return s;
+    var s=[];if(level===3)s.push("extra");if(level>=2)s.push("type");s.push(P.type==="eq"?"words":"roles","build",Math.random()<.5?"who":"eq","solve","flip");return s;
   }
   function start(){
     q=1;roundStars=0;$("fin").hidden=true;$("play").hidden=false;
@@ -328,22 +350,38 @@ button{font:inherit}
       var kn=known(),target=pick(kn),other=kn.filter(function(x){return x!==target})[0];
       var d=box(n,"Which number tells "+esc(target.lab)+"?",'<div class="opts two">'+shuffle(P.nums.filter(function(x){return shown[x.id]!=="x"})).map(function(x){return '<button class="opt" data-id="'+x.id+'" style="justify-content:center;font-size:24px">'+x.v+'</button>'}).join("")+'</div>');
       d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
-        if(b.dataset.id===target.id){b.classList.add("ok");shown[target.id]=target.role;shown[other.id]=other.role;$("story").innerHTML=storyHTML(shown);
-          right(d,"Yes! <b>"+target.v+"</b> is "+esc(target.lab)+" ("+roleName(target.role)+"). So <b>"+other.v+"</b> is "+esc(other.lab)+" ("+roleName(other.role)+").")}
+        if(b.dataset.id===target.id){b.classList.add("ok");
+          right(d,"Yes! <b>"+target.v+"</b> is "+esc(target.lab)+". So <b>"+other.v+"</b> is "+esc(other.lab)+".")}
         else{b.classList.add("no");var x=P.nums.filter(function(y){return y.id===b.dataset.id})[0];wrong(d,x.role==="extra"?x.v+" is the extra number. It doesn’t tell about the question at all.":"No, "+x.v+" is "+esc(x.lab)+". Which number is "+esc(target.lab)+"?")}
       }});
     }else if(name==="roles"){
       var chipsFor=P.type==="eq"?["total","groups","each"].map(function(o){return{l:P.lab[o],r:o}}):shuffle(known().map(function(x){return{l:x.lab,r:x.role}}).concat([{l:P.missLab,r:P.kind==="total"?"total":"part"}]));
-      var rows=known().map(function(nn){return '<div class="rolerow" data-id="'+nn.id+'"><span class="num">'+nn.v+'</span><span>is</span><span class="chips">'+chipsFor.map(function(o,ci){return '<button class="chip '+o.r+'" data-c="'+ci+'">'+esc(o.l)+'<small style="display:block;font-size:11px;opacity:.75">'+{total:"total",groups:"groups",each:"each group",part:"a part"}[o.r]+'</small></button>'}).join("")+'</span></div>'}).join("");
+      var rows=known().map(function(nn){return '<div class="rolerow" data-id="'+nn.id+'"><span class="num">'+nn.v+'</span><span>is</span><span class="chips">'+chipsFor.map(function(o,ci){return '<button class="chip '+o.r+'" data-c="'+ci+'">'+esc(o.l)+'</button>'}).join("")+'</span></div>'}).join("");
       var d=box(n,"What does each number mean?",rows);
       var done={};
       d.querySelectorAll(".rolerow").forEach(function(row){var nn=P.nums.filter(function(x){return x.id===row.dataset.id})[0];
         row.querySelectorAll(".chip").forEach(function(c){c.onclick=function(){
           if(done[nn.id])return;
-          if(chipsFor[+c.dataset.c].l===nn.lab){c.classList.add("sel");done[nn.id]=1;shown[nn.id]=nn.role;$("story").innerHTML=storyHTML(shown);row.querySelectorAll(".chip").forEach(function(x){x.disabled=true});
-            if(Object.keys(done).length===known().length)right(d,known().map(function(x){return "<b>"+x.v+"</b> is "+esc(x.lab)+" ("+roleName(x.role)+")"}).join(", ")+".");else fx("right")}
+          if(chipsFor[+c.dataset.c].l===nn.lab){c.classList.add("sel");done[nn.id]=1;row.querySelectorAll(".chip").forEach(function(x){x.disabled=true});
+            if(Object.keys(done).length===known().length)right(d,known().map(function(x){return "<b>"+x.v+"</b> is "+esc(x.lab)}).join(", ")+".");else fx("right")}
           else{c.classList.add("no");wrong(d,hintRole(nn))}
         }})});
+    }else if(name==="words"){
+      var kn=known(),tries={};
+      var d=box(n,"What does each number count?",'<p class="mk" style="margin-top:0">Type the word. Like <b>apples</b> or <b>bags</b>.</p>'+kn.map(function(x){return '<div class="wrow"><span class="num">'+x.v+'</span><input data-id="'+x.id+'" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="What does '+x.v+' count?" placeholder="'+x.v+' what?"></div>'}).join("")+'<button class="go" id="chkW">Check ✓</button>');
+      var ins=d.querySelectorAll("input");
+      ins.forEach(function(inp){inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();$("chkW").click()}}});
+      $("chkW").onclick=function(){var bad=null,empty=false;
+        ins.forEach(function(inp){if(inp.disabled)return;var x=kn.filter(function(y){return y.id===inp.dataset.id})[0];
+          if(!inp.value.trim()){empty=true;return}
+          if(saysWord(inp.value,unitOf(P,x.role))){inp.classList.remove("bad");inp.classList.add("ok");inp.disabled=true}
+          else{inp.classList.add("bad");tries[x.id]=(tries[x.id]||0)+1;if(!bad)bad=x}});
+        if(bad){var other=bad.role==="groups"?P.i:P.cs;
+          wrong(d,tries[bad.id]>=2?"<b>"+bad.v+"</b> counts <b>"+esc(unitOf(P,bad.role))+"</b>. Type it in.":saysWord(d.querySelector('input[data-id="'+bad.id+'"]').value,other)?"Careful! Is <b>"+bad.v+"</b> counting "+esc(P.i)+" or "+esc(P.cs)+"? Read the words right after "+bad.v+".":"Read the words right after <b>"+bad.v+"</b>. What is it counting?");return}
+        if(empty){d.querySelector(".fb").innerHTML=say("info","Type a word for every number.");return}
+        right(d,kn.map(function(x){return "<b>"+x.v+"</b> "+esc(unitOf(P,x.role))}).join(", ")+". "+(P.c==="book"?"Each book is a group of days.":"")); 
+      };
+      setTimeout(function(){try{ins[0].focus({preventScroll:true})}catch(e){}},400);
     }else if(name==="build"){
       var chips=known().map(function(x){return {v:String(x.v)}}).concat([{v:"?"}]);chips=shuffle(chips);
       var slot=function(k){return '<button class="slot" data-s="'+k+'">＿</button>'},inner;
@@ -369,7 +407,7 @@ button{font:inherit}
         else{var et=P.kind==="total"?"?":String(P.t),parts=[String(P.a),P.kind==="total"?String(P.b):"?"];
           if(v("total")!==et)badK.push("total");
           var left=parts.slice();["p1","p2"].forEach(function(k){var ix=left.indexOf(v(k));if(ix<0)badK.push(k);else left.splice(ix,1)})}
-        if(!badK.length){lock(d);d.querySelectorAll(".slot").forEach(function(x){x.disabled=true});
+        if(!badK.length){lock(d);d.querySelectorAll(".slot").forEach(function(x){x.disabled=true});known().forEach(function(x){shown[x.id]=x.role});$("story").innerHTML=storyHTML(shown);
           right(d,"Great map! The <b>?</b> is on "+(P.type==="eq"?roleName(P.kind):P.kind==="total"?"the total":"a part")+", so that is what we need to find.");return}
         var c=v(badK[0]),msg;
         if(c==="?")msg="The <b>?</b> goes where the answer is. The question asks for "+esc(P.missLab)+".";
@@ -380,13 +418,14 @@ button{font:inherit}
       };
     }else if(name==="who"){
       var rightEq=P.right,fam=P.type==="eq"?(rightEq.indexOf("×")>0?"÷":"×"):(rightEq.indexOf("+")>0?"−":"+");
-      var wrongEq=P.eqs.filter(function(o){return !o.ok&&o.t.indexOf(fam)>0})[0].t;
+      var wrongEq=P.trap;
       var two=shuffle(KIDS.filter(function(x){return !P.ctx||x[0]!==P.ctx.k[0]})).slice(0,2),okFirst=Math.random()<.5;
       var ppl=[{n:two[0][0],e:okFirst?rightEq:wrongEq,ok:okFirst},{n:two[1][0],e:okFirst?wrongEq:rightEq,ok:!okFirst}];
       var RS={eqT:"The total is missing, so we put the equal groups together.",eqS:"We know the total, so we split it into equal groups.",pT:"The total is missing, so we put the parts together.",pP:"We know the total, so we take one part away."};
       var myK=P.type==="eq"?(P.kind==="total"?"eqT":"eqS"):(P.kind==="total"?"pT":"pP");
-      var sib={eqT:"eqS",eqS:"eqT",pT:"pP",pP:"pT"}[myK],far=pick(Object.keys(RS).filter(function(x){return x!==myK&&x!==sib}));
-      var reasons=shuffle([myK,sib,far]);
+      RS.kw=pick(P.type==="eq"?["Because the story uses the word “each.”","Because the story says “equally.”","Because the bigger number always goes first."]:["Because the story uses the word “more.”","Because the story says “left.”","Because the bigger number always goes first."]);
+      var sib={eqT:"eqS",eqS:"eqT",pT:"pP",pP:"pT"}[myK];
+      var reasons=shuffle([myK,sib,"kw"]);
       var d=box(n,"Who is right?",'<div class="opts">'+ppl.map(function(x,i){return '<button class="opt" data-i="'+i+'">🧒 '+x.n+' says <b style="font-family:Fredoka,sans-serif;font-size:20px;margin-left:4px">'+esc(x.e)+'</b></button>'}).join("")+'</div><div class="why" hidden><p class="mk">Why is '+'<span class="wn"></span> right?</p><div class="opts">'+reasons.map(function(r){return '<button class="opt" data-r="'+r+'">💬 '+RS[r]+'</button>'}).join("")+'</div></div>');
       d.querySelectorAll(".opts")[0].querySelectorAll(".opt").forEach(function(b){b.onclick=function(){var x=ppl[+b.dataset.i];
         if(x.ok){b.classList.add("ok");d.querySelectorAll(".opts")[0].querySelectorAll(".opt").forEach(function(y){y.disabled=true});d.querySelector(".wn").textContent=x.n;d.querySelector(".why").hidden=false;d.querySelector(".fb").innerHTML="";fx("right")}
@@ -394,7 +433,7 @@ button{font:inherit}
       }});
       d.querySelector(".why").querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
         if(b.dataset.r===myK){b.classList.add("ok");right(d,"Yes! "+rule())}
-        else{b.classList.add("no");wrong(d,"Not that reason. Look at the map: is the <b>?</b> on the total or on "+(P.type==="eq"?"a group":"a part")+"? Is it equal groups or parts?")}
+        else{b.classList.add("no");wrong(d,b.dataset.r==="kw"?"Key words can trick you! The map tells the truth, not one word.":"Not that reason. Look at the map: is the <b>?</b> on the total or on "+(P.type==="eq"?"a group":"a part")+"? Is it equal groups or parts?")}
       }});
     }else if(name==="maker"){
       var M=P,pick3=[null,null,null],heads=["1. Start the story","2. What happens?","3. Ask the question"];
@@ -431,10 +470,14 @@ button{font:inherit}
         else{b.classList.add("no");var Pp=P;P=F;var w=whyNot(o.t);P=Pp;wrong(d,"Careful, the question changed! "+w)}
       }});
     }else if(name==="solve"){
-      var d=box(n,"Solve it!",'<div class="ans"><span class="box ph" id="ansBox">Type the answer</span><span style="font-weight:900;color:#61708A">'+esc(unit())+'</span></div><div class="pad">'+[7,8,9,4,5,6,1,2,3,0].map(function(x){return '<button data-k="'+x+'">'+x+'</button>'}).join("")+'</div><div class="pad" style="grid-template-columns:1fr 2fr"><button data-k="del">⌫</button><button data-k="ok" style="background:#5B3FC4;color:#fff;border-color:#5B3FC4">Check ✓</button></div>');
+      var askU=P.type==="eq";
+      var d=box(n,"Solve it!",'<div class="ans"><span class="box ph" id="ansBox">Type the answer</span>'+(askU?'<input id="unitIn" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="what?" aria-label="What does the answer count?">':'<span style="font-weight:900;color:#61708A">'+esc(unit())+'</span>')+'</div><div class="pad">'+[7,8,9,4,5,6,1,2,3,0].map(function(x){return '<button data-k="'+x+'">'+x+'</button>'}).join("")+'</div><div class="pad" style="grid-template-columns:1fr 2fr"><button data-k="del">⌫</button><button data-k="ok" style="background:#5B3FC4;color:#fff;border-color:#5B3FC4">Check ✓</button></div>');
       var a="";
       d.querySelectorAll(".pad button").forEach(function(b){b.onclick=function(){var k=b.dataset.k,bx=$("ansBox");
-        if(k==="del")a=a.slice(0,-1);else if(k==="ok"){if(!a)return;if(+a===P.ans){bx.classList.remove("ph");lock(d);fx("right");d.querySelector(".fb").innerHTML=say("good","<b>"+P.ans+" "+esc(unit())+"!</b> "+esc(P.right.replace("?",P.ans))+".");si++;setTimeout(step,700)}else{wrong(d,"Not quite. "+esc(P.right.replace("?","what"))+"? Use the map to check.");a=""}}
+        if(k==="del")a=a.slice(0,-1);else if(k==="ok"){if(!a)return;var ui=$("unitIn");
+          if(+a===P.ans&&ui&&!saysWord(ui.value,unit())){ui.classList.add("bad");if(ui.value.trim())wrong(d,"<b>"+P.ans+"</b> is right! But "+P.ans+" what? Is it "+esc(P.i)+" or "+esc(P.cs)+"? Look at the question.");else d.querySelector(".fb").innerHTML=say("info","<b>"+P.ans+"</b> is right! Now type what it counts.");bx.textContent=a;bx.classList.remove("ph");return}
+          if(ui){ui.classList.remove("bad");ui.classList.add("ok")}
+          if(+a===P.ans){bx.classList.remove("ph");lock(d);fx("right");d.querySelector(".fb").innerHTML=say("good","<b>"+P.ans+" "+esc(unit())+"!</b> "+esc(P.right.replace("?",P.ans))+".");si++;setTimeout(step,700)}else{wrong(d,"Not quite. "+esc(P.right.replace("?","what"))+"? Use the map to check.");a=""}}
         else if(a.length<3)a=String(+(a+k));
         bx.textContent=a||"Type the answer";bx.classList.toggle("ph",!a)}});
     }
@@ -465,6 +508,7 @@ button{font:inherit}
   function whyNot(t){
     var op=t.indexOf("×")>0?"×":t.indexOf("÷")>0?"÷":t.indexOf("+")>0?"+":"−";
     var put=P.kind==="total";
+    if(P.trick&&P.type==="eq"&&(op==="×"||op==="÷"))return "Don’t trust the key word! "+(put?"The total is missing, so we <b>put the equal groups together</b>.":"We know the total, so we <b>split it up</b>.");
     if(P.trick&&P.type==="part"&&(op==="+"||op==="−"))return "Don’t trust the key word! "+(put?"The total is missing, so we <b>put the parts together</b>.":"We already know the total, so we <b>take a part away</b>.");
     if(P.type==="eq"&&(op==="+"||op==="−"))return "This story has <b>equal groups</b>, so we use × or ÷, not + or −.";
     if(P.type==="part"&&(op==="×"||op==="÷"))return "This story has <b>parts</b> of different sizes, so we use + or −, not × or ÷.";
