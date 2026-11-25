@@ -232,8 +232,9 @@ button{font:inherit}
     groups.forEach(function(gp){gp.r.forEach(function(run){rects.push(dir==="h"?{x:run[0],y:gp.s,w:run[1]-run[0],h:gp.e-gp.s}:{x:gp.s,y:run[0],w:gp.e-gp.s,h:run[1]-run[0]})})});
     return rects;
   }
-  var CTX=[{t:"Mia’s garden 🌱",u:["ft","m"]},{t:"A patio 🧱",u:["ft"]},{t:"Kai’s bedroom floor 🛏️",u:["ft"]},{t:"A pool deck 🏊",u:["m"]},{t:"A park 🌳",u:["m","yd"]},
-    {t:"A classroom rug 🟦",u:["ft"]},{t:"A sticker 🏷️",u:["cm"]},{t:"A puzzle piece 🧩",u:["in"]},{t:"Leilani’s lanai 🌺",u:["ft"]},{t:"A soccer field ⚽",u:["yd","m"]},{t:"A cookie cutter 🍪",u:["cm","in"]}];
+  var NAMES=["Kai","Kobie","Nini","Joy","Ellie","Nana","Mia"];
+  var CTX=[{t:"#’s garden 🌱",u:["ft","m"]},{t:"#’s patio 🧱",u:["ft"]},{t:"#’s bedroom floor 🛏️",u:["ft"]},{t:"#’s pool deck 🏊",u:["m"]},{t:"A park # loves 🌳",u:["m","yd"]},
+    {t:"#’s classroom rug 🟦",u:["ft"]},{t:"#’s sticker 🏷️",u:["cm"]},{t:"#’s puzzle piece 🧩",u:["in"]},{t:"#’s lanai 🌺",u:["ft"]},{t:"#’s soccer field ⚽",u:["yd","m"]},{t:"#’s cookie cutter 🍪",u:["cm","in"]},{t:"#’s treehouse floor 🌴",u:["ft"]},{t:"#’s sand castle base 🏖️",u:["in","cm"]}];
   var UNAME={ft:"feet",m:"meters",yd:"yards",cm:"centimeters",in:"inches"};
   function makeProblem(level){
     for(var tries=0;tries<200;tries++){
@@ -254,7 +255,7 @@ button{font:inherit}
         if(level===3){var second=pickHide(first.o==="h"?vt:hz);if(second)hidden.push(second.id)}
       }
       var area=Object.keys(S).length,c=pick(CTX);hidden.forEach(function(id,i){E[id].tag=hidden.length>1?"ab"[i]:"?"});
-      return {type:type,S:S,b:b,E:E,H:H,V:V,hidden:hidden,area:area,u:pick(c.u),ctx:c.t};
+      return {type:type,S:S,b:b,E:E,H:H,V:V,hidden:hidden,area:area,u:pick(c.u),ctx:c.t.replace("#",pick(NAMES))};
     }
   }
   function hideMath(P,e){ // how to figure out a hidden side
