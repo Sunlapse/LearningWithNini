@@ -232,6 +232,39 @@ window.LWNLeaderboard = (() => {
     const real=new Set(rows.filter(r=>r.device_id&&!anon.test(nm(r))).map(r=>r.device_id));
     return rows.filter(r=>!(r.device_id&&anon.test(nm(r))&&real.has(r.device_id)));
   }
+  // Show everyone's newest name and icon on all of their scores.
+  // A device that used one name and then another (not taking turns) is one player who renamed:
+  // the older names show as the newest one. This device always shows the current profile right away.
+  const lc=s=>String(s||"").trim().toLowerCase();
+  function freshen(rows){
+    if(!Array.isArray(rows)||!rows.length)return rows;
+    const prof=storedProfile(),me=prof&&prof.name?String(prof.name).trim():"",myAv=prof&&prof.avatar||"";
+    const myDev=(()=>{try{return localStorage.getItem("lwnGlobalDeviceId")}catch{return null}})();
+    const byDev={};
+    rows.forEach(r=>{if(!r.device_id)return;const k=lc(r.player_name);if(!k)return;const t=String(r.updated_at||"");
+      const d=byDev[r.device_id]=byDev[r.device_id]||{};const e=d[k]=d[k]||{name:String(r.player_name).trim(),first:t,last:t};
+      if(t<e.first)e.first=t;if(t>e.last)e.last=t});
+    const map={};
+    Object.keys(byDev).forEach(dev=>{
+      const list=Object.values(byDev[dev]).sort((a,b)=>a.first.localeCompare(b.first));
+      for(let i=1;i<list.length;i++)if(list[i-1].last>list[i].first)return; // names taking turns: kids sharing a device
+      const newest=(dev===myDev&&me)?me:list[list.length-1].name;
+      list.forEach(e=>{if(lc(e.name)!==lc(newest))map[lc(e.name)]=newest});
+    });
+    const out=rows.map(r=>{const x=Object.assign({},r);let n=map[lc(x.player_name)],hops=0;while(n&&hops++<5){x.player_name=n;n=map[lc(n)]}return x});
+    const av={},at={};
+    out.forEach(r=>{const k=lc(r.player_name),t=String(r.updated_at||"");if(!(k in at)||t>at[k]){at[k]=t;av[k]=r.avatar}});
+    out.forEach(r=>{const k=lc(r.player_name);r.avatar=(me&&k===lc(me)&&myAv)?myAv:(av[k]||r.avatar)});
+    return out;
+  }
+  // game_scores may not keep a device id: ask for it, and fall back if the table says no
+  async function getRows(table,u){
+    let res=await fetch(URL+"/rest/v1/"+table+"?"+u.toString(),{headers:{apikey:KEY}});
+    if(res.status===400&&/device_id/.test(u.get("select")||"")){u.set("select",u.get("select").replace(",device_id",""));res=await fetch(URL+"/rest/v1/"+table+"?"+u.toString(),{headers:{apikey:KEY}})}
+    return res;
+  }
+  function bestPerName(rows){const seen=new Set();return rows.filter(r=>{const k=lc(r.player_name);if(seen.has(k))return false;seen.add(k);return true})}
+
   async function saveScore({name,avatar="⭐",game,score,level=null,best_streak=0}){
     const player=await ensureLeaderboardNickname(name,avatar);
     name=player.name;avatar=player.avatar;
@@ -255,14 +288,14 @@ window.LWNLeaderboard = (() => {
 
   async function top(game,limit=10){
     const u=new URLSearchParams({
-      select:"player_name,avatar,game,score,level,best_streak,updated_at",
+      select:"player_name,avatar,game,score,level,best_streak,updated_at,device_id",
       game:"eq."+game,
       order:"score.desc,updated_at.asc",
       limit:String(Math.max(limit*3,30))
     });
-    const res=await fetch(URL+"/rest/v1/game_scores?"+u.toString(),{headers:{apikey:KEY}});
+    const res=await getRows("game_scores",u);
     if(!res.ok) throw new Error("Could not load leaderboard");
-    const rows=dropAnonDupes(await res.json());
+    const rows=bestPerName(freshen(dropAnonDupes(await res.json())));
     return rows
       .filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()))
       .slice(0,limit)
@@ -271,13 +304,13 @@ window.LWNLeaderboard = (() => {
 
   async function all(limit=1000){
     const u=new URLSearchParams({
-      select:"player_name,avatar,game,score,level,best_streak,updated_at",
+      select:"player_name,avatar,game,score,level,best_streak,updated_at,device_id",
       order:"score.desc,updated_at.asc",
       limit:String(limit)
     });
-    const res=await fetch(URL+"/rest/v1/game_scores?"+u.toString(),{headers:{apikey:KEY}});
+    const res=await getRows("game_scores",u);
     if(!res.ok) throw new Error("Could not load leaderboard");
-    const rows=dropAnonDupes(await res.json());
+    const rows=freshen(dropAnonDupes(await res.json()));
     return rows.filter(r=>!HIDDEN_NAMES.has(String(r.player_name||"").trim().toLowerCase()));
   }
 
@@ -294,7 +327,7 @@ window.LWNLeaderboard = (() => {
 
     const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load Daily Challenge leaderboard");
-    const rows=dropAnonDupes(await res.json());
+    const rows=freshen(dropAnonDupes(await res.json()));
 
     const map=new Map();
     for(const r of rows){
@@ -336,16 +369,18 @@ window.LWNLeaderboard = (() => {
     if(!name)return [];
     const u=new URLSearchParams({
       select:"player_name,avatar,score,grade,mode,minutes,challenge_date,best_streak,updated_at,device_id",
-      player_name:"eq."+name,
       order:"challenge_date.desc,updated_at.desc",
       limit:"1000"
     });
     if([10,15,20].includes(Number(minutes)))u.set("minutes","eq."+String(Number(minutes)));
     u.append("mode","neq.dash");
+    const prof=storedProfile(),isMe=prof&&lc(prof.name)===lc(name);
+    const q=s=>'"'+String(s).replace(/["\\]/g,"")+'"';
+    if(isMe)u.set("or","(player_name.eq."+q(name)+",device_id.eq."+q(getDeviceId())+")");else u.set("player_name","eq."+name);
 
     const res=await fetch(URL+"/rest/v1/daily_challenge_scores?"+u.toString(),{headers:{apikey:KEY}});
     if(!res.ok) throw new Error("Could not load Daily Challenge history");
-    const rows=dropAnonDupes(await res.json());
+    const rows=freshen(dropAnonDupes(await res.json())).filter(r=>lc(r.player_name)===lc(name));
 
     const bySession=new Map();
     for(const r of rows){

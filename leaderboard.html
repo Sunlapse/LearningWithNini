@@ -341,7 +341,7 @@ function chooseLeaderboardProfile(){
     localStorage.setItem("niniAvatar",selectedAvatar);
     close();
     updateLeaderboardProfileButton();
-    if(activeGame==="daily_challenge"&&dailyView==="history")renderActive();
+    try{window.dispatchEvent(new CustomEvent("lwn:profile",{detail:profile}))}catch(e){}
   });
   setTimeout(()=>input.focus(),40);
 }
@@ -379,6 +379,10 @@ function rowHtml(x,i,overall=false){
     '<div class="leaderboard-total">⭐ '+fmtScore(overall?x.total:x.score||0)+'</div></div>';
 }
 let renderVersion=0;
+// new name or icon: redraw the boards right away so it shows everywhere
+function onProfileChange(){try{updateLeaderboardProfileButton()}catch(e){}try{renderActive()}catch(e){}try{renderPodium()}catch(e){}}
+window.addEventListener("lwn:profile",onProfileChange);
+window.addEventListener("storage",e=>{if(e.key==="learningWithNiniProfileV1")onProfileChange()});
 async function renderActive(){
   const version=++renderVersion;
   const list=el("activeLeaderboard");list.innerHTML='<div class="loading">Loading global scores…</div>';

@@ -20,6 +20,7 @@
       var s = JSON.parse(localStorage.getItem("dm-settings") || "{}"); s.name = name; localStorage.setItem("dm-settings", JSON.stringify(s));
     } catch (e) {}
     try { if (window.LWNAccount) LWNAccount.push(true).catch(function () {}); } catch (e) {}
+    try { window.dispatchEvent(new CustomEvent("lwn:profile", { detail: p })); } catch (e) {}
     return p;
   }
 
