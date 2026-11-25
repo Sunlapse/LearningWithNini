@@ -281,7 +281,7 @@ button{font:inherit}
   }
 
   /* ---------- game ---------- */
-  var level=Math.max(1,Math.min(3,+(load("lwn-shapesplit-v1",{}).level||1))),q=1,stars=0,P,steps,si,miss,roundStars=0,found={},cut=null;
+  var level=Math.max(1,Math.min(3,+(load("lwn-shapesplit-v1",{}).level||1))),q=1,stars=0,P,steps,si,miss,roundStars=0,found={},cut=null,cutBox=null;
   var profile=load("learningWithNiniProfileV1",{})||{};
   function saveLevel(){try{localStorage.setItem("lwn-shapesplit-v1",JSON.stringify({level:level}))}catch(e){}}
   function say(kind,html){return '<div class="say '+kind+'"><img src="nini-face.webp" alt=""><div class="b">'+html+'</div></div>'}
@@ -324,8 +324,12 @@ button{font:inherit}
     }else if(name==="cut"){
       var wH=P.H,wV=P.V;
       var d=box(n,"How will you split it?",'<p class="mk" style="margin-top:0">Pick a way to cut the shape into rectangles.</p><div class="ways"><button class="opt" data-w="h">'+draw(P,{small:true,rects:wH})+'<span>Cut across ↔</span></button><button class="opt" data-w="v">'+draw(P,{small:true,rects:wV})+'<span>Cut up and down ↕</span></button></div>');
-      d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){cut=b.dataset.w==="h"?wH:wV;b.classList.add("ok");repaint();
-        right(d,(wH.length===wV.length?"Both ways work! ":"Both ways work, but this one makes "+cut.length+" rectangles. ")+"Now we have rectangles "+cut.map(function(r,i){return String.fromCharCode(65+i)}).join(", ")+".")}});
+      var myIdx=si;cutBox=d;
+      d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){ // she can switch ways until the rectangles are checked
+        cut=b.dataset.w==="h"?wH:wV;d.querySelectorAll(".opt").forEach(function(y){y.classList.toggle("ok",y===b)});repaint();fx("right");
+        while(d.nextSibling)d.parentNode.removeChild(d.nextSibling);
+        d.querySelector(".fb").innerHTML=say("good",(wH.length===wV.length?"Both ways work! ":"Both ways work, but this one makes "+cut.length+" rectangles. ")+"Now we have rectangles "+cut.map(function(r,i){return String.fromCharCode(65+i)}).join(", ")+". Changed your mind? Tap the other way.");
+        si=myIdx+1;setTimeout(step,450)}});
     }else if(name==="rects"){
       var tries={};
       var d=box(n,"Find each rectangle’s area",'<p class="mk" style="margin-top:0">Across × up and down. Some sides have no label, so figure them out from the shape.</p>'+cut.map(function(r,i){return '<div class="rrow" data-i="'+i+'"><span class="tag" style="background:'+COLORS[i%4]+'">'+String.fromCharCode(65+i)+'</span><input inputmode="numeric" pattern="[0-9]*" class="w" aria-label="across"> × <input inputmode="numeric" pattern="[0-9]*" class="h" aria-label="up and down"> = <input inputmode="numeric" pattern="[0-9]*" class="ar" aria-label="area"></div>'}).join("")+'<button class="go" id="chkR">Check ✓</button>');
@@ -344,6 +348,7 @@ button{font:inherit}
         });
         if(msg){wrong(d,msg);return}
         if(empty){d.querySelector(".fb").innerHTML=say("info","Fill in every box.");return}
+        if(cutBox)lock(cutBox);
         right(d,cut.map(function(r,i){return String.fromCharCode(65+i)+" = <b>"+r.w*r.h+"</b>"}).join(", ")+". Now add them!");
       };
     }else if(name==="total"){
