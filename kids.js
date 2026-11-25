@@ -84,6 +84,12 @@
       "#lwnKids .icons button.on{border-color:#7B4FD8;background:#F1ECFF}" +
       "#lwnKids .err{color:#C8322F;font-weight:800;min-height:20px;margin:6px 0 0}" +
       "#lwnKids .go{width:100%;min-height:54px;border:0;border-radius:16px;background:linear-gradient(135deg,#9F7CF5,#5B3FC4);color:#fff;font:700 20px/1 'Fredoka',sans-serif;cursor:pointer;margin-top:6px}" +
+      ".lwn-who{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:4px 12px 4px 4px;border-radius:999px;border:2px solid #DCD2F7;background:#F6F2FF;color:#4B3A9E;cursor:pointer;font-family:'Nunito',sans-serif;text-align:left;max-width:210px;flex:none;margin-left:auto}" +
+      ".lwn-who .a{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:22px;flex:none;box-shadow:0 1px 3px rgba(0,0,0,.1)}" +
+      ".lwn-who .t{display:flex;flex-direction:column;min-width:0;line-height:1.1}.lwn-who b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lwn-who small{font-size:11px;font-weight:800;color:#7B4FD8}" +
+      ".lwn-whorow{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:12px 0 -4px;font:800 15px/1 'Nunito',sans-serif;color:#61708A}.lwn-whorow .lwn-who{margin-left:0;max-width:260px}" +
+      "@media(max-width:600px){.lwn-whorow .lwn-who{padding:4px 12px 4px 4px}.lwn-whorow .lwn-who .t{display:flex}}" +
+      "@media(max-width:600px){.lwn-who{padding:4px}.lwn-who .t{display:none}}" +
       ".lwn-kidbtn{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:8px 6px 0;padding:6px 14px;border-radius:999px;border:2px solid #DCD2F7;background:#F6F2FF;color:#4B3A9E;font:800 15px/1 'Nunito',sans-serif;cursor:pointer}";
     document.head.appendChild(s);
   }
@@ -158,7 +164,25 @@
     var asked = false; try { asked = sessionStorage.getItem("lwn-kid-picked") === "1"; } catch (e) {}
     if (r.kids.length > 1 && !asked) { try { sessionStorage.setItem("lwn-kid-picked", "1"); } catch (e) {} open(); }
   }
+  // Always-visible "who's playing" pill at the top of the page: tap it to switch kids
+  function topPill() {
+    if (document.getElementById("lwnWho")) return;
+    var page = (location.pathname.split("/").pop() || "index.html").toLowerCase(), today = document.getElementById("lwnToday");
+    var host = page === "index.html" ? today : document.querySelector("header.top");
+    if (!host) { if (page === "index.html" && (topPill.tries = (topPill.tries || 0) + 1) < 40) setTimeout(topPill, 250); return; }
+    css();
+    var r = reg(), me = r.kids.filter(function (k) { return k.id === r.active; })[0] || {}, p = prof();
+    var b = document.createElement("button"); b.type = "button"; b.id = "lwnWho"; b.className = "lwn-who";
+    b.setAttribute("aria-label", "Who's playing? Switch kid");
+    b.innerHTML = '<span class="a">' + esc(p.avatar || me.avatar || "🙂") + '</span><span class="t"><b>' + esc(p.name || me.name || "Me") + '</b><small>' + (r.kids.length > 1 ? "Switch kid ▾" : "Add a kid ▾") + "</small></span>";
+    b.onclick = open;
+    if (host === today) { // homepage: a row right above Today with Nini
+      var row = document.createElement("div"); row.className = "lwn-whorow"; row.innerHTML = "<span>Playing now:</span>"; row.appendChild(b);
+      today.parentNode.insertBefore(row, today);
+    } else { var sc = host.querySelector(".sc"); if (sc) host.insertBefore(b, sc); else host.appendChild(b); }
+  }
   saveReg(reg());
   window.LWNKids = { open: open, list: function () { return reg().kids; }, active: function () { return reg().active; }, isMain: function () { return reg().active === "k1"; } };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", homeButton); else homeButton();
+  function boot() { homeButton(); topPill(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();

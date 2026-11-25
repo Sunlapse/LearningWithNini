@@ -382,7 +382,6 @@ button{font:inherit}
         if(empty){d.querySelector(".fb").innerHTML=say("info","Type a word for every number.");return}
         right(d,kn.map(function(x){return "<b>"+x.v+"</b> "+esc(unitOf(P,x.role))}).join(", ")+". "+(P.c==="book"?"Each book is a group of days.":"")); 
       };
-      setTimeout(function(){try{ins[0].focus({preventScroll:true})}catch(e){}},400);
     }else if(name==="build"){
       var chips=known().map(function(x){return {v:String(x.v)}}).concat([{v:"?"}]);chips=shuffle(chips);
       var slot=function(k){return '<button class="slot" data-s="'+k+'">＿</button>'},inner;
