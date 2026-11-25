@@ -9,6 +9,7 @@ window.LEARN_WITH_NINI_GAMES = [
   { title: 'Place Value Challenge', icon: '🔢', url: 'place-value-challenge.html' },
   { title: 'Number Battle', icon: '⚔️', url: 'number-battle.html' },
   { title: 'Geometry Builder', icon: '📐', url: 'geometry-builder.html' },
+  { title: 'Shape Splitter', icon: '✂️', url: 'shape-splitter.html' },
   { title: 'Math Maze', icon: '🧩', url: 'math-maze.html' },
   { title: 'Fraction Builder', icon: '🍕', url: 'fraction-builder.html' },
   { title: 'Math Detective', icon: '🔎', url: 'math-detective.html' },

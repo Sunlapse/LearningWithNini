@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Shape Splitter – Area of Composite Shapes | Learn With Nini</title>
+<meta name="description" content="Find the area of L, T and staircase shapes. Find missing sides, split the shape into rectangles and label your answer in square units. Free for grades 3–4.">
+<link rel="canonical" href="https://learnwithnini.com/shape-splitter.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Learn With Nini">
+<meta property="og:title" content="Shape Splitter – area of composite shapes">
+<meta property="og:description" content="Find missing sides, split into rectangles and add the areas. Free for grades 3–4.">
+<meta property="og:url" content="https://learnwithnini.com/shape-splitter.html">
+<meta property="og:image" content="https://learnwithnini.com/social-preview.png?v=3">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nini Math">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.png?v=3">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#203D61;--muted:#61708A;--blue:#1E6FD9;--line:#E3ECF7;--good:#1F9D55;--bad:#C8322F;--tot:#7B4FD8;--grp:#E8711A;--each:#1E9BB8;--part:#2E9E5B}
+html,body{margin:0}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#F3EEFF,#fff 40%,#FFF9F3)}
+button{font:inherit}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top a{display:inline-flex;align-items:center;min-height:44px;color:#1E5FA8;font-weight:900;text-decoration:none;background:#EEF5FF;border-radius:999px;padding:8px 14px;font-size:15px;white-space:nowrap}
+.top .brand{font-family:"Fredoka",sans-serif;font-size:20px;background:none;padding:0}.top .brand b{color:#EF6D4D}
+.top .sc{font-weight:900;background:#FFF6DA;border-radius:999px;padding:8px 12px;color:#7A5200}
+.wrap{width:min(820px,calc(100% - 28px));margin:14px auto 60px}
+.hero{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#5B3FC4,#8F6CF0);color:#fff;border-radius:24px;padding:16px 18px;box-shadow:0 14px 34px rgba(91,63,196,.25)}
+.hero img{width:70px;height:70px;border-radius:50%;border:4px solid #FFD36B;background:#fff;flex:none;object-fit:cover}
+.hero h1{font-family:"Fredoka",sans-serif;font-size:clamp(24px,5vw,32px);margin:0 0 2px;line-height:1.1}
+.hero p{margin:0;font-weight:700;opacity:.95;line-height:1.35}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
+.levels button{min-height:62px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:8px;font-weight:900;color:#4B3A9E;cursor:pointer;line-height:1.15}
+.levels button small{display:block;font-weight:800;color:var(--muted);font-size:12px;margin-top:3px}
+.levels button.on{border-color:#7B4FD8;background:#F1ECFF}
+@media(max-width:520px){.levels button{font-size:14px}.levels button small{font-size:11px}}
+.bar{display:flex;align-items:center;gap:10px;margin:12px 2px 0;font-weight:900;color:var(--muted);font-size:14px}
+.bar .track{flex:1;height:10px;border-radius:999px;background:#E6E0F5;overflow:hidden}.bar .track i{display:block;height:100%;background:linear-gradient(90deg,#9F7CF5,#5B3FC4);border-radius:999px;transition:width .4s}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:12px;box-shadow:0 10px 26px rgba(40,76,120,.07)}
+#story{font-size:clamp(19px,4.6vw,23px);line-height:1.6;font-weight:700;margin:0;color:#1B3352}
+.num{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:38px;padding:0 8px;margin:0 2px;border-radius:10px;border:2px dashed #B9A7EE;background:#F6F2FF;font-weight:900;color:#4B3A9E;font-size:1.05em;vertical-align:baseline}
+.num.tap{cursor:pointer;border-style:solid}.num.x{text-decoration:line-through;opacity:.55;border-color:#ccc;background:#f4f4f4;color:#888}
+.num.r-total{border:2px solid var(--tot);background:#F1EAFF;color:var(--tot)}.num.r-groups{border:2px solid var(--grp);background:#FFF1E4;color:#B9560F}
+.num.r-each{border:2px solid var(--each);background:#E6F7FB;color:#0E6F86}.num.r-part{border:2px solid var(--part);background:#E8F7EE;color:#1E7A44}
+.step{margin-top:12px}
+.step h2{font-family:"Fredoka",sans-serif;font-size:21px;margin:0 0 8px;color:#4B3A9E;display:flex;align-items:center;gap:8px}
+.step h2 .n{flex:none;width:30px;height:30px;border-radius:50%;background:#7B4FD8;color:#fff;display:grid;place-items:center;font-size:16px}
+.opts{display:grid;gap:8px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{min-height:56px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:10px 12px;font-weight:900;font-size:17px;color:var(--ink);cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;line-height:1.25}
+.opt .ic{font-size:24px;flex:none}
+.opt.stack{flex-direction:column;justify-content:center;text-align:center;gap:6px}
+.opt:active{transform:translateY(1px)}
+.opt.ok{border-color:var(--good);background:#E7F7EE;color:#17643A}
+.opt.no{border-color:#F2B8B5;background:#FFF1F0;color:#9B2A27}
+.opt[disabled]{cursor:default}
+@keyframes pz{0%,100%{box-shadow:0 0 0 0 rgba(123,79,216,.5)}50%{box-shadow:0 0 0 8px rgba(123,79,216,0)}}.opt.pulse{border-color:#F0A020;animation:pz 1.2s ease-in-out 4}
+.opt.sel{border-color:#7B4FD8;background:#F1ECFF;color:#4B3A9E}
+.slot{min-width:58px;min-height:44px;border-radius:10px;border:3px dashed #B9A7EE;background:#fff;font:700 20px/1 "Fredoka",sans-serif;color:#4B3A9E;cursor:pointer;padding:0 8px}
+.slot.filled{border-style:solid;border-color:#7B4FD8}.slot.bad{border-color:var(--bad);background:#FFF1F0}
+.model .seg .slot{min-width:50px}
+.model .seg.mirror{font:700 18px/1 "Fredoka",sans-serif}
+.wrow{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.wrow input,.ans input{font:800 20px/1 "Nunito",sans-serif;min-height:52px;border-radius:12px;border:3px solid #CFC2F2;padding:0 12px;width:min(220px,58vw);color:#4B3A9E}
+.wrow input.ok,.ans input.ok{border-color:var(--good);background:#E7F7EE}.wrow input.bad,.ans input.bad{border-color:var(--bad);background:#FFF1F0}
+.tray{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0 4px}
+.tchip{min-width:60px;min-height:50px;border-radius:12px;border:2px solid #B9A7EE;background:#F6F2FF;font:700 22px/1 "Fredoka",sans-serif;color:#4B3A9E;cursor:pointer}
+.tchip.sel{background:#7B4FD8;color:#fff;border-color:#7B4FD8;transform:translateY(-2px)}.tchip.used{opacity:.3}
+.mk{font-size:15px;font-weight:900;color:var(--muted);margin:10px 0 6px}
+.preview{background:#FFFBEF;border:2px dashed #F0C36B;border-radius:14px;padding:10px 12px;font-weight:800;line-height:1.5;min-height:48px;color:#5A4210}
+.eqbig{font:700 clamp(30px,8vw,40px)/1.2 "Fredoka",sans-serif;color:#4B3A9E;text-align:center;margin:4px 0 0}
+.eq .opt{font-size:22px;justify-content:center;font-family:"Fredoka",sans-serif;font-weight:700}
+.rolerow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.rolerow .num{flex:none}
+.rolerow .chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{min-height:46px;border-radius:999px;border:2px solid var(--line);background:#fff;padding:6px 14px;font-weight:900;font-size:15px;cursor:pointer;color:var(--ink)}
+.chip.total.sel{border-color:var(--tot);background:#F1EAFF;color:var(--tot)}.chip.groups.sel{border-color:var(--grp);background:#FFF1E4;color:#B9560F}
+.chip.each.sel{border-color:var(--each);background:#E6F7FB;color:#0E6F86}.chip.part.sel{border-color:var(--part);background:#E8F7EE;color:#1E7A44}
+.chip.no{border-color:#F2B8B5;background:#FFF1F0}
+.say{display:flex;gap:10px;align-items:flex-start;margin-top:10px}
+.say img{width:40px;height:40px;border-radius:50%;flex:none;border:3px solid #FFE1B8}
+.say .b{border-radius:4px 16px 16px 16px;padding:10px 12px;font-weight:800;line-height:1.45;font-size:16px}
+.say.good .b{background:#E7F7EE;color:#17643A}.say.bad .b{background:#FFF1F0;color:#8A2421}.say.info .b{background:#FFF6E6;color:#7A4A1F}
+.model{margin:14px 0 4px;padding:12px 10px 8px;border-radius:16px;background:#FBFAFF;border:1px dashed #D9CFF5}
+.model .lbl{text-align:center;font-weight:900;color:var(--tot);margin-bottom:4px;font-size:15px}
+.model .brace{height:10px;border:3px solid var(--tot);border-bottom:0;border-radius:10px 10px 0 0;margin:0 4px 4px}
+.model .row{display:flex;gap:4px}
+.model .seg{flex:1;min-height:42px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:17px;color:#fff;background:var(--each)}
+.model .seg.part{background:var(--part)}.model .seg.part.b{background:#5DBB85}
+.model .seg.q{background:#FFF4D6;color:#B07000;border:3px dashed #F0A500}
+.model .seg.dots{background:none;color:var(--muted);flex:.5}
+.model .cap{text-align:center;font-weight:800;color:var(--grp);font-size:14px;margin-top:5px}
+.key{margin-top:12px;background:#F1ECFF;border-radius:16px;padding:10px 12px;font-weight:800;color:#4B3A9E;line-height:1.45;font-size:15px}
+.ans{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ans .box{min-width:120px;min-height:56px;border-radius:14px;border:3px solid #CFC2F2;background:#fff;display:grid;place-items:center;font:700 28px/1 "Fredoka",sans-serif;color:#4B3A9E;padding:0 12px}
+.ans .box.ph{color:#B3A9CC;font-size:18px}
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.pad button{min-height:52px;border-radius:12px;border:2px solid var(--line);background:#fff;font:700 22px/1 "Fredoka",sans-serif;color:var(--ink);cursor:pointer}
+.go{display:block;width:100%;margin-top:12px;min-height:56px;border:0;border-radius:16px;background:linear-gradient(135deg,#FF9B45,#E8711A);color:#fff;font:700 21px/1 "Fredoka",sans-serif;cursor:pointer;box-shadow:0 4px 0 #B9560F}
+.go.next{background:linear-gradient(135deg,#3CC48D,#1F9D55);box-shadow:0 4px 0 #17643A}
+.go[disabled]{opacity:.45;cursor:default}
+.fin{text-align:center}
+.fin .stars{font-size:44px;letter-spacing:4px}
+.fin h2{font-family:"Fredoka",sans-serif;color:#4B3A9E;font-size:28px;margin:6px 0}
+.fin p{font-weight:800;color:var(--muted);line-height:1.45}
+.row2{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.row2 a,.row2 button{flex:1;min-width:150px;min-height:52px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:900;color:#1E5FA8;text-decoration:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+.row2 .main{background:linear-gradient(135deg,#9F7CF5,#5B3FC4);color:#fff;border:0}
+.foot{text-align:center;color:var(--muted);font-weight:700;font-size:13px;margin-top:22px}
+.foot a{color:#1E5FA8}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:no-preference){.pop{animation:pop .35s ease}@keyframes pop{0%{transform:scale(.94);opacity:.4}100%{transform:none;opacity:1}}}
+
+.shape{display:block;margin:4px auto 0;max-width:100%;height:auto;touch-action:manipulation}
+.shape text{font-family:"Nunito",sans-serif;font-weight:900;font-size:15px;fill:#203D61}
+.shape text.q{fill:#C25E00}.shape text.found{fill:#1F7A44}
+.shape text.big{font-family:"Fredoka",sans-serif;font-size:26px;fill:#fff;paint-order:stroke;stroke:rgba(0,0,0,.25);stroke-width:2px}
+#ctx{font-family:"Fredoka",sans-serif;font-size:22px;color:#4B3A9E;margin:0;text-align:center}
+.ways{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ways .opt{flex-direction:column;justify-content:center;text-align:center;padding:8px}
+.ways svg{width:100%;height:auto;max-height:150px}
+.rrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;font:700 22px/1 "Fredoka",sans-serif;color:#4B3A9E}
+.rrow .tag{flex:none;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:22px}
+.rrow input,.mrow input{width:64px;min-height:50px;border-radius:12px;border:3px solid #CFC2F2;text-align:center;font:700 22px/1 "Fredoka",sans-serif;color:#4B3A9E;padding:0 4px}
+.rrow input.ar{width:78px}
+.rrow input.ok,.mrow input.ok{border-color:var(--good);background:#E7F7EE}.rrow input.bad,.mrow input.bad{border-color:var(--bad);background:#FFF1F0}
+.mrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font:700 22px/1 "Fredoka",sans-serif;color:#C25E00}
+.units{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.units .opt{justify-content:center;font-size:18px}
+</style>
+<script src="/install-banner.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <a href="/" class="brand">Learn<b>WithNini</b> ⭐</a>
+  <span class="sc" id="score">⭐ 0</span>
+</header>
+<div class="wrap">
+  <section class="hero">
+    <img src="nini-face.webp" alt="Nini">
+    <div><h1>✂️ Shape Splitter</h1><p>Find the area of funny shapes! Find missing sides, split into rectangles, then add them up.</p></div>
+  </section>
+
+  <div class="levels" role="group" aria-label="Choose a level">
+    <button type="button" data-level="1">1 · L and T<small>2 rectangles</small></button>
+    <button type="button" data-level="2">2 · Missing Side<small>find the ?</small></button>
+    <button type="button" data-level="3">3 · Tricky Shapes<small>3 rectangles</small></button>
+  </div>
+
+  <div class="bar"><span id="qText">Shape 1 of 6</span><span class="track"><i id="prog" style="width:0"></i></span></div>
+
+  <section class="card" id="play">
+    <p id="ctx"></p>
+    <div id="pic"></div>
+    <div id="steps"></div>
+    <div class="key">🔑 <b>Area of a rectangle</b> = across × up and down.<br>🔑 <b>Funny shape?</b> Split it into rectangles, find each area, then <b>add</b>.<br>🔑 <b>Label it!</b> Area is in <b>square</b> units, like <b>sq ft</b>.</div>
+  </section>
+
+  <section class="card fin" id="fin" hidden></section>
+
+  <p class="foot">Tip for grown-ups: ask “Which side has no number? How can you figure it out?” Missing sides are the hardest part of composite area. · <a href="geometry-builder.html">Geometry Builder</a> · <a href="/">All games</a></p>
+</div>
+
+<script src="leaderboard-api.js"></script>
+<script src="fun.js"></script>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  function R(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+  function pick(a){return a[Math.floor(Math.random()*a.length)]}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+  function load(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+  function fx(n){try{fun(n)}catch(e){}}
+  var PER_ROUND=6,COLORS=["#7B4FD8","#E8711A","#1E9BB8","#2E9E5B"],FILLS=["#EDE5FF","#FFE9D6","#DDF3F8","#E1F5E8"];
+
+  /* ---------- shapes are sets of unit cells ---------- */
+  function cellsOf(rects){var S={};rects.forEach(function(r){for(var x=r[0];x<r[0]+r[2];x++)for(var y=r[1];y<r[1]+r[3];y++)S[x+","+y]=1});return S}
+  function bounds(S){var xs=[],ys=[];Object.keys(S).forEach(function(k){var p=k.split(",");xs.push(+p[0]);ys.push(+p[1])});return{x0:Math.min.apply(0,xs),y0:Math.min.apply(0,ys),x1:Math.max.apply(0,xs)+1,y1:Math.max.apply(0,ys)+1}}
+  function transform(S){ // random rotation / mirror so shapes face every way
+    var rot=R(0,3),mir=Math.random()<.5,T={};
+    Object.keys(S).forEach(function(k){var p=k.split(","),x=+p[0],y=+p[1],t;for(var i=0;i<rot;i++){t=x;x=-y;y=t}if(mir)x=-x;T[x+","+y]=1});
+    var b=bounds(T),N={};Object.keys(T).forEach(function(k){var p=k.split(",");N[(+p[0]-b.x0)+","+(+p[1]-b.y0)]=1});return N;
+  }
+  var MAKERS={
+    L:function(){var W=R(5,10),H=R(4,9),cw=R(2,W-2),ch=R(2,H-2);return [[0,0,W-cw,H],[W-cw,ch,cw,H-ch]]},
+    T:function(){var W=R(5,10),bh=R(2,6),w=R(2,W-3),th=R(2,4),x=R(1,W-w-1);return [[0,th,W,bh],[x,0,w,th]]},
+    U:function(){var W=R(5,9),H=R(4,8),w=R(1,W-3),nh=R(1,H-2),x=R(1,W-w-1),S=[[0,0,W,H-nh],[0,H-nh,x,nh],[x+w,H-nh,W-x-w,nh]];return S},
+    tabs:function(){var W=R(5,9),bh=R(3,6),a=R(1,3),b=R(1,3);while(a+b>W-1){a=R(1,2);b=R(1,2)}var th=R(1,3);return [[0,th,W,bh],[0,0,a,th],[W-b,0,b,th]]},
+    stairs:function(){var a=R(2,3),b=R(2,3),c=R(2,4),W=a+b+c,h1=R(2,3),h2=R(2,3),h3=R(2,3);return [[W-a,0,a,h1],[W-a-b,h1,a+b,h2],[0,h1+h2,W,h3]]}
+  };
+  var POOL={1:["L","L","T"],2:["L","T","T","tabs"],3:["U","stairs","tabs","stairs","T"]};
+  function edgesOf(S){
+    var segs=[];
+    Object.keys(S).forEach(function(k){var p=k.split(","),x=+p[0],y=+p[1];
+      if(!S[x+","+(y-1)])segs.push({o:"h",c:y,a:x,n:"u"});if(!S[x+","+(y+1)])segs.push({o:"h",c:y+1,a:x,n:"d"});
+      if(!S[(x-1)+","+y])segs.push({o:"v",c:x,a:y,n:"l"});if(!S[(x+1)+","+y])segs.push({o:"v",c:x+1,a:y,n:"r"})});
+    var g={};segs.forEach(function(s){var key=s.o+s.n+s.c;(g[key]=g[key]||[]).push(s)});
+    var out=[];Object.keys(g).forEach(function(key){var L=g[key].sort(function(p,q){return p.a-q.a}),cur=null;
+      L.forEach(function(s){if(cur&&s.a===cur.b)cur.b++;else{cur={o:s.o,n:s.n,c:s.c,a:s.a,b:s.a+1};out.push(cur)}})});
+    out.forEach(function(e,i){e.id=i;e.len=e.b-e.a});return out;
+  }
+  function split(S,dir){ // dir "h": horizontal bands; "v": vertical strips
+    var b=bounds(S),rects=[],prev=null,start=0;
+    var lines=dir==="h"?b.y1:b.x1;
+    function runs(i){var r=[],inRun=false,s0=0,n=dir==="h"?b.x1:b.y1;for(var j=0;j<=n;j++){var on=j<n&&(dir==="h"?S[j+","+i]:S[i+","+j]);if(on&&!inRun){inRun=true;s0=j}if(!on&&inRun){inRun=false;r.push([s0,j])}}return r}
+    var groups=[];for(var i=0;i<lines;i++){var r=runs(i),key=JSON.stringify(r);if(groups.length&&groups[groups.length-1].key===key)groups[groups.length-1].e=i+1;else groups.push({key:key,r:r,s:i,e:i+1})}
+    groups.forEach(function(gp){gp.r.forEach(function(run){rects.push(dir==="h"?{x:run[0],y:gp.s,w:run[1]-run[0],h:gp.e-gp.s}:{x:gp.s,y:run[0],w:gp.e-gp.s,h:run[1]-run[0]})})});
+    return rects;
+  }
+  var CTX=[{t:"Mia’s garden 🌱",u:["ft","m"]},{t:"A patio 🧱",u:["ft"]},{t:"Kai’s bedroom floor 🛏️",u:["ft"]},{t:"A pool deck 🏊",u:["m"]},{t:"A park 🌳",u:["m","yd"]},
+    {t:"A classroom rug 🟦",u:["ft"]},{t:"A sticker 🏷️",u:["cm"]},{t:"A puzzle piece 🧩",u:["in"]},{t:"Leilani’s lanai 🌺",u:["ft"]},{t:"A soccer field ⚽",u:["yd","m"]},{t:"A cookie cutter 🍪",u:["cm","in"]}];
+  var UNAME={ft:"feet",m:"meters",yd:"yards",cm:"centimeters",in:"inches"};
+  function makeProblem(level){
+    for(var tries=0;tries<200;tries++){
+      var type=pick(POOL[level]),S=transform(cellsOf(MAKERS[type]())),b=bounds(S);
+      if(b.x1>10||b.y1>10)continue;
+      var E=edgesOf(S),H=split(S,"h"),V=split(S,"v");
+      if(H.some(function(r){return r.w*r.h>100})||V.some(function(r){return r.w*r.h>100}))continue;
+      if(level===1&&(H.length!==2&&V.length!==2))continue;
+      if(level<3&&E.some(function(e){return e.len<2}))continue;
+      if(Object.keys(S).length<(level===1?16:20))continue;
+      var thin=function(rs){return rs.filter(function(r){return r.w<2||r.h<2}).length};if(thin(H)>1||thin(V)>1)continue;
+      var hidden=[];
+      if(level>=2){
+        var hz=E.filter(function(e){return e.o==="h"}),vt=E.filter(function(e){return e.o==="v"});
+        // hide a side whose direction has more than one piece on its side, so it really must be figured out
+        var pickHide=function(list){var c=list.filter(function(e){return list.filter(function(f){return f.n===e.n}).length>1});return c.length?pick(c):null};
+        var first=Math.random()<.5?pickHide(hz):pickHide(vt);if(!first)first=pickHide(hz)||pickHide(vt);if(!first)continue;hidden.push(first.id);
+        if(level===3){var second=pickHide(first.o==="h"?vt:hz);if(second)hidden.push(second.id)}
+      }
+      var area=Object.keys(S).length,c=pick(CTX);hidden.forEach(function(id,i){E[id].tag=hidden.length>1?"ab"[i]:"?"});
+      return {type:type,S:S,b:b,E:E,H:H,V:V,hidden:hidden,area:area,u:pick(c.u),ctx:c.t};
+    }
+  }
+  function hideMath(P,e){ // how to figure out a hidden side
+    var same=P.E.filter(function(f){return f.o===e.o&&f.n===e.n&&f.id!==e.id}),opp=P.E.filter(function(f){return f.o===e.o&&f.n!==e.n});
+    var oppSum=opp.reduce(function(s,f){return s+f.len},0),sameSum=same.reduce(function(s,f){return s+f.len},0);
+    var oppTxt=opp.length>1?"("+opp.map(function(f){return f.len}).join(" + ")+")":String(oppSum);
+    var sameTxt=same.length>1?"("+same.map(function(f){return f.len}).join(" + ")+")":String(sameSum);
+    return oppTxt+" − "+sameTxt+" = "+e.len;
+  }
+
+  /* ---------- drawing ---------- */
+  function draw(P,opt){
+    opt=opt||{};var b=P.b,W=b.x1,H=b.y1,maxW=opt.small?150:300,maxH=opt.small?120:230,u=Math.min(maxW/W,maxH/H,opt.small?22:38),pad=opt.small?8:58;
+    var w=W*u+pad*2,h=H*u+pad*2,o='<svg class="shape" viewBox="0 0 '+w+' '+h+'" width="'+w+'" height="'+h+'" role="img" aria-label="Shape">';
+    var rects=opt.rects;
+    Object.keys(P.S).forEach(function(k){var p=k.split(","),x=+p[0],y=+p[1],fill="#F3EEFF";
+      if(rects)rects.forEach(function(r,i){if(x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h)fill=FILLS[i%4]});
+      o+='<rect x="'+(pad+x*u-.5)+'" y="'+(pad+y*u-.5)+'" width="'+(u+1)+'" height="'+(u+1)+'" fill="'+fill+'"/>'});
+    if(opt.grid)Object.keys(P.S).forEach(function(k){var p=k.split(",");o+='<rect x="'+(pad+p[0]*u)+'" y="'+(pad+p[1]*u)+'" width="'+u+'" height="'+u+'" fill="none" stroke="#D9CFF5" stroke-width="1"/>'});
+    if(rects)rects.forEach(function(r,i){ // dashed cut lines + letters
+      o+='<rect x="'+(pad+r.x*u)+'" y="'+(pad+r.y*u)+'" width="'+r.w*u+'" height="'+r.h*u+'" fill="none" stroke="'+COLORS[i%4]+'" stroke-width="'+(opt.small?2:3)+'" stroke-dasharray="7 5"/>';
+      if(!opt.small&&opt.letters)o+='<text class="big" x="'+(pad+(r.x+r.w/2)*u)+'" y="'+(pad+(r.y+r.h/2)*u+9)+'" text-anchor="middle" style="fill:'+COLORS[i%4]+'">'+String.fromCharCode(65+i)+'</text>'});
+    var labs=[];
+    P.E.forEach(function(e){var x1,y1,x2,y2;if(e.o==="h"){x1=e.a;x2=e.b;y1=y2=e.c}else{y1=e.a;y2=e.b;x1=x2=e.c}
+      o+='<line x1="'+(pad+x1*u)+'" y1="'+(pad+y1*u)+'" x2="'+(pad+x2*u)+'" y2="'+(pad+y2*u)+'" stroke="#203D61" stroke-width="'+(opt.small?2.5:3.5)+'" stroke-linecap="square"/>';
+      if(opt.small)return;
+      var mx=pad+(x1+x2)/2*u,my=pad+(y1+y2)/2*u,off=17,lx=mx,ly=my+5,anchor="middle";
+      if(e.n==="u")ly=my-off+5;if(e.n==="d")ly=my+off+5;if(e.n==="l"){lx=mx-8;anchor="end"}if(e.n==="r"){lx=mx+8;anchor="start"}
+      var isH=P.hidden.indexOf(e.id)>=0,found=opt.found&&opt.found[e.id],txt=isH&&!found?(e.tag==="?"?"? "+P.u:e.tag+" = ?"):e.len+" "+P.u;
+      labs.push({x:lx,y:ly,a:anchor,t:txt,c:isH?(found?"found":"q"):"",n:e.n,w:txt.length*8.6+4});
+    });
+    // keep labels from bumping into each other: push a crowded label further out
+    function box(L){var x0=L.a==="middle"?L.x-L.w/2:L.a==="end"?L.x-L.w:L.x;return{x0:x0,x1:x0+L.w,y0:L.y-14,y1:L.y+4}}
+    for(var it=0;it<6;it++){var moved=false;
+      for(var i=0;i<labs.length;i++)for(var j=0;j<i;j++){var A=box(labs[i]),B=box(labs[j]);
+        if(A.x0<B.x1&&B.x0<A.x1&&A.y0<B.y1&&B.y0<A.y1){var L=labs[i];moved=true;
+          if(L.n==="u")L.y-=16;else if(L.n==="d")L.y+=16;else{L.y+=(L.y<B.y1?-1:1)*9;L.x+=L.n==="l"?-6:6}}}
+      if(!moved)break}
+    labs.forEach(function(L){o+='<text x="'+L.x+'" y="'+L.y+'" text-anchor="'+L.a+'" class="'+L.c+'">'+L.t+'</text>'});
+    return o+'</svg>';
+  }
+
+  /* ---------- game ---------- */
+  var level=Math.max(1,Math.min(3,+(load("lwn-shapesplit-v1",{}).level||1))),q=1,stars=0,P,steps,si,miss,roundStars=0,found={},cut=null;
+  var profile=load("learningWithNiniProfileV1",{})||{};
+  function saveLevel(){try{localStorage.setItem("lwn-shapesplit-v1",JSON.stringify({level:level}))}catch(e){}}
+  function say(kind,html){return '<div class="say '+kind+'"><img src="nini-face.webp" alt=""><div class="b">'+html+'</div></div>'}
+  function box(n,title,inner){var d=document.createElement("div");d.className="step pop";d.innerHTML='<h2><span class="n">'+n+'</span>'+title+'</h2>'+inner+'<div class="fb"></div>';$("steps").appendChild(d);setTimeout(function(){d.scrollIntoView({behavior:"smooth",block:"nearest"})},60);return d}
+  function lock(d){d.querySelectorAll("button,input").forEach(function(b){b.disabled=true})}
+  function wrong(d,msg){miss++;fx("wrong");d.querySelector(".fb").innerHTML=say("bad",msg)}
+  function right(d,msg){fx("right");lock(d);d.querySelector(".fb").innerHTML=say("good",msg);si++;setTimeout(step,msg?650:250)}
+  function repaint(){$("pic").innerHTML=draw(P,{rects:cut,letters:!!cut,found:found})}
+  function start(){
+    q=1;roundStars=0;$("fin").hidden=true;$("play").hidden=false;
+    document.querySelectorAll(".levels button").forEach(function(b){b.classList.toggle("on",+b.dataset.level===level)});
+    next();
+  }
+  function next(){
+    $("qText").textContent="Shape "+q+" of "+PER_ROUND;$("prog").style.width=((q-1)/PER_ROUND*100)+"%";
+    si=0;miss=0;found={};cut=null;$("steps").innerHTML="";
+    P=makeProblem(level);
+    steps=(P.hidden.length?["missing"]:[]).concat(["cut","rects","total"]);
+    $("ctx").textContent=P.ctx+" · What is the area?";
+    repaint();step();
+  }
+  function num(v){return /^\s*\d+\s*$/.test(v)?+v:NaN}
+  function enterGo(d,btn){d.querySelectorAll("input").forEach(function(i){i.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();btn.click()}}})}
+  function step(){
+    var name=steps[si],n=si+1;if(!name)return;
+    if(name==="missing"){
+      var hs=P.hidden.map(function(id){return P.E[id]}),tries={};
+      var d=box(n,hs.length>1?"Find the missing sides":"Find the missing side",'<p class="mk" style="margin-top:0">'+(hs.length>1?"Two sides have":"One side has")+' no number. Use the other sides to figure '+(hs.length>1?"them":"it")+' out.</p>'+hs.map(function(e,i){return '<div class="mrow">'+(e.tag==="?"?"?":e.tag)+' = <input inputmode="numeric" pattern="[0-9]*" data-e="'+e.id+'" aria-label="Missing side"> '+P.u+'</div>'}).join("")+'<button class="go" id="chkM">Check ✓</button>');
+      enterGo(d,$("chkM"));
+      $("chkM").onclick=function(){var bad=null,empty=false;
+        d.querySelectorAll("input").forEach(function(inp){if(inp.disabled)return;var e=P.E[+inp.dataset.e],v=num(inp.value);
+          if(isNaN(v)){empty=true;return}
+          if(v===e.len){inp.classList.remove("bad");inp.classList.add("ok");inp.disabled=true;found[e.id]=1;repaint()}else{inp.classList.add("bad");tries[e.id]=(tries[e.id]||0)+1;if(!bad)bad=e}});
+        if(bad){var across=bad.o==="h";
+          var nm=bad.tag==="?"?"":"Side <b>"+bad.tag+"</b>: ";wrong(d,tries[bad.id]>=2?nm+"Here’s how: <b>"+hideMath(P,bad)+"</b>. "+(across?"The top and bottom have to be the same width all the way across.":"The left and right sides have to be the same height all the way up."):
+            nm+(across?"Look at the sides that go <b>across</b> on the other side of the shape. The pieces on this side must add up to the same width.":"Look at the sides that go <b>up and down</b> on the other side of the shape. The pieces on this side must add up to the same height."));return}
+        if(empty){d.querySelector(".fb").innerHTML=say("info","Type a number for each ?");return}
+        right(d,hs.map(function(e){return "<b>"+(e.tag==="?"?"":e.tag+": ")+hideMath(P,e)+" "+P.u+"</b>"}).join(" and ")+". Nice detective work!");
+      };
+    }else if(name==="cut"){
+      var wH=P.H,wV=P.V;
+      var d=box(n,"How will you split it?",'<p class="mk" style="margin-top:0">Pick a way to cut the shape into rectangles.</p><div class="ways"><button class="opt" data-w="h">'+draw(P,{small:true,rects:wH})+'<span>Cut across ↔</span></button><button class="opt" data-w="v">'+draw(P,{small:true,rects:wV})+'<span>Cut up and down ↕</span></button></div>');
+      d.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){cut=b.dataset.w==="h"?wH:wV;b.classList.add("ok");repaint();
+        right(d,(wH.length===wV.length?"Both ways work! ":"Both ways work, but this one makes "+cut.length+" rectangles. ")+"Now we have rectangles "+cut.map(function(r,i){return String.fromCharCode(65+i)}).join(", ")+".")}});
+    }else if(name==="rects"){
+      var tries={};
+      var d=box(n,"Find each rectangle’s area",'<p class="mk" style="margin-top:0">Across × up and down. Some sides have no label, so figure them out from the shape.</p>'+cut.map(function(r,i){return '<div class="rrow" data-i="'+i+'"><span class="tag" style="background:'+COLORS[i%4]+'">'+String.fromCharCode(65+i)+'</span><input inputmode="numeric" pattern="[0-9]*" class="w" aria-label="across"> × <input inputmode="numeric" pattern="[0-9]*" class="h" aria-label="up and down"> = <input inputmode="numeric" pattern="[0-9]*" class="ar" aria-label="area"></div>'}).join("")+'<button class="go" id="chkR">Check ✓</button>');
+      enterGo(d,$("chkR"));
+      $("chkR").onclick=function(){var msg=null,empty=false;
+        d.querySelectorAll(".rrow").forEach(function(row){var i=+row.dataset.i,r=cut[i],L=String.fromCharCode(65+i),ins=row.querySelectorAll("input");
+          if(ins[0].disabled)return;
+          var a=num(ins[0].value),b2=num(ins[1].value),c=num(ins[2].value);
+          if(isNaN(a)||isNaN(b2)||isNaN(c)){empty=true;return}
+          var dimsOk=(a===r.w&&b2===r.h)||(a===r.h&&b2===r.w),prodOk=c===a*b2;
+          if(dimsOk&&prodOk){ins.forEach(function(x){x.classList.remove("bad");x.classList.add("ok");x.disabled=true});return}
+          tries[i]=(tries[i]||0)+1;
+          if(!dimsOk){ins[0].classList.add("bad");ins[1].classList.add("bad");
+            if(!msg)msg=tries[i]>=2?"Rectangle "+L+" is <b>"+r.w+" "+P.u+" across</b> and <b>"+r.h+" "+P.u+" up and down</b>.":"Check the sides of rectangle "+L+". Follow its dashed line. Which labels belong to "+L+"? If a side of "+L+" has no label, figure it out from the whole shape."}
+          else{ins[2].classList.add("bad");if(!msg)msg=a+" × "+b2+" is not "+c+". Try the multiplication again."}
+        });
+        if(msg){wrong(d,msg);return}
+        if(empty){d.querySelector(".fb").innerHTML=say("info","Fill in every box.");return}
+        right(d,cut.map(function(r,i){return String.fromCharCode(65+i)+" = <b>"+r.w*r.h+"</b>"}).join(", ")+". Now add them!");
+      };
+    }else if(name==="total"){
+      var parts=cut.map(function(r){return r.w*r.h}),others=shuffle(["cm","m","ft","in","yd"].filter(function(x){return x!==P.u})),uOpts=shuffle([P.u,"sq "+P.u,"sq "+others[0]]),pickedU=null;
+      var d=box(n,"Add them up and label it",'<p class="mk" style="margin-top:0">'+parts.join(" + ")+' = ?</p><div class="mrow" style="color:#4B3A9E">Area = <input inputmode="numeric" pattern="[0-9]*" id="tot" aria-label="Total area"></div><p class="mk">Label:</p><div class="units">'+uOpts.map(function(x){return '<button class="opt" data-u="'+x+'">'+x+'</button>'}).join("")+'</div><button class="go" id="chkT">Check ✓</button>');
+      enterGo(d,$("chkT"));
+      d.querySelectorAll(".units .opt").forEach(function(b){b.onclick=function(){pickedU=b.dataset.u;d.querySelectorAll(".units .opt").forEach(function(y){y.classList.toggle("sel",y===b);y.classList.remove("no")})}});
+      $("chkT").onclick=function(){var v=num($("tot").value);
+        if(isNaN(v)||!pickedU){d.querySelector(".fb").innerHTML=say("info",isNaN(v)?"Type the total area.":"Pick a label too!");return}
+        var okN=v===P.area,okU=pickedU==="sq "+P.u;
+        $("tot").classList.toggle("bad",!okN);$("tot").classList.toggle("ok",okN);
+        if(!okU)d.querySelector('.units .opt[data-u="'+pickedU+'"]').classList.add("no");
+        if(!okN){wrong(d,"Add the rectangles again: <b>"+parts.join(" + ")+"</b>.");return}
+        if(!okU){wrong(d,pickedU===P.u?"Close! <b>"+P.u+"</b> measures a side. Area counts <b>squares</b>, so the label is <b>sq "+P.u+"</b>.":"Look at the side labels. They are in <b>"+UNAME[P.u]+"</b>, so the area is in square "+UNAME[P.u]+".");return}
+        finish(d,"Area = <b>"+P.area+" sq "+P.u+"</b>! "+parts.join(" + ")+" = "+P.area+".");
+      };
+    }
+  }
+  function finish(d,msg){
+    lock(d);var s=Math.max(1,3-miss);stars+=s;roundStars+=s;$("score").textContent="⭐ "+stars;fx(s===3?"win":"right");
+    d.querySelector(".fb").innerHTML=say("good",msg+" You earned "+"⭐".repeat(s))+'<button class="go next" id="nextBtn">'+(q>=PER_ROUND?"Finish round →":"Next shape →")+'</button>';
+    try{LWNLeaderboard.saveScore({name:profile.name||"Math Star",avatar:profile.avatar||"⭐",game:"shape_splitter",score:stars,level:"L"+level,best_streak:0}).catch(function(){})}catch(e){}
+    $("nextBtn").onclick=function(){if(q>=PER_ROUND)finale();else{q++;next();window.scrollTo({top:$("play").offsetTop-70,behavior:"smooth"})}};
+  }
+  function finale(){
+    $("prog").style.width="100%";$("play").hidden=true;var max=PER_ROUND*3,f=roundStars/max,st=f>=.9?3:f>=.6?2:1;
+    $("fin").hidden=false;
+    $("fin").innerHTML='<div class="stars">'+"⭐".repeat(st)+"☆".repeat(3-st)+'</div><h2>Shape Splitter!</h2><p>You earned '+roundStars+' of '+max+' stars.<br>Remember: find missing sides, split into rectangles, add, and <b>label it</b> in square units!</p>'+
+      '<div class="row2"><button class="main" id="again">Play again 🔁</button>'+(level<3?'<button id="up">Try level '+(level+1)+' →</button>':'')+'<a href="/">🏠 Home</a></div>';
+    $("again").onclick=start;var up=$("up");if(up)up.onclick=function(){level++;saveLevel();start()};
+    try{window.dispatchEvent(new CustomEvent("lwn:round-done"))}catch(e){}
+    try{if(window.LWNStats)LWNStats.track("shape_splitter_round",{level:level,stars:roundStars})}catch(e){}
+    fx("win");window.scrollTo({top:0,behavior:"smooth"});
+  }
+  document.querySelectorAll(".levels button").forEach(function(b){b.onclick=function(){level=+b.dataset.level;saveLevel();start()}});
+  window.__shape={draw:draw,make:makeProblem,hideMath:hideMath,split:split,cur:function(){return P},cut:function(){return cut}};
+  start();
+})();
+</script>
+</body>
+</html>

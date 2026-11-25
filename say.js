@@ -25,7 +25,7 @@
   var MAP = {
     "daily-challenge.html": ["#q"], "boss.html": ["#q"],
     "multiplication-sprint.html": ["#equation"], "division-dash.html": ["#equation"], "story-map.html": ["#story"], "math-maze.html": ["#equation"],
-    "number-battle.html": ["#prompt"], "geometry-builder.html": ["#prompt"], "length-lab.html": ["#prompt"],
+    "number-battle.html": ["#prompt"], "geometry-builder.html": ["#prompt"], "shape-splitter.html": ["#ctx"], "length-lab.html": ["#prompt"],
     "capacity-lab.html": ["#prompt"], "weight-mass-lab.html": ["#prompt"], "place-value-challenge.html": ["#prompt", "#bigNumber"],
     "math-detective.html": ["#story", "#questionPrompt"], "time-match.html": ["#targetLabel", "#targetTime"],
     "money-match.html": [".target-label", "#target"], "fraction-builder.html": ["#title", "#sub"]
