@@ -133,6 +133,22 @@ button{font:inherit}
 .rrow input.ar{width:78px}
 .rrow input.ok,.mrow input.ok{border-color:var(--good);background:#E7F7EE}.rrow input.bad,.mrow input.bad{border-color:var(--bad);background:#FFF1F0}
 .mrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font:700 22px/1 "Fredoka",sans-serif;color:#C25E00}
+.lvhead{margin:16px 2px 0;font:700 20px/1.2 "Fredoka",sans-serif;color:#4B3A9E}
+.levels.lv{gap:10px;margin-top:8px}
+.levels.lv button{position:relative;min-height:128px;border:0;border-radius:20px;padding:12px 8px 14px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 5px 0 rgba(0,0,0,.18),0 10px 22px rgba(40,40,90,.15);transition:transform .15s}
+.levels.lv button:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.levels.lv .l1{background:linear-gradient(160deg,#4CD38A,#1F9D55)}
+.levels.lv .l2{background:linear-gradient(160deg,#FFB25B,#E8711A)}
+.levels.lv .l3{background:linear-gradient(160deg,#A98BFF,#6A3FD4)}
+.levels.lv .em{font-size:30px;line-height:1}
+.levels.lv .nm{font-weight:900;font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.9}
+.levels.lv b{font:700 clamp(17px,4.2vw,22px)/1.1 "Fredoka",sans-serif;text-align:center}
+.levels.lv small{color:rgba(255,255,255,.92);font-size:12px;font-weight:800;text-align:center;margin-top:2px}
+.levels.lv i{display:none;position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#FFD84D;color:#5A3D00;font-style:normal;font-weight:900;font-size:12px;padding:3px 10px;border-radius:999px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.levels.lv button.on{outline:4px solid #FFD84D;outline-offset:3px;transform:scale(1.03)}
+.levels.lv button.on i{display:block}
+.levels.lv button:not(.on){opacity:.82}
+@media(max-width:520px){.levels.lv{gap:7px}.levels.lv button{min-height:118px;padding:12px 4px}.levels.lv small{font-size:11px}}
 .units{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 .units .opt{justify-content:center;font-size:18px}
 </style>
@@ -149,10 +165,11 @@ button{font:inherit}
     <div><h1>✂️ Shape Splitter</h1><p>Find the area of funny shapes! Find missing sides, split into rectangles, then add them up.</p></div>
   </section>
 
-  <div class="levels" role="group" aria-label="Choose a level">
-    <button type="button" data-level="1">1 · L and T<small>2 rectangles</small></button>
-    <button type="button" data-level="2">2 · Missing Side<small>find the ?</small></button>
-    <button type="button" data-level="3">3 · Tricky Shapes<small>3 rectangles</small></button>
+  <p class="lvhead">Pick your level 👇</p>
+  <div class="levels lv" role="group" aria-label="Choose a level">
+    <button type="button" data-level="1" class="l1"><span class="em">🌱</span><span class="nm">Level 1</span><b>L and T</b><small>Easy · 2 rectangles</small><i>✓ Playing</i></button>
+    <button type="button" data-level="2" class="l2"><span class="em">🔍</span><span class="nm">Level 2</span><b>Missing Side</b><small>Medium · find the ?</small><i>✓ Playing</i></button>
+    <button type="button" data-level="3" class="l3"><span class="em">🔥</span><span class="nm">Level 3</span><b>Tricky Shapes</b><small>Hard · 3 rectangles</small><i>✓ Playing</i></button>
   </div>
 
   <div class="bar"><span id="qText">Shape 1 of 6</span><span class="track"><i id="prog" style="width:0"></i></span></div>
