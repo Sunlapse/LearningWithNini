@@ -260,7 +260,7 @@ window.LWNLeaderboard = (() => {
   // game_scores may not keep a device id: ask for it, and fall back if the table says no
   async function getRows(table,u){
     let res=await fetch(URL+"/rest/v1/"+table+"?"+u.toString(),{headers:{apikey:KEY}});
-    if(res.status===400&&/device_id/.test(u.get("select")||"")){u.set("select",u.get("select").replace(",device_id",""));res=await fetch(URL+"/rest/v1/"+table+"?"+u.toString(),{headers:{apikey:KEY}})}
+    if(!res.ok&&/device_id/.test(u.get("select")||"")){ /* column missing or not readable: load without it */u.set("select",u.get("select").replace(",device_id",""));res=await fetch(URL+"/rest/v1/"+table+"?"+u.toString(),{headers:{apikey:KEY}})}
     return res;
   }
   function bestPerName(rows){const seen=new Set();return rows.filter(r=>{const k=lc(r.player_name);if(seen.has(k))return false;seen.add(k);return true})}
