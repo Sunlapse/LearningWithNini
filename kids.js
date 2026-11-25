@@ -37,8 +37,10 @@
     Object.keys(next).forEach(function (k) { if (!deviceKey(k) && next[k] != null) try { S.setItem(k, next[k]); } catch (e) {} });
     S.removeItem("lwn-kid-data-" + id);
     r.active = id; saveReg(r);
-    try { sessionStorage.setItem("lwn-kid-picked", "1"); } catch (e) {}
-    location.href = "/";
+    try { sessionStorage.setItem("lwn-kid-picked", "1"); sessionStorage.removeItem("lwn-sync-pulled"); } catch (e) {}
+    var go = function () { location.href = "/"; };
+    try { if (window.LWNAccount && LWNAccount.push) { LWNAccount.push(true).then(go, go); setTimeout(go, 2500); return; } } catch (e) {}
+    go();
   }
   function addKid(name, avatar) {
     var r = reg(), id = "k" + Date.now().toString(36);
@@ -50,7 +52,8 @@
   }
   function removeKid(id) {
     var r = reg(); if (id === r.active || id === "k1") return;
-    r.kids = r.kids.filter(function (k) { return k.id !== id; }); S.removeItem("lwn-kid-data-" + id); saveReg(r);
+    r.kids = r.kids.filter(function (k) { return k.id !== id; }); S.removeItem("lwn-kid-data-" + id);
+    r.removed = (r.removed || []).concat([id]); saveReg(r);   // so other iPads remove them too
   }
 
   /* ---------- the picker ---------- */

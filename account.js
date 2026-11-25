@@ -7,7 +7,8 @@
   var KEY = "sb_publishable_Uso8SKT30uVsIDPxTzroIQ_kMCWOoaN";
   var SDK = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
   // Keys that are about this device only and should never be copied between devices.
-  var SKIP = /^(sb-|lwnGlobalDeviceId$|niniBannerClosed$|lwn-sync-|lwn-event-preview$|lwn-read-journal$)/;
+  // Kids sharing an iPad ("Who's playing?") are saved separately, so their keys never go in a kid's own copy.
+  var SKIP = /^(sb-|lwnGlobalDeviceId$|niniBannerClosed$|lwn-sync-|lwn-event-preview$|lwn-read-journal$|lwn-kids-v1$|lwn-kid-data-)/;
 
   var recovering = /(?:^|[&#])type=recovery(?:&|$)/.test(location.hash);
   var client = null, readyP = null;
@@ -100,14 +101,37 @@
   function signature(snap) { return String(JSON.stringify(snap).length) + ":" + JSON.stringify(snap).slice(-200); }
   function session() { return sdk().then(function (c) { return c.auth.getSession(); }).then(function (r) { return r.data && r.data.session; }); }
 
-  // The parent account keeps the first kid's progress. Other kids on a shared iPad stay on this iPad only,
-  // so their stars never get mixed into the first kid's account.
-  function mainKid() { try { var r = JSON.parse(localStorage.getItem("lwn-kids-v1") || "null"); return !r || r.active === "k1"; } catch (e) { return true; } }
+  /* ---------- every kid on a shared iPad gets their own saved copy ----------
+     The first kid's progress is the account's main data (as before). Other kids ride along in "__kids",
+     each merged on their own, so a brother's stars never mix into Nini's. "__removed" remembers deleted kids. */
+  function kreg() { return json(get("lwn-kids-v1"), null); }
+  function activeId() { var r = kreg(); return (r && r.active) || "k1"; }
+  function clean(o) { var out = {}; Object.keys(o || {}).forEach(function (k) { if (!SKIP.test(k) && k.indexOf("__") !== 0) out[k] = o[k]; }); return out; }
+  function kidSnap(id) { return id === activeId() ? snapshot() : clean(json(get("lwn-kid-data-" + id), {})); }
+  function cloudDoc() {
+    var r = kreg(), doc = kidSnap("k1");
+    if (!r) return doc;
+    var kids = {};
+    (r.kids || []).forEach(function (k) { if (k.id !== "k1") kids[k.id] = { name: k.name, avatar: k.avatar, data: kidSnap(k.id) }; });
+    doc.__kids = JSON.stringify(kids); doc.__removed = JSON.stringify(r.removed || []);
+    return doc;
+  }
+  // merge one kid's cloud copy into this iPad: straight into the browser if they're playing now, else into their saved copy
+  function applyKid(id, cloudData) {
+    cloudData = clean(cloudData);
+    if (id === activeId()) {
+      var local = snapshot(), merged = merge(local, cloudData), changed = false;
+      Object.keys(merged).forEach(function (k) { if (!SKIP.test(k) && merged[k] != null && merged[k] !== local[k]) { set(k, merged[k]); changed = true; } });
+      return changed;
+    }
+    var mine = clean(json(get("lwn-kid-data-" + id), {})), m2 = merge(mine, cloudData);
+    if (JSON.stringify(m2) !== JSON.stringify(mine)) { var keep = json(get("lwn-kid-data-" + id), {}) || {}; Object.keys(m2).forEach(function (k) { keep[k] = m2[k]; }); set("lwn-kid-data-" + id, JSON.stringify(keep)); }
+    return false;
+  }
   function push(force) {
-    if (!mainKid()) return Promise.resolve(false);
     return session().then(function (s) {
       if (!s) return false;
-      var snap = snapshot(), sig = signature(snap);
+      var snap = cloudDoc(), sig = signature(snap);
       if (!force && sig === lastPushed) return true;
       return client.from("player_progress").upsert({ user_id: s.user.id, data: snap, updated_at: new Date().toISOString() })
         .then(function (r) { if (r.error) throw r.error; lastPushed = sig; set("lwn-sync-last", sig); set("lwn-sync-at", new Date().toISOString()); return true; });
@@ -115,14 +139,26 @@
   }
   // Pull the cloud copy, merge it with this device, save both. Returns true if this device's data changed.
   function pullMerge() {
-    if (!mainKid()) return Promise.resolve(false);
     return session().then(function (s) {
       if (!s) return false;
       return client.from("player_progress").select("data").eq("user_id", s.user.id).maybeSingle().then(function (r) {
         if (r.error) throw r.error;
-        var local = snapshot(), cloud = (r.data && r.data.data) || {};
-        var merged = merge(local, cloud), changed = false;
-        Object.keys(merged).forEach(function (k) { if (merged[k] != null && merged[k] !== local[k]) { set(k, merged[k]); changed = true; } });
+        var cloud = Object.assign({}, (r.data && r.data.data) || {});
+        var cloudKids = json(cloud.__kids, {}) || {}, cloudRemoved = json(cloud.__removed, []) || [];
+        var changed = applyKid("k1", cloud);
+        // kids added on another iPad show up here too
+        var reg = kreg(), prof = json(get("learningWithNiniProfileV1"), {}) || {};
+        if (!reg) reg = { active: "k1", kids: [{ id: "k1", name: prof.name || "", avatar: prof.avatar || "⭐" }] };
+        reg.removed = union(reg.removed, cloudRemoved);
+        reg.kids = reg.kids.filter(function (k) { return k.id === reg.active || reg.removed.indexOf(k.id) < 0; });
+        reg.kids.forEach(function (k) { if (k.id !== reg.active && reg.removed.indexOf(k.id) >= 0) localStorage.removeItem("lwn-kid-data-" + k.id); });
+        Object.keys(cloudKids).forEach(function (id) {
+          if (id === "k1" || reg.removed.indexOf(id) >= 0) return;
+          var ck = cloudKids[id] || {}, have = reg.kids.filter(function (k) { return k.id === id; })[0];
+          if (!have) { if (reg.kids.length >= 4) return; reg.kids.push({ id: id, name: ck.name || "", avatar: ck.avatar || "⭐" }); }
+          if (applyKid(id, ck.data || {})) changed = true;
+        });
+        if (Object.keys(cloudKids).length || cloudRemoved.length) set("lwn-kids-v1", JSON.stringify(reg));
         return push(true).then(function () { return changed; });
       });
     });
