@@ -421,13 +421,13 @@ button{font:inherit}
       var rightEq=P.right,fam=P.type==="eq"?(rightEq.indexOf("×")>0?"÷":"×"):(rightEq.indexOf("+")>0?"−":"+");
       var wrongEq=P.trap;
       var two=shuffle(KIDS.filter(function(x){return !P.ctx||x[0]!==P.ctx.k[0]})).slice(0,2),okFirst=Math.random()<.5;
-      var ppl=[{n:two[0][0],e:okFirst?rightEq:wrongEq,ok:okFirst},{n:two[1][0],e:okFirst?wrongEq:rightEq,ok:!okFirst}];
+      var ppl=[{n:two[0][0],g:two[0][1],e:okFirst?rightEq:wrongEq,ok:okFirst},{n:two[1][0],g:two[1][1],e:okFirst?wrongEq:rightEq,ok:!okFirst}];
       var RS={eqT:"The total is missing, so we put the equal groups together.",eqS:"We know the total, so we split it into equal groups.",pT:"The total is missing, so we put the parts together.",pP:"We know the total, so we take one part away."};
       var myK=P.type==="eq"?(P.kind==="total"?"eqT":"eqS"):(P.kind==="total"?"pT":"pP");
       RS.kw=pick(P.type==="eq"?["Because the story uses the word “each.”","Because the story says “equally.”","Because the bigger number always goes first."]:["Because the story uses the word “more.”","Because the story says “left.”","Because the bigger number always goes first."]);
       var sib={eqT:"eqS",eqS:"eqT",pT:"pP",pP:"pT"}[myK];
       var reasons=shuffle([myK,sib,"kw"]);
-      var d=box(n,"Who is right?",'<div class="opts">'+ppl.map(function(x,i){return '<button class="opt" data-i="'+i+'">🧒 '+x.n+' says <b style="font-family:Fredoka,sans-serif;font-size:20px;margin-left:4px">'+esc(x.e)+'</b></button>'}).join("")+'</div><div class="why" hidden><p class="mk">Why is '+'<span class="wn"></span> right?</p><div class="opts">'+reasons.map(function(r){return '<button class="opt" data-r="'+r+'">💬 '+RS[r]+'</button>'}).join("")+'</div></div>');
+      var d=box(n,"Who is right?",'<div class="opts">'+ppl.map(function(x,i){return '<button class="opt" data-i="'+i+'">'+(x.g==="she"?"👧":"👦")+' '+x.n+' says <b style="font-family:Fredoka,sans-serif;font-size:20px;margin-left:4px">'+esc(x.e)+'</b></button>'}).join("")+'</div><div class="why" hidden><p class="mk">Why is '+'<span class="wn"></span> right?</p><div class="opts">'+reasons.map(function(r){return '<button class="opt" data-r="'+r+'">💬 '+RS[r]+'</button>'}).join("")+'</div></div>');
       d.querySelectorAll(".opts")[0].querySelectorAll(".opt").forEach(function(b){b.onclick=function(){var x=ppl[+b.dataset.i];
         if(x.ok){b.classList.add("ok");d.querySelectorAll(".opts")[0].querySelectorAll(".opt").forEach(function(y){y.disabled=true});d.querySelector(".wn").textContent=x.n;d.querySelector(".why").hidden=false;d.querySelector(".fb").innerHTML="";fx("right")}
         else{b.classList.add("no");wrong(d,"Hmm, check the map. "+whyNot(x.e))}
