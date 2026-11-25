@@ -17,6 +17,10 @@
   if (!document.querySelector('script[src="/stats.js"]')) {
     var ss = document.createElement("script"); ss.src = "/stats.js"; ss.defer = true; document.head.appendChild(ss);
   }
+  // "Who's playing?" picker: several kids sharing one iPad.
+  if (!document.querySelector('script[src="/kids.js"]')) {
+    var kd = document.createElement("script"); kd.src = "/kids.js"; kd.defer = true; document.head.appendChild(kd);
+  }
   // Nickname + icon picker ("Change my icon").
   if (!document.querySelector('script[src="/profile.js"]')) {
     var ps = document.createElement("script"); ps.src = "/profile.js"; ps.defer = true; document.head.appendChild(ps);

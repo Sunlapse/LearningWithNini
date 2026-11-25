@@ -100,7 +100,11 @@
   function signature(snap) { return String(JSON.stringify(snap).length) + ":" + JSON.stringify(snap).slice(-200); }
   function session() { return sdk().then(function (c) { return c.auth.getSession(); }).then(function (r) { return r.data && r.data.session; }); }
 
+  // The parent account keeps the first kid's progress. Other kids on a shared iPad stay on this iPad only,
+  // so their stars never get mixed into the first kid's account.
+  function mainKid() { try { var r = JSON.parse(localStorage.getItem("lwn-kids-v1") || "null"); return !r || r.active === "k1"; } catch (e) { return true; } }
   function push(force) {
+    if (!mainKid()) return Promise.resolve(false);
     return session().then(function (s) {
       if (!s) return false;
       var snap = snapshot(), sig = signature(snap);
@@ -111,6 +115,7 @@
   }
   // Pull the cloud copy, merge it with this device, save both. Returns true if this device's data changed.
   function pullMerge() {
+    if (!mainKid()) return Promise.resolve(false);
     return session().then(function (s) {
       if (!s) return false;
       return client.from("player_progress").select("data").eq("user_id", s.user.id).maybeSingle().then(function (r) {
