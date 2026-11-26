@@ -84,6 +84,7 @@
       else if (k === "lwn-freeze-v1") out[k] = mergeFreeze(l, c);
       else if (k === "learningWithNiniProfileV1") out[k] = newerProfile(l, c);
       else if (k === "lwn-icons-v1" || k === "lwn-postcards-v1") out[k] = JSON.stringify(union(json(l, []), json(c, [])));
+      else if (k === "lwn-stickers-v1") { var sa = json(l, {}) || {}, sb = json(c, {}) || {}, sm = {}; Object.keys(sa).concat(Object.keys(sb)).forEach(function (id) { sm[id] = Math.max(Number(sa[id]) || 0, Number(sb[id]) || 0); }); out[k] = JSON.stringify(sm); }
       else if (k === "lwn-boss-v1") { var bx = json(l, {}), by = json(c, {}), bo = {}; Object.keys(bx).concat(Object.keys(by)).forEach(function (q) { bo[q] = !!(bx[q] || by[q]); }); out[k] = JSON.stringify(bo); }
       else if (k === "lwn-skills-v1") { var sx = json(l, {}), sy = json(c, {}), so = {}; Object.keys(sx).concat(Object.keys(sy)).forEach(function (d) { var a = sx[d] || {}, b2 = sy[d] || {}, o = so[d] = {}; Object.keys(a).concat(Object.keys(b2)).forEach(function (t) { var p = a[t] || [0, 0], q2 = b2[t] || [0, 0]; o[t] = p[1] >= q2[1] ? p : q2; }); }); out[k] = JSON.stringify(so); }
       else if (/^lwn-event-(?!preview$)/.test(k)) out[k] = mergeEvent(l, c);
