@@ -48,6 +48,19 @@
       "@keyframes lwnWiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-7deg)}40%{transform:rotate(7deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(4deg)}}" +
       "@keyframes lwnShake{0%{transform:scale(1)}15%{transform:scale(1.1) rotate(-14deg)}30%{transform:scale(1.15) rotate(14deg)}45%{transform:scale(1.2) rotate(-14deg)}60%{transform:scale(1.3) rotate(14deg)}80%{transform:scale(1.6);opacity:1}100%{transform:scale(2.2);opacity:0}}" +
       "@keyframes lwnBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}" +
+      ".lwn-chest-tap{filter:drop-shadow(0 0 0 transparent);transition:filter .3s}" +
+      ".lwn-chest-tap.glow1{filter:drop-shadow(0 0 14px var(--glow))}.lwn-chest-tap.glow2{filter:drop-shadow(0 0 26px var(--glow)) drop-shadow(0 0 10px var(--glow))}" +
+      ".lwn-chest-tap.gold .lwn-chest-art{filter:hue-rotate(-10deg) saturate(1.6) brightness(1.15)}" +
+      ".lwn-taps{display:flex;gap:8px;justify-content:center;margin:4px 0}.lwn-taps i{width:14px;height:14px;border-radius:50%;background:#E5E1F0}.lwn-taps i.on{background:#F7A400}" +
+      ".lwn-rar{display:inline-block;color:#fff;font:900 13px/1 'Nunito',sans-serif;letter-spacing:.08em;padding:7px 14px;border-radius:999px}" +
+      ".lwn-prizes{display:flex;flex-direction:column;gap:6px;margin:10px 0;text-align:left}.lwn-prizes div{background:#F7F4FF;border-radius:12px;padding:9px 12px;font-weight:800;color:#33405E;line-height:1.35}" +
+      ".lwn-modal .card.wide{width:min(620px,100%);max-height:90vh;overflow:auto}" +
+      ".lwn-album{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:10px}" +
+      ".lwn-album .st{position:relative;border:3px solid;border-radius:16px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;background:#F4F4F8;opacity:.55}" +
+      ".lwn-album .st.on{background:#fff;opacity:1}.lwn-album .e{font-size:40px;line-height:1}.lwn-album .n{font-size:12px;font-weight:900;color:#33405E;line-height:1.15}" +
+      ".lwn-album .x{position:absolute;top:4px;right:6px;font-size:11px;font-weight:900;color:#7B3FE4}" +
+      "@keyframes lwnTap1{0%,100%{transform:none}25%{transform:rotate(-10deg) scale(1.05)}75%{transform:rotate(10deg) scale(1.05)}}" +
+      "@keyframes lwnTap2{0%,100%{transform:none}20%{transform:rotate(-16deg) scale(1.12)}40%{transform:rotate(16deg) scale(1.12)}60%{transform:rotate(-12deg) scale(1.1)}80%{transform:rotate(12deg) scale(1.1)}}" +
       "@media (prefers-reduced-motion:reduce){.lwn-chest-tap,#lwnChestBtn{animation:none}}";
     document.head.appendChild(s);
   }
@@ -180,38 +193,124 @@
     b.innerHTML = "<b>" + chestArt() + "</b>Open!"; b.setAttribute("aria-label", "Open your daily treasure chest");
     b.onclick = openChest; document.body.appendChild(b);
   }
-  function pickReward() {
-    var missing = CHEST_ICONS.filter(function (i) { return unlocked().indexOf(i) < 0; });
-    var fz = get("lwn-freeze-v1", {}) || {}, r = Math.random();
-    if (r < 0.2 && missing.length) return { type: "icon", icon: missing[Math.floor(Math.random() * missing.length)] };
-    if (r < 0.32 && (Number(fz.have) || 0) < 2) return { type: "freeze" };
-    var xp = [10, 10, 15, 15, 20, 25][Math.floor(Math.random() * 6)];
-    return { type: "xp", xp: xp };
+  /* ---------- chest prizes: rarity, stickers, power-ups ---------- */
+  var RAR = {
+    common: { name: "Common", c: "#7C8BA8", glow: "rgba(160,175,200,.9)" },
+    rare: { name: "Rare", c: "#1E6FD9", glow: "rgba(60,140,255,.95)" },
+    epic: { name: "Epic", c: "#7B3FE4", glow: "rgba(170,90,255,.95)" },
+    legendary: { name: "Legendary", c: "#D97706", glow: "rgba(255,200,40,1)" }
+  };
+  // "Mathimals": collectible stickers that only come from treasure chests
+  var STICKERS = [
+    ["fox", "🦊", "Fraction Fox", "common"], ["frog", "🐸", "Factor Frog", "common"], ["bee", "🐝", "Number Line Bee", "common"],
+    ["turtle", "🐢", "Times Table Turtle", "common"], ["penguin", "🐧", "Plus Penguin", "common"], ["koala", "🐨", "Count Koala", "common"],
+    ["hedgehog", "🦔", "Hundreds Hedgehog", "common"], ["octo", "🐙", "Octo-Eight", "common"], ["ladybug", "🐞", "Dot Count Ladybug", "common"],
+    ["whale", "🐳", "Whale of a Number", "common"], ["squirrel", "🐿️", "Skip-Count Squirrel", "common"], ["crab", "🦀", "Clock Crab", "common"],
+    ["owl", "🦉", "Owl of Division", "rare"], ["giraffe", "🦒", "Measuring Giraffe", "rare"], ["dolphin", "🐬", "Decimal Dolphin", "rare"],
+    ["butterfly", "🦋", "Symmetry Butterfly", "rare"], ["panda", "🐼", "Perimeter Panda", "rare"], ["parrot", "🦜", "Pattern Parrot", "rare"],
+    ["fish", "🐠", "Area Angelfish", "rare"],
+    ["unicorn", "🦄", "Infinity Unicorn", "epic"], ["dragon", "🐉", "Thousands Dragon", "epic"], ["tiger", "🐯", "Tiger Times", "epic"],
+    ["shark", "🦈", "Shape Shark", "epic"],
+    ["pi", "🌈", "Rainbow Pi", "legendary"], ["nini", "nini", "Golden Nini", "legendary"]
+  ].map(function (a) { return { id: a[0], e: a[1], n: a[2], r: a[3] }; });
+  var JOKES = ["Why was 6 afraid of 7? Because 7 8 9!", "Why did the math book look sad? It had too many problems.",
+    "What do you call a number that can't sit still? A roamin' numeral!", "Why is 0 nice? It never counts itself in.",
+    "What did the triangle say to the circle? You're pointless!", "Why did the student bring a ladder? To get to high school math!",
+    "What's a math teacher's favorite place? Times Square!", "Why do plants hate math? It gives them square roots!"];
+  function stickerFace(st, size) {
+    return st.e === "nini" ? '<img src="/nini-face.webp" alt="" style="width:' + size + "px;height:" + size + 'px;border-radius:50%;border:3px solid #FFD84D;object-fit:cover;vertical-align:middle">' : st.e;
+  }
+  function myStickers() { var m = get("lwn-stickers-v1", {}); return m && typeof m === "object" ? m : {}; }
+  function boostOn() { var b = get("lwn-boost-v1", {}) || {}; return Number(b.until) > Date.now(); }
+  function rollRarity(golden) {
+    var r = Math.random();
+    if (golden) return r < 0.25 ? "legendary" : "epic";
+    return r < 0.02 ? "legendary" : r < 0.12 ? "epic" : r < 0.40 ? "rare" : "common";
+  }
+  function pickReward(golden) {
+    var rar = rollRarity(golden), have = myStickers(), prizes = [];
+    var pool = STICKERS.filter(function (x) { return x.r === rar; }), fresh = pool.filter(function (x) { return !have[x.id]; });
+    var st = (fresh.length ? fresh : pool)[Math.floor(Math.random() * (fresh.length ? fresh : pool).length)];
+    prizes.push({ type: "sticker", st: st, dup: !!have[st.id] });
+    var xpBy = { common: [10, 15, 20], rare: [25, 30], epic: [40], legendary: [60] }[rar];
+    prizes.push({ type: "xp", xp: xpBy[Math.floor(Math.random() * xpBy.length)] });
+    var fz = get("lwn-freeze-v1", {}) || {}, missingIcons = CHEST_ICONS.filter(function (i) { return unlocked().indexOf(i) < 0; });
+    if (rar === "rare" && Math.random() < 0.5 && (Number(fz.have) || 0) < 2) prizes.push({ type: "freeze" });
+    if ((rar === "epic" || rar === "legendary") && missingIcons.length && Math.random() < 0.5) prizes.push({ type: "icon", icon: missingIcons[Math.floor(Math.random() * missingIcons.length)] });
+    if (rar === "epic" || rar === "legendary" || Math.random() < 0.15) prizes.push({ type: "boost" });
+    if (rar === "common") prizes.push({ type: "joke", t: JOKES[Math.floor(Math.random() * JOKES.length)] });
+    return { rar: rar, golden: !!golden, prizes: prizes };
+  }
+  function grant(rw) {
+    var lines = [], em = ["✨", "⭐"];
+    rw.prizes.forEach(function (p) {
+      if (p.type === "sticker") {
+        var have = myStickers(); have[p.st.id] = (have[p.st.id] || 0) + 1; set("lwn-stickers-v1", have);
+        em.push(p.st.e === "nini" ? "👑" : p.st.e);
+      } else if (p.type === "xp") {
+        var xp = p.st ? 0 : p.xp; try { if (window.LWNXP) LWNXP.add(p.xp, "treasure chest"); } catch (e) {}
+        lines.push("⚡ <b>+" + p.xp + " bonus XP</b>");
+      } else if (p.type === "freeze") {
+        var fz = get("lwn-freeze-v1", {}) || {}; fz.have = Math.min(2, (Number(fz.have) || 0) + 1); fz.used = fz.used || []; fz.earned = fz.earned || []; set("lwn-freeze-v1", fz);
+        lines.push("🧊 <b>Streak freeze</b>: saves your streak if you miss a day"); em.push("🧊");
+      } else if (p.type === "icon") {
+        unlock(p.icon, true); lines.push(p.icon + " <b>Rare icon!</b> Use it with “Change my icon”"); em.push(p.icon);
+      } else if (p.type === "boost") {
+        var b = get("lwn-boost-v1", {}) || {}; b.until = Math.max(Date.now(), Number(b.until) || 0) + 15 * 60000; set("lwn-boost-v1", b);
+        lines.push("🚀 <b>Double XP for 15 minutes!</b> Go play a game now"); em.push("🚀");
+      } else if (p.type === "joke") {
+        lines.push("😂 " + esc(p.t));
+      }
+    });
+    return { lines: lines, em: em };
+  }
+  function openAlbum() {
+    var have = myStickers(), got = STICKERS.filter(function (x) { return have[x.id]; }).length;
+    var order = ["legendary", "epic", "rare", "common"];
+    var m = modal('<div style="font-weight:900;color:#B7791F;letter-spacing:.06em;font-size:13px">MY STICKER BOOK</div><h2>Mathimals</h2>' +
+      '<p>' + got + " of " + STICKERS.length + ' found. Open a treasure chest every day to find more!</p><div class="lwn-album">' +
+      order.map(function (r) {
+        return STICKERS.filter(function (x) { return x.r === r; }).map(function (x) {
+          var on = !!have[x.id];
+          return '<div class="st ' + (on ? "on" : "") + '" style="border-color:' + RAR[r].c + '" title="' + esc(on ? x.n : "???") + '"><span class="e">' + (on ? stickerFace(x, 40) : "❔") + '</span><span class="n">' + esc(on ? x.n : RAR[r].name) + "</span>" + (have[x.id] > 1 ? '<span class="x">×' + have[x.id] + "</span>" : "") + "</div>";
+        }).join("");
+      }).join("") + '</div><button type="button" class="btn" data-close>Close</button>');
+    m.querySelector(".card").classList.add("wide");
   }
   function openChest() {
     if (!chestReady()) return;
     var b = document.getElementById("lwnChestBtn"); if (b) b.remove();
-    var m = modal('<div style="font-weight:900;color:#B7791F;letter-spacing:.06em;font-size:13px">DAILY TREASURE CHEST</div>' +
-      '<h2>Tap the chest!</h2><button type="button" class="lwn-chest-tap" aria-label="Open chest">' + chestArt() + '</button>' +
-      '<p>You earned it by playing today ⭐</p>');
-    var chest = m.querySelector(".lwn-chest-tap");
+    var cs = chestState(), n = (Number(cs.n) || 0) + 1, golden = n % 7 === 0, rw = pickReward(golden), R = RAR[rw.rar];
+    var m = modal('<div style="font-weight:900;color:' + (golden ? "#D97706" : "#B7791F") + ';letter-spacing:.06em;font-size:13px">' + (golden ? "✨ GOLDEN TREASURE CHEST ✨" : "DAILY TREASURE CHEST") + "</div>" +
+      '<h2>Tap 3 times to open!</h2><button type="button" class="lwn-chest-tap' + (golden ? " gold" : "") + '" aria-label="Open chest" style="--glow:' + R.glow + '">' + chestArt() + '</button>' +
+      '<div class="lwn-taps"><i></i><i></i><i></i></div><p class="hint">' + (golden ? "Golden chests always have something Epic or better!" : "The glow tells you how rare it is…") + "</p>");
+    var chest = m.querySelector(".lwn-chest-tap"), taps = 0, card = m.querySelector(".card");
+    m.querySelector(".hint").insertAdjacentHTML("afterend", "");
     chest.onclick = function () {
       var c = chestState(); if (c.opened === hiToday()) return;
-      c.opened = hiToday(); set("lwn-chest-v1", c);
+      taps++;
+      m.querySelectorAll(".lwn-taps i").forEach(function (d, i) { d.classList.toggle("on", i < taps); });
+      if (taps < 3) {
+        chest.style.animation = "none"; void chest.offsetWidth; chest.style.animation = "lwnTap" + taps + " .45s ease-in-out";
+        chest.classList.add("glow" + taps); try { fun && fun("right"); } catch (e) {}
+        if (taps === 2) m.querySelector(".hint").textContent = rw.rar === "legendary" ? "WHOA! It's shaking like crazy!!" : rw.rar === "epic" ? "Something BIG is in there!" : rw.rar === "rare" ? "Ooh, it's glowing blue!" : "One more tap!";
+        return;
+      }
+      c.opened = hiToday(); c.n = n; set("lwn-chest-v1", c);
       chest.style.animation = "none"; chest.classList.add("lwn-chest-open");
-      var rw = pickReward(), card = m.querySelector(".card");
       var cr = chest.getBoundingClientRect(), cx = cr.left + cr.width / 2, cy = cr.top + cr.height / 2;
       setTimeout(function () {
-        var big, title, text;
-        if (rw.type === "icon") { unlock(rw.icon, true); big = rw.icon; title = "A rare icon!"; text = "You found the " + rw.icon + " icon. Only treasure chests have it! Tap “Change my icon” on the homepage to use it."; }
-        else if (rw.type === "freeze") { var fz = get("lwn-freeze-v1", {}) || {}; fz.have = Math.min(2, (Number(fz.have) || 0) + 1); fz.used = fz.used || []; fz.earned = fz.earned || []; set("lwn-freeze-v1", fz);
-          big = "🧊"; title = "Streak freeze!"; text = "If you miss a day, this freeze saves your Daily Challenge streak."; }
-        else { big = "⚡"; title = "+" + rw.xp + " bonus XP!"; text = "Added to today's goal ring."; try { if (window.LWNXP) LWNXP.add(rw.xp, "treasure chest"); } catch (e) {} }
-        card.innerHTML = '<div style="font-weight:900;color:#B7791F;letter-spacing:.06em;font-size:13px">DAILY TREASURE CHEST</div>' +
-          '<div class="big">' + big + '</div><h2>' + esc(title) + "</h2><p>" + esc(text) + '</p><p style="color:#8A8199;font-size:13px">A new chest is waiting tomorrow</p>' +
-          '<button type="button" class="btn" data-close>Yay! ✓</button>';
-        var em = rw.type === "icon" ? [rw.icon, "✨", "⭐", "💎"] : rw.type === "freeze" ? ["🧊", "❄️", "✨", "⭐"] : ["⚡", "⭐", "✨", "🪙"];
-        burst(cx, cy, { count: 200, emoji: em }); fanfare();
+        var g = grant(rw), st = rw.prizes[0].st, dup = rw.prizes[0].dup, left = 7 - (n % 7);
+        card.innerHTML = '<div class="lwn-rar" style="background:' + R.c + '">' + R.name.toUpperCase() + (golden ? " · GOLDEN CHEST" : "") + "</div>" +
+          '<div class="big">' + stickerFace(st, 90) + "</div><h2>" + esc(st.n) + "</h2>" +
+          "<p>" + (dup ? "You already had this sticker. Now you have " + myStickers()[st.id] + "!" : "New sticker for your sticker book!") + "</p>" +
+          '<div class="lwn-prizes">' + g.lines.map(function (l) { return "<div>" + l + "</div>"; }).join("") + "</div>" +
+          '<p style="color:#8A8199;font-size:13px">' + (left === 7 ? "A new chest is waiting tomorrow" : "New chest tomorrow · Golden chest in " + left + " more " + (left === 1 ? "day" : "days") + " ✨") + "</p>" +
+          '<button type="button" class="btn" data-close>Yay! ✓</button><button type="button" class="btn ghost" data-album>📒 See my sticker book</button>';
+        card.querySelector("[data-album]").onclick = function () { m.remove(); openAlbum(); };
+        var count = { common: 140, rare: 200, epic: 280, legendary: 400 }[rw.rar];
+        burst(cx, cy, { count: count, emoji: g.em }); fanfare();
+        if (rw.rar === "legendary" || rw.rar === "epic") setTimeout(function () { burst(cx, cy - 60, { count: count / 2, emoji: g.em }); fanfare(); }, 700);
         var bg = card.querySelector(".big"); if (bg && !reduced) bg.animate([{ transform: "scale(0) rotate(-30deg)" }, { transform: "scale(1.35) rotate(8deg)" }, { transform: "scale(1)" }], { duration: 650, easing: "cubic-bezier(.2,1.6,.4,1)" });
         checkUnlocks();
       }, 550);
@@ -518,7 +617,7 @@
   }
   window.LWNNext = nextStep;
 
-  window.LWNIcons = { locked: LOCKED, unlocked: unlocked, isUnlocked: function (i) { return unlocked().indexOf(i) >= 0; }, unlock: unlock, check: checkUnlocks, openChest: openChest };
+  window.LWNIcons = { locked: LOCKED, unlocked: unlocked, isUnlocked: function (i) { return unlocked().indexOf(i) >= 0; }, unlock: unlock, check: checkUnlocks, openChest: openChest, openAlbum: openAlbum, stickers: function () { return { all: STICKERS, have: myStickers() }; }, pickReward: pickReward };
 
   function start() {
     beatNiniBanner();

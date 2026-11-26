@@ -31,6 +31,8 @@
   /* ---------- earning XP ---------- */
   function add(xp, why) {
     xp = Math.max(0, Math.round(xp)); if (!xp) return;
+    // 🚀 Double XP from a treasure chest (not on the chest's own bonus)
+    try { var bst = JSON.parse(localStorage.getItem("lwn-boost-v1") || "{}"); if (Number(bst.until) > Date.now() && why !== "treasure chest") { xp *= 2; why = (why ? why + " · " : "") + "🚀 2× boost"; } } catch (e) {}
     var s = st(), d = today(), before = s.days[d] || 0;
     s.days[d] = before + xp;
     var reached = before < s.goal && s.days[d] >= s.goal;

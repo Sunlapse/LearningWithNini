@@ -59,6 +59,7 @@
       "#lwnToday .extra{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}" +
       "#lwnToday .extra>*{display:inline-flex;align-items:center;gap:6px;min-height:40px;border-radius:999px;padding:6px 12px;font-weight:900;font-size:14px;background:#FFF6E0;color:#7A4A1F;border:0;text-decoration:none}" +
       "#lwnToday .extra button{cursor:pointer;background:#FFD23F;color:#5A3A00;box-shadow:0 3px 0 #C99A00}" +
+      "#lwnToday .extra button[data-album]{background:#EFE7FF;color:#5B3FC4;box-shadow:0 3px 0 #CDBDF5}" +
       "#lwnToday .big{display:block;margin-top:12px;text-align:center;text-decoration:none;color:#fff;background:linear-gradient(135deg,#FF9B45,#E8711A);border-radius:18px;padding:16px;font:700 22px/1.1 'Fredoka',system-ui,sans-serif;box-shadow:0 5px 0 #B9560F}" +
       "#lwnToday .perfect{margin-top:12px;text-align:center;background:#E7F7EE;border-radius:18px;padding:14px;font-weight:900;color:#17643A;line-height:1.4}" +
       "#lwnToday .perfect b{display:block;font:700 22px/1.2 'Fredoka',system-ui,sans-serif}" +
@@ -90,6 +91,7 @@
     if (s.chest === "ready") extra.push('<button type="button" data-chest>🎁 Your treasure chest is ready! Open it</button>');
     else if (s.chest === "opened") extra.push("<span>🎁 Treasure chest opened ✓</span>");
     else extra.push("<span>🎁 Play anything to earn today’s treasure chest</span>");
+    extra.push('<button type="button" data-album>📒 My sticker book</button>');
     if (s.pieces) extra.push('<a href="' + s.pieces.page + '">🧩 Puzzle pieces today: ' + s.pieces.got + " of " + s.pieces.max + "</a>");
     h += '<div class="extra">' + extra.join("") + "</div>";
     if (next) h += '<a class="big" href="' + next.href + '" data-task="' + next.k + '">' + (done ? "Next: " : "Start: ") + esc(next.t) + " →</a>";
@@ -101,6 +103,7 @@
         : "Perfect day! You did all 3. Come back tomorrow for a new challenge and a new story!";
       LWNSay.speak(said);
     };
+    var ab = host.querySelector("[data-album]"); if (ab) ab.onclick = function () { if (window.LWNIcons && LWNIcons.openAlbum) LWNIcons.openAlbum(); };
     var cb = host.querySelector("[data-chest]");
     if (cb) cb.onclick = function () { try { if (window.LWNIcons && LWNIcons.openChest) LWNIcons.openChest(); } catch (e) {} setTimeout(render, 2500); };
     host.querySelectorAll('[href="#game-topics"]').forEach(function (a) {
