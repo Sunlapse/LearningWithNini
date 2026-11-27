@@ -3,6 +3,8 @@
 window.LWNBadges = (function () {
   // Nini's leaderboard nickname, used for the "Beat Nini" badge. Leave "" to hide that badge.
   var NINI_NAME = "Graceful sealion";
+  // Nini can't beat herself, so her version of the badge is "Beat Dad" (his leaderboard nickname).
+  var DAD_NAME = "Tiger Stripes";
 
   var KEY = "lwn-badges-v1";
   var BADGES = [
@@ -19,13 +21,22 @@ window.LWNBadges = (function () {
     { id: "correct1000",icon: "💎", name: "1,000 Correct",   how: "Get 1,000 questions right" },
     { id: "perfect",    icon: "💯", name: "Perfect Score",   how: "100% right with 10+ answered" },
     { id: "brave",      icon: "💪", name: "Brave Brain",     how: "Finish a Challenge-mode day" },
-    { id: "beatnini",   icon: "🥇", name: "Beat Nini",       how: "Tie or beat Nini's score on the same day, grade, mode and time" }
+    { id: "beatnini",   icon: "🥇", name: "Beat Nini",       how: "Tie or beat Nini's score on the same day, grade, mode and time" },
+    { id: "beatdad",    icon: "🐯", name: "Beat Dad",        how: "Tie or beat Dad (Tiger Stripes) on the same day's challenge, mode and time" }
   ];
 
   function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function earned() { var e = load(KEY, {}); return e && typeof e === "object" ? e : {}; }
-  function list() { return BADGES.filter(function (b) { return b.id !== "beatnini" || NINI_NAME; }); }
+  function myName() { try { var p = JSON.parse(localStorage.getItem("learningWithNiniProfileV1") || "{}"); return String(p.name || localStorage.getItem("niniPlayerName") || "").trim(); } catch (e) { return ""; } }
+  function isNini() { return !!NINI_NAME && myName().toLowerCase() === NINI_NAME.toLowerCase(); }
+  function list() {
+    return BADGES.filter(function (b) {
+      if (b.id === "beatnini") return !!NINI_NAME && !isNini();
+      if (b.id === "beatdad") return !!DAD_NAME && (isNini() || !!earned().beatdad);
+      return true;
+    });
+  }
 
   // Which badges the saved history qualifies for (everything except Beat Nini, which needs the leaderboard).
   function qualified(p) {
@@ -142,7 +153,7 @@ window.LWNBadges = (function () {
   function checkBeatNini(r) {
     if (!NINI_NAME || !window.LWNLeaderboard || typeof LWNLeaderboard.dailyChallenge !== "function") return;
     var me = String(r.player || "").trim().toLowerCase();
-    if (me === NINI_NAME.toLowerCase()) return; // Nini can't beat herself
+    if (me === NINI_NAME.toLowerCase()) { checkBeatDad(r); return; } // Nini can't beat herself: she races Dad instead
     LWNLeaderboard.dailyChallenge({ date: r.date, minutes: r.mins, includeReview: true, activity: true })
       .then(function (rows) {
         var hers = rows.filter(function (x) {
@@ -155,6 +166,19 @@ window.LWNBadges = (function () {
         } else {
           celebrate([], "Nini scored " + hers.score + " on this challenge. So close — try again tomorrow!");
         }
+      })
+      .catch(function () {});
+  }
+
+  function checkBeatDad(r) {
+    if (!DAD_NAME) return;
+    LWNLeaderboard.dailyChallenge({ date: r.date, minutes: r.mins, includeReview: true, activity: true })
+      .then(function (rows) {
+        var his = rows.filter(function (x) { return String(x.name).trim().toLowerCase() === DAD_NAME.toLowerCase() && String(x.mode) === String(r.mode); })
+          .sort(function (a, b) { return (b.score || 0) - (a.score || 0); })[0];
+        if (!his) { celebrate([], "Dad hasn't done today's challenge yet. 🐯 Dare him to beat your " + r.points + "!"); return; }
+        if (r.points >= his.score) celebrate(award(["beatdad"], r.date), "You scored " + r.points + ". Dad scored " + his.score + ". You beat Dad! 🐯🥇");
+        else celebrate([], "Dad scored " + his.score + " today. So close! Try to beat him tomorrow 🐯");
       })
       .catch(function () {});
   }

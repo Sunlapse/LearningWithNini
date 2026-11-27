@@ -331,7 +331,7 @@
     var box = document.createElement("div"); box.id = "lwnBeatNini"; box.className = "lwn-beatnini";
     var me = myName().toLowerCase();
     var face = '<img src="/nini-face.webp" alt="">';
-    if (me === NINI.toLowerCase()) { box.innerHTML = face + "<div>⭐ Kids everywhere are trying to beat <b>your</b> score today. Go set a great one!</div>"; hello.insertAdjacentElement("afterend", box); return; }
+    if (me === NINI.toLowerCase()) { box.innerHTML = face + "<div>⭐ Kids everywhere are trying to beat <b>your</b> score today. And can you beat <b>Dad 🐯</b>? Beat him to earn the Beat Dad badge!</div>"; hello.insertAdjacentElement("afterend", box); return; }
     box.innerHTML = face + "<div>🎯 Checking Nini's score for today…</div>";
     hello.insertAdjacentElement("afterend", box);
     var tries = 0;
