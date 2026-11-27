@@ -1,6 +1,28 @@
 // Learn With Nini – "Add to Home Screen" banner for iPad/iPhone
 // Shows a friendly tip on Apple devices in Safari, only if the site isn't already installed.
 (function () {
+  // iPad/iPhone: typing in an answer box can make Safari (and the Home Screen app) jump the page so the box
+  // scrolls out of sight. Keep the box where the kid can see it while they type.
+  (function keepTypingInView() {
+    var box = null, timer = null;
+    function vh() { return window.visualViewport ? window.visualViewport.height : window.innerHeight; }
+    function vtop() { return window.visualViewport ? window.visualViewport.offsetTop : 0; }
+    function check() {
+      if (!box || document.activeElement !== box) return;
+      var r = box.getBoundingClientRect(), top = r.top - vtop(), h = vh();
+      if (top < 50 || r.bottom - vtop() > h - 20) window.scrollBy(0, top - Math.max(70, h * 0.28));
+    }
+    function soon() { clearTimeout(timer); timer = setTimeout(check, 60); }
+    document.addEventListener("focusin", function (e) {
+      var t = e.target;
+      if (!t || !t.matches || !t.matches("input:not([type=checkbox]):not([type=radio]):not([type=range]),textarea")) { box = null; return; }
+      box = t; setTimeout(check, 350); setTimeout(check, 800);
+    });
+    document.addEventListener("focusout", function () { box = null; });
+    document.addEventListener("input", soon, true);
+    document.addEventListener("keyup", soon, true);
+    if (window.visualViewport) { window.visualViewport.addEventListener("resize", soon); }
+  })();
   // XP ring, daily goal and weekly leagues on every page.
   if (!document.querySelector('script[src="/xp.js"]')) {
     var xs = document.createElement("script"); xs.src = "/xp.js"; xs.defer = true; document.head.appendChild(xs);
